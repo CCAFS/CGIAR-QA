@@ -3,6 +3,18 @@
 /tmp
 /out-tsc
 
+# dependencies
+/CGIAR-QA-front/node_modules
+
+# compiled output
+/CGIAR-QA-front/dist
+/CGIAR-QA-front/tmp
+/CGIAR-QA-front/out-tsc
+# Only exists if Bazel was run
+/CGIAR-QA-front/bazel-out
+
+
+
 # System Files
 .DS_Store
 Thumbs.db

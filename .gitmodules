@@ -1,0 +1,3 @@
+[submodule "CGIAR-QA-front"]
+  path = CGIAR-QA-front
+  url = git://github.com/CCAFS/CGIAR-QA/tree/development
