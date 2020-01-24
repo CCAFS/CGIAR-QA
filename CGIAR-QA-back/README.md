@@ -1,4 +1,4 @@
-# Awesome Project Build with TypeORM
+# CGIAR QA BACK END
 
 Steps to run this project:
 
