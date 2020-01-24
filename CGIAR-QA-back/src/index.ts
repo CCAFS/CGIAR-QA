@@ -1,12 +1,38 @@
 import "reflect-metadata";
-import {createConnection} from "typeorm";
+import { createConnection } from "typeorm";
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import {Request, Response} from "express";
-import {Routes} from "./routes";
-import {User} from "./entity/User";
+import * as helmet from "helmet";
+import * as cors from "cors";
+import  Routes  from "./routes/IndexRoute";
 
-createConnection().then(async connection => {
+
+//Connects to the Database -> then starts the express
+createConnection()
+    .then(async connection => {
+        // Create a new express application instance
+        const app = express();
+
+        // Call midlewares
+        app.use(cors());
+        app.use(helmet());
+        app.use(bodyParser.json());
+
+        //Set all routes from routes folder
+        app.use("/", Routes);
+
+        app.listen(3000, () => {
+            console.log("Server started on port 3000!");
+        });
+    })
+    .catch(error => console.log('createConnection', error));
+
+
+
+
+
+
+/*createConnection().then(async connection => {
 
     // create express app
     const app = express();
@@ -45,4 +71,4 @@ createConnection().then(async connection => {
 
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
 
-}).catch(error => console.log(error));
+}).catch(error => console.log(error));*/
