@@ -5,6 +5,7 @@
 
 # dependencies
 /CGIAR-QA-front/node_modules
+/CGIAR-QA-back/node_modules
 
 # compiled output
 /CGIAR-QA-front/dist
