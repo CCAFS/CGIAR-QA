@@ -5,9 +5,9 @@ import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 
 // array in local storage for registered users
 let users = [
-    {username: 'felipe', password:'12345678'},
-    {username: 'admin', password:'12345678'},
-    {username: 'evaluator', password:'12345678'},
+    {username: 'felipe', password:'12345678', role:'user'},
+    {username: 'admin', password:'12345678' , role:'admin'},
+    {username: 'evaluator', password:'12345678' , role:'evaluator'},
 ];
 // let users = JSON.parse(localStorage.getItem('users')) || [];
 
@@ -62,7 +62,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 return error('Username "' + user.username + '" is already taken')
             }
 
-            user.id = users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
+            //user.id = users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
             users.push(user);
             localStorage.setItem('users', JSON.stringify(users));
 
@@ -77,7 +77,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function deleteUser() {
             if (!isLoggedIn()) return unauthorized();
 
-            users = users.filter(x => x.id !== idFromUrl());
+           // users = users.filter(x => x.id !== idFromUrl());
             localStorage.setItem('users', JSON.stringify(users));
             return ok();
         }

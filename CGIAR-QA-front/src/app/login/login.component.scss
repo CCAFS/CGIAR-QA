@@ -1,0 +1,52 @@
+@import "../../assets/variables.scss";
+
+.login-component {
+  margin-top: 10%;
+  .header {
+    text-align: center;
+    padding: 0;
+    h2,
+    p {
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: $font-lg;
+      font-weight: $bold;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+    }
+    p {
+      font-size: $font-md;
+    }
+  }
+
+  .card {
+    background-color: var(--background-contrast);
+    font-size: $primary-fs;
+    overflow: hidden;
+    padding: 0;
+    border: none;
+    border-radius: 0.28571429rem;
+    box-shadow: 0 1px 3px 0 var(--gray-primary), 0 0 0 1px rgba(0, 0, 0, 0.075);
+    input {
+      background-color: var(--input-gray);
+      border: none;
+    }
+
+    .form-group.col-4 {
+      float: right;
+      padding: 0;
+      button {
+        width: 100%;
+        background-color: var(--yellow);
+        font-size: $font-md;
+        border: none;
+        text-transform: uppercase;
+        .spinner-border{
+            vertical-align: middle;
+        }
+      }
+    }
+  }
+}

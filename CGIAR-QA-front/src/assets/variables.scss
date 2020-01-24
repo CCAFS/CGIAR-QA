@@ -1,0 +1,31 @@
+:root {
+  --background: #f3f1f1;
+  --background-contrast: #F9F9F9;
+  --white: #fff;
+  --input-gray: #F2F2F2;
+
+  --yellow-primary: #ffc84f;
+  --green-primary: #2e7636;
+  --green-secondary: #61b33e;
+  --green-tertiary: #11a221;
+  --gray-primary: #666666;
+  --gray-secondary: #707070;
+  --gray-tertiary: #989898;
+  --red-primary:#DA4336;
+  --blue-primary:#0F8981;
+}
+
+// primary font
+$primary_font: "Montserrat";
+// font-weight
+$thin: 100;
+$light: 300;
+$regular: 400;
+$bold: 700;
+$black: 900;
+// Font size
+$font-xs: 12px;
+$font-sm: 14px;
+$primary-fs: 16px;
+$font-md: 20px;
+$font-lg: 35px;
