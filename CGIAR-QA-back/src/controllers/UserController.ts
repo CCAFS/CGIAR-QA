@@ -3,18 +3,27 @@ import { getRepository } from "typeorm";
 import { validate } from "class-validator";
 
 import { User } from "../entity/User";
+const { ErrorHandler } = require("../_helpers/ErrorHandler");
+import RolesHandler from "../_helpers/RolesHandler";
+
 
 class UserController {
 
     static listAll = async (req: Request, res: Response) => {
         //Get users from database
-        const userRepository = getRepository(User);
-        const users = await userRepository.find({
-            select: ["id", "username", "role"] //We dont want to send the passwords on response
-        });
+        try {
+            const userRepository = getRepository(User);
+            const users = await userRepository.find({
+                select: ["id", "username", "role"] //We dont want to send the passwords on response
+            });
 
-        //Send the users object
-        res.send(users);
+            //Send the users object
+            res.status(200).json({ data: users });
+
+        } catch (error) {
+            console.log(error)
+            throw new ErrorHandler(404, 'Could not access to users.')
+        }
     };
 
     static getOneById = async (req: Request, res: Response) => {
@@ -27,24 +36,27 @@ class UserController {
             const user = await userRepository.findOneOrFail(id, {
                 select: ["id", "username", "role"] //We dont want to send the password on response
             });
+            res.status(200).json({ data: user });
         } catch (error) {
-            res.status(404).send("User not found");
+            console.log(error)
+            throw new ErrorHandler(404, 'User not found.')
+            // res.status(404).send("User not found");
         }
     };
 
     static newUser = async (req: Request, res: Response) => {
         //Get parameters from the body
         let { username, password, role } = req.body;
+       
         let user = new User();
         user.username = username;
         user.password = password;
         user.role = role;
-
+        
         //Validade if the parameters are ok
         const errors = await validate(user);
         if (errors.length > 0) {
-            res.status(400).send(errors);
-            return;
+            throw new ErrorHandler(400, errors);
         }
 
         //Hash the password, to securely store on DB
@@ -55,12 +67,12 @@ class UserController {
         try {
             await userRepository.save(user);
         } catch (e) {
-            res.status(409).send("username already in use");
-            return;
+            console.log(e)
+            throw new ErrorHandler(409, 'Username already in use.')
         }
 
         //If all ok, send 201 response
-        res.status(201).send("User created");
+        res.status(201).json({ data: "User created" });
     };
 
     static editUser = async (req: Request, res: Response) => {
@@ -77,8 +89,7 @@ class UserController {
             user = await userRepository.findOneOrFail(id);
         } catch (error) {
             //If not found, send a 404 response
-            res.status(404).send("User not found");
-            return;
+            throw new ErrorHandler(404, 'User not found.');
         }
 
         //Validate the new values on model
@@ -86,19 +97,18 @@ class UserController {
         user.role = role;
         const errors = await validate(user);
         if (errors.length > 0) {
-            res.status(400).send(errors);
-            return;
+            throw new ErrorHandler(400, errors);
         }
 
         //Try to safe, if fails, that means username already in use
         try {
             await userRepository.save(user);
         } catch (e) {
-            res.status(409).send("username already in use");
-            return;
+            throw new ErrorHandler(409, "Username already in use");
         }
-        //After all send a 204 (no content, but accepted) response
-        res.status(204).send();
+        //After all send a 204 (accepted) response
+        res.status(204).json({data:'User updated sucessfully'})
+        // res.status(204).send();
     };
 
     static deleteUser = async (req: Request, res: Response) => {
@@ -110,8 +120,7 @@ class UserController {
         try {
             user = await userRepository.findOneOrFail(id);
         } catch (error) {
-            res.status(404).send("User not found");
-            return;
+            throw new ErrorHandler(404, 'User not found.');
         }
         userRepository.delete(id);
 

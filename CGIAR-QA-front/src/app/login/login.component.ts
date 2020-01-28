@@ -6,6 +6,8 @@ import { first } from 'rxjs/operators';
 import { AuthenticationService } from './../services/authentication.service';
 import { AlertService } from './../services/alert.service';
 
+import { Role } from '../_models/roles.model'
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -56,12 +58,15 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    console.log('Login / authenticationService', this.f)
     this.authenticationService.login(this.f.username.value, this.f.password.value)
       .pipe(first())
       .subscribe(
         data => {
-          this.router.navigate([this.returnUrl]);
+          if(data.role === Role.admin){
+            this.router.navigate(['admin']);
+          }else{
+            this.router.navigate([this.returnUrl]);
+          }
         },
         error => {
           this.alertService.error(error);

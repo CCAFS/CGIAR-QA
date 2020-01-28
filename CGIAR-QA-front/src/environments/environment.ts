@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'cgiar-qa'
+  apiUrl: 'http://localhost:3300'
 };
 
 /*

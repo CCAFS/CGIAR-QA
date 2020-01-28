@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import config from "../config/config";
+const { ErrorHandler } = require("../_helpers/ErrorHandler")
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     //Get the jwt token from the head
-    const token = <string>req.headers["Authorization"];
+    const token = <string>req.headers["authorization"];
     let jwtPayload;
 
     //Try to validate the token and get data
@@ -12,16 +13,16 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
         jwtPayload = <any>jwt.verify(token, config.jwtSecret);
         res.locals.jwtPayload = jwtPayload;
     } catch (error) {
+        console.log('jwt check', error)
         //If token is not valid, respond with 401 (unauthorized)
-        res.status(401).send();
-        return;
+        throw new ErrorHandler(401, error.message);
     }
 
-    //The token is valid for 1 hour
+    //The token is valid for ``config.jwtTime``
     //We want to send a new token on every request
     const { userId, username } = jwtPayload;
     const newToken = jwt.sign({ userId, username }, config.jwtSecret, {
-        expiresIn: "1h"
+        expiresIn: config.jwtTime
     });
     res.setHeader("token", newToken);
 

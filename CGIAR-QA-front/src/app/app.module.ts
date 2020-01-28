@@ -11,7 +11,8 @@ import { AlertComponent } from './_shared/alert/alert.component';
 
 import { JwtInterceptor } from './_helpers/jwt.interceptor'
 import { ErrorInterceptor } from './_helpers/error.interceptor'
-import { FakeBackendInterceptor } from './_helpers/fake-back'
+import { FakeBackendInterceptor } from './_helpers/fake-back';
+import { AdminComponent } from './admin/admin.component'
 
 
 
@@ -21,6 +22,7 @@ import { FakeBackendInterceptor } from './_helpers/fake-back'
     HomeComponent,
     LoginComponent,
     AlertComponent,
+    AdminComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,9 +33,7 @@ import { FakeBackendInterceptor } from './_helpers/fake-back'
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
-    
-    
+    // { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
