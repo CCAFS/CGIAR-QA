@@ -1,24 +1,116 @@
 @import "../../assets/variables.scss";
 
-.card-left{
+.card-left {
+  padding: 0;
+  margin-left: 5%;
+  h4 {
+    text-align: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 4px solid var(--input-gray);
+  }
+  .btn-group-vertical {
     padding: 0;
-    margin-left: 5%;
-    h4{
-        text-align: center;
-        padding-bottom: 10px;
-        margin-bottom: 10px;
-        border-bottom: 4px solid var(--input-gray);
+    .btn.btn-secondary {
+      margin-bottom: 10px;
+      border-bottom: none;
+      background-color: var(--input-gray);
+      border-color: var(--input-gray);
+      color: var(--black);
+      text-align: left;
     }
+  }
 }
 
-.admin-add-users{
-    padding: 0;
-    margin-left: 10%;
-    h2{
-        margin-bottom: 20px;
-        text-align: center;
+.admin-users-container {
+  padding: 0;
+  margin-left: 10%;
+  h2 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .users-card-container {
+    max-height: 100vh;
+    overflow: auto;
+    .card {
+      margin-bottom: 20px;
     }
-    .card{
-        margin-bottom: 20px;
+    .card-header {
+      padding-left: 30px;
+      padding-right: 30px;
+      h4 {
+        margin: 0;
+        line-height: $font-lg;
+      }
+      .button-card-container {
+        display: flex;
+        width: 100px;
+        justify-content: space-around;
+      }
+      .btn {
+        padding: 0;
+        height: $icon-md;
+      }
+      i {
+        height: $icon-md;
+      }
     }
+  }
+  .admin-add-users {
+    margin-top: 5rem;
+    .card-body {
+      padding: 5rem;
+    }
+    p:first-child {
+      margin-bottom: 0;
+    }
+    .add-user-form {
+      .form-group {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        .invalid-feedback{
+            padding: 0 0 0 5rem;
+        }
+        label {
+          vertical-align: middle;
+          line-height: 40px;
+          margin: 0;
+        }
+        input {
+          width: 90%;
+        }
+      }
+      .form-group.indicators {
+        display: block;
+        padding: 0 8px;
+        type-ahead {
+          width: 100%;
+          padding: 0.375rem 0.75rem;
+          font-size: 1rem;
+          line-height: 1.5;
+          color: #495057;
+          background-color: #fff;
+          background-clip: padding-box;
+          border: 1px solid #ced4da;
+          border-radius: 0.25rem;
+          transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+      }
+      .form-group.col-4 {
+        float: right;
+        padding: 0;
+        button {
+          width: 100%;
+          background-color: var(--yellow);
+          font-size: $font-md;
+          border: none;
+          text-transform: uppercase;
+          .spinner-border {
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+  }
 }

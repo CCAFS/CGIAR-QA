@@ -1,0 +1,22 @@
+/***
+*** ICONS
+***/
+
+.icon-edit {
+  content: url("~/assets/icons/edit_icon.svg");
+}
+.icon-remove {
+  content: url("~/assets/icons/remove_icon.svg");
+}
+
+.badge-primary.type-ahead-badge {
+  color: var(--black);
+  background-color: var(--background);
+  padding: 5px 10px;
+  margin: 5px;
+  span {
+    position: relative;
+    left: 5px;
+    top: 0px;
+  }
+}

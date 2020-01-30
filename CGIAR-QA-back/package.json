@@ -20,6 +20,7 @@
       "express": "^4.15.4",
       "helmet": "^3.21.2",
       "jsonwebtoken": "^8.5.1",
+      "mysql": "^2.18.1",
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.0.3",
       "ts-node-dev": "^1.0.0-pre.44",

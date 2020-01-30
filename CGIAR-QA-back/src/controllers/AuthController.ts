@@ -3,7 +3,7 @@ import * as jwt from "jsonwebtoken";
 import { getRepository } from "typeorm";
 import { validate } from "class-validator";
 
-import { User } from "../entity/User";
+import { QAUser } from "../entity/User";
 import config from "../config/config";
 const { ErrorHandler } = require("../_helpers/ErrorHandler")
 
@@ -18,8 +18,8 @@ class AuthController {
             }
 
             //Get user from database
-            const userRepository = getRepository(User);
-            let user: User;
+            const userRepository = getRepository(QAUser);
+            let user: QAUser;
             try {
                 user = await userRepository.findOneOrFail({ where: { username } });
             } catch (error) {
@@ -61,8 +61,8 @@ class AuthController {
         }
 
         //Get user from the database
-        const userRepository = getRepository(User);
-        let user: User;
+        const userRepository = getRepository(QAUser);
+        let user: QAUser;
         try {
             user = await userRepository.findOneOrFail(id);
         } catch (id) {

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { getRepository } from "typeorm";
 
-import { User } from "../entity/User";
+import { QAUser } from "../entity/User";
 const { ErrorHandler } = require("../_helpers/ErrorHandler")
 
 export const checkRole = (roles: Array<string>) => {
@@ -9,12 +9,12 @@ export const checkRole = (roles: Array<string>) => {
         //Get the user ID from previous midleware
         const id = res.locals.jwtPayload.userId;
         //Get user role from the database
-        const userRepository = getRepository(User);
-        let user: User;
+        const userRepository = getRepository(QAUser);
+        let user: QAUser;
         try {
             user = await userRepository.findOneOrFail(id);
         } catch (error) {
-            console.log(error)
+            console.error(error)
             throw new ErrorHandler(401, 'User unauthorized.');
         }
 

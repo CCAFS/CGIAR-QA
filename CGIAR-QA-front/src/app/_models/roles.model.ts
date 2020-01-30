@@ -1,5 +1,7 @@
 export enum Role {
+    //Model with user ROLES
     admin = 'ADMIN',
     crp = 'CRP',
-    evaluator = 'EVALUATOR'
+    guest = 'GUEST',
+    assesor = 'ASSESOR'
 }

@@ -1,11 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { Length, IsNotEmpty } from "class-validator";
+import { Length, IsEmpty, IsEmail, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
 
+import { RolesHandler } from "../_helpers/RolesHandler";
+
 @Entity()
-@Unique(["username"])
-export class User {
-    @PrimaryGeneratedColumn()
+@Unique(["name", "email"])
+export class QAUser {
+    @PrimaryGeneratedColumn("uuid")
     id: number;
 
     @Column()
@@ -13,12 +15,26 @@ export class User {
     username: string;
 
     @Column()
+    @Length(4, 20)
+    @IsNotEmpty({ message: 'The name is required' })
+    name: string;
+
+    @Column()
+    @IsNotEmpty({ message: 'The email is required' })
+    @IsEmail({}, { message: 'Incorrect email' })
+    email: string;
+
+
+    @Column()
     @Length(4, 100)
     password: string;
 
-    @Column()
-    @IsNotEmpty()
-    role: string;
+    @Column({
+        type: "enum",
+        enum: RolesHandler,
+        default: RolesHandler.guest
+    })
+    role: RolesHandler
 
     @Column()
     @CreateDateColumn()
@@ -27,6 +43,9 @@ export class User {
     @Column()
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @Column("simple-array", { nullable: true })
+    indicators: string[];
 
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);

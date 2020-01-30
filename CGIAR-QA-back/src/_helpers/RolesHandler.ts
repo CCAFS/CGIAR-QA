@@ -1,5 +1,7 @@
-export default {
-    admin : 'ADMIN',
-    crp : 'CRP',
-    evaluator : 'EVALUATOR'
-};
+export enum RolesHandler {
+    //Model with user ROLES
+    admin = 'ADMIN',
+    crp = 'CRP',
+    guest = 'GUEST',
+    assesor = 'ASSESOR'
+}

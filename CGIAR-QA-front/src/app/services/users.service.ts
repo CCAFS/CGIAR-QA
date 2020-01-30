@@ -20,11 +20,13 @@ export class UsersService {
   }
 
   getAllUsers() {
-    return this.http.get<any>(`${environment.apiUrl}/user/all`);
+    return this.http.get<any>(`${environment.apiUrl}/user/all`).pipe(map(res => {
+      return res.data;
+    }));
   }
 
   createUser(userData){
-    return this.http.post<any>(`${environment.apiUrl}/user/all`, userData);
+    return this.http.post<any>(`${environment.apiUrl}/user/`, userData);
   }
 
 }
