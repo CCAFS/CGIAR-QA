@@ -15,15 +15,16 @@ export class AlertComponent implements OnInit, OnDestroy {
       .subscribe(message => {
         switch (message && message.type) {
           case 'success':
-            message.cssClass = 'alert alert-success';
+            message.cssClass = 'alert sticky alert-success';
             break;
           case 'error':
-            message.cssClass = 'alert alert-danger';
+            message.cssClass = 'alert sticky alert-danger';
             break;
         }
 
         this.message = message;
       });
+      
   }
 
   ngOnDestroy() {

@@ -1,13 +1,21 @@
+@import "./assets/variables.scss";
+
 /***
 *** ICONS
 ***/
-
 .icon-edit {
   content: url("~/assets/icons/edit_icon.svg");
 }
 .icon-remove {
   content: url("~/assets/icons/remove_icon.svg");
 }
+.icon-save {
+  content: url("~/assets/icons/signout_icon.svg");
+}
+
+/***
+*** Type-ahead
+***/
 
 .badge-primary.type-ahead-badge {
   color: var(--black);
@@ -18,5 +26,46 @@
     position: relative;
     left: 5px;
     top: 0px;
+  }
+}
+
+/***
+*** Sticky Alert
+***/
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 99;
+}
+
+/***
+*** Confirmation modal
+***/
+.custom-confirmation {
+  height: 100%;
+  .modal-content {
+    position: absolute;
+    top: 50%;
+    background-color: var(--input-gray);
+    .modal-body {
+      .btn{
+        margin: 0 20px;
+        width: 20%;
+      }
+      .btn.btn-primary {
+        color: var(--white);
+        background-color: var(--yellow-primary);
+        border-color: var(--yellow-primary);
+      }
+      .btn.btn-default {
+        border-color: var(--gray-tertiary);
+      }
+    }
+    // .button-default{
+    //   color: var(--white);
+    //   background-color: var(--yellow-primary);
+    //   border-color: var(--yellow-primary);
+    // }
   }
 }
