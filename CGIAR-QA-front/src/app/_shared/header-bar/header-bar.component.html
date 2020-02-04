@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand header-bar" *ngIf="currentUser">
+    <div class="logo-container">
+        <i class="cgiar-logo"></i>
+        <h3>QA PLATFORM</h3>
+    </div>
+    <div class="row navbar-container">
+        <div class="upper-navbar">
+            <div class="panel admin-panel" *ngIf="currentUser.role === allRoles.admin">
+                <a routerLink="/admin">Admin Panel</a>
+            </div>
+            <div class="panel" >
+                <p>{{currentUser.name}}</p>
+                <p>{{currentUser.email}}</p>
+            </div>
+            <div class="log-out-panel"  (click)="logout()">
+                <p>Signout</p>
+                <i class="icon-log-out"></i>
+            </div>
+        </div>
+
+        <div class="navbar-nav" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+            <!-- <a class="nav-item nav-link" (click)="goToView('dashboard')">Home</a> -->
+            <a class="nav-item nav-link"  routerLink="/dashboard/{{currentUser.role.toLowerCase()}}">Home</a>
+            <a class="nav-item nav-link"  routerLink="/admin">other</a>
+        </div>
+    </div>
+</nav>

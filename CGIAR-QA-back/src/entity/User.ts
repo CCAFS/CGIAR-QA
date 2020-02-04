@@ -1,21 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { Length, IsEmpty, IsEmail, IsNotEmpty } from "class-validator";
+import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from "typeorm";
+import { Length, IsEmail, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
 
-import { RolesHandler } from "../_helpers/RolesHandler";
+import { QARoles } from "../entity/Roles";
+
+// import { RolesHandler } from "../_helpers/RolesHandler";
 
 @Entity()
 @Unique(["name", "email"])
-export class QAUser {
-    @PrimaryGeneratedColumn("uuid")
+export class QAUsers {
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    @Length(4, 20)
+    @Length(4, 200)
     username: string;
 
     @Column()
-    @Length(4, 20)
+    @Length(4, 200)
     @IsNotEmpty({ message: 'The name is required' })
     name: string;
 
@@ -26,15 +28,28 @@ export class QAUser {
 
 
     @Column()
-    @Length(4, 100)
+    @Length(4, 20)
     password: string;
 
-    @Column({
-        type: "enum",
-        enum: RolesHandler,
-        default: RolesHandler.guest
+    // @Column({
+    //     type: "enum",
+    //     enum: RolesHandler,
+    //     default: RolesHandler.guest
+    // })
+    // role: RolesHandler
+    @ManyToMany(type => QARoles)
+    @JoinTable({
+        name: "qa_user_roles", // table name for the junction table of this relation
+        joinColumn: {
+            name: "qa_user",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "qa_role",
+            referencedColumnName: "id"
+        }
     })
-    role: RolesHandler
+    roles: QARoles[];
 
     @Column()
     @CreateDateColumn()

@@ -1,0 +1,60 @@
+@import "../../../assets/variables.scss";
+.dashboard-container {
+  .card-title {
+    font-weight: $light;
+    font-size: $font-md;
+  }
+  .col-progress {
+    margin-bottom: 10%;
+    p:not(:first-child) {
+      margin: 0 15px;
+      line-height: $size-lg;
+      align-self: center;
+    }
+    .circle {
+      height: $size-lg;
+      width: $size-lg;
+      border-radius: 50%;
+    }
+    .complete {
+      background-color: var(--green-tertiary);
+    }
+    .pending {
+      background-color: var(--red-primary);
+    }
+    .progress-container {
+      p {
+        margin: 10px 0px;
+      }
+      a {
+        position: relative;
+        left: 98%;
+        top: 10px;
+      }
+      .progress {
+        height: $size-lg;
+      }
+    }
+  }
+
+  .col-programs {
+    .programs-form {
+      margin: 0 $size-lg;
+      .custom-control-input:checked ~ .custom-control-label::before {
+        color: var(--white);
+        border-color: var(--yellow-primary);
+        background-color: var(--yellow-primary);
+      }
+    }
+  }
+
+  .col-activity{
+      .activity-item{
+        padding: 10px 15px;
+        margin: 10px 15px;
+        background: var(--input-gray);
+      }
+  }
+
+
+}

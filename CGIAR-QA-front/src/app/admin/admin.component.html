@@ -16,28 +16,29 @@
         <h2 class="header">List of Evaluators</h2>
         <div class="users-card-container">
             <form [formGroup]="editUserForm">
-                <div class="card" *ngFor="let user of users | filterByRole:selectedRole; let i=index " formArrayName="editUserFormArray">
+                <div class="card" *ngFor="let user of users | filterByRole:selectedRole; let i=index "
+                    formArrayName="editUserFormArray">
                     <div class="card-header row justify-content-between" id="heading-{{user.id}}">
                         <p (click)="user.isCollapsed = (user.role !== allRoles.assesor) ? true :  !user.isCollapsed "
                             [attr.aria-expanded]="!user.isCollapsed" aria-controls="collapseBasic">{{user.username}} (
                             {{user.email}} )</p>
                         <div class="button-card-container">
-                            <!-- <button type="button" *ngIf="!user.isEditing"  class="btn"> -->
-                            <button type="button" *ngIf="!user.isEditing"
-                                (click)="user.isEditing = true; user.isCollapsed = false" class="btn">
+                            <!--  (click)="user.isEditing = true; user.isCollapsed = false" -->
+                            <button type="button" *ngIf="!user.isEditing" class="btn">
                                 <i class="icon-edit"></i>
                             </button>
-                            <button type="button" *ngIf="user.isEditing" (click)="openModal(template, 'edit', user)"
-                                class="btn">
+                            <!--  (click)="openModal(template, 'edit', user)" -->
+                            <button type="button" *ngIf="user.isEditing" class="btn">
                                 <i class="icon-save"></i>
                             </button>
-                            <button type="button " (click)="openModal(template, 'delete', user)" class="btn">
+                            <!-- (click)="openModal(template, 'delete', user)"  -->
+                            <button type="button " class="btn">
                                 <i class="icon-remove"></i>
                             </button>
                         </div>
                     </div>
-                    <div id="collapse-{{user.id}}" *ngIf="user.role === allRoles.assesor && !user.isEditing"
-                        [collapse]="user.isCollapsed" [isAnimated]="true">
+                    <!--  *ngIf="user.role === allRoles.assesor && !user.isEditing" -->
+                    <div id="collapse-{{user.id}}" [collapse]="user.isCollapsed" [isAnimated]="true">
                         <div class="card-body" *ngIf="user.indicators">
                             Assigned Indicators:
                             <div class="indicators-container">
@@ -51,10 +52,10 @@
                         </div>
 
                     </div>
-                    <div id="collapse-{{user.id}}" *ngIf="user.isEditing" [collapse]="user.isCollapsed"
+                    <!-- <div id="collapse-{{user.id}}" *ngIf="user.isEditing" [collapse]="user.isCollapsed"
                         [isAnimated]="true">
                         <div class="card-body">
-                            <div formArrayName="editUserFormArray.controls[i]" class="edit-user-form">
+                            <div [formGroup]="editUserFormArray.controls[i]" class="edit-user-form">
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input type="text" formControlName="name" class="form-control"
@@ -72,14 +73,9 @@
                                         <div *ngIf="g.email.errors.email">Incorrect email format</div>
                                     </div>
                                 </div>
-                                <!-- <div class="form-group indicators" *ngIf="user.role === allRoles.assesor">
-                                    <label for="indicators">Assign Indicators</label>
-                                    <type-ahead multi="true" formControlName="indicators"
-                                        [suggestions]="suggestedIndicators">
-                                    </type-ahead>
-                                </div> -->
+
                             </div>
-                            <!-- <form [formGroup]="editUserForm" class="edit-user-form">
+                            <form [formGroup]="editUserForm" class="edit-user-form">
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" formControlName="name" class="form-control"
@@ -103,9 +99,9 @@
                                     [suggestions]="suggestedIndicators">
                                 </type-ahead>
                             </div>
-                        </form> -->
+                        </form>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </form>
         </div>

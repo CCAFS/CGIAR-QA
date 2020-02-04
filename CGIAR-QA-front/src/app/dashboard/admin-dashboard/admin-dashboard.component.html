@@ -1,0 +1,47 @@
+<div class="row justify-content-center dashboard-container">
+    <div class="col col-programs">
+        <p class="card-title">Programs/Platforms</p>
+        <div class="card">
+            <div class="card-body">
+                <form [formGroup]="programsForm" class="programs-form btn-group-vertical" (ngSubmit)="onSubmit()">
+                    <div class="" *ngFor="let program of [0,1,2,3,4]">
+                        <input (change)="onProgramChange($event, program)" id="program-{{program}}" type="radio"
+                            class="custom-control-input" value="{{program}}" name="program" formControlName="program">
+                        <label class="custom-control-label" for="program-{{program}}">{{program}}</label>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="col col-progress">
+        <p class="card-title">Progress on Quality Assurance</p>
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title example-container d-flex">
+                    <div class="circle complete"></div>
+                    <p>Complete</p>
+                    <div class="circle pending" style="margin-left: 50px;"></div>
+                    <p>Pending</p>
+                </div>
+
+                <div *ngFor="let item of [0,1,2,3,4]" class="progress-container">
+                    <p>Item {{item}}</p>
+                    <progressbar class="progress" [value]="tmpArray" [max]="100"></progressbar>
+                    <a href="#">{{item}}</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col col-activity">
+        <p class="card-title">Recent Activity</p>
+        <div class="card">
+            <div *ngFor="let item of [0,1,2,3,4]" class="activity-container">
+                <div class="activity-item">
+                    {{item}} on 11/02/2020
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

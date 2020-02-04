@@ -1,0 +1,90 @@
+@import "../../../assets/variables.scss";
+
+.header-bar {
+  // height: 100px;
+  background-color: var(--white);
+  -webkit-box-shadow: 0 4px 6px -6px #222;
+  -moz-box-shadow: 0 4px 6px -6px #222;
+  box-shadow: 0 4px 6px -6px #222;
+  justify-content: space-between;
+  .navbar-container {
+    flex-direction: column;
+    .upper-navbar {
+      display: flex;
+      .panel {
+        background-color: var(--gray-primary);
+        padding: 10px 25px;
+        position: relative;
+        border-radius: 5px;
+        margin: 0 10px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: column;
+        top: -10px;
+        p {
+          margin: 0;
+          text-align: center;
+        }
+        a {
+          color: var(--black);
+          text-decoration: none;
+          background-color: transparent;
+        }
+      }
+      .admin-panel {
+        background-color: var(--gray-tertiary);
+      }
+      .log-out-panel{
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: row;
+        align-items: center;
+        margin: 0 10px;
+        cursor: pointer;
+        i{
+          height: 70px;
+        }
+        p{
+          margin: 0;
+        }
+      }
+    }
+    .navbar-nav {
+      align-self: flex-end;
+      margin: 10px;
+      a {
+        font-weight: $bold;
+        color: var(--green-primary);
+        text-decoration: none;
+        background-color: transparent;
+      }
+      a:not([href]):not([tabindex]) {
+        color: var(--black);
+      }
+      a:after {
+        content: "";
+        width: 0;
+        height: 100%;
+        position: relative;
+        border: 1px solid black;
+        top: 0;
+        left: 7px;
+      }
+      a:last-child:after {
+        border: none;
+      }
+    }
+  }
+  .logo-container {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    margin-right: 50px;
+    i {
+      margin-right: 20px;
+      height: 80px;
+    }
+  }
+}

@@ -9,7 +9,7 @@
   --green-primary: #2e7636;
   --green-secondary: #61b33e;
   --green-tertiary: #11a221;
-  --gray-primary: #666666;
+  --gray-primary: #E1DDDD;
   --gray-secondary: #707070;
   --gray-tertiary: #989898;
   --red-primary: #da4336;
@@ -31,7 +31,10 @@ $primary-fs: 16px;
 $font-md: 20px;
 $font-lg: 35px;
 // icon
-$icon-sm:20px;
-$icon-md:30px;
-$icon-lg:50px;
-
+$icon-sm: 20px;
+$icon-md: 30px;
+$icon-lg: 50px;
+// sizes (icons, progress bar..)
+$size-sm: 10px;
+$size-md: 20px;
+$size-lg: 30px;

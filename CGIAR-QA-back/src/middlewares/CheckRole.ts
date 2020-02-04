@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { getRepository } from "typeorm";
 
-import { QAUser } from "../entity/User";
+import { QAUsers } from "../entity/User";
 const { ErrorHandler } = require("../_helpers/ErrorHandler")
 
 export const checkRole = (roles: Array<string>) => {
@@ -9,8 +9,8 @@ export const checkRole = (roles: Array<string>) => {
         //Get the user ID from previous midleware
         const id = res.locals.jwtPayload.userId;
         //Get user role from the database
-        const userRepository = getRepository(QAUser);
-        let user: QAUser;
+        const userRepository = getRepository(QAUsers);
+        let user: QAUsers;
         try {
             user = await userRepository.findOneOrFail(id);
         } catch (error) {

@@ -1,0 +1,22 @@
+<div class="assesor-dashboard row col offset-md-3 col-sm-8">
+    <div class="row col col-sm-8">
+        <h4>Progress on Quality Assurance</h4>
+    </div>
+    <div class="card col-sm-8">
+        <div class="card-body">
+            <div class="card-title example-container d-flex">
+                <div class="circle complete"></div>
+                <p>Complete</p>
+                <div class="circle pending" style="margin-left: 50px;"></div>
+                <p>Pending</p>
+            </div>
+
+            <div *ngFor="let item of [0,1,2,3,4]" class="progress-container">
+                <p>Item {{item}}</p>
+                <progressbar class="progress" [value]="tmpArray" [max]="100"></progressbar>
+                <a href="#">{{item}}</a>
+            </div>
+
+        </div>
+    </div>
+</div>

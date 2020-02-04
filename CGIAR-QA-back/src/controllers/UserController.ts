@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import { getRepository, Index } from "typeorm";
 import { validate, validateOrReject } from "class-validator";
 
-import { QAUser } from "../entity/User";
+import { QAUsers } from "../entity/User";
+import { QARoles } from "../entity/Roles";
+
+
 const { ErrorHandler, handleError } = require("../_helpers/ErrorHandler");
 
 
@@ -11,9 +14,9 @@ class UserController {
     static listAll = async (req: Request, res: Response) => {
         //Get users from database
         try {
-            const userRepository = getRepository(QAUser);
+            const userRepository = getRepository(QAUsers);
             const users = await userRepository.find({
-                select: ["id", "username", "role", "indicators", "name", "email"] //We dont want to send the passwords on response
+                //select: ["id", "username", "role", "indicators", "name", "email"] //We dont want to send the passwords on response
             });
 
             //Send the users object
@@ -22,7 +25,7 @@ class UserController {
         } catch (error) {
             console.log(error)
             // throw new ErrorHandler(404, 'Could not access to users.')
-            res.status(404).json({ message: "Could not access to users."});
+            res.status(404).json({ message: "Could not access to users." });
         }
     };
 
@@ -31,10 +34,10 @@ class UserController {
         //Get parameters from the body
         let { username, password, role, name, email, indicators } = req.body;
 
-        let user = new QAUser();
+        let user = new QAUsers();
         user.username = username;
         user.password = password;
-        user.role = role;
+        // user.roles = role;
         user.name = name;
         user.email = email;
         user.indicators = indicators;
@@ -51,7 +54,7 @@ class UserController {
         user.hashPassword();
 
         //Try to save. If fails, the username is already in use
-        const userRepository = getRepository(QAUser);
+        const userRepository = getRepository(QAUsers);
         try {
             await userRepository.save(user);
         } catch (e) {
@@ -69,16 +72,16 @@ class UserController {
         const id: any = req.params.id;
 
         //Get the user from database
-        const userRepository = getRepository(QAUser);
+        const userRepository = getRepository(QAUsers);
         try {
             const user = await userRepository.findOneOrFail(id, {
-                select: ["id", "username", "role", "indicators", "name", "email"] //We dont want to send the password on response
+                // select: ["id", "username", "role", "indicators", "name", "email"] //We dont want to send the password on response
             });
             res.status(200).json({ data: user, message: "User" });
         } catch (error) {
             console.log(error)
             // throw new ErrorHandler(404, 'User not found.')
-            res.status(404).json({ message: "User not found"});
+            res.status(404).json({ message: "User not found" });
         }
     };
 
@@ -90,7 +93,7 @@ class UserController {
         let { username, role, name, email, indicators } = req.body;
 
         //Try to find user on database
-        const userRepository = getRepository(QAUser);
+        const userRepository = getRepository(QAUsers);
         let user;
         try {
             user = await userRepository.findOneOrFail(id);
@@ -126,8 +129,8 @@ class UserController {
         //Get the ID from the url
         const id = req.params.id;
 
-        const userRepository = getRepository(QAUser);
-        let user: QAUser;
+        const userRepository = getRepository(QAUsers);
+        let user: QAUsers;
         try {
             user = await userRepository.findOneOrFail(id);
         } catch (error) {
@@ -138,6 +141,33 @@ class UserController {
         //After all send a 204 (no content, but accepted) response
         res.status(200).json({ message: "User deleted sucessfully" });
     };
+
+
+    /**
+     * 
+     * Roles CRUD
+     * 
+     */
+    static getAllRoles = async (req: Request, res: Response) => {
+
+        //Get all active roles
+
+        try {
+            const rolesRepository = getRepository(QARoles);
+            const roles = await rolesRepository.find({
+                select: ["id", "description", "acronym"],
+                where: { is_active: true }
+            });
+
+            //Send the users object
+            res.status(200).json({ data: roles, message: "All roles" });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Could not access to users." });
+        }
+
+    }
 
 
 };

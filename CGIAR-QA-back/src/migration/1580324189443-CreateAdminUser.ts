@@ -1,19 +1,24 @@
 import { MigrationInterface, QueryRunner, getRepository } from "typeorm";
-import { QAUser } from "../entity/User";
+import { QAUsers } from "../entity/User";
+import { QARoles } from "../entity/Roles";
 import { RolesHandler } from "../_helpers/RolesHandler"
 
 export class CreateAdminUser1580324189443 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
-        let user = new QAUser();
+        let user = new QAUsers();
         user.username = "felipe";
         user.password = "12345678";
         user.name = "Felipe";
         user.email = "f.elvira@cgiar.org";
         user.indicators = [];
         user.hashPassword();
-        user.role = RolesHandler.admin;
-        const userRepository = getRepository(QAUser);
+        const roleRepository = getRepository(QARoles);
+        let role = await roleRepository.find({
+            select: ["id"]
+        });
+        user.roles = role;
+        const userRepository = getRepository(QAUsers);
         await userRepository.save(user);
     }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -61,11 +61,13 @@ export class AdminComponent implements OnInit {
       indicators: ['']
     });
     this.editUserForm = this.formBuilder.group({
-      editUserFormArray: new FormArray([])
-      // editUserFormArray: new FormArray([])
-      // name: ['', Validators.required],
-      // email: ['', [Validators.required, Validators.email]],
-      // indicators: ['']
+      editUserFormArray: new FormArray([
+        new FormGroup({
+          name: new FormControl('', [Validators.required]),
+          email: new FormControl('', [Validators.required, , Validators.email]),
+          indicators: new FormControl('')
+        })
+      ])
     });
     this.loadAllUsers();
 
@@ -85,11 +87,10 @@ export class AdminComponent implements OnInit {
           this.users = data.data.map((user, i) => {
             user.isCollapsed = (user.role !== this.allRoles.assesor) ? true : false;
             user.isEditing = false;
-            console.log(i)
-            this.t.push(this.formBuilder.group({
-              name:  ['', Validators.required],
-              email: ['', [Validators.required, Validators.email]]
-            }));
+            // this.t.push(this.formBuilder.group({
+            //   name:  ['', Validators.required],
+            //   email: ['', [Validators.required, Validators.email]]
+            // }));
             return user;
           });
           for (let i = this.t.length; i < data.data; i++) {
@@ -176,11 +177,11 @@ export class AdminComponent implements OnInit {
     user.isEditing = !user.isEditing;
     user.isCollapsed = false;
     let editUserData = {
-      "username": (this.g.username) ? this.g.username.value : this.g.name.value,
-      "role": user.role,
-      "name": this.g.name.value,
-      "email": this.g.email.value || user.email,
-      "indicators": (this.g.indicators) ? this.g.indicators.value : null
+      // "username": (this.g.username) ? this.g.username.value : this.g.name.value,
+      // "role": user.role,
+      // "name": this.g.name.value,
+      // "email": this.g.email.value || user.email,
+      // "indicators": (this.g.indicators) ? this.g.indicators.value : null
     }
     // this.showSpinner();
 

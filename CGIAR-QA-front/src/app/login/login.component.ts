@@ -62,11 +62,11 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          if(data.role === Role.admin){
-            this.router.navigate(['admin']);
-          }else{
-            this.router.navigate([this.returnUrl]);
-          }
+          this.router.navigate([`dashboard/${data.role.toLowerCase()}`]);
+          // if(data.role === Role.admin){
+          // }else{
+          //   this.router.navigate([this.returnUrl]);
+          // }
         },
         error => {
           this.alertService.error(error);

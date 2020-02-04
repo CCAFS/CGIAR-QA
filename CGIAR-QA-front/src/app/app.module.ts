@@ -5,8 +5,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TypeaheadModule } from 'ngx-type-ahead';
-
 import { NgxSpinnerModule } from "ngx-spinner";
 
 import { AppRoutingModule } from './app-routing.module';
@@ -21,6 +22,11 @@ import { FakeBackendInterceptor } from './_helpers/fake-back';
 import { AdminComponent } from './admin/admin.component';
 import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HeaderBarComponent } from './_shared/header-bar/header-bar.component';
+
+
+// import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
+// import { AssesorDashboardComponent } from './dashboard/assesor-dashboard/assesor-dashboard.component';
 
 
 
@@ -32,6 +38,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AlertComponent,
     AdminComponent,
     FilterByRolePipe,
+    HeaderBarComponent,
+    // AdminDashboardComponent,
+    // AssesorDashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,6 +50,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     CollapseModule.forRoot(),
     ModalModule.forRoot(),
+    ProgressbarModule.forRoot(),
+    ButtonsModule.forRoot(),
     TypeaheadModule,
     NgxSpinnerModule,
   ],
