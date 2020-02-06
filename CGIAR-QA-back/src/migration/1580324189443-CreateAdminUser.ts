@@ -1,7 +1,6 @@
 import { MigrationInterface, QueryRunner, getRepository } from "typeorm";
 import { QAUsers } from "../entity/User";
 import { QARoles } from "../entity/Roles";
-import { RolesHandler } from "../_helpers/RolesHandler"
 
 export class CreateAdminUser1580324189443 implements MigrationInterface {
 

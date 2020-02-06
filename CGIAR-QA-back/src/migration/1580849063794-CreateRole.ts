@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner, getRepository } from "typeorm";
 import { QARoles } from "../entity/Roles";
+import { QAPermissions } from "../entity/Permissions";
 import { RolesHandler } from "../_helpers/RolesHandler";
 
 export class CreateRole1580849063794 implements MigrationInterface {
@@ -9,6 +10,13 @@ export class CreateRole1580849063794 implements MigrationInterface {
         role.acronym = 'ADM';
         role.description = RolesHandler.admin;
         role.is_active = true;
+
+        const permissionsRepository = getRepository(QAPermissions);
+        let permissions = await permissionsRepository.find({
+            select: ["id"]
+        });
+        role.permissions = permissions;
+        
         const roleRepository = getRepository(QARoles);
         await roleRepository.save(role);
     }

@@ -4,7 +4,6 @@ import * as bcrypt from "bcryptjs";
 
 import { QARoles } from "../entity/Roles";
 
-// import { RolesHandler } from "../_helpers/RolesHandler";
 
 @Entity()
 @Unique(["name", "email"])
@@ -31,13 +30,9 @@ export class QAUsers {
     @Length(4, 20)
     password: string;
 
-    // @Column({
-    //     type: "enum",
-    //     enum: RolesHandler,
-    //     default: RolesHandler.guest
-    // })
-    // role: RolesHandler
-    @ManyToMany(type => QARoles)
+    @ManyToMany(type => QARoles, {
+        eager: true
+    })
     @JoinTable({
         name: "qa_user_roles", // table name for the junction table of this relation
         joinColumn: {

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { getRepository } from "typeorm";
 
 import { QAUsers } from "../entity/User";
+import { QARoles } from "../entity/Roles";
 const { ErrorHandler } = require("../_helpers/ErrorHandler")
 
 export const checkRole = (roles: Array<string>) => {
@@ -10,16 +11,25 @@ export const checkRole = (roles: Array<string>) => {
         const id = res.locals.jwtPayload.userId;
         //Get user role from the database
         const userRepository = getRepository(QAUsers);
+        let has_roles;
         let user: QAUsers;
         try {
             user = await userRepository.findOneOrFail(id);
+            let user_roles: QARoles[] = user.roles;
+            let mapped_roles = user_roles.map(role => { return role.description });
+            has_roles = mapped_roles.find(role_ => {
+                return roles.indexOf(role_) > -1
+            });
         } catch (error) {
-            console.error(error)
-            throw new ErrorHandler(401, 'User unauthorized.');
+            console.error(error);
+            throw res.status(401).send( 'User unauthorized.');
         }
 
         //Check if array of authorized roles includes the user's role
-        if (roles.indexOf(user.role) > -1) next();
-        else throw new ErrorHandler(401, 'User unauthorized.');
+        if (has_roles) next();
+        else throw res.status(401).send( 'User unauthorized.');
+        // if (roles.indexOf(user.roles[0]) > -1) next();
     };
 };
+
+
