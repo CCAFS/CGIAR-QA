@@ -12,23 +12,26 @@ import { Role } from '../../_models/roles.model'
 })
 export class HeaderBarComponent implements OnInit {
   currentUser: User;
-  allRoles= Role;
+  allRoles = Role;
 
-  constructor(private authenticationService: AuthenticationService, private router: Router,) {
+  constructor(private authenticationService: AuthenticationService, private router: Router, ) {
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
   }
 
   ngOnInit() {
   }
 
-  goToView(view:string){
-    switch (view) {
-      case "dashboard":
-        this.router.navigate([`/dashboard/${this.currentUser.role.toLocaleLowerCase()}`])
-        break;
-    
-      default:
-        break;
+  goToView(view: string) {
+    console.log(this.currentUser)
+    if (this.currentUser) {
+      switch (view) {
+        case "dashboard":
+          this.router.navigate([`/dashboard/${this.currentUser.roles[0].description.toLocaleLowerCase()}`])
+          break;
+
+        default:
+          break;
+      }
     }
   }
 

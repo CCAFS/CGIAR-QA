@@ -5,7 +5,7 @@
     </div>
     <div class="row navbar-container">
         <div class="upper-navbar">
-            <div class="panel admin-panel" *ngIf="currentUser.role === allRoles.admin">
+            <div class="panel admin-panel" *ngIf="currentUser.roles[0].description === allRoles.admin">
                 <a routerLink="/admin">Admin Panel</a>
             </div>
             <div class="panel" >
@@ -20,7 +20,7 @@
 
         <div class="navbar-nav" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
             <!-- <a class="nav-item nav-link" (click)="goToView('dashboard')">Home</a> -->
-            <a class="nav-item nav-link"  routerLink="/dashboard/{{currentUser.role.toLowerCase()}}">Home</a>
+            <a class="nav-item nav-link"  routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
             <a class="nav-item nav-link"  routerLink="/admin">other</a>
         </div>
     </div>

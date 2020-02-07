@@ -85,7 +85,7 @@ export class AdminComponent implements OnInit {
       .subscribe(
         data => {
           this.users = data.data.map((user, i) => {
-            user.isCollapsed = (user.role !== this.allRoles.assesor) ? true : false;
+            user.isCollapsed = (user.role !== this.allRoles.asesor) ? true : false;
             user.isEditing = false;
             // this.t.push(this.formBuilder.group({
             //   name:  ['', Validators.required],

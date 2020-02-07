@@ -26,7 +26,7 @@ import { HeaderBarComponent } from './_shared/header-bar/header-bar.component';
 
 
 // import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
-// import { AssesorDashboardComponent } from './dashboard/assesor-dashboard/assesor-dashboard.component';
+// import { asesorDashboardComponent } from './dashboard/asesor-dashboard/asesor-dashboard.component';
 
 
 
@@ -40,7 +40,7 @@ import { HeaderBarComponent } from './_shared/header-bar/header-bar.component';
     FilterByRolePipe,
     HeaderBarComponent,
     // AdminDashboardComponent,
-    // AssesorDashboardComponent,
+    // asesorDashboardComponent,
   ],
   imports: [
     BrowserModule,

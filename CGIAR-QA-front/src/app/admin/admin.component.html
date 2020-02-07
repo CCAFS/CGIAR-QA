@@ -6,8 +6,8 @@
             <button type="button" (click)="selectRole('')" class="btn btn-secondary">All</button>
             <button type="button" (click)="selectRole(allRoles.admin)" class="btn btn-secondary">Assign
                 Administrator</button>
-            <button type="button" (click)="selectRole(allRoles.assesor)" class="btn btn-secondary">Assign
-                Assesors</button>
+            <button type="button" (click)="selectRole(allRoles.asesor)" class="btn btn-secondary">Assign
+                assessors</button>
             <button type="button" (click)="selectRole(allRoles.guest)" class="btn btn-secondary">Assign Guest</button>
         </div>
     </div>
@@ -19,7 +19,7 @@
                 <div class="card" *ngFor="let user of users | filterByRole:selectedRole; let i=index "
                     formArrayName="editUserFormArray">
                     <div class="card-header row justify-content-between" id="heading-{{user.id}}">
-                        <p (click)="user.isCollapsed = (user.role !== allRoles.assesor) ? true :  !user.isCollapsed "
+                        <p (click)="user.isCollapsed = (user.role !== allRoles.asesor) ? true :  !user.isCollapsed "
                             [attr.aria-expanded]="!user.isCollapsed" aria-controls="collapseBasic">{{user.username}} (
                             {{user.email}} )</p>
                         <div class="button-card-container">
@@ -37,7 +37,7 @@
                             </button>
                         </div>
                     </div>
-                    <!--  *ngIf="user.role === allRoles.assesor && !user.isEditing" -->
+                    <!--  *ngIf="user.role === allRoles.asesor && !user.isEditing" -->
                     <div id="collapse-{{user.id}}" [collapse]="user.isCollapsed" [isAnimated]="true">
                         <div class="card-body" *ngIf="user.indicators">
                             Assigned Indicators:
@@ -93,7 +93,7 @@
                                     <div *ngIf="g.email.errors.email">Incorrect email format</div>
                                 </div>
                             </div>
-                            <div class="form-group indicators" *ngIf="user.role === allRoles.assesor">
+                            <div class="form-group indicators" *ngIf="user.role === allRoles.asesor">
                                 <label for="indicators">Assign Indicators</label>
                                 <type-ahead multi="true" formControlName="indicators"
                                     [suggestions]="suggestedIndicators">
@@ -128,7 +128,7 @@
                                 <div *ngIf="f.email.errors.email">Incorrect email format</div>
                             </div>
                         </div>
-                        <div class="form-group indicators" *ngIf="selectedRole === allRoles.assesor">
+                        <div class="form-group indicators" *ngIf="selectedRole === allRoles.asesor">
                             <label for="indicators">Assign Indicators</label>
                             <type-ahead multi="true" formControlName="indicators" [suggestions]="suggestedIndicators">
                             </type-ahead>

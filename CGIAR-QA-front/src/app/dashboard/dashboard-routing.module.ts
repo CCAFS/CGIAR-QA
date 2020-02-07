@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../_helpers/auth.guard';
 import { Role } from '../_models/roles.model';
 
-import { AssesorDashboardComponent } from './assesor-dashboard/assesor-dashboard.component';
+import { AssessorDashboardComponent } from './assesor-dashboard/assessor-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 
 
@@ -13,10 +13,10 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'assesor',
+        path: 'asesor',
         canActivate: [AuthGuard],
-        data: { roles: [Role.assesor] },
-        component: AssesorDashboardComponent
+        data: { roles: [Role.asesor] },
+        component: AssessorDashboardComponent
       },
       {
         path: 'admin',

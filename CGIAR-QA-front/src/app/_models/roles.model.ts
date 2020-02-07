@@ -3,5 +3,5 @@ export enum Role {
     admin = 'ADMIN',
     crp = 'CRP',
     guest = 'GUEST',
-    assesor = 'ASSESOR'
+    asesor = 'ASSESSOR'
 }

@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './assesor-dashboard.component.html',
   styleUrls: ['./assesor-dashboard.component.scss']
 })
-export class AssesorDashboardComponent implements OnInit {
+export class AssessorDashboardComponent implements OnInit {
 
   tmpArray = [
     { total: 100, value: 20, type: "success" },

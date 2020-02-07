@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 
-import { AssesorDashboardComponent } from './assesor-dashboard/assesor-dashboard.component';
+import { AssessorDashboardComponent } from './assesor-dashboard/assessor-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 
 
@@ -18,6 +18,6 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
         ButtonsModule.forRoot(),
         ReactiveFormsModule
     ],
-    declarations: [AssesorDashboardComponent, AdminDashboardComponent]
+    declarations: [AssessorDashboardComponent, AdminDashboardComponent]
 })
 export class DashboardModule { }

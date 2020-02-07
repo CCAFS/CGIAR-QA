@@ -7,7 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
 // import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
-// import { AssesorDashboardComponent } from './dashboard/assesor-dashboard/assesor-dashboard.component'
+// import { asesorDashboardComponent } from './dashboard/asesor-dashboard/asesor-dashboard.component'
 
 
 import { AuthGuard } from './_helpers/auth.guard';
