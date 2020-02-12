@@ -28,7 +28,6 @@ export const checkRole = (roles: Array<string>) => {
         //Check if array of authorized roles includes the user's role
         if (has_roles) next();
         else throw res.status(401).send( 'User unauthorized.');
-        // if (roles.indexOf(user.roles[0]) > -1) next();
     };
 };
 

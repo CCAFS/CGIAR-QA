@@ -6,18 +6,28 @@ import { QAUsers } from "../entity/User";
 import { QARoles } from "../entity/Roles";
 import { QAPermissions } from "../entity/Permissions";
 
+import { QAPolicies } from "../entity/PoliciesView";
 
 const { ErrorHandler, handleError } = require("../_helpers/ErrorHandler");
 
 
 
 class UserController {
+
+
+    /**
+     * 
+     * User CRUD
+     * 
+     */
+
+
     static listAll = async (req: Request, res: Response) => {
         //Get users from database
         try {
             const userRepository = getRepository(QAUsers);
             const users = await userRepository.find({
-                select: ["id", "username", "indicators", "name", "email"] //We dont want to send the passwords on response
+                select: ["id", "username", "indicators", "name", "email"]
             });
 
             //Send the users object
@@ -106,7 +116,8 @@ class UserController {
         const id = req.params.id;
 
         //Get values from the body
-        let { username, role, name, email, indicators } = req.body;
+        let { username, roles, name, email, indicators } = req.body;
+        const roleRepository = getRepository(QARoles);
 
         //Try to find user on database
         const userRepository = getRepository(QAUsers);
@@ -119,12 +130,29 @@ class UserController {
             // throw new ErrorHandler(404, 'User not found.');
         }
 
-        //Validate the new values on model
         user.username = username;
-        user.role = role;
         user.name = name;
         user.email = email;
         user.indicators = indicators;
+
+        try {
+            // assing role for user
+            let repositoryRoles = await roleRepository.find({
+                id: In(roles)
+            });
+            user.roles = repositoryRoles;
+
+            if (repositoryRoles.length === 0) {
+                res.status(409).json({ message: "Role does not exists" });
+                return;
+            }
+
+        } catch (error) {
+            res.status(409).json({ message: "Role does not exists" });
+            return;
+        }
+
+        //Validate the new values on model
         const errors = await validate(user);
         if (errors.length > 0) {
             res.status(400).json({ message: errors });
@@ -135,7 +163,7 @@ class UserController {
         try {
             await userRepository.save(user);
         } catch (e) {
-            res.status(404).json({ message: "Name already in use" });
+            res.status(409).json({ message: "Name already in use" });
         }
         //After all send a 200 accepted response
         res.status(200).json({ message: 'User updated.' });
@@ -171,8 +199,8 @@ class UserController {
         try {
             const rolesRepository = getRepository(QARoles);
             const roles = await rolesRepository
-                                .createQueryBuilder("qa_roles")
-                                .getMany();
+                .createQueryBuilder("qa_roles")
+                .getMany();
 
             //Send the roles object
             res.status(200).json({ data: roles, message: "All roles" });
@@ -251,7 +279,7 @@ class UserController {
             let repositoryPermissions = await permissionRepository.find({
                 id: In(permissions)
             });
-            
+
             role.permissions = repositoryPermissions;
             if (repositoryPermissions.length === 0) {
                 res.status(409).json({ message: "Permissions does not exists" });
@@ -275,7 +303,7 @@ class UserController {
             return;
         }
 
-        
+
         try {
             await roleRepository.save(role);
         } catch (e) {
@@ -402,14 +430,14 @@ class UserController {
         //Validate the new values on model
         _permission.description = description;
         _permission.permission = permission;
-        
+
         const errors = await validate(_permission);
         if (errors.length > 0) {
             res.status(400).json({ message: errors });
             return;
         }
 
-        
+
         try {
             await permissionRepository.save(_permission);
         } catch (e) {

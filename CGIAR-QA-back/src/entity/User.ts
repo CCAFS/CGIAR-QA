@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { Length, IsEmail, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
 
 import { QARoles } from "../entity/Roles";
+import { QAIndicatorUser } from "../entity/IndicatorByUser";
 
 
 @Entity()
@@ -54,8 +55,12 @@ export class QAUsers {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @Column("simple-array", { nullable: true })
-    indicators: string[];
+
+    @OneToMany(type => QAIndicatorUser, indicators => indicators.id)
+    indicators: QAIndicatorUser[];
+
+    // @Column("simple-array", { nullable: true })
+    // indicators: string[];
 
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);
