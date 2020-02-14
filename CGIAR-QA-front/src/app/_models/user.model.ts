@@ -2,7 +2,7 @@ export class User {
     id: number;
     username: string;
     password: string;
-    roles:[];
+    roles:any[];
     // firstName: string;
     // lastName: string;
     token: string;

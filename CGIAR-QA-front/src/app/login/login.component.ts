@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
+          console.log(`dashboard/${data.roles[0].description.toLowerCase()}`)
           this.router.navigate([`dashboard/${data.roles[0].description.toLowerCase()}`]);
         },
         error => {

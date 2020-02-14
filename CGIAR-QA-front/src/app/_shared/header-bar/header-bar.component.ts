@@ -22,7 +22,6 @@ export class HeaderBarComponent implements OnInit {
   }
 
   goToView(view: string) {
-    console.log(this.currentUser)
     if (this.currentUser) {
       switch (view) {
         case "dashboard":

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-assesor-dashboard',
-  templateUrl: './assesor-dashboard.component.html',
-  styleUrls: ['./assesor-dashboard.component.scss']
+  selector: 'app-assessor-dashboard',
+  templateUrl: './assessor-dashboard.component.html',
+  styleUrls: ['./assessor-dashboard.component.scss']
 })
 export class AssessorDashboardComponent implements OnInit {
 

@@ -13,7 +13,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'asesor',
+        path: 'assessor',
         canActivate: [AuthGuard],
         data: { roles: [Role.asesor] },
         component: AssessorDashboardComponent

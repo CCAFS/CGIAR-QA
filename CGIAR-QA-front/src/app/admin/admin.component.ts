@@ -44,9 +44,7 @@ export class AdminComponent implements OnInit {
     type: '',
     data: {},
   }
-  // confirmationModalText: string = '';
-  // confirmationModalTitle: string = '';
-  // confirmationModalType: string = '';
+  
 
   constructor(private userService: UsersService,
     private formBuilder: FormBuilder,
@@ -84,9 +82,11 @@ export class AdminComponent implements OnInit {
     this.userService.getAllUsers()
       .subscribe(
         data => {
+          console.log(data)
           this.users = data.data.map((user, i) => {
-            user.isCollapsed = (user.role !== this.allRoles.asesor) ? true : false;
-            user.isEditing = false;
+            console.log(user)
+            // user.isCollapsed = (user.role !== this.allRoles.asesor) ? true : false;
+            // user.isEditing = false;
             // this.t.push(this.formBuilder.group({
             //   name:  ['', Validators.required],
             //   email: ['', [Validators.required, Validators.email]]
