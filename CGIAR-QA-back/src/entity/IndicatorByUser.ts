@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAUsers } from "../entity/User";
+import { QAIndicators } from "../entity/Indicators";
 
 
 @Entity()
@@ -9,13 +10,14 @@ export class QAIndicatorUser {
 
     @PrimaryGeneratedColumn()
     id: number;
-
-    @IsNotEmpty({ message: 'Indicators is required' })
-    @Column("simple-array", { nullable: true })
-    indicators_names: string[];
     
-    @ManyToOne(type => QAUsers, user => user.id)
+    @IsNotEmpty({ message: 'User Id is required' })
+    @ManyToOne(type => QAUsers, user => user.indicators)
     user: QAUsers;
+    
+    @IsNotEmpty({ message: 'Indicator Id is required' })
+    @ManyToOne(type => QAIndicators, indicator => indicator.user_indicator)
+    indicator: QAIndicators;
 
     @Column()
     @CreateDateColumn()

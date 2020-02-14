@@ -26,9 +26,7 @@ class UserController {
         //Get users from database
         try {
             const userRepository = getRepository(QAUsers);
-            const users = await userRepository.find({
-                select: ["id", "username", "indicators", "name", "email"]
-            });
+            const users = await userRepository.find({});
 
             //Send the users object
             res.status(200).json({ data: users, message: "All users" });
@@ -42,7 +40,7 @@ class UserController {
     static newUser = async (req: Request, res: Response) => {
 
         //Get parameters from the body
-        let { username, password, roles, name, email, indicators } = req.body;
+        let { username, password, roles, name, email } = req.body;
         const roleRepository = getRepository(QARoles);
 
         let user = new QAUsers();
@@ -50,7 +48,7 @@ class UserController {
         user.password = password;
         user.name = name;
         user.email = email;
-        user.indicators = indicators;
+        // user.indicators = indicators;
 
         try {
             // assing role for user

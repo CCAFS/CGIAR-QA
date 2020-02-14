@@ -30,7 +30,26 @@ class IndicatorsController {
             res.status(404).json({ message: "Could not access to indicators." });
         }
     };
-    
+
+
+    static getIndicatorsByUser = async (req: Request, res: Response) => {
+        //Get the ID from the url
+        const id = req.params.id;
+        //Get indicators from database
+        try {
+            const indicatorRepository = getRepository(QAIndicators);
+            // const indicators = await indicatorRepository.find({});
+            const indicators = await indicatorRepository.find({ relations: ["QAIndicatorUser.user"], where: { user_indicator: id } });
+
+            //Send the indicators object
+            res.status(200).json({ data: indicators, message: "All indicators" });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Could not access to indicators." });
+        }
+    }
+
     static createIndicator = async (req: Request, res: Response) => {
 
         let { name, description, view_name } = req.body;
@@ -39,14 +58,14 @@ class IndicatorsController {
         indicator.name = name;
         indicator.description = description;
         indicator.view_name = view_name;
-        
-         //Validade if the parameters are ok
-         const errors = await validate(indicator);
-         if (errors.length > 0) {
-             res.status(400).json({ data: errors, message: "Error found" });
-             return;
-         }
-         const indicatorRepository = getRepository(QAIndicators);
+
+        //Validade if the parameters are ok
+        const errors = await validate(indicator);
+        if (errors.length > 0) {
+            res.status(400).json({ data: errors, message: "Error found" });
+            return;
+        }
+        const indicatorRepository = getRepository(QAIndicators);
 
         //Get indicators from database
         try {
@@ -59,7 +78,7 @@ class IndicatorsController {
         //If all ok, send 200 response
         res.status(200).json({ message: "Indicator created" });
     };
-    
+
     static editIndicators = async (req: Request, res: Response) => {
 
         //Get the ID from the url
@@ -77,18 +96,18 @@ class IndicatorsController {
             res.status(404).json({ message: 'Indicator not found.' });
             // throw new ErrorHandler(404, 'User not found.');
         }
-        
+
         indicator.name = name;
         indicator.description = description;
         indicator.view_name = view_name;
-        
-         //Validade if the parameters are ok
-         const errors = await validate(indicator);
-         if (errors.length > 0) {
-             res.status(400).json({ data: errors, message: "Error found" });
-             return;
-         }
-         
+
+        //Validade if the parameters are ok
+        const errors = await validate(indicator);
+        if (errors.length > 0) {
+            res.status(400).json({ data: errors, message: "Error found" });
+            return;
+        }
+
 
         //Get indicators from database
         try {

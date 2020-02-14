@@ -55,8 +55,9 @@ export class QAUsers {
     @UpdateDateColumn()
     updatedAt: Date;
 
-
-    @OneToMany(type => QAIndicatorUser, indicators => indicators.id)
+    @OneToMany(type => QAIndicatorUser, indicators => indicators.user, {
+        eager: true
+    })
     indicators: QAIndicatorUser[];
 
     // @Column("simple-array", { nullable: true })

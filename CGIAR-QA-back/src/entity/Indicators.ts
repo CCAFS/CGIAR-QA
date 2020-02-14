@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
+
+import { QAIndicatorUser } from "../entity/IndicatorByUser";
 
 @Entity()
 @Unique(["name", "view_name"])
@@ -21,6 +23,11 @@ export class QAIndicators {
     @Length(4, 200)
     @IsNotEmpty({ message: 'The view name is required' })
     view_name: string;
+
+    @OneToMany(type => QAIndicatorUser, indicators => indicators.indicator, {
+        eager: true
+    })
+    user_indicator: QAIndicatorUser[];
 
     @Column()
     @CreateDateColumn()
