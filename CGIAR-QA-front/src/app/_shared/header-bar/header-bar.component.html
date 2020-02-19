@@ -5,9 +5,9 @@
     </div>
     <div class="row navbar-container">
         <div class="upper-navbar">
-            <div class="panel admin-panel" *ngIf="currentUser.roles[0].description === allRoles.admin">
+            <!-- <div class="panel admin-panel" *ngIf="currentUser.roles[0].description === allRoles.admin">
                 <a routerLink="/admin">Admin Panel</a>
-            </div>
+            </div> -->
             <div class="panel" >
                 <p>{{currentUser.name}}</p>
                 <p>{{currentUser.email}}</p>
@@ -21,7 +21,9 @@
         <div class="navbar-nav" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
             <!-- <a class="nav-item nav-link" (click)="goToView('dashboard')">Home</a> -->
             <a class="nav-item nav-link"  routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
-            <a class="nav-item nav-link"  routerLink="/admin">other</a>
+            <a class="nav-item nav-link" *ngFor="let indicator of indicators; index as i"  routerLink="/admin">{{indicator.indicator.name}}</a>
+
+            <!-- <a class="nav-item nav-link"  routerLink="/admin">other</a> -->
         </div>
     </div>
 </nav>

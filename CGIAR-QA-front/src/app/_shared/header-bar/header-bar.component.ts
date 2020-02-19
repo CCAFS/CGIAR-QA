@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthenticationService } from "../../services/authentication.service"
-import { User } from '../../_models/user.model'
-import { Role } from '../../_models/roles.model'
+import { AuthenticationService } from "../../services/authentication.service";
+import { IndicatorsService } from "../../services/indicators.service";
+import { AlertService } from '../../services/alert.service';
+
+
+
+import { User } from '../../_models/user.model';
+import { Role } from '../../_models/roles.model';
 
 @Component({
   selector: 'header-bar',
@@ -13,12 +18,17 @@ import { Role } from '../../_models/roles.model'
 export class HeaderBarComponent implements OnInit {
   currentUser: User;
   allRoles = Role;
+  indicators = [];
 
-  constructor(private authenticationService: AuthenticationService, private router: Router, ) {
-    this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+  constructor(private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
+    this.authenticationService.currentUser.subscribe(x => {
+      this.currentUser = x;
+      this.ngOnInit();
+    });
   }
 
   ngOnInit() {
+    this.getHeaderLinks()
   }
 
   goToView(view: string) {
@@ -32,6 +42,21 @@ export class HeaderBarComponent implements OnInit {
           break;
       }
     }
+  }
+
+  getHeaderLinks() {
+    if (this.currentUser) {
+      this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
+        res => {
+          this.indicators = res.data;
+        },
+        error => {
+          console.log("getHeaderLinks", error);
+          this.alertService.error(error);
+        }
+      )
+    }
+
   }
 
   logout() {

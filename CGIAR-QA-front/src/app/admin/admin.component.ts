@@ -5,6 +5,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 import { UsersService } from '../services/users.service';
+import { IndicatorsService } from '../services/indicators.service';
 import { AlertService } from './../services/alert.service';
 
 import { User } from '../_models/user.model';
@@ -27,12 +28,13 @@ export class AdminComponent implements OnInit {
   submitted = false;
   selectedRole = '';
   allRoles = Role;
-  suggestedIndicators = [
-    'test',
-    'test1',
-    'test2',
-    'test3',
-  ];
+  suggestedIndicators = [];
+  // [
+  //   'test',
+  //   'test1',
+  //   'test2',
+  //   'test3',
+  // ];
   modalConfig = {
     keyboard: true,
     animated: true,
@@ -44,12 +46,13 @@ export class AdminComponent implements OnInit {
     type: '',
     data: {},
   }
-  
+
 
   constructor(private userService: UsersService,
     private formBuilder: FormBuilder,
     private alert: AlertService,
     private modalService: BsModalService,
+    private indicatorService: IndicatorsService,
     private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
@@ -68,6 +71,7 @@ export class AdminComponent implements OnInit {
       ])
     });
     this.loadAllUsers();
+    this.loadAllIndicators();
 
   }
 
@@ -82,9 +86,8 @@ export class AdminComponent implements OnInit {
     this.userService.getAllUsers()
       .subscribe(
         data => {
-          console.log(data)
+          console.log(data.data)
           this.users = data.data.map((user, i) => {
-            console.log(user)
             // user.isCollapsed = (user.role !== this.allRoles.asesor) ? true : false;
             // user.isEditing = false;
             // this.t.push(this.formBuilder.group({
@@ -93,9 +96,9 @@ export class AdminComponent implements OnInit {
             // }));
             return user;
           });
-          for (let i = this.t.length; i < data.data; i++) {
+          // for (let i = this.t.length; i < data.data; i++) {
 
-          }
+          // }
 
           this.loading = false;
           this.hideSpinner();
@@ -105,6 +108,18 @@ export class AdminComponent implements OnInit {
           this.loading = false;
           this.hideSpinner();
         });
+  }
+
+
+  //load all indicators
+  loadAllIndicators() {
+    this.indicatorService.getIndicators()
+      .subscribe(res => {
+        this.suggestedIndicators = res.data;
+        console.log(res)
+      }, error => {
+        console.log(error)
+      })
   }
 
 
@@ -125,7 +140,7 @@ export class AdminComponent implements OnInit {
     }
     let newUserData = {
       "username": (this.f.username) ? this.f.username.value : this.f.name.value,
-      "password": "12345678",
+      // "password": "12345678",
       "role": this.selectedRole,
       "name": this.f.name.value,
       "email": this.f.email.value,

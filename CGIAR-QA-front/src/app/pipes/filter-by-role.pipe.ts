@@ -11,8 +11,7 @@ export class FilterByRolePipe implements PipeTransform {
     }
     // filter items array, items which match and return true will be
     // kept, false will be filtered out
-    console.log(items)
-    return items.filter(item => item.role.indexOf(args) !== -1);
+    return items.filter(item => item.roles.find(role => role.description.indexOf(args) !== -1));
   }
 
 }

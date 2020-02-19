@@ -3,5 +3,5 @@ export enum RolesHandler {
     admin = 'ADMIN',
     crp = 'CRP',
     guest = 'GUEST',
-    assesor = 'ASSESOR'
+    assesor = 'ASSESSOR'
 }

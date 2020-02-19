@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { getRepository, In } from "typeorm";
-import { validate, validateOrReject } from "class-validator";
+import { validate } from "class-validator";
 
 import { QAUsers } from "../entity/User";
 import { QAIndicators } from "../entity/Indicators";
-// import { QAPermissions } from "../entity/Permissions";
+import { QAIndicatorUser } from "../entity/IndicatorByUser";
 
 
 class IndicatorsController {
@@ -37,12 +37,18 @@ class IndicatorsController {
         const id = req.params.id;
         //Get indicators from database
         try {
-            const indicatorRepository = getRepository(QAIndicators);
+            const indicatorByUserRepository = getRepository(QAIndicatorUser);
             // const indicators = await indicatorRepository.find({});
-            const indicators = await indicatorRepository.find({ relations: ["QAIndicatorUser.user"], where: { user_indicator: id } });
+            const indicators = await indicatorByUserRepository.find({
+                relations: ["indicator"],
+                where: { user: id },
+                select: ["id", 'indicator']
+            });
+            
+            // delete indicators.user_indicator;
 
             //Send the indicators object
-            res.status(200).json({ data: indicators, message: "All indicators" });
+            res.status(200).json({ data: indicators, message: "User indicators" });
 
         } catch (error) {
             console.log(error);
@@ -137,6 +143,8 @@ class IndicatorsController {
         //After all send a 204 (no content, but accepted) response
         res.status(200).json({ message: "Indicator deleted sucessfully" });
     };
+
+
 
 }
 

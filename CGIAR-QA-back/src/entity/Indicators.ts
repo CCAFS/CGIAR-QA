@@ -24,9 +24,7 @@ export class QAIndicators {
     @IsNotEmpty({ message: 'The view name is required' })
     view_name: string;
 
-    @OneToMany(type => QAIndicatorUser, indicators => indicators.indicator, {
-        eager: true
-    })
+    @OneToMany(type => QAIndicatorUser, indicators => indicators.indicator,)
     user_indicator: QAIndicatorUser[];
 
     @Column()

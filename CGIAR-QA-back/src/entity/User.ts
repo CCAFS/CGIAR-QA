@@ -56,7 +56,7 @@ export class QAUsers {
     updatedAt: Date;
 
     @OneToMany(type => QAIndicatorUser, indicators => indicators.user, {
-        eager: true
+        eager: true, cascade: true
     })
     indicators: QAIndicatorUser[];
 

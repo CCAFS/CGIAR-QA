@@ -21,7 +21,6 @@ export const checkRole = (roles: Array<string>) => {
                 return roles.indexOf(role_) > -1
             });
         } catch (error) {
-            console.error(error);
             throw res.status(401).send( 'User unauthorized.');
         }
 

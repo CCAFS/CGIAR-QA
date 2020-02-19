@@ -6,7 +6,7 @@ import { QAUsers } from "../entity/User";
 import { QARoles } from "../entity/Roles";
 import { QAPermissions } from "../entity/Permissions";
 
-import { QAPolicies } from "../entity/PoliciesView";
+// import { QAPolicies } from "../entity/PoliciesView";
 
 const { ErrorHandler, handleError } = require("../_helpers/ErrorHandler");
 
@@ -26,7 +26,7 @@ class UserController {
         //Get users from database
         try {
             const userRepository = getRepository(QAUsers);
-            const users = await userRepository.find({});
+            const users = await userRepository.find({ relations: ["indicators"],});
 
             //Send the users object
             res.status(200).json({ data: users, message: "All users" });
@@ -114,7 +114,7 @@ class UserController {
         const id = req.params.id;
 
         //Get values from the body
-        let { username, roles, name, email, indicators } = req.body;
+        let { username, roles, name, email } = req.body;
         const roleRepository = getRepository(QARoles);
 
         //Try to find user on database
@@ -131,7 +131,7 @@ class UserController {
         user.username = username;
         user.name = name;
         user.email = email;
-        user.indicators = indicators;
+        // user.indicators = indicators;
 
         try {
             // assing role for user
