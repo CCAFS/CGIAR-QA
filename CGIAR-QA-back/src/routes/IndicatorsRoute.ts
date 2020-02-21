@@ -15,15 +15,17 @@ const router = Router();
  * 
  */
 
-// create role
+// create indicator
 router.post("/", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.createIndicator);
-// get all roles
+// assing indicator
+router.post("/assign", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.assignIndicatorToUser);
+// get all indicators
 router.get("/", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp, RolesHandler.guest])], IndicatorsController.getAllIndicators);
-// edit role
+// edit indicator
 router.patch("/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.editIndicators);
-// // delete role
+// // delete indicator
 router.delete("/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.deleteIndicators);
-// get roles by user
+// get indicator by user
 router.get("/user/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp, RolesHandler.guest])], IndicatorsController.getIndicatorsByUser);
 
 
