@@ -11,19 +11,23 @@ import { TypeaheadModule } from 'ngx-type-ahead';
 import { NgxSpinnerModule } from "ngx-spinner";
 
 import { AppRoutingModule } from './app-routing.module';
+
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
 import { AlertComponent } from './_shared/alert/alert.component';
+import { HeaderBarComponent } from './_shared/header-bar/header-bar.component';
 
 import { JwtInterceptor } from './_helpers/jwt.interceptor'
 import { ErrorInterceptor } from './_helpers/error.interceptor'
 import { FakeBackendInterceptor } from './_helpers/fake-back';
-import { AdminComponent } from './admin/admin.component';
-import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HeaderBarComponent } from './_shared/header-bar/header-bar.component';
 
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
+import { SortByPipe } from './pipes/sort-by.pipe';
 
 // import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
 // import { asesorDashboardComponent } from './dashboard/asesor-dashboard/asesor-dashboard.component';
@@ -39,6 +43,7 @@ import { HeaderBarComponent } from './_shared/header-bar/header-bar.component';
     AdminComponent,
     FilterByRolePipe,
     HeaderBarComponent,
+    // SortByPipe,
     // AdminDashboardComponent,
     // asesorDashboardComponent,
   ],

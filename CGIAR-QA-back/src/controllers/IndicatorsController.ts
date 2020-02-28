@@ -111,8 +111,8 @@ class IndicatorsController {
         indicator.description = description;
         indicator.view_name = view_name;
 
-        if(primary_field && primary_field !== " "){
-            IndicatorsController.createMetaForIndicator(indicator,primary_field);
+        if (primary_field && primary_field !== " ") {
+            IndicatorsController.createMetaForIndicator(indicator, primary_field);
         }
 
         //Validade if the parameters are ok
@@ -158,7 +158,6 @@ class IndicatorsController {
         const userRepository = getRepository(QAUsers);
         const indicatorRepository = getRepository(QAIndicators);
         const indicatorbyUsrRepository = getRepository(QAIndicatorUser);
-        // const evaluationsRepository = getRepository(QAEvaluations);
 
         let selectedUser, selectedIndicator = null;
 
@@ -177,6 +176,8 @@ class IndicatorsController {
 
         try {
             userbyIndicator = await indicatorbyUsrRepository.save(userbyIndicator);
+            IndicatorsController.createEvaluations(userbyIndicator, selectedIndicator);
+
         } catch (e) {
             res.status(409).json({ message: "Indicator by user not saved" });
             return;
@@ -196,13 +197,13 @@ class IndicatorsController {
     static createMetaForIndicator = async (indicator: QAIndicators, primary_field: string) => {
         let pols_meta = getConnection().getMetadata(indicator.view_name).ownColumns.map(column => column.propertyName);
         let primary = primary_field;
-        
+
         const indicatorMetaRepository = getRepository(QAIndicatorsMeta);
-        
+
         let savePromises = [];
         for (let index = 0; index < pols_meta.length; index++) {
             const element = pols_meta[index];
-            
+
             const indicator_meta = new QAIndicatorsMeta();
             indicator_meta.col_name = element;
             indicator_meta.display_name = element.split("_").join(" ");
@@ -210,12 +211,12 @@ class IndicatorsController {
             indicator_meta.include_detail = true;
             indicator_meta.include_general = true;
             indicator_meta.indicator = indicator;
-            
+
             indicator_meta.is_primay = (element == primary) ? true : false;
             savePromises.push(indicator_meta);
-            
+
         }
-        
+
         try {
             let response = await indicatorMetaRepository.save(savePromises);
             return response;
@@ -224,6 +225,37 @@ class IndicatorsController {
             return false;
         }
 
+    }
+
+    static createEvaluations = async (indiByUsr: QAIndicatorUser, indicator: QAIndicators) => {
+        const evaluationsRepository = getRepository(QAEvaluations);
+        try {
+            let evaluations = await evaluationsRepository.find({ where: { indicator_user: indiByUsr.id } });
+            if (evaluations.length > 0) {
+                return;
+            } else {
+                let view_data = await createQueryBuilder(indicator.view_name)
+                    .getMany();
+                let savePromises = [];
+                for (let index = 0; index < view_data.length; index++) {
+                    let element = view_data[index];
+
+                    const evaluations = new QAEvaluations();
+                    evaluations.indicator_view_id = element[indicator.primary_field];
+                    evaluations.indicator_view_name = indicator.view_name;
+                    evaluations.indicator_user = indiByUsr;
+                    evaluations.status = StatusHandler.Pending;
+
+                    savePromises.push(evaluations);
+
+                }
+
+                let a = await evaluationsRepository.save(savePromises);
+            }
+            console.log(evaluations)
+        } catch (error) {
+            return;
+        }
     }
 
 

@@ -9,8 +9,17 @@
   }
   .card {
     .card-body {
+      .no-data {
+        text-align: center;
+        margin-bottom: 2em;
+        // font-weight: bold;
+        .circle {
+          margin-bottom: 0;
+          opacity: 0.5;
+        }
+      }
       .example-container {
-          margin-bottom: 10%;
+        margin-bottom: 2em;
         p {
           margin: 0 15px;
           line-height: $size-lg;
@@ -29,13 +38,18 @@
         }
       }
       .progress-container {
+        display: flex;
+        flex-direction: column;
         p {
           margin: 10px 0px;
+          text-transform: capitalize;
         }
         a {
-          position: relative;
-          left: 98%;
-          top: 10px;
+          max-width: 40%;
+          margin-left: auto;
+          text-align: right;
+          margin-top: 1em;
+          // text-transform: capitalize;
         }
         .progress {
           height: $size-lg;

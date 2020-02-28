@@ -4,18 +4,28 @@
     </div>
     <div class="card col-sm-8">
         <div class="card-body">
-            <div class="card-title example-container d-flex">
+            <div class="card-title example-container d-flex" [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
                 <div class="circle complete"></div>
                 <p>Complete</p>
                 <div class="circle pending" style="margin-left: 50px;"></div>
                 <p>Pending</p>
             </div>
 
-            <div *ngFor="let item of [0,1,2,3,4]" class="progress-container">
-                <p>Item {{item}}</p>
-                <progressbar class="progress" [value]="tmpArray" [max]="100"></progressbar>
-                <a href="#">{{item}}</a>
+            <ng-container *ngIf="(dashboardData | json) != ({} | json)">
+                <div *ngFor="let item of dashboardData | keyvalue" class="progress-container">
+                    <p>{{item.value.total}} {{item.key.split('qa_')[1]}}</p>
+                    <progressbar  class="progress" [value]="item.value" [max]="item.value.total">
+                        <span>{{item.value.total}}</span>
+                    </progressbar>
+                    <a href="">Go to {{item.key.split('qa_')[1]}}</a>
+                </div>
+
+            </ng-container>
+            <div class="no-data" *ngIf="(dashboardData | json) == ({} | json)">
+                You don't have any indicator assingned. 
+                Please contact your Administrator.
             </div>
+
 
         </div>
     </div>

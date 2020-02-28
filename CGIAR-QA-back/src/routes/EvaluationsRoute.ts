@@ -17,7 +17,13 @@ const router = Router();
 // get all evaluations *** ADMIN ***
 // router.get("/", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getAllEvaluations);
 
+// get evaluations all
+router.get("/", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getAllEvaluationsDash);
 // get evaluations by user
 router.get("/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], EvaluationsController.getEvaluationsDash);
+// get crp by user
+router.get("/crp", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getCRPS);
+// get crp by user
+router.get("/crp/indicators", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getIndicatorsByCrp);
 
 export default router;

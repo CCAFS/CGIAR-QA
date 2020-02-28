@@ -20,13 +20,22 @@ export class QAEvaluations {
     @IsNotEmpty({ message: 'Id by view is required' })
     indicator_view_id: number;
 
-    @Column('text')
+    @Column({
+        type: "enum",
+        enum: StatusHandler,
+        default: StatusHandler.Pending
+    })
     status: StatusHandler;
 
     @Column()
-    @Length(4, 200)
+    @Length(2, 200)
     @IsNotEmpty({ message: 'The view name is required' })
     indicator_view_name: string;
+    
+    @Column()
+    @Length(2, 200)
+    @IsNotEmpty({ message: 'The CRP identifier is required' })
+    crp_id: string;
 
     @Column()
     @CreateDateColumn()

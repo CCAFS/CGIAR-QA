@@ -1,5 +1,6 @@
 export enum StatusHandler {
-    Open = 'open',
+    Complete = 'complete',
     Pending = 'pending',
-    Reopen = 'reopen'
+    // Open = 'open',
+    // Reopen = 'reopen',
 }

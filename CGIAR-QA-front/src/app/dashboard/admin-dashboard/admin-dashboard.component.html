@@ -4,10 +4,12 @@
         <div class="card">
             <div class="card-body">
                 <form [formGroup]="programsForm" class="programs-form btn-group-vertical" (ngSubmit)="onSubmit()">
-                    <div class="" *ngFor="let program of [0,1,2,3,4]">
-                        <input (change)="onProgramChange($event, program)" id="program-{{program}}" type="radio"
-                            class="custom-control-input" value="{{program}}" name="program" formControlName="program">
-                        <label class="custom-control-label" for="program-{{program}}">{{program}}</label>
+                    <div class="" *ngFor="let program of crps | sortBy:'asc':'name'; let i=index ">
+                        <input (change)="onProgramChange($event, program)" id="program-{{program.id}}" type="radio"
+                            class="custom-control-input" value="{{program.id}}" name="program" formControlName="program"
+                            checked="{{i==0}}">
+                        <label class="custom-control-label"
+                            for="program-{{program.id}}">{{(program.acronym === '' || program.acronym === ' ') ? program.name: program.acronym}}</label>
                     </div>
                 </form>
             </div>
@@ -15,31 +17,84 @@
         </div>
     </div>
     <div class="col col-progress">
-        <p class="card-title">Progress on Quality Assurance</p>
+        <p class="card-title">Progress on Quality Assurance for {{selectedProgram}}</p>
         <div class="card">
             <div class="card-body">
-                <div class="card-title example-container d-flex">
+                <div class="card-title example-container d-flex"
+                    [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
                     <div class="circle complete"></div>
                     <p>Complete</p>
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending</p>
                 </div>
 
-                <div *ngFor="let item of [0,1,2,3,4]" class="progress-container">
-                    <p>Item {{item}}</p>
-                    <progressbar class="progress" [value]="tmpArray" [max]="100"></progressbar>
-                    <a href="#">{{item}}</a>
+                <ng-container *ngIf="(dashboardData | json) != ({} | json)">
+                    <div *ngFor="let item of dashboardData | keyvalue" class="progress-container">
+                        <p>{{item.value.total}} {{item.key.split('qa_')[1]}}</p>
+                        <progressbar class="progress" [value]="item.value" [max]="item.value.total">
+                            <span>{{item.value.total}}</span>
+                        </progressbar>
+                        <a href="">Go to {{item.key.split('qa_')[1]}}</a>
+                    </div>
+
+                </ng-container>
+                <div class="no-data" *ngIf="(dashboardData | json) == ({} | json)">
+                    You don't have any indicator assingned.
+                    Please contact your Administrator.
                 </div>
 
             </div>
         </div>
     </div>
     <div class="col col-activity">
-        <p class="card-title">Recent Activity</p>
+        <div class="title-button">
+            <p class="card-title">Enable / Disable QA</p>
+            <div class="custom-switch qa-toggle">
+                <input type="checkbox" class="custom-control-input" id="switch1">
+                <label class="custom-control-label" for="switch1"></label>
+            </div>
+        </div>
         <div class="card">
-            <div *ngFor="let item of [0,1,2,3,4]" class="activity-container">
-                <div class="activity-item">
-                    {{item}} on 11/02/2020
+            <div class="row row-padding">
+                <div class="col-sm">
+                </div>
+                <div class="col-sm">
+                    Submit QA process
+                </div>
+                <div class="col-sm">
+                    Submit comments
+                </div>
+            </div>
+            <div *ngFor="let indicator of configurationData | keyvalue" class="activity-container">
+                <div class="row row-padding activity-item">
+                    <div class="col-sm" (click)="indicator.value.isCollapsed = !indicator.value.isCollapsed">
+                        {{indicator.key}}
+                    </div>
+                    <div class="col-sm">
+                        <div class="custom-switch qa-toggle">
+                            <input type="checkbox" class="custom-control-input" id="switch-a-{{indicator.key}}">
+                            <label class="custom-control-label" for="switch-a-{{indicator.key}}"></label>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="custom-switch qa-toggle">
+                            <input type="checkbox" class="custom-control-input" id="switch-b-{{indicator.key}}">
+                            <label class="custom-control-label" for="switch-b-{{indicator.key}}"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="collapseBasic-{{indicator.key}}" [collapse]="!indicator.value.isCollapsed"
+                    class="indicator-container" [isAnimated]="true">
+                    <h4>Submit Indicator by Program / Platform</h4>
+                    <div class="crps-container">
+                        <div class="crp-item" *ngFor="let crp of indicator.value | sortBy:'asc':'name'">
+                            {{(crp.acronym === '' || crp.acronym === ' ') ? crp.name: crp.acronym}}
+                            <button>
+                                submit
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

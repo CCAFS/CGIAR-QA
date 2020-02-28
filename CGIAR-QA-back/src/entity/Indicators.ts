@@ -19,6 +19,10 @@ export class QAIndicators {
     @Column()
     @Length(4, 200)
     description: string;
+   
+    @Column()
+    @Length(1, 200)
+    primary_field: string;
 
     @Column()
     @Length(4, 200)
