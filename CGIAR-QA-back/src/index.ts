@@ -1,3 +1,5 @@
+import 'module-alias/register';
+require('module-alias/register');
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import * as express from "express";
@@ -5,8 +7,9 @@ import * as bodyParser from "body-parser";
 import * as helmet from "helmet";
 import * as cors from "cors";
 import Routes from "./routes/IndexRoute";
+// import Routes from "@routes/IndexRoute";
 import config from "./config/config";
-const { handleError } = require('./_helpers/ErrorHandler')
+const { handleError } = require('./_helpers/ErrorHandler');
 
 
 //Connects to the Database -> then starts the express

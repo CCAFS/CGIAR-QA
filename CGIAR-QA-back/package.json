@@ -3,9 +3,9 @@
    "version": "0.0.1",
    "description": "CGIAR QA backend app",
    "devDependencies": {
-      "ts-node": "3.3.0",
       "@types/node": "^8.0.29",
-      "typescript": "3.3.3333"
+      "ts-node": "^8.6.2",
+      "typescript": "^3.8.3"
    },
    "dependencies": {
       "@types/bcryptjs": "^2.4.2",
@@ -20,6 +20,7 @@
       "express": "^4.15.4",
       "helmet": "^3.21.2",
       "jsonwebtoken": "^8.5.1",
+      "module-alias": "^2.2.2",
       "mysql": "^2.18.1",
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.0.3",
@@ -31,5 +32,12 @@
       "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
       "prod": "tsc && node ./build/app.js",
       "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
+   },
+   "_moduleAliases": {
+      "@root": ".",
+      "@controllers": "build/controllers",
+      "@routes": "build/src/routes",
+      "@middlewares": "build/middlewares",
+      "@entities": "build/entity"
    }
 }
