@@ -4,6 +4,7 @@
          "es5",
          "es6"
       ],
+      "allowSyntheticDefaultImports": true,
       "target": "es5",
       "module": "commonjs",
       "moduleResolution": "node",
