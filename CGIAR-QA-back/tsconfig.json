@@ -10,6 +10,12 @@
       "outDir": "./build",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
-      "sourceMap": true
+      "sourceMap": true,
+      "paths": {
+         "@controllers/*": ["controllers/*"],
+         "@entities/*": ["entity/*"],
+         "@middlewares/*": ["middlewares/*"],
+         "@routes/*": ["routes/*"],
+     }
    }
 }
