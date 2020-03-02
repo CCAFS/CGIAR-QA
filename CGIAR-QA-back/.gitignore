@@ -4,6 +4,5 @@ node_modules/
 build/
 tmp/
 temp/
-src/config/config.ts
 ./ormconfig.json
 ormconfig.json
