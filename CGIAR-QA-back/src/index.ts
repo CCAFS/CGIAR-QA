@@ -1,4 +1,4 @@
-// import 'module-alias/register';
+import 'module-alias/register';
 // require('module-alias/register');
 import "reflect-metadata";
 import { createConnection } from "typeorm";

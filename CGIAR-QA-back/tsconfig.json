@@ -13,10 +13,18 @@
       "sourceMap": true,
       "baseUrl": "src",
       "paths": {
-         "@controllers/*": ["controllers/*"],
-         "@entities/*": ["entity/*"],
-         "@middlewares/*": ["middlewares/*"],
-         "@routes/*": ["routes/*"],
-     }
+         "@controllers/*": [
+            "controllers/*"
+         ],
+         "@entities/*": [
+            "entity/*"
+         ],
+         "@middlewares/*": [
+            "middlewares/*"
+         ],
+         "@routes/*": [
+            "routes/*"
+         ],
+      }
    }
 }
