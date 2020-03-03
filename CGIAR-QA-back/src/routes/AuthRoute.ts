@@ -1,8 +1,8 @@
 import { Router } from "express";
 import AuthController from "@controllers/AuthController";
-const { checkJwt } = require( "@middlewares/checkJwt");
+// const { checkJwt } = require( "@middleware/checkJwt");
 // import * as checkJwt from "@middlewares/checkJwt";
-// import { checkJwt } from "../middlewares/checkJwt";
+import { checkJwt } from "@middleware/checkJwt";
 
 const router = Router();
 //Login route

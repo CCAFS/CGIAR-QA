@@ -1,8 +1,8 @@
 import { Router } from "express";
-// import { checkJwt } from "@middlewares/checkJwt";
-// import { checkRole } from "@middlewares/checkRole";
-const { checkJwt } = require( "@middlewares/checkJwt");
-const { checkRole } = require( "@middlewares/checkRole");
+import { checkJwt } from "@middleware/checkJwt";
+import { checkRole } from "@middleware/checkRole";
+// const { checkJwt } = require( "@middlewares/checkJwt");
+// const { checkRole } = require( "@middlewares/checkRole");
 
 import IndicatorsController from "@controllers/IndicatorsController";
 import { RolesHandler } from "@helpers/RolesHandler";

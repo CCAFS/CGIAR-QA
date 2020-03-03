@@ -20,7 +20,7 @@
          "@entity/*": [
             "entity/*"
          ],
-         "@middlewares/*": [
+         "@middleware/*": [
             "middlewares/*"
          ],
          "@routes/*": [
