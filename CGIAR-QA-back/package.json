@@ -32,6 +32,7 @@
       "typeorm": "0.2.22"
    },
    "scripts": {
+      "build": "webpack",
       "tsc": "tsc",
       "start": "set debug=* && npx tsnd --respawn --transpileOnly ./src/index.ts",
       "prod": "tsc && node ./build/app.js",
