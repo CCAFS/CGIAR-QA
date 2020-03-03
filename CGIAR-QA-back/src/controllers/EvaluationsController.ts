@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import { getRepository, In } from "typeorm";
-import { validate } from "class-validator";
 
-import { QAIndicatorUser } from "../entity/IndicatorByUser";
-import { QACrp } from "../entity/CRP";
-import { QAEvaluations } from "../entity/Evaluations";
+import { QAIndicatorUser } from "@entity/IndicatorByUser";
+import { QACrp } from "@entity/CRP";
+import { QAEvaluations } from "@entity/Evaluations";
 
-import { StatusHandler } from "../_helpers/StatusHandler"
-import { runInNewContext } from "vm";
-import { QAIndicators } from "../entity/Indicators";
+import { StatusHandler } from "@helpers/StatusHandler"
+import { QAIndicators } from "@entity/Indicators";
 
+// import { validate } from "class-validator";
+// import { runInNewContext } from "vm";
 
 class EvaluationsController {
 

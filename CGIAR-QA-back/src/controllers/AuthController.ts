@@ -3,9 +3,9 @@ import * as jwt from "jsonwebtoken";
 import { getRepository } from "typeorm";
 import { validate } from "class-validator";
 
-import { QAUsers } from "../entity/User";
-import config from "../config/config";
-const { ErrorHandler } = require("../_helpers/ErrorHandler")
+import { QAUsers } from "@entity/User";
+import config from "@config/config";
+const { ErrorHandler } = require("@helpers/ErrorHandler")
 
 class AuthController {
     static login = async (req: Request, res: Response, next: NextFunction) => {

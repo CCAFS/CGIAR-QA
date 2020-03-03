@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { checkJwt } from "../middlewares/checkJwt";
-import { checkRole } from "../middlewares/checkRole";
+import { checkJwt } from "@middlewares/checkJwt";
+import { checkRole } from "@middlewares/checkRole";
 
-import IndicatorsController from "../controllers/IndicatorsController";
-import { RolesHandler } from "../_helpers/RolesHandler";
+import IndicatorsController from "@controllers/IndicatorsController";
+import { RolesHandler } from "@helpers/RolesHandler";
 
 const router = Router();
 

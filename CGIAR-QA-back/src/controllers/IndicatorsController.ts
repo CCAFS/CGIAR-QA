@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { getRepository, createQueryBuilder, getConnection } from "typeorm";
 import { validate } from "class-validator";
 
-import { QAUsers } from "../entity/User";
-import { QAIndicators } from "../entity/Indicators";
-import { QAIndicatorUser } from "../entity/IndicatorByUser";
-import { QAEvaluations } from "../entity/Evaluations";
-import { QAIndicatorsMeta } from "../entity/IndicatorsMeta";
+import { QAUsers } from "@entity/User";
+import { QAIndicators } from "@entity/Indicators";
+import { QAIndicatorUser } from "@entity/IndicatorByUser";
+import { QAEvaluations } from "@entity/Evaluations";
+import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 
-import { StatusHandler } from "../_helpers/StatusHandler"
+import { StatusHandler } from "@helpers/StatusHandler"
 
 
 class IndicatorsController {

@@ -2,9 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Length, IsNotEmpty } from "class-validator";
 
 // import { QAUsers } from "../entity/User";
-import { QAIndicatorUser } from "./IndicatorByUser";
+import { QAIndicatorUser } from "@entity/IndicatorByUser";
 
-import { StatusHandler } from "../_helpers/StatusHandler"
+import { StatusHandler } from "@helpers/StatusHandler"
 
 @Entity()
 export class QAEvaluations {

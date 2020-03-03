@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { getRepository } from "typeorm";
 
-import { QAUsers } from "../entity/User";
-import { QARoles } from "../entity/Roles";
-const { ErrorHandler } = require("../_helpers/ErrorHandler")
+import { QAUsers } from "@entity/User";
+import { QARoles } from "@entity/Roles";
+const { ErrorHandler } = require("@helpers/ErrorHandler")
 
 export const checkRole = (roles: Array<string>) => {
     return async (req: Request, res: Response, next: NextFunction) => {

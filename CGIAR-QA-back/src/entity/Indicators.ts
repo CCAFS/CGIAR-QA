@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
-import { QAIndicatorUser } from "../entity/IndicatorByUser";
-import { QAIndicatorsMeta } from "../entity/IndicatorsMeta";
+import { QAIndicatorUser } from "@entity/IndicatorByUser";
+import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 
 @Entity()
 @Unique(["name", "view_name"])

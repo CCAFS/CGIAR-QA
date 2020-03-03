@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, ManyToOne } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
-import { QAPermissions } from "../entity/Permissions";
+import { QAPermissions } from "@entity/Permissions";
 
 
 @Entity()
