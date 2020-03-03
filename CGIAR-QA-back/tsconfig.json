@@ -12,6 +12,26 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
-     
+      "baseUrl": "./src",
+      "paths": {
+         "@controllers/*": [
+            "controllers/*"
+         ],
+         "@entity/*": [
+            "entity/*"
+         ],
+         "@middlewares/*": [
+            "middlewares/*"
+         ],
+         "@routes/*": [
+            "routes/*"
+         ],
+         "@helpers/*": [
+            "_helpers/*"
+         ],
+         "@config/*": [
+            "config/*"
+         ],
+      }
    }
 }
