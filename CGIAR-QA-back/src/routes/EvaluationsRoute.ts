@@ -1,6 +1,8 @@
 import { Router } from "express";
-import { checkJwt } from "@middlewares/checkJwt";
-import { checkRole } from "@middlewares/checkRole";
+// import { checkJwt } from "@middlewares/checkJwt";
+// import { checkRole } from "@middlewares/checkRole";
+const { checkJwt } = require( "@middlewares/checkJwt");
+const { checkRole } = require( "@middlewares/checkRole");
 
 import EvaluationsController from "@controllers/EvaluationsController";
 import { RolesHandler } from "@helpers/RolesHandler";
