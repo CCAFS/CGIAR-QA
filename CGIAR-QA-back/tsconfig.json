@@ -7,7 +7,7 @@
       "allowSyntheticDefaultImports": true,
       "target": "es5",
       "module": "commonjs",
-      "moduleResolution": "node",
+      "moduleResolution": "classic",
       "outDir": "./build",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
