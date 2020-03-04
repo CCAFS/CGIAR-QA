@@ -2,11 +2,11 @@ import { Router } from "express";
 // import { checkJwt } from "@middleware/checkJwt";
 // import { checkRole } from "@middleware/checkRole";
 
-// const { checkJwt } = require( "@middlewares/checkJwt");
-// const { checkRole } = require( "@middlewares/checkRole");
+const { checkJwt } = require( "../../src/middlewares/checkJwt");
+const { checkRole } = require( "../../src/middlewares/checkRole");
 
-import * as checkJwt from "../../src/middlewares/checkJwt";
-import * as checkRole from "../../src/middlewares/checkRole";
+// import * as checkJwt from "../../src/middlewares/checkJwt";
+// import * as checkRole from "../../src/middlewares/checkRole";
 
 import UserController from "@controllers/UserController";
 import { RolesHandler } from "@helpers/RolesHandler";
@@ -21,20 +21,20 @@ const router = Router();
  */
 
 //Get all users
-// router.get("/all", [checkJwt, checkRole([RolesHandler.admin])], UserController.listAll);
-router.get("/all", [checkJwt.checkJwt, checkRole.checkRole([RolesHandler.admin])], UserController.listAll);
+router.get("/all", [checkJwt, checkRole([RolesHandler.admin])], UserController.listAll);
+// router.get("/all", [checkJwt.checkJwt, checkRole.checkRole([RolesHandler.admin])], UserController.listAll);
 
 // Get one user
-// router.get(
-//     "/:id([0-9]+)",
-//     [checkJwt, checkRole([RolesHandler.admin])],
-//     UserController.getOneById
-// );
 router.get(
     "/:id([0-9]+)",
-    [checkJwt.checkJwt, checkRole.checkRole([RolesHandler.admin])],
+    [checkJwt, checkRole([RolesHandler.admin])],
     UserController.getOneById
 );
+// router.get(
+//     "/:id([0-9]+)",
+//     [checkJwt.checkJwt, checkRole.checkRole([RolesHandler.admin])],
+//     UserController.getOneById
+// );
 
 //Create a new user
 // router.post("/", [checkJwt, checkRole([RolesHandler.admin])], UserController.newUser);
