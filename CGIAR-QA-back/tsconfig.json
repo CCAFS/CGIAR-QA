@@ -6,32 +6,32 @@
       ],
       "allowSyntheticDefaultImports": true,
       "module": "commonjs",
-      "target": "es5",
+      "target": "es6",
       "allowJs": true,
       "moduleResolution": "node",
       "outDir": "./build",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
-      "baseUrl": "./src",
+      "baseUrl": ".",
       "paths": {
          "@controllers/*": [
-            "controllers/*"
+            "src/controllers/*"
          ],
          "@entity/*": [
-            "entity/*"
+            "src/entity/*"
          ],
          "@middleware/*": [
-            "middlewares/*"
+            "src/middlewares/*"
          ],
          "@routes/*": [
-            "routes/*"
+            "src/routes/*"
          ],
          "@helpers/*": [
-            "_helpers/*"
+            "src/_helpers/*"
          ],
          "@config/*": [
-            "config/*"
+            "src/config/*"
          ],
       }
    }
