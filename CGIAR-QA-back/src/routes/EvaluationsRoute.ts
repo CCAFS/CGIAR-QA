@@ -4,8 +4,8 @@ import { Router } from "express";
 // const { checkJwt } = require( "@middlewares/checkJwt");
 // const { checkRole } = require( "@middlewares/checkRole");
 
-import * as checkJwt from "../middlewares/checkJwt";
-import * as checkRole from "../middlewares/checkRole";
+import * as checkJwt from "../../src/middlewares/checkJwt";
+import * as checkRole from "../../src/middlewares/checkRole";
 
 import EvaluationsController from "@controllers/EvaluationsController";
 import { RolesHandler } from "@helpers/RolesHandler";
