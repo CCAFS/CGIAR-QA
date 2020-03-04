@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { checkJwt } from "@middleware/checkJwt";
-// import { checkRole } from "@middleware/checkRole";
+import { checkRole } from "@middleware/checkRole";
 
 // const { checkJwt } = require( "@middlewares/checkJwt");
 // const { checkRole } = require( "@middlewares/checkRole");
@@ -20,11 +20,9 @@ const router = Router();
  * 
  */
 
-// get all evaluations *** ADMIN ***
-// router.get("/", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getAllEvaluations);
 
 // get evaluations all
-// router.get("/", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getAllEvaluationsDash);
+router.get("/", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getAllEvaluationsDash);
 // router.get("/", [checkJwt.checkJwt, checkRole.checkRole([RolesHandler.admin])], EvaluationsController.getAllEvaluationsDash);
 // // get evaluations by user
 // // router.get("/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], EvaluationsController.getEvaluationsDash);

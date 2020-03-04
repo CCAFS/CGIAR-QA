@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { checkJwt } from "@middleware/checkJwt";
-// import { checkRole } from "@middleware/checkRole";
+import { checkRole } from "@middleware/checkRole";
 
 // const { checkJwt } = require( "../../src/middlewares/checkJwt");
 // const { checkRole } = require( "../../src/middlewares/checkRole");
@@ -21,7 +21,7 @@ const router = Router();
  */
 
 //Get all users
-// router.get("/all", [checkJwt, checkRole([RolesHandler.admin])], UserController.listAll);
+router.get("/all", [checkJwt, checkRole([RolesHandler.admin])], UserController.listAll);
 // router.get("/all", [checkJwt.checkJwt, checkRole.checkRole([RolesHandler.admin])], UserController.listAll);
 
 // Get one user
