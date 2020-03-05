@@ -4,9 +4,11 @@ import { getRepository, In } from "typeorm";
 import { QAIndicatorUser } from "@entity/IndicatorByUser";
 import { QACrp } from "@entity/CRP";
 import { QAEvaluations } from "@entity/Evaluations";
+import { QAUsers } from "@entity/User";
+import { QAIndicators } from "@entity/Indicators";
 
 import { StatusHandler } from "@helpers/StatusHandler"
-import { QAIndicators } from "@entity/Indicators";
+import { RolesHandler } from "@helpers/RolesHandler"
 
 // import { validate } from "class-validator";
 // import { runInNewContext } from "vm";
@@ -31,6 +33,8 @@ class EvaluationsController {
                 .createQueryBuilder("qa_indicator_user")
                 .where("qa_indicator_user.user=:userId", { userId: id })
                 .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
+                .addSelect("`indicator`.primary_field AS primary_field")
                 .addSelect("COUNT(evaluations.`status`)", "count")
                 .groupBy("evaluations.`status`")
                 .orderBy("evaluations.`status`", 'ASC')
@@ -46,6 +50,7 @@ class EvaluationsController {
                     type: EvaluationsController.getType(element['evaluations_status']),
                     value: element['count'],
                     label: `${element['count']}`,
+                    primary_field: element["primary_field"]
                     // total: element['sum'],
                 })
 
@@ -55,6 +60,65 @@ class EvaluationsController {
             let result = EvaluationsController.groupBy(response, 'indicator_view_name');
             // console.log(result)
             res.status(200).json({ data: result, message: "User evaluations" });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Could not access to evaluations." });
+        }
+    }
+
+    // get evaluations dashboard by user
+    static getListEvaluationsDash = async (req: Request, res: Response) => {
+        //Get the ID from the url
+        const id = req.params.id;
+        const view_name = req.body.view_name;
+        const view_primary_field = req.body.view_primary_field;
+
+
+
+        // check if admin
+        try {
+            const userRepository = getRepository(QAUsers);
+            let user = await userRepository.findOneOrFail({ where: { id } });
+            let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
+            if (isAdmin) {
+                const indicatorByUserRepository = getRepository(QAIndicatorUser);
+                let rawData = await indicatorByUserRepository
+                    .createQueryBuilder("qa_indicator_user")
+                    .select(`${view_name}.title AS title`)
+                    .addSelect(`${view_name}.crp AS crp`)
+                    .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
+                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect(view_name, view_name, `${view_name}.${view_primary_field}= evaluations.indicator_view_id`)
+                    .getRawMany();
+                // .getSql();
+
+                // console.log(rawData)
+                res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
+                return;
+            }
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(200).json({ data: [], message: "User indicators." });
+        }
+
+        //Get evaluations from database
+        try {
+            const indicatorByUserRepository = getRepository(QAIndicatorUser);
+            let rawData = await indicatorByUserRepository
+                .createQueryBuilder("qa_indicator_user")
+                .select(`${view_name}.title AS title`)
+                .addSelect(`${view_name}.crp AS crp`)
+                .where("qa_indicator_user.user=:userId", { userId: id })
+                .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
+                .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                .leftJoinAndSelect(view_name, view_name, `${view_name}.${view_primary_field}= evaluations.indicator_view_id`)
+                .getRawMany();
+            // .getSql();
+
+            // console.log(rawData)
+            res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: "Could not access to evaluations." });
@@ -73,7 +137,9 @@ class EvaluationsController {
                     .createQueryBuilder("qa_indicator_user")
                     .where("`evaluations`.`crp_id` = :crp_id", { crp_id: crp_id })
                     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
                     .addSelect("COUNT(evaluations.`status`)", "count")
+                    .addSelect("`indicator`.primary_field AS primary_field")
                     .groupBy("evaluations.`status`")
                     .orderBy("evaluations.`status`", 'ASC')
                     .addGroupBy("evaluations.`indicator_view_name`")
@@ -85,6 +151,8 @@ class EvaluationsController {
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
+                    .addSelect("`indicator`.primary_field AS primary_field")
                     .addSelect("COUNT(evaluations.`status`)", "count")
                     .groupBy("evaluations.`status`")
                     .orderBy("evaluations.`status`", 'ASC')
@@ -94,6 +162,7 @@ class EvaluationsController {
             }
 
             let response = []
+
             for (let index = 0; index < rawData.length; index++) {
                 const element = rawData[index];
                 response.push({
@@ -103,10 +172,10 @@ class EvaluationsController {
                     value: element['count'],
                     crp_id: (crp_id) ? element['evaluations_crp_id'] : null,
                     label: `${element['count']}`,
+                    primary_field: element["primary_field"]
                 })
 
             }
-
 
             let result = EvaluationsController.groupBy(response, 'indicator_view_name');
             res.status(200).json({ data: result, message: "All evaluations" });
@@ -146,7 +215,7 @@ class EvaluationsController {
                 .groupBy('`evaluations`.crp_id,evaluations.`indicator_view_name`')
                 .orderBy('evaluations.`crp_id`', "ASC")
                 .getRawMany();
-                
+
             evalData = EvaluationsController.groupBy(evalData, 'indicators_name')
 
             res.status(200).json({ data: evalData, message: "Indicators by crp" });
@@ -189,6 +258,26 @@ class EvaluationsController {
         }, {});
     };
 
+    static parseEvaluationsData(rawData) {
+        let response = []
+
+        for (let index = 0; index < rawData.length; index++) {
+            const element = rawData[index];
+            response.push({
+                indicator_view_name: element['evaluations_indicator_view_name'],
+                status: element['evaluations_status'],
+                type: EvaluationsController.getType(element['evaluations_status']),
+                value: element['count'],
+                id: element['evaluations_indicator_view_id'],
+                title: element['title'],
+                pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
+                crp: element['crp'],
+            })
+
+        }
+
+        return response;
+    }
 }
 
 export default EvaluationsController;

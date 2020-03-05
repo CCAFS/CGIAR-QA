@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 
-import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
-import { AdminComponent } from './admin/admin.component';
-import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
+// import { IndicatorsComponent } from './indicators/indicators.component';
+// import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
+// import { HomeComponent } from './home/home.component';
 // import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
 // import { asesorDashboardComponent } from './dashboard/asesor-dashboard/asesor-dashboard.component'
 
@@ -16,24 +16,15 @@ import { Role } from './_models/roles.model';
 
 
 const routes: Routes = [
-  // { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-  // {
-  //   path: 'admin',
-  //   component: AdminComponent,
-  //   canActivate: [AuthGuard],
-  //   data: { roles: [Role.admin] }
-  // },
-  
   {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then(mod => mod.DashboardModule)
   },
-
+  { path: 'indicator/:type/:primary_column', loadChildren: () => import('./indicators/indicators.module').then(mod => mod.IndicatorsModule) },
+  // { path: 'indicator/:type', component: IndicatorsComponent, canActivate: [AuthGuard], data: { roles: [Role.admin, Role.asesor] } },
   { path: 'login', component: LoginComponent },
-  // { path: 'register', component: RegisterComponent },
-
   // otherwise redirect to home
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

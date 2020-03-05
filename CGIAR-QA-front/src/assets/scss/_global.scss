@@ -94,18 +94,26 @@
     border-color: transparent;
   }
 
-
-  .custom-control-label::after{
-    top: calc(.25rem + 2px);
+  .custom-control-label::after {
+    top: calc(0.25rem + 2px);
     left: calc(0rem + 2px);
     width: calc(2rem - 4px);
     height: calc(2rem - 4px);
     background-color: var(--gray-secondary);
     border-radius: 1.5rem;
   }
-  .custom-control-input:checked~.custom-control-label::after{
+  .custom-control-input:checked ~ .custom-control-label::after {
     -webkit-transform: translateX(2.75rem);
     transform: translateX(2.75rem);
   }
+}
 
+/**
+** Circle
+**/
+.circle {
+  margin:  auto;
+  height: $size-lg;
+  width: $size-lg;
+  border-radius: 50%;
 }

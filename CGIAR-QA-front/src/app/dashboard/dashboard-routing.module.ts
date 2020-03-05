@@ -24,6 +24,7 @@ const routes: Routes = [
         data: { roles: [Role.admin] },
         component: AdminDashboardComponent
       },
+      // { path: 'indicator/:type', loadChildren: () => import(`./indicators/indicators.module`).then(m => m.IndicatorsModule) },
     ],
   }
 ];

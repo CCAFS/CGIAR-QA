@@ -16,6 +16,14 @@ export class DashboardService {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/${id}`);
   }
 
+  // get list dash data (evaluations)
+  geListDashboardEvaluations(id, view_name, view_primary_field) {
+    let params = {
+      'view_name': view_name,
+      'view_primary_field': view_primary_field,
+    }
+    return this.http.post<any>(`${environment.apiUrl}/evaluation/${id}/list`, params);
+  }
 
   /**
    * 
@@ -30,13 +38,15 @@ export class DashboardService {
     let params = new HttpParams().set('crp_id', crp_id)
     return this.http.get<any>(`${environment.apiUrl}/evaluation`, { params });
   }
+
+
   //get all qa crps
   getCRPS() {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/crp`);
   }
 
   //get indicators by crp
-  getIndicatorsByCRP(){
+  getIndicatorsByCRP() {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/crp/indicators`);
   }
 

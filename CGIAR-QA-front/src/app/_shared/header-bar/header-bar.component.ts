@@ -31,17 +31,8 @@ export class HeaderBarComponent implements OnInit {
     this.getHeaderLinks()
   }
 
-  goToView(view: string) {
-    if (this.currentUser) {
-      switch (view) {
-        case "dashboard":
-          this.router.navigate([`/dashboard/${this.currentUser.roles[0].description.toLocaleLowerCase()}`])
-          break;
-
-        default:
-          break;
-      }
-    }
+  goToView(view: string, primary_column: string) {
+    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
 
   getHeaderLinks() {

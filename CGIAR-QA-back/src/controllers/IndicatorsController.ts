@@ -9,6 +9,7 @@ import { QAEvaluations } from "@entity/Evaluations";
 import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 
 import { StatusHandler } from "@helpers/StatusHandler"
+import { RolesHandler } from "@helpers/RolesHandler"
 
 
 class IndicatorsController {
@@ -39,9 +40,35 @@ class IndicatorsController {
     static getIndicatorsByUser = async (req: Request, res: Response) => {
         //Get the ID from the url
         const id = req.params.id;
+        const indicatorByUserRepository = getRepository(QAIndicatorUser);
+
+        //Get user by id; if manager all indicators; 
+        try {
+            const userRepository = getRepository(QAUsers);
+            let user = await userRepository.findOneOrFail({ where: { id } });
+            let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
+            if (isAdmin) {
+                const indicators = await indicatorByUserRepository.find({
+                    relations: ["indicator"],
+                    select: ["id", 'indicator']
+                });
+                //Send the indicators object
+                res.status(200).json({ data: indicators, message: "User indicators" });
+                return;
+            }
+
+            // console.log(userRole.roles)
+
+        } catch (error) {
+            console.log(error);
+            res.status(200).json({ data: [], message: "User indicators." });
+        }
+
+
+
+
         //Get indicators from database
         try {
-            const indicatorByUserRepository = getRepository(QAIndicatorUser);
             // const indicators = await indicatorRepository.find({});
             const indicators = await indicatorByUserRepository.find({
                 relations: ["indicator"],

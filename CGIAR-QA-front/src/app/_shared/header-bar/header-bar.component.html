@@ -8,20 +8,23 @@
             <!-- <div class="panel admin-panel" *ngIf="currentUser.roles[0].description === allRoles.admin">
                 <a routerLink="/admin">Admin Panel</a>
             </div> -->
-            <div class="panel" >
+            <div class="panel">
                 <p>{{currentUser.name}}</p>
                 <p>{{currentUser.email}}</p>
             </div>
-            <div class="log-out-panel"  (click)="logout()">
+            <div class="log-out-panel" (click)="logout()">
                 <p>Signout</p>
                 <i class="icon-log-out"></i>
             </div>
         </div>
 
-        <div class="navbar-nav" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+        <div class="navbar-nav" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: false}">
             <!-- <a class="nav-item nav-link" (click)="goToView('dashboard')">Home</a> -->
-            <a class="nav-item nav-link"  routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
-            <a class="nav-item nav-link" *ngFor="let indicator of indicators; index as i"  routerLink="/admin">{{indicator.indicator.name}}</a>
+            <a class="nav-item nav-link"
+                routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
+            <a class="nav-item nav-link" *ngFor="let indicator of indicators; index as i"
+                (click)="goToView(indicator.indicator.name, indicator.indicator.primary_field)">{{indicator.indicator.name}}</a>
+            <!-- [routerLink]="['/indicator', indicator.indicator.name.toLowerCase() ]">{{indicator.indicator.name}}</a> -->
 
             <!-- <a class="nav-item nav-link"  routerLink="/admin">other</a> -->
         </div>

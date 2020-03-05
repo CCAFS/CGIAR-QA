@@ -21,18 +21,12 @@ import { HeaderBarComponent } from './_shared/header-bar/header-bar.component';
 
 import { JwtInterceptor } from './_helpers/jwt.interceptor'
 import { ErrorInterceptor } from './_helpers/error.interceptor'
-import { FakeBackendInterceptor } from './_helpers/fake-back';
+// import { FakeBackendInterceptor } from './_helpers/fake-back';
 
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
-import { SortByPipe } from './pipes/sort-by.pipe';
-
-// import { AdminDashboardComponent } from './dashboard/admin-dashboard/admin-dashboard.component';
-// import { asesorDashboardComponent } from './dashboard/asesor-dashboard/asesor-dashboard.component';
-
-
 
 @NgModule({
   declarations: [
@@ -43,9 +37,6 @@ import { SortByPipe } from './pipes/sort-by.pipe';
     AdminComponent,
     FilterByRolePipe,
     HeaderBarComponent,
-    // SortByPipe,
-    // AdminDashboardComponent,
-    // asesorDashboardComponent,
   ],
   imports: [
     BrowserModule,
