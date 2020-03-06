@@ -125,6 +125,73 @@ class EvaluationsController {
         }
     }
 
+
+
+
+    
+    // get detailed evaluation by user
+    static getDetailedEvaluationDash = async (req: Request, res: Response) => {
+        //Get the ID from the url
+        const id = req.params.id;
+        const view_name = req.body.view_name;
+        const view_primary_field = req.body.view_primary_field;
+
+
+
+        // check if admin
+        try {
+            const userRepository = getRepository(QAUsers);
+            let user = await userRepository.findOneOrFail({ where: { id } });
+            let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
+            if (isAdmin) {
+                const indicatorByUserRepository = getRepository(QAIndicatorUser);
+                let rawData = await indicatorByUserRepository
+                    .createQueryBuilder("qa_indicator_user")
+                    .select(`${view_name}.title AS title`)
+                    .addSelect(`${view_name}.crp AS crp`)
+                    .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
+                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect(view_name, view_name, `${view_name}.${view_primary_field}= evaluations.indicator_view_id`)
+                    .getRawMany();
+                // .getSql();
+
+                // console.log(rawData)
+                res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
+                return;
+            }
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(200).json({ data: [], message: "User indicators." });
+        }
+
+        //Get evaluations from database
+        try {
+            const indicatorByUserRepository = getRepository(QAIndicatorUser);
+            let rawData = await indicatorByUserRepository
+                .createQueryBuilder("qa_indicator_user")
+                .select(`${view_name}.title AS title`)
+                .addSelect(`${view_name}.crp AS crp`)
+                .where("qa_indicator_user.user=:userId", { userId: id })
+                .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
+                .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                .leftJoinAndSelect(view_name, view_name, `${view_name}.${view_primary_field}= evaluations.indicator_view_id`)
+                .getRawMany();
+            // .getSql();
+
+            // console.log(rawData)
+            res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Could not access to evaluations." });
+        }
+    }
+
+
+
+
+
     // get all evaluations dashboard
     static getAllEvaluationsDash = async (req: Request, res: Response) => {
 
@@ -225,6 +292,13 @@ class EvaluationsController {
             res.status(404).json({ message: "Could not get indicators by crp." });
         }
     }
+
+
+
+
+
+
+
 
     /***
      * 

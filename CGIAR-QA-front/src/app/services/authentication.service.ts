@@ -39,5 +39,6 @@ export class AuthenticationService {
     // remove user from local storage and set current user to null
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
+    console.log('logged out', localStorage)
   }
 }

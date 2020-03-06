@@ -1,4 +1,24 @@
 <h2>List of {{indicatorTypeName}}</h2>
+<div class="row col sub-header">
+    <div class="col row text-left">
+        <div class="model-link-container">
+            <i class="icon-log-out"></i>
+            <hr>
+            <p>Template</p>
+        </div>
+        <div class="model-link-container">
+            <i class="icon-log-out"></i>
+            <hr>
+            <p>Template II</p>
+        </div>
+    </div>
+    <div class="col row text-right">
+        <div class="circle complete"></div>
+        <p>Complete</p>
+        <div class="circle pending" style="margin-left: 50px;"></div>
+        <p>Pending</p>
+    </div>
+</div>
 <table class="table table-bordered">
     <thead class="table-header">
         <tr>
@@ -25,7 +45,7 @@
     <tbody class="table-body">
         <tr *ngFor="let item of returnedArray | orderBy: order:reverse:'case-insensitive'">
             <th scope="row">{{ item.id }}</th>
-            <td style="cursor: pointer;"  (click)="goToView(item.id)">
+            <td style="cursor: pointer;" (click)="goToView(item.id)">
                 {{ item.title }}
             </td>
             <td>{{ item.crp }}</td>
@@ -46,5 +66,3 @@
 <ngx-spinner>
     <p class="loading">Loading...</p>
 </ngx-spinner>
-
-<router-outlet></router-outlet>

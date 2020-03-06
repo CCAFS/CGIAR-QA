@@ -19,6 +19,18 @@
   content: url("~/assets/icons/cgiar_logo.svg");
 }
 
+/**
+** Buttons
+***/
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: var(--yellow-primary);
+  border-color: var(--yellow-primary);
+}
 /***
 *** Type-ahead
 ***/
@@ -112,7 +124,7 @@
 ** Circle
 **/
 .circle {
-  margin:  auto;
+  margin: auto;
   height: $size-lg;
   width: $size-lg;
   border-radius: 50%;

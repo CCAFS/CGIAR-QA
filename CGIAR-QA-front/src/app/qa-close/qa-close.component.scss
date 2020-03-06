@@ -1,0 +1,23 @@
+@import "../../assets/variables.scss";
+
+.qa-close {
+  margin-top: 10%;
+  .header {
+    text-align: center;
+    padding: 0;
+    h2,
+    p {
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: $font-lg;
+      font-weight: $bold;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+    }
+    p {
+      font-size: $font-md;
+    }
+  }
+}

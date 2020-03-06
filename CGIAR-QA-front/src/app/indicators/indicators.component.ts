@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
+import { ActivatedRoute , Router } from '@angular/router';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
@@ -33,10 +32,10 @@ export class IndicatorsComponent implements OnInit {
   reverse: boolean = false;
 
   constructor(private route: ActivatedRoute,
+    private router: Router,
     private dashService: DashboardService,
     private authenticationService: AuthenticationService,
     private spinner: NgxSpinnerService,
-    private router: Router,
     private orderPipe: OrderPipe,
     private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
@@ -89,9 +88,7 @@ export class IndicatorsComponent implements OnInit {
 
 
   goToView(indicatorId) {
-    console.log(['/detail', indicatorId]);
     this.router.navigate(['detail', indicatorId], { relativeTo: this.route });
-    // this.router.navigate(['/reload']).then(() => { this.router.navigate(['/detail', indicatorId], { relativeTo: this.route }); });
   }
 
 

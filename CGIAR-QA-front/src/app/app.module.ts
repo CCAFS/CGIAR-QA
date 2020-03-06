@@ -27,6 +27,7 @@ import { ErrorInterceptor } from './_helpers/error.interceptor'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
+import { QaCloseComponent } from './qa-close/qa-close.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
     AdminComponent,
     FilterByRolePipe,
     HeaderBarComponent,
+    QaCloseComponent,
   ],
   imports: [
     BrowserModule,

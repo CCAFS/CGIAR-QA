@@ -6,7 +6,7 @@ import { first } from 'rxjs/operators';
 import { AuthenticationService } from './../services/authentication.service';
 import { AlertService } from './../services/alert.service';
 
-import { Role } from '../_models/roles.model'
+import { GeneralStatus } from '../_models/general-status.model'
 
 @Component({
   selector: 'app-login',
@@ -62,8 +62,18 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log(`dashboard/${data.roles[0].description.toLowerCase()}`)
-          this.router.navigate([`dashboard/${data.roles[0].description.toLowerCase()}`]);
+          if (data.config.length) {
+
+            if (data.config[0].status === GeneralStatus.Open) {
+              this.router.navigate([`dashboard/${data.roles[0].description.toLowerCase()}`]);
+            } else {
+              this.router.navigate([`qa-close`]);
+            }
+          } else {
+            this.router.navigate([`qa-close`]);
+          }
+
+          // this.router.navigate([`dashboard/${data.roles[0].description.toLowerCase()}`]);
         },
         error => {
           this.alertService.error(error);
