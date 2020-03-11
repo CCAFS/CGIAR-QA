@@ -17,10 +17,10 @@ const routes: Routes = [
     },
     {
         path: 'detail/:indicatorId',
-        // loadChildren: () => import('./general-detailed-indicator/general-detailed-indicator.component').then(mod => mod.GeneralDetailedIndicatorComponent)
-        canActivate: [AuthGuard],
-        data: { roles: [Role.asesor, Role.admin] },
-        component: GeneralDetailedIndicatorComponent
+        loadChildren: () => import('./general-detailed-indicator/general-detailed-indicator.module').then(mod => mod.GeneralDetailedIndicatorModule)
+        // canActivate: [AuthGuard],
+        // data: { roles: [Role.asesor, Role.admin] },
+        // component: GeneralDetailedIndicatorComponent
     },
     // {
     //     path: 'detail/:indicatorId',

@@ -7,9 +7,9 @@ import { User } from '../../_models/user.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from '../../services/alert.service';
 
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { GeneralStatus } from "../../_models/general-status.model"
+import { DetailedStatus } from "../../_models/general-status.model"
 
 
 
@@ -25,7 +25,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   spinner1 = 'spinner1';
   spinner2 = 'spinner2';
   gnralInfo = {};
-  statusHandler = GeneralStatus;
+  statusHandler = DetailedStatus;
   generalCommentGroup: FormGroup;
 
   constructor(private activeRoute: ActivatedRoute,
@@ -41,6 +41,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("feneral detailed")
     this.generalCommentGroup = this.formBuilder.group({
       general_comment: ['', Validators.required]
     });

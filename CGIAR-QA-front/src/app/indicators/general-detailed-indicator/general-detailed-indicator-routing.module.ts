@@ -4,8 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../_helpers/auth.guard';
 import { Role } from '../../_models/roles.model';
 
+import {} from './general-detailed-indicator.module';
 import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator.component';
-// import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator/general-detailed-indicator.component';
 
 
 const routes: Routes = [
@@ -27,5 +27,5 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class DetailedIndicatorRoutingModule { }
+export class GeneralDetailedIndicatorRoutingModule { }
 
