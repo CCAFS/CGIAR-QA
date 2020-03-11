@@ -15,6 +15,12 @@
 .icon-log-out {
   content: url("~/assets/icons/signout_icon.svg");
 }
+.icon-pdf {
+  content: url("~/assets/icons/signout_icon.svg");
+}
+.icon-message {
+  content: url("~/assets/icons/signout_icon.svg");
+}
 .cgiar-logo {
   content: url("~/assets/icons/cgiar_logo.svg");
 }
@@ -31,6 +37,31 @@
   background-color: var(--yellow-primary);
   border-color: var(--yellow-primary);
 }
+.btn-primary.disabled,
+.btn-primary:disabled {
+  background-color: var(--yellow-primary);
+  border-color: var(--yellow-primary);
+}
+
+.btn-green-secondary,
+.btn-green-secondary:hover,
+.btn-green-secondary:not(:disabled):not(.disabled).active,
+.btn-green-secondary:not(:disabled):not(.disabled):active,
+.show > .btn-green-secondary.dropdown-toggle {
+  background-color: var( --green-secondary);
+  border-color: var( --green-secondary);
+  color: var(--white);
+}
+.btn-green-secondary.disabled,
+.btn-green-secondary:disabled {
+  color: var(--white);
+  background-color: var( --green-secondary);
+  border-color: var( --green-secondary);
+}
+
+
+
+
 /***
 *** Type-ahead
 ***/
@@ -80,11 +111,6 @@
         border-color: var(--gray-tertiary);
       }
     }
-    // .button-default{
-    //   color: var(--white);
-    //   background-color: var(--yellow-primary);
-    //   border-color: var(--yellow-primary);
-    // }
   }
 }
 
@@ -128,4 +154,12 @@
   height: $size-lg;
   width: $size-lg;
   border-radius: 50%;
+}
+
+/**
+** Informtive text ( * ... )
+**/
+.informative-text::before {
+  content: "*";
+  color: var(--red-primary);
 }

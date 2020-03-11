@@ -17,7 +17,8 @@ class AuthController {
             //Check if username and password are set
             let { username, password } = req.body;
             if (!(username && password)) {
-                throw new ErrorHandler(404, 'Missing required email and password fields.')
+                res.status(404).json({ message: 'Missing required email and password fields.' })
+                // throw new ErrorHandler(404, 'Missing required email and password fields.')
             }
 
             //Get user from database
@@ -34,10 +35,12 @@ class AuthController {
                 .where(`roleId IN (${user.roles.map(role => { return role.id })})`)
                 .andWhere("DATE(qa_general_config.start_date) <= CURDATE()")
                 .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
+                // .getSql();
                 .getRawMany();
+                // console.log(generalConfig)
             //Check if encrypted password match
             if (!user.checkIfUnencryptedPasswordIsValid(password)) {
-                throw new ErrorHandler(401, 'Password does not match.');
+                res.status(401).json({ message: 'Password does not match.' });
             }
 
             //Sing JWT, valid for ``config.jwtTime`` 
@@ -55,7 +58,8 @@ class AuthController {
             res.status(200).json({ data: user })
 
         } catch (error) {
-            next(error)
+            res.status(400).json(error)
+            // next(error)
         }
 
     };
@@ -100,8 +104,9 @@ class AuthController {
 
     static createGeneralConfig = async (req: Request, res: Response) => {
         //get body data
-        console.log(req.body)
-        let { end_date, start_date, role, status } = req.body;
+        // console.log(req.body)
+        let { end_date, start_date, role, status, peer_review_paper_guideline, policies_guideline, almetrics_guideline,
+            anual_report_guideline, innovations_guideline, partnerships_guideline, capdev_guideline, uptake_guideline, oicr_guideline } = req.body;
         try {
             const configRepository = getRepository(QAGeneralConfiguration);
             let config = new QAGeneralConfiguration();
@@ -109,6 +114,15 @@ class AuthController {
             config.start_date = start_date;
             config.status = status;
             config.role = role;
+            config.anual_report_guideline = anual_report_guideline;
+            config.innovations_guideline = innovations_guideline;
+            config.partnerships_guideline = partnerships_guideline;
+            config.capdev_guideline = capdev_guideline;
+            config.peer_review_paper_guideline = peer_review_paper_guideline;
+            config.policies_guideline = policies_guideline;
+            config.almetrics_guideline = almetrics_guideline;
+            config.uptake_guideline = uptake_guideline;
+            config.oicr_guideline = oicr_guideline;
 
 
             config = await configRepository.save(config);

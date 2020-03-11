@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute , Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
@@ -29,6 +29,7 @@ export class IndicatorsComponent implements OnInit {
   collectionSize = 0;
 
   order: string = 'id';
+  configTemplate: string;
   reverse: boolean = false;
 
   constructor(private route: ActivatedRoute,
@@ -45,6 +46,7 @@ export class IndicatorsComponent implements OnInit {
 
   ngOnInit() {
     this.indicatorType = this.route.snapshot.params.type;
+    this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
     this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
     this.getEvaluationsList(this.route.snapshot.params);
   }
@@ -89,6 +91,19 @@ export class IndicatorsComponent implements OnInit {
 
   goToView(indicatorId) {
     this.router.navigate(['detail', indicatorId], { relativeTo: this.route });
+  }
+
+  goToPDF(type: string) {
+    let pdf_url;
+    switch (type) {
+      case 'AR':
+        pdf_url = this.currentUser.config[0]["anual_report_guideline"];
+        break;
+      default:
+        pdf_url = this.currentUser.config[0][`${type}_guideline`];
+        break;
+    }
+    window.open(pdf_url, "_blank");
   }
 
 

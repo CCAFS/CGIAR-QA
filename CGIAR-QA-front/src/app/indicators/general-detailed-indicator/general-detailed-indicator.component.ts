@@ -7,6 +7,10 @@ import { User } from '../../_models/user.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from '../../services/alert.service';
 
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+
+import { GeneralStatus } from "../../_models/general-status.model"
+
 
 
 @Component({
@@ -16,29 +20,52 @@ import { AlertService } from '../../services/alert.service';
 })
 export class GeneralDetailedIndicatorComponent implements OnInit {
   currentUser: User;
+  detailedData: any[];
+  params: any;
+  spinner1 = 'spinner1';
+  spinner2 = 'spinner2';
+  gnralInfo = {};
+  statusHandler = GeneralStatus;
+  generalCommentGroup: FormGroup;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private alertService: AlertService,
     private spinner: NgxSpinnerService,
+    private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
-    // console.log(this.activeRoute.snapshot.params)
   }
 
   ngOnInit() {
-    console.log('here')
+    this.generalCommentGroup = this.formBuilder.group({
+      general_comment: ['', Validators.required]
+    });
+    this.params = this.activeRoute.snapshot.params;
+    this.showSpinner('spinner1')
+    this.getDetailedData()
   }
 
-  getDetailedData(params) {
+  getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
-      res => { },
+      res => {
+        this.detailedData = res.data;
+        this.generalCommentGroup.patchValue({general_comment: this.detailedData[0].general_comment});
+        this.gnralInfo = {
+          evaluation_id: this.detailedData[0].evaluation_id,
+          general_comment: this.detailedData[0].general_comment,
+          crp_id: this.detailedData[0].evaluation_id,
+          status: this.detailedData[0].status
+        }
+        this.hideSpinner('spinner1');
+        console.log(res, this.gnralInfo)
+      },
       error => {
         console.log("getEvaluationsList", error);
-        this.hideSpinner();
+        this.hideSpinner('spinner1');
         this.alertService.error(error);
       }
     )
@@ -49,16 +76,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   *  Spinner 
   * 
   ***/
-  showSpinner() {
-    this.spinner.show(undefined,
-      {
-        fullScreen: true,
-        type: "ball-clip-rotate-multiple"
-      }
-    );
+  showSpinner(name: string) {
+    this.spinner.show(name);
   }
-  hideSpinner() {
-    this.spinner.hide();
+
+  hideSpinner(name: string) {
+    this.spinner.hide(name);
   }
 
 }

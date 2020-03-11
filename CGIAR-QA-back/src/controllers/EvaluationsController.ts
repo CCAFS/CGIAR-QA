@@ -7,8 +7,9 @@ import { QAEvaluations } from "@entity/Evaluations";
 import { QAUsers } from "@entity/User";
 import { QAIndicators } from "@entity/Indicators";
 
-import { StatusHandler } from "@helpers/StatusHandler"
-import { RolesHandler } from "@helpers/RolesHandler"
+import { StatusHandler } from "@helpers/StatusHandler";
+import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
+import { RolesHandler } from "@helpers/RolesHandler";
 
 // import { validate } from "class-validator";
 // import { runInNewContext } from "vm";
@@ -66,7 +67,7 @@ class EvaluationsController {
         }
     }
 
-    // get evaluations dashboard by user
+    // get evaluations LIST by user
     static getListEvaluationsDash = async (req: Request, res: Response) => {
         //Get the ID from the url
         const id = req.params.id;
@@ -126,62 +127,66 @@ class EvaluationsController {
     }
 
 
-
-
-    
     // get detailed evaluation by user
     static getDetailedEvaluationDash = async (req: Request, res: Response) => {
+
         //Get the ID from the url
         const id = req.params.id;
-        const view_name = req.body.view_name;
-        const view_primary_field = req.body.view_primary_field;
+        const view_name = `qa_${req.body.type}`;
+        const view_name_psdo = `${req.body.type}`;
+        const view_primary_field = req.body.primary_column;
+        const indicatorId = req.body.indicatorId;
 
-
-
-        // check if admin
+        //Get indicator item data from view
         try {
             const userRepository = getRepository(QAUsers);
             let user = await userRepository.findOneOrFail({ where: { id } });
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
+            let rawData;
             if (isAdmin) {
+
                 const indicatorByUserRepository = getRepository(QAIndicatorUser);
-                let rawData = await indicatorByUserRepository
+                rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
-                    .select(`${view_name}.title AS title`)
-                    .addSelect(`${view_name}.crp AS crp`)
+                    .select(`${view_name_psdo}.title AS title`)
+                    .addSelect(`${view_name_psdo}.crp AS crp`)
+                    // .where("qa_indicator_user.user=:userId", { userId: id })
+                    .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
                     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                    .leftJoinAndSelect(view_name, view_name, `${view_name}.${view_primary_field}= evaluations.indicator_view_id`)
+                    .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
+                    .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
+                    .getRawMany();
+                // .getSql();
+            } else {
+                const indicatorByUserRepository = getRepository(QAIndicatorUser);
+                rawData = await indicatorByUserRepository
+                    .createQueryBuilder("qa_indicator_user")
+                    .select(`${view_name_psdo}.title AS title`)
+                    .addSelect(`${view_name_psdo}.crp AS crp`)
+                    .where("qa_indicator_user.user=:userId", { userId: id })
+                    .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
+                    .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
+                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
+                    .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .getRawMany();
                 // .getSql();
 
-                // console.log(rawData)
-                res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
-                return;
             }
 
 
-        } catch (error) {
-            console.log(error);
-            res.status(200).json({ data: [], message: "User indicators." });
-        }
 
-        //Get evaluations from database
-        try {
-            const indicatorByUserRepository = getRepository(QAIndicatorUser);
-            let rawData = await indicatorByUserRepository
-                .createQueryBuilder("qa_indicator_user")
-                .select(`${view_name}.title AS title`)
-                .addSelect(`${view_name}.crp AS crp`)
-                .where("qa_indicator_user.user=:userId", { userId: id })
-                .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
-                .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                .leftJoinAndSelect(view_name, view_name, `${view_name}.${view_primary_field}= evaluations.indicator_view_id`)
-                .getRawMany();
-            // .getSql();
 
-            // console.log(rawData)
-            res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
+
+
+
+
+
+
+
+            // res.status(200).json({ data: (rawData), message: "User evaluation detail" });
+            res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData, view_name_psdo), message: "User evaluation detail" });
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: "Could not access to evaluations." });
@@ -332,23 +337,50 @@ class EvaluationsController {
         }, {});
     };
 
-    static parseEvaluationsData(rawData) {
-        let response = []
+    static parseEvaluationsData(rawData, type?) {
+        let response = [];
+        console.log('parseEvaluationsData', type)
+        switch (type) {
+            case 'innovations':
+                for (let index = 0; index < rawData.length; index++) {
+                    const element = rawData[index];
+                    let field = element["meta_display_name"].split(' ').join("_");
 
-        for (let index = 0; index < rawData.length; index++) {
-            const element = rawData[index];
-            response.push({
-                indicator_view_name: element['evaluations_indicator_view_name'],
-                status: element['evaluations_status'],
-                type: EvaluationsController.getType(element['evaluations_status']),
-                value: element['count'],
-                id: element['evaluations_indicator_view_id'],
-                title: element['title'],
-                pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
-                crp: element['crp'],
-            })
+                    if (!element["meta_is_primay"] && element['meta_include_detail']) {
+                        response.push({
+                            enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
+                            display_name: element["meta_display_name"],
+                            display_type: DisplayTypeHandler.Paragraph,
+                            value: element[`${type}_${field}`],
+                            field_id: element["meta_id"],
+                            evaluation_id: element["evaluations_id"],
+                            general_comment: element["evaluations_general_comments"],
+                            status: element["evaluations_status"],
+                        })
 
+                    }
+                }
+                break;
+
+            default:
+                for (let index = 0; index < rawData.length; index++) {
+                    const element = rawData[index];
+                    response.push({
+                        indicator_view_name: element['evaluations_indicator_view_name'],
+                        status: element['evaluations_status'],
+                        type: EvaluationsController.getType(element['evaluations_status']),
+                        value: element['count'],
+                        id: element['evaluations_indicator_view_id'],
+                        title: element['title'],
+                        pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
+                        crp: element['crp'],
+                    })
+
+                }
+
+                break;
         }
+
 
         return response;
     }

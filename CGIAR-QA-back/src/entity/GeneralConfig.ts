@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn, OneToOne } from "typeorm";
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, Length } from "class-validator";
 
 import { QARoles } from "@entity/Roles";
 
@@ -30,8 +30,41 @@ export class QAGeneralConfiguration {
     })
     status: StatusGeneralHandler;
 
-    @Column("simple-json")
-    reporting_guidelines: { indicator: string, pdf_url: string };
+    @Column({default:''})
+    @Length(0, 200)
+    anual_report_guideline: string;
+    
+    @Column({default:''})
+    @Length(0, 200)
+    innovations_guideline: string;
+    
+    @Column({default:''})
+    @Length(0, 200)
+    partnerships_guideline: string;
+    
+    @Column({default:''})
+    @Length(0, 200)
+    capdev_guideline: string;
+    
+    @Column({default:''})
+    @Length(0, 200)
+    peer_review_paper_guideline: string;
+    
+    @Column({default:''})
+    @Length(0, 200)
+    policies_guideline: string;
+    
+    @Column({default:''})
+    @Length(0, 200)
+    almetrics_guideline: string;
+    
+    @Column({default:''})
+    @Length(0, 200)
+    uptake_guideline: string;
+    
+    @Column({default:''})
+    @Length(0, 200)
+    oicr_guideline: string;
 
     @Column()
     @CreateDateColumn()
