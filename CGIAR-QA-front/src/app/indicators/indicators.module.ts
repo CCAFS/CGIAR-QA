@@ -12,6 +12,7 @@ import { IndicatorsComponent } from './indicators.component';
 
 import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
+// import { CommentComponent } from './comment/comment.component';
 // import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator/general-detailed-indicator.component';
 
 

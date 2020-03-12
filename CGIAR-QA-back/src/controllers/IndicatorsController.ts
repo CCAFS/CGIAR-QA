@@ -40,6 +40,7 @@ class IndicatorsController {
     static getIndicatorsByUser = async (req: Request, res: Response) => {
         //Get the ID from the url
         const id = req.params.id;
+        const indicatorsRepository = getRepository(QAIndicators);
         const indicatorByUserRepository = getRepository(QAIndicatorUser);
 
         //Get user by id; if manager all indicators; 
@@ -48,12 +49,15 @@ class IndicatorsController {
             let user = await userRepository.findOneOrFail({ where: { id } });
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
             if (isAdmin) {
-                const indicators = await indicatorByUserRepository.find({
-                    relations: ["indicator"],
-                    select: ["id", 'indicator']
-                });
-                //Send the indicators object
-                res.status(200).json({ data: indicators, message: "User indicators" });
+                const indicators = await indicatorsRepository.createQueryBuilder('qa_indicators')
+                    .select('DISTINCT (`name`), description, primary_field')
+                    .getRawMany();
+                let response = []
+                for (let index = 0; index < indicators.length; index++) {
+                    response.push({ indicator: indicators[index] });
+
+                }
+                res.status(200).json({ data: response, message: "User indicators" });
                 return;
             }
 
@@ -200,17 +204,17 @@ class IndicatorsController {
         let userbyIndicator = new QAIndicatorUser();
         userbyIndicator.user = selectedUser;
         userbyIndicator.indicator = selectedIndicator;
-
+        let res_;
         try {
             userbyIndicator = await indicatorbyUsrRepository.save(userbyIndicator);
-            IndicatorsController.createEvaluations(userbyIndicator, selectedIndicator);
+            res_ = await IndicatorsController.createEvaluations(userbyIndicator, selectedIndicator);
 
         } catch (e) {
             res.status(409).json({ message: "Indicator by user not saved" });
             return;
         }
 
-        res.status(200).json({ message: "Indicator by user saved", data: userbyIndicator.id })
+        res.status(200).json({ message: "Indicator by user saved", data: res_ })
 
     }
 
@@ -258,9 +262,12 @@ class IndicatorsController {
         const evaluationsRepository = getRepository(QAEvaluations);
         try {
             let evaluations = await evaluationsRepository.find({ where: { indicator_user: indiByUsr.id } });
+            // console.log("ddd")
+            // console.log(indiByUsr.id, indicator.primary_field, evaluations)
             if (evaluations.length > 0) {
                 return;
             } else {
+                // console.log("Evaluations")
                 let view_data = await createQueryBuilder(indicator.view_name)
                     .getMany();
                 let savePromises = [];
@@ -277,7 +284,10 @@ class IndicatorsController {
 
                 }
 
-                let a = await evaluationsRepository.save(savePromises);
+                console.log(savePromises.length)
+                let response = await evaluationsRepository.save(savePromises);
+                console.log("savePromises")
+                console.log(response.length)
             }
             console.log(evaluations)
         } catch (error) {

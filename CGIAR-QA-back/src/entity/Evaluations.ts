@@ -2,9 +2,11 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Length, IsNotEmpty } from "class-validator";
 
 // import { QAUsers } from "../entity/User";
-import { QAIndicatorUser } from "@entity/IndicatorByUser";
+import { QAIndicatorUser } from "../entity/IndicatorByUser";
+// import { QAIndicatorUser } from "@entity/IndicatorByUser";clear
 
-import { StatusHandler } from "@helpers/StatusHandler"
+import { StatusHandler } from "../_helpers/StatusHandler"
+// import { StatusHandler } from "@helpers/StatusHandler"
 
 @Entity()
 export class QAEvaluations {
@@ -16,7 +18,7 @@ export class QAEvaluations {
     @ManyToOne(type => QAIndicatorUser, indicatorByUser => indicatorByUser.evaluations)
     indicator_user: QAIndicatorUser;
 
-    @Column()
+    @Column({ nullable: true })
     @IsNotEmpty({ message: 'Id by view is required' })
     indicator_view_id: number;
 
@@ -31,13 +33,13 @@ export class QAEvaluations {
     @Length(2, 200)
     @IsNotEmpty({ message: 'The view name is required' })
     indicator_view_name: string;
-    
-    @Column()
+
+    @Column({ default: "" })
     @Length(2, 200)
     @IsNotEmpty({ message: 'The CRP identifier is required' })
     crp_id: string;
-    
-    @Column()
+
+    @Column({ default: "" })
     @Length(2, 200)
     @IsNotEmpty({ message: 'The CRP identifier is required' })
     general_comments: string;

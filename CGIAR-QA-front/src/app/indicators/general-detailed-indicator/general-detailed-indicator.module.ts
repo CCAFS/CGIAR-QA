@@ -13,6 +13,7 @@ import {GeneralDetailedIndicatorRoutingModule } from './general-detailed-indicat
 import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
 import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator.component';
+import { CommentComponent } from '../comment/comment.component';
 
 
 
@@ -28,7 +29,7 @@ import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator.
         OrderModule,
         ReactiveFormsModule
     ],
-    declarations: [ GeneralDetailedIndicatorComponent]
+    declarations: [ GeneralDetailedIndicatorComponent, CommentComponent]
 })
 export class GeneralDetailedIndicatorModule { }
 

@@ -27,6 +27,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   gnralInfo = {};
   statusHandler = DetailedStatus;
   generalCommentGroup: FormGroup;
+  commentsVisible: boolean = false;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -54,7 +55,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
       res => {
         this.detailedData = res.data;
-        this.generalCommentGroup.patchValue({general_comment: this.detailedData[0].general_comment});
+        this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
           general_comment: this.detailedData[0].general_comment,
@@ -62,7 +63,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           status: this.detailedData[0].status
         }
         this.hideSpinner('spinner1');
-        console.log(res, this.gnralInfo)
+        // console.log(res, this.gnralInfo)
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -70,6 +71,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.alertService.error(error);
       }
     )
+  }
+
+  showComments() {
+    console.log('show comments')
+    this.commentsVisible = !this.commentsVisible;
+    // this.router.navigate(['comment', 1]);
   }
 
   /***

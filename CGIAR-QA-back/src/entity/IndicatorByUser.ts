@@ -1,9 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
-import { QAUsers } from "@entity/User";
-import { QAIndicators } from "@entity/Indicators";
-import { QAEvaluations } from "@entity/Evaluations";
+import { QAUsers } from "../entity/User";
+import { QAIndicators } from "../entity/Indicators";
+import { QAEvaluations } from "../entity/Evaluations";
+// import { QAUsers } from "@entity/User";
+// import { QAIndicators } from "@entity/Indicators";
+// import { QAEvaluations } from "@entity/Evaluations";
 
 
 @Entity()

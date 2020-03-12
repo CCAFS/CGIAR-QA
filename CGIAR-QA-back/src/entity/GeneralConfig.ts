@@ -1,9 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn, OneToOne } from "typeorm";
 import { IsNotEmpty, Length } from "class-validator";
 
-import { QARoles } from "@entity/Roles";
+import { QARoles } from "../entity/Roles";
 
-import { StatusGeneralHandler } from "@helpers/StatusGeneralHandler"
+import { StatusGeneralHandler } from "../_helpers/StatusGeneralHandler"
+// import { QARoles } from "@entity/Roles";
+
+// import { StatusGeneralHandler } from "@helpers/StatusGeneralHandler"
 
 @Entity()
 export class QAGeneralConfiguration {

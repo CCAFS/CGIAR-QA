@@ -174,17 +174,6 @@ class EvaluationsController {
                 // .getSql();
 
             }
-
-
-
-
-
-
-
-
-
-
-
             // res.status(200).json({ data: (rawData), message: "User evaluation detail" });
             res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData, view_name_psdo), message: "User evaluation detail" });
         } catch (error) {
@@ -339,7 +328,7 @@ class EvaluationsController {
 
     static parseEvaluationsData(rawData, type?) {
         let response = [];
-        console.log('parseEvaluationsData', type)
+        // console.log('parseEvaluationsData', type)
         switch (type) {
             case 'innovations':
                 for (let index = 0; index < rawData.length; index++) {

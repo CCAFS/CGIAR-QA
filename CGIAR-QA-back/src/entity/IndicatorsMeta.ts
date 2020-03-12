@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn,  ManyToOne } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
-import { QAIndicators } from "@entity/Indicators";
+import { QAIndicators } from "../entity/Indicators";
+// import { QAIndicators } from "@entity/Indicators";
 
 
 @Entity()

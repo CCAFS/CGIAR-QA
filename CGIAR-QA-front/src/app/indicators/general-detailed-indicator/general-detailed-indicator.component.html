@@ -11,7 +11,7 @@
                     <p *ngIf="!field.value" class="empty-value">Empty Value</p>
                 </div>
 
-                <div *ngIf="field.enable_comments" class="activate-messages-container">
+                <div *ngIf="field.enable_comments"  (click)="showComments()" class="activate-messages-container">
                     <i class="icon-message"></i>
                 </div>
             </div>
@@ -39,8 +39,9 @@
         </div>
 
     </div>
-    <!-- <div class="col-sm-4 comments-container">
-        <ngx-spinner [fullScreen]="false" [name]="spinner2" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
-            size="medium"></ngx-spinner>
-    </div> -->
+    <div *ngIf="commentsVisible" class="col-sm-4 comments-container">
+        <router-outlet></router-outlet>
+        <!-- <ngx-spinner [fullScreen]="false" [name]="spinner2" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
+            size="medium"></ngx-spinner> -->
+    </div>
 </div>
