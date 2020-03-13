@@ -4,7 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../_helpers/auth.guard';
 import { Role } from '../../_models/roles.model';
 
-// import {} from './general-detailed-indicator.module';
 import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator.component';
 import { CommentComponent } from '../comment/comment.component';
 
@@ -15,12 +14,15 @@ const routes: Routes = [
         component: GeneralDetailedIndicatorComponent,
         canActivate: [AuthGuard],
         data: { roles: [Role.asesor, Role.admin] },
-    },
-    {
-        path: 'comment/:id',
-        canActivate: [AuthGuard],
-        data: { roles: [Role.asesor, Role.admin] },
-        component: CommentComponent
+        // children: [
+        //     {
+        //         path: 'comment/:id',
+        //         component: CommentComponent,
+        //         canActivate: [AuthGuard],
+        //         data: { roles: [Role.asesor, Role.admin] },
+        //     },
+
+        // ]
     },
 ];
 

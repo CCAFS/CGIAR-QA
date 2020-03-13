@@ -4,6 +4,9 @@
   font-size: $font-xs;
   text-transform: capitalize;
 }
+.hide{
+  display: none;
+}
 
 .row {
   padding: 20px;
@@ -58,13 +61,13 @@
       }
       .activate-messages-container {
         border-radius: 50%;
-        height: 2.5em;
-        width: 2.5em;
+        height: 3em;
+        width: 3em;
         background-color: var(--white);
         border: 1px solid var(--gray-primary);
         display: flex;
         justify-content: center;
-        margin-right: -2.5em;
+        margin-right: -2.75em;
         i {
           height: 2em;
           margin: auto;

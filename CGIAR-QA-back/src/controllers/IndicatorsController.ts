@@ -190,13 +190,23 @@ class IndicatorsController {
         const indicatorRepository = getRepository(QAIndicators);
         const indicatorbyUsrRepository = getRepository(QAIndicatorUser);
 
-        let selectedUser, selectedIndicator = null;
+        let selectedUser, selectedIndicator, hasAssignedIndicators = null;
 
         try {
             selectedUser = await userRepository.findOneOrFail(user_id);
             selectedIndicator = await indicatorRepository.findOneOrFail(indicator_id);
+            hasAssignedIndicators = await indicatorbyUsrRepository.createQueryBuilder('qa_indicator_user')
+                .where('qa_indicator_user.userId=:userId', { userId: user_id })
+                .andWhere('qa_indicator_user.indicatorId=:indicatorId', { indicatorId: indicator_id })
+                .getMany();
+
+            if (hasAssignedIndicators.length > 0) {
+                res.status(200).json({ message: "Indicator already assigned to user", data: [] })
+                return;
+            }
 
         } catch (error) {
+            console.log(error)
             res.status(404).json({ message: "User / Indicator not found" });
             return;
         }
@@ -214,6 +224,7 @@ class IndicatorsController {
             return;
         }
 
+        // res.status(200).json({ message: "Indicator by user saved", data:hasAssignedIndicators })
         res.status(200).json({ message: "Indicator by user saved", data: res_ })
 
     }

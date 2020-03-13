@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EvaluationsService } from "../../services/evaluations.service";
@@ -27,13 +27,21 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   gnralInfo = {};
   statusHandler = DetailedStatus;
   generalCommentGroup: FormGroup;
-  commentsVisible: boolean = false;
+
+  @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
+
+
+  commentContainerData = {
+    is_active: false,
+  }
+
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private alertService: AlertService,
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
+    private renderer: Renderer2,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
     this.authenticationService.currentUser.subscribe(x => {
@@ -42,7 +50,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("feneral detailed")
+    // console.log("general detailed")
     this.generalCommentGroup = this.formBuilder.group({
       general_comment: ['', Validators.required]
     });
@@ -74,9 +82,13 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   showComments() {
-    console.log('show comments')
-    this.commentsVisible = !this.commentsVisible;
-    // this.router.navigate(['comment', 1]);
+    // console.log('show comments')
+    // console.log(this.commentsElem.nativeElement.offsetLeft);
+    this.renderer.setStyle(this.commentsElem.nativeElement, 'top', '20em');
+    // this.commentContainerData.is_active = true;
+    this.commentContainerData.is_active = !this.commentContainerData.is_active;
+    // this.updateView.emit();
+    // this.router.navigate(['comment']);
   }
 
   /***
