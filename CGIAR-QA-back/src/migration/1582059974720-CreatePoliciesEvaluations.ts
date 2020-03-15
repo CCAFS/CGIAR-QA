@@ -11,7 +11,7 @@ export class CreatePoliciesEvaluations1582059974720 implements MigrationInterfac
         const evaluationsRepository = getRepository(QAEvaluations);
 
         let indByUsr = await indicatorUsrRepository.find({
-            where: { userId: 3 },
+            where: { userId: 26 },
         });
 
 
@@ -22,7 +22,7 @@ export class CreatePoliciesEvaluations1582059974720 implements MigrationInterfac
             let element= view_data[index];
             
             const evaluations = new QAEvaluations();
-            evaluations.indicator_view_id = element['policy_id'] ;
+            evaluations.indicator_view_id = element['project_innovation_id'] ;
             evaluations.indicator_view_name = indByUsr[0].indicator.view_name;
             evaluations.indicator_user = indByUsr[0];
             evaluations.status = StatusHandler.Pending;

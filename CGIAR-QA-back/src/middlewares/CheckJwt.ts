@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
-import config from "../config/config";
-const { ErrorHandler } = require("../_helpers/ErrorHandler")
+import config from "@config/config";
+const { ErrorHandler } = require("@helpers/ErrorHandler")
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     //Get the jwt token from the head

@@ -1,0 +1,89 @@
+@import "../../assets/variables.scss";
+
+h2 {
+  text-align: center;
+  margin: 1em;
+  font-size: $font-lg;
+}
+
+.sub-header {
+  margin: 1em 0;
+  padding: 0;
+  .model-link-container {
+    padding: 10px;
+    cursor: pointer;
+    background-color: var(--gray-primary);
+    border-radius: 0.3em;
+    height: 3em;
+    // width: 8em;
+    margin-right: 2em;
+    display: flex;
+    i {
+      height: 2em;
+    }
+    p {
+      margin: 0;
+      vertical-align: middle;
+      line-height: 2em;
+      padding: 0 0.5em;
+    }
+    hr {
+      position: relative;
+      background: var(--gray-tertiary);
+      width: 2px;
+      height: 2.9em;
+      top: -10px;
+      margin: 0 auto;
+    }
+  }
+  .circle {
+    margin: 0 1em;
+  }
+  .text-right {
+    justify-content: flex-end;
+  }
+}
+
+.table-header {
+  tr {
+    th {
+      text-align: center;
+      vertical-align: middle;
+      padding: 0.75em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    th.active {
+      background-color: var(--green-primary);
+      color: var(--white);
+    }
+  }
+}
+
+.table-body {
+  td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.75em;
+  }
+  th {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.75em;
+  }
+}
+.circle.complete {
+  background-color: var(--green-primary);
+}
+.circle.pending {
+  background-color: var(--red-primary);
+}
+
+.pagination-container {
+  pagination {
+    .pagination {
+      margin: 0;
+      background-color: var(--blue-primary);
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Router } from '@angular/router';
 
 import { DashboardService } from "../../services/dashboard.service";
 import { AuthenticationService } from "../../services/authentication.service";
@@ -17,16 +17,10 @@ export class AssessorDashboardComponent implements OnInit {
   currentUser: User;
   dashboardData: any[];
 
-  tmpArray = [
-    { total: 100, value: 20, type: "success" },
-    { total: 1000, value: 40, type: "danger" },
-    { total: 100, value: 20, type: "warning" },
-  ]
-  // tmp = { total: 100, complete: 20, incomplete: 80 };
-
-  constructor(private dashService: DashboardService, 
-              private authenticationService: AuthenticationService,
-              private alertService: AlertService) {
+  constructor(private dashService: DashboardService,
+    private authenticationService: AuthenticationService,
+    private router: Router,
+    private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
@@ -36,11 +30,16 @@ export class AssessorDashboardComponent implements OnInit {
     this.getDashData();
   }
 
+  goToView(view: string, primary_column: string) {
+    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+  }
+
 
   getDashData() {
     this.dashService.getDashboardEvaluations(this.currentUser.id).subscribe(
       res => {
-        this.dashboardData =  this.dashService.groupData(res.data);
+        this.dashboardData = this.dashService.groupData(res.data);
+        console.log(this.dashboardData)
       },
       error => {
         console.log("getDashData", error);
@@ -48,17 +47,5 @@ export class AssessorDashboardComponent implements OnInit {
       }
     )
   }
-
-  // private groupData(data) {
-  //   for (var property in data) {
-  //     if (data.hasOwnProperty(property)) {
-  //       const ele = data[property];
-  //       ele['total'] = ele.reduce((sum, currentValue) => {
-  //         return sum + parseInt( currentValue.value);
-  //       }, 0);
-  //     }
-  //   }
-  //   return (data);
-  // }
 
 }

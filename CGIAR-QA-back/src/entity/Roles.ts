@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAPermissions } from "../entity/Permissions";
+// import { QAPermissions } from "@entity/Permissions";
 
 
 @Entity()

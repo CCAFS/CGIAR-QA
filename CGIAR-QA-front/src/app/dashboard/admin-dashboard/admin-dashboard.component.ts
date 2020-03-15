@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { DashboardService } from "../../services/dashboard.service";
 import { AuthenticationService } from "../../services/authentication.service";
@@ -18,7 +19,7 @@ export class AdminDashboardComponent implements OnInit {
   crps: CRP[];
   dashboardData: any[];
   configurationData: any[];
-  selectedProgram:string;
+  selectedProgram: string;
 
 
   programsForm = this.formBuilder.group({
@@ -27,13 +28,14 @@ export class AdminDashboardComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,
+    private router: Router,
     private authenticationService: AuthenticationService,
     private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
   }
-  
+
   ngOnInit() {
     this.getAllDashData();
     this.getAllCRP();
@@ -42,8 +44,12 @@ export class AdminDashboardComponent implements OnInit {
 
 
   onProgramChange({ target }, value) {
-    this.selectedProgram = (value.acronym === '' || value.acronym === ' ') ? value.name: value.acronym;
+    this.selectedProgram = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
     this.getAllDashData(value.crp_id)
+  }
+
+  goToView(view: string, primary_column: string) {
+    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(),  primary_column]); });
   }
 
   // all evaluations
@@ -63,7 +69,7 @@ export class AdminDashboardComponent implements OnInit {
   getAllCRP() {
     this.dashService.getCRPS().subscribe(
       res => {
-        this.crps =(res.data);
+        this.crps = (res.data);
         this.crps.unshift({ id: 0, acronym: 'All', crp_id: 'undefined', name: '0', is_marlo: false })
       },
       error => {
@@ -74,7 +80,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // indicators by CRPS
-  getIndicatorsByCRP(){
+  getIndicatorsByCRP() {
     this.dashService.getIndicatorsByCRP().subscribe(
       res => {
         // console.log(res.data);

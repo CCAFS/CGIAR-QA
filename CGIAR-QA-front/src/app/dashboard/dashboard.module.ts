@@ -8,6 +8,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 
+
+// import { IndicatorsModule } from './indicators/indicators.module';
+
 import { AssessorDashboardComponent } from './assesor-dashboard/assessor-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 

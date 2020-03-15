@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { getRepository, In } from "typeorm";
 import { validate, validateOrReject } from "class-validator";
 
-import { QAUsers } from "../entity/User";
-import { QARoles } from "../entity/Roles";
-import { QAPermissions } from "../entity/Permissions";
+import { QAUsers } from "@entity/User";
+import { QARoles } from "@entity/Roles";
+import { QAPermissions } from "@entity/Permissions";
 
 // import { QAPolicies } from "../entity/PoliciesView";
 
-const { ErrorHandler, handleError } = require("../_helpers/ErrorHandler");
+// const { ErrorHandler, handleError } = require("../_helpers/ErrorHandler");
 
 
 

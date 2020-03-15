@@ -1,0 +1,68 @@
+<h2>List of {{indicatorTypeName}}</h2>
+<div class="row col sub-header">
+    <div class="col row text-left">
+        <div class="model-link-container" (click)="goToPDF('AR')">
+            <i class="icon-pdf"></i>
+            <hr>
+            <p>AR Template</p>
+        </div>
+        <div class="model-link-container" (click)="goToPDF(indicatorType)">
+            <i class="icon-pdf"></i>
+            <hr>
+            <p>{{indicatorTypeName}} Template</p>
+        </div>
+    </div>
+    <div class="col row text-right">
+        <div class="circle complete"></div>
+        <p>Complete</p>
+        <div class="circle pending" style="margin-left: 50px;"></div>
+        <p>Pending</p>
+    </div>
+</div>
+<table class="table table-bordered">
+    <thead class="table-header">
+        <tr>
+            <th scope="col" [class.active]="order === 'id'" (click)="setOrder('id')">
+                Id
+            </th>
+            <th scope="col" [class.active]="order === 'title'" (click)="setOrder('title')">
+                Title
+            </th>
+            <th scope="col" [class.active]="order === 'crp'" (click)="setOrder('crp')">
+                CRP</th>
+            <th scope="col" [class.active]="order === 'pdf'" (click)="setOrder('pdf')">
+                PDF
+            </th>
+            <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status')">
+                QA Status
+            </th>
+            <th style="width: 2em;" (click)="setOrder(null)">
+                <span [hidden]="reverse">▼</span>
+                <span [hidden]="!reverse">▲</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="table-body">
+        <tr *ngFor="let item of returnedArray | orderBy: order:reverse:'case-insensitive'">
+            <th scope="row">{{ item.id }}</th>
+            <td style="cursor: pointer;" (click)="goToView(item.id)">
+                {{ item.title }}
+            </td>
+            <td>{{ item.crp }}</td>
+            <td>{{ item.pdf }}</td>
+            <td>
+                <div class="circle {{ item.status }}"></div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="d-flex justify-content-center p-2 pagination-container">
+    <pagination [rotate]="false" [totalItems]="collectionSize" [maxSize]="3" (pageChanged)="pageChanged($event)">
+    </pagination>
+</div>
+
+
+<!-- Loading Spinner -->
+<ngx-spinner>
+    <p class="loading">Loading...</p>
+</ngx-spinner>

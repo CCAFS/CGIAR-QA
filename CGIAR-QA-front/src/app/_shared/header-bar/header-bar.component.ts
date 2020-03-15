@@ -22,6 +22,7 @@ export class HeaderBarComponent implements OnInit {
 
   constructor(private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
+      console.log(x)
       this.currentUser = x;
       this.ngOnInit();
     });
@@ -31,17 +32,8 @@ export class HeaderBarComponent implements OnInit {
     this.getHeaderLinks()
   }
 
-  goToView(view: string) {
-    if (this.currentUser) {
-      switch (view) {
-        case "dashboard":
-          this.router.navigate([`/dashboard/${this.currentUser.roles[0].description.toLocaleLowerCase()}`])
-          break;
-
-        default:
-          break;
-      }
-    }
+  goToView(view: string, primary_column: string) {
+    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
 
   getHeaderLinks() {

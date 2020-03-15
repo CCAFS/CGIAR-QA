@@ -1,0 +1,31 @@
+<div class="comments-container">
+    <i class="icon-close"></i>
+    <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
+
+    <div class="comment-container">
+        <div class="comment-body">
+            <div class="comment-title">
+                <div>
+                    <span>ADDED BY </span>
+                    <p>On date at hour</p>
+                </div>
+                <div>
+                    <i class="icon-star-gray"></i>
+                    <i class="icon-remove"></i>
+                </div>
+            </div>
+            <hr style="margin: 0;">
+            <p class="comment">
+                buscare a otra, a otra oooooh a otra!!!!!!!!!
+            </p>
+        </div>
+
+    </div>
+    <div class="add-comment-container">
+        <h2>ADD COMMENT</h2>
+        <form [formGroup]="commentGroup">
+            <textarea cols="30" rows="3" formControlName="comment"></textarea>
+        </form>
+        <button type="button" class="btn btn-primary">ADD</button>
+    </div>
+</div>

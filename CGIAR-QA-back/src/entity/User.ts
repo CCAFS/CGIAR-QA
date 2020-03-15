@@ -4,6 +4,8 @@ import * as bcrypt from "bcryptjs";
 
 import { QARoles } from "../entity/Roles";
 import { QAIndicatorUser } from "../entity/IndicatorByUser";
+// import { QARoles } from "@entity/Roles";
+// import { QAIndicatorUser } from "@entity/IndicatorByUser";
 
 
 @Entity()
