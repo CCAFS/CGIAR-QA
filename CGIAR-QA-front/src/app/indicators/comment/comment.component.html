@@ -3,11 +3,11 @@
     <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
 
     <div class="comment-container">
-        <div class="comment-body">
+        <div class="comment-body" *ngFor="let comment of commentsByCol">
             <div class="comment-title">
                 <div>
-                    <span>ADDED BY </span>
-                    <p>On date at hour</p>
+                    <span>ADDED BY {{comment.user.username}} </span>
+                    <p>On date at {{comment.created_at}}</p>
                 </div>
                 <div>
                     <i class="icon-star-gray"></i>
@@ -16,7 +16,7 @@
             </div>
             <hr style="margin: 0;">
             <p class="comment">
-                buscare a otra, a otra oooooh a otra!!!!!!!!!
+                {{comment.comment}}
             </p>
         </div>
 
@@ -26,6 +26,6 @@
         <form [formGroup]="commentGroup">
             <textarea cols="30" rows="3" formControlName="comment"></textarea>
         </form>
-        <button type="button" class="btn btn-primary">ADD</button>
+        <button type="button" class="btn btn-primary" (click)="addComment()">ADD</button>
     </div>
 </div>

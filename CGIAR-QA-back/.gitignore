@@ -6,3 +6,5 @@ tmp/
 temp/
 ./ormconfig.json
 ormconfig.json
+./ormconfig_.json
+ormconfig_.json

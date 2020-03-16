@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2  } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { EvaluationsService } from "../../services/evaluations.service";
 import { AuthenticationService } from "../../services/authentication.service";
-import { User } from '../../_models/user.model';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from '../../services/alert.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { User } from '../../_models/user.model';
 import { DetailedStatus } from "../../_models/general-status.model"
 
 
@@ -31,10 +31,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
 
 
-  commentContainerData = {
-    is_active: false,
-  }
-
+  activeCommentArr = [];
+  fieldIndex: number;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -70,6 +68,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           crp_id: this.detailedData[0].evaluation_id,
           status: this.detailedData[0].status
         }
+        this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
+
         this.hideSpinner('spinner1');
         // console.log(res, this.gnralInfo)
       },
@@ -81,12 +81,19 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
   }
 
-  showComments() {
+  showComments(index: number, field:any) {
+    this.fieldIndex = index;
+    field.clicked = !field.clicked;
+    this.activeCommentArr[index] = !this.activeCommentArr[index];
+    // console.log(this.activeCommentArr)
+    // console.log(this.activeCommentArr[index])
+
     // console.log('show comments')
-    // console.log(this.commentsElem.nativeElement.offsetLeft);
-    this.renderer.setStyle(this.commentsElem.nativeElement, 'top', '20em');
+    console.log(this.commentsElem.nativeElement.getBoundingClientRect());
+    console.log(this.commentsElem.nativeElement.offsetTop);
+    // this.renderer.setStyle(this.commentsElem.nativeElement, 'top', '20em');
     // this.commentContainerData.is_active = true;
-    this.commentContainerData.is_active = !this.commentContainerData.is_active;
+    // this.commentContainerData.is_active = !this.commentContainerData.is_active;
     // this.updateView.emit();
     // this.router.navigate(['comment']);
   }

@@ -26,8 +26,13 @@ class AuthController {
             const grnlConfg = getRepository(QAGeneralConfiguration);
             let user: QAUsers;
 
-            user = await userRepository.findOneOrFail({ where: { username } });
-
+            user = await userRepository.findOneOrFail({
+                where: [
+                    { username },
+                    { email: username }
+                ]
+            });
+            // console.log(user)
             // get general config by user role
             let generalConfig = await grnlConfg
                 .createQueryBuilder("qa_general_config")
@@ -37,7 +42,7 @@ class AuthController {
                 .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
                 // .getSql();
                 .getRawMany();
-                // console.log(generalConfig)
+            // console.log(generalConfig)
             //Check if encrypted password match
             if (!user.checkIfUnencryptedPasswordIsValid(password)) {
                 res.status(401).json({ message: 'Password does not match.' });
@@ -58,6 +63,7 @@ class AuthController {
             res.status(200).json({ data: user })
 
         } catch (error) {
+            console.log(error)
             res.status(400).json(error)
             // next(error)
         }

@@ -9,7 +9,7 @@ export class CreateCRPFromExisting1582645717857 implements MigrationInterface {
         const crpRepository = getRepository(QACrp);
 
         const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-            'SELECT * from `global_units` where global_unit_type_id in (3,1) ',
+            'SELECT * from `global_units` where global_unit_type_id in (3,1) AND institution_id IS NOT NULL',
             {},
             {}
         );

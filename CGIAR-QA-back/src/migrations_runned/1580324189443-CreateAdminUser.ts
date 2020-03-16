@@ -11,28 +11,28 @@ export class CreateAdminUser1580324189443 implements MigrationInterface {
         const userRepository = getRepository(QAUsers);
         const indicatorbyUsrRepository = getRepository(QAIndicatorUser);
         let user = new QAUsers();
-        user.username = "assessor-test";
+        user.username = "felipe-admin";
         user.password = "12345678";
-        user.name = "Assessor";
-        user.email = "assessor.elvira@cgiar.org";
+        user.name = "Felipe";
+        user.email = "felipe.admin@cgiar.org";
         user.hashPassword();
         const roleRepository = getRepository(QARoles);
-        let role = await roleRepository.find({
-            select: ["id"]
-        });
-        user.roles = role;
-
-        const indicatorRepository = getRepository(QAIndicators);
-        let indicator = await indicatorRepository.find({
-            select: ["id"]
-        });
-
         user = await userRepository.save(user);
+        // let role = await roleRepository.find({
+        //     select: ["id"]
+        // });
+        // user.roles = role;
+
+        // const indicatorRepository = getRepository(QAIndicators);
+        // let indicator = await indicatorRepository.find({
+        //     select: ["id"]
+        // });
+
         
-        let indiByUsr = new QAIndicatorUser();
-        indiByUsr.indicator = indicator[0];
-        indiByUsr.user = user;
-        await indicatorbyUsrRepository.save(indiByUsr);
+        // let indiByUsr = new QAIndicatorUser();
+        // indiByUsr.indicator = indicator[0];
+        // indiByUsr.user = user;
+        // await indicatorbyUsrRepository.save(indiByUsr);
 
     }
 

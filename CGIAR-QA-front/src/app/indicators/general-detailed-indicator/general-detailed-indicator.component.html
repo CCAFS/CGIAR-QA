@@ -12,7 +12,7 @@
                 </div>
 
                 <!-- <div *ngIf="field.enable_comments" (click)="showComments(comment)"   class="activate-messages-container"> -->
-                <div *ngIf="field.enable_comments" (click)="showComments(); comment.updateData(field,params)"   class="activate-messages-container">
+                <div #commentsElem *ngIf="field.enable_comments" [ngClass]="{'active' : field.clicked }"  (click)="showComments(i, field); comment.updateData(field,params)"   class="activate-messages-container">
                     <i class="icon-message"></i>
                 </div>
             </div>
@@ -40,8 +40,7 @@
         </div>
 
     </div>
-    <div #commentsElem [ngClass]="{'hide' : !commentContainerData.is_active }"  class="col-sm-4 comments-container">
-    <!-- <div  class="col-sm-4 comments-container">  *ngIf="commentContainerData.is_active" -->
+    <div  [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }"  class="col-sm-4 comments-container">
         <app-comment #comment></app-comment>
     </div>
 </div>
