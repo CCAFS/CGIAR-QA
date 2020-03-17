@@ -59,6 +59,9 @@
         font-size: $primary-fs;
         margin: 0.5em 0;
       }
+      .activate-messages-container.active{
+        background-color: gray;
+      }
       .activate-messages-container {
         border-radius: 50%;
         height: 3em;

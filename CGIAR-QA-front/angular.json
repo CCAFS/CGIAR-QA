@@ -69,7 +69,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "qa-app:build"
+            "browserTarget": "qa-app:build",
+            "port": 4200
           },
           "configurations": {
             "production": {
