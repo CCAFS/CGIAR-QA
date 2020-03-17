@@ -1,6 +1,7 @@
 // import 'module-alias/register';
 // require('module-alias/register');
-// import "reflect-metadsregister')
+import "reflect-metadata";
+require('module-alias/register')
 import { createConnection } from "typeorm";
 import * as express from "express";
 import * as bodyParser from "body-parser";
