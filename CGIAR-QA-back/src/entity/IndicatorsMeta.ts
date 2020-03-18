@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn,  ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn,  ManyToOne, OneToMany } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAIndicators } from "../entity/Indicators";
+import { QAComments } from "../entity/Comments";
 // import { QAIndicators } from "@entity/Indicators";
 
 
@@ -45,4 +46,7 @@ export class QAIndicatorsMeta {
         default : true
     })
     include_detail: boolean;
+
+    @OneToMany(type => QAComments, comment => comment.meta)
+    comments:QAComments;
 }

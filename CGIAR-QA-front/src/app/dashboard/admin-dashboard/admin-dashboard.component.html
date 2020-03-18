@@ -1,15 +1,16 @@
 <div class="row justify-content-center dashboard-container">
     <div class="col col-programs">
-        <p class="card-title">Programs/Platforms</p>
+        <p class="card-title">Programs/Platforms ({{selectedProgram}})</p>
         <div class="card">
             <div class="card-body">
                 <form [formGroup]="programsForm" class="programs-form btn-group-vertical" (ngSubmit)="onSubmit()">
                     <div class="" *ngFor="let program of crps | sortBy:'asc':'name'; let i=index ">
                         <input (change)="onProgramChange($event, program)" id="program-{{program.id}}" type="radio"
-                            class="custom-control-input" value="{{program.id}}" name="program" formControlName="program"
-                            checked="{{i==0}}">
+                            class="custom-control-input" value="{{program.id}}" name="program"
+                            formControlName="program">
                         <label class="custom-control-label"
-                            for="program-{{program.id}}">{{(program.acronym === '' || program.acronym === ' ') ? program.name: program.acronym}}</label>
+                            for="program-{{program.id}}">{{(program.acronym === '' || program.acronym === ' ') ? program.name: program.acronym}}
+                            {{getPendings(program)}}</label>
                     </div>
                 </form>
             </div>
@@ -17,7 +18,7 @@
         </div>
     </div>
     <div class="col col-progress">
-        <p class="card-title">Progress on Quality Assurance for {{selectedProgram}}</p>
+        <p class="card-title">Progress on Quality Assessment by Assessors</p>
         <div class="card">
             <div class="card-body">
                 <div class="card-title example-container d-flex"
@@ -50,18 +51,14 @@
     </div>
     <div class="col col-activity">
         <div class="title-button">
-            <p class="card-title">Enable / Disable QA</p>
-            <div class="custom-switch qa-toggle">
-                <input type="checkbox" class="custom-control-input" id="switch1">
-                <label class="custom-control-label" for="switch1"></label>
-            </div>
+            <p class="card-title">QA Settings</p>
         </div>
         <div class="card">
             <div class="row row-padding">
                 <div class="col-sm">
                 </div>
                 <div class="col-sm">
-                    Submit QA process
+                    Enable Assessment
                 </div>
                 <div class="col-sm">
                     Submit comments
@@ -69,7 +66,8 @@
             </div>
             <div *ngFor="let indicator of configurationData | keyvalue" class="activity-container">
                 <div class="row row-padding activity-item">
-                    <div class="col-sm" (click)="indicator.value.isCollapsed = !indicator.value.isCollapsed">
+                    <!--<div class="col-sm" (click)="indicator.value.isCollapsed = !indicator.value.isCollapsed">-->
+                    <div class="col-sm">
                         {{indicator.key}}
                     </div>
                     <div class="col-sm">

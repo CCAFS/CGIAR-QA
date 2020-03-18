@@ -15,6 +15,7 @@ import { AssessorDashboardComponent } from './assesor-dashboard/assessor-dashboa
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 
 import { SortByPipe } from '../pipes/sort-by.pipe';
+import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
 
 
 @NgModule({
@@ -26,6 +27,6 @@ import { SortByPipe } from '../pipes/sort-by.pipe';
         CollapseModule.forRoot(),
         ReactiveFormsModule
     ],
-    declarations: [AssessorDashboardComponent, SortByPipe, AdminDashboardComponent]
+    declarations: [AssessorDashboardComponent, SortByPipe, AdminDashboardComponent, CrpDashboardComponent]
 })
 export class DashboardModule { }

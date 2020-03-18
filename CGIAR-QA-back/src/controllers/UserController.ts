@@ -5,6 +5,7 @@ import { validate, validateOrReject } from "class-validator";
 import { QAUsers } from "@entity/User";
 import { QARoles } from "@entity/Roles";
 import { QAPermissions } from "@entity/Permissions";
+import { QACrp } from "@entity/CRP";
 
 // import { QAPolicies } from "../entity/PoliciesView";
 
@@ -40,8 +41,9 @@ class UserController {
     static newUser = async (req: Request, res: Response) => {
 
         //Get parameters from the body
-        let { username, password, roles, name, email } = req.body;
+        let { username, password, roles, name, email, crpId } = req.body;
         const roleRepository = getRepository(QARoles);
+        const crpRepository = getRepository(QACrp);
 
         let user = new QAUsers();
         user.username = username;
@@ -62,8 +64,14 @@ class UserController {
                 return;
             }
 
+            if(crpId){
+                let crp = await crpRepository.findOneOrFail(crpId);
+                user.crp = crp;
+            }
+
         } catch (error) {
-            res.status(409).json({ message: "Role does not exists" });
+            console.log(error)
+            res.status(409).json({ message: "Role does not exists", data: error });
             return;
         }
 

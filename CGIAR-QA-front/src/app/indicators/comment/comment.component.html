@@ -3,22 +3,26 @@
     <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
 
     <div class="comment-container">
-        <div class="comment-body" *ngFor="let comment of commentsByCol">
-            <div class="comment-title">
-                <div>
-                    <span>ADDED BY {{comment.user.username}} </span>
-                    <p>On date at {{comment.created_at}}</p>
+        <ng-container *ngFor="let comment of commentsByCol">
+            <div class="comment-body" *ngIf="!comment.is_deleted">
+                <div class="comment-title">
+                    <div>
+                        <span>ADDED BY {{comment.user.username}} </span>
+                        <p>On {{comment.createdAt}}</p>
+                    </div>
+                    <div>
+                        <i *ngIf="!comment.approved" (click)="updateComment('approved', comment)"
+                            class="icon-star-gray"></i>
+                        <i *ngIf="comment.approved" (click)="updateComment('approved', comment)" class="icon-star-gold"></i>
+                        <i *ngIf="comment.user.id === currentUser.id" (click)="updateComment('is_deleted', comment)" class="icon-remove"></i>
+                    </div>
                 </div>
-                <div>
-                    <i class="icon-star-gray"></i>
-                    <i class="icon-remove"></i>
-                </div>
+                <hr style="margin: 0;">
+                <p class="comment">
+                    {{comment.detail}}
+                </p>
             </div>
-            <hr style="margin: 0;">
-            <p class="comment">
-                {{comment.comment}}
-            </p>
-        </div>
+        </ng-container>
 
     </div>
     <div class="add-comment-container">
@@ -28,4 +32,6 @@
         </form>
         <button type="button" class="btn btn-primary" (click)="addComment()">ADD</button>
     </div>
+    <ngx-spinner [fullScreen]="false" [name]="spinner2" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
+        size="medium"></ngx-spinner>
 </div>

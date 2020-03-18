@@ -1,13 +1,16 @@
-<nav class="navbar navbar-expand header-bar" *ngIf="currentUser && router.url !== '/qa-close'">
+<nav *ngIf="isCRP()">
+    <img src="../../../assets/img/fk-header.png" alt="">
+</nav>
+
+
+
+<nav class="navbar navbar-expand header-bar" *ngIf="currentUser && !isCRP() && router.url !== '/qa-close'">
     <div class="logo-container">
         <i class="cgiar-logo"></i>
         <h3>QA PLATFORM</h3>
     </div>
     <div class="row navbar-container">
         <div class="upper-navbar">
-            <!-- <div class="panel admin-panel" *ngIf="currentUser.roles[0].description === allRoles.admin">
-                <a routerLink="/admin">Admin Panel</a>
-            </div> -->
             <div class="panel">
                 <p>{{currentUser.name}}</p>
                 <p>{{currentUser.email}}</p>
@@ -19,14 +22,11 @@
         </div>
 
         <div class="navbar-nav" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: false}">
-            <!-- <a class="nav-item nav-link" (click)="goToView('dashboard')">Home</a> -->
             <a class="nav-item nav-link"
                 routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
             <a class="nav-item nav-link" *ngFor="let indicator of indicators; index as i"
                 (click)="goToView(indicator.indicator.name, indicator.indicator.primary_field)">{{indicator.indicator.name}}</a>
-            <!-- [routerLink]="['/indicator', indicator.indicator.name.toLowerCase() ]">{{indicator.indicator.name}}</a> -->
 
-            <!-- <a class="nav-item nav-link"  routerLink="/admin">other</a> -->
         </div>
     </div>
 </nav>

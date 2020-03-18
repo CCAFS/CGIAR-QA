@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAPermissions } from "../entity/Permissions";
+import { RolesHandler } from "../_helpers/RolesHandler";
 // import { QAPermissions } from "@entity/Permissions";
 
 
@@ -11,10 +12,17 @@ export class QARoles {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    /*@Column()
     @Length(3, 50)
     @IsNotEmpty({ message: 'Description is required' })
-    description: string;
+    description: string;*/
+
+    @Column({
+        type: "enum",
+        enum: RolesHandler,
+        default: RolesHandler.guest
+    })
+    description:RolesHandler
 
     @Column()
     @CreateDateColumn()

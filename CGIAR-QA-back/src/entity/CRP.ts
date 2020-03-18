@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany} from "typeorm";
 import { Length } from "class-validator";
+
+import { QAUsers } from "../entity/User"
 
 @Entity()
 @Unique(["crp_id"])
@@ -30,4 +32,7 @@ export class QACrp {
 
     @Column()
     is_marlo: boolean;
+
+    @OneToMany(type => QAUsers, user => user.crp)
+    user: QAUsers;
 }

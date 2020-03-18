@@ -1,12 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, ManyToOne, ObjectID } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, ManyToOne, OneToMany } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
-// import { QAUsers } from "../entity/User";
 import { QAIndicatorUser } from "../entity/IndicatorByUser";
-// import { QAIndicatorUser } from "@entity/IndicatorByUser";clear
+import { QAComments } from "../entity/Comments";
+import { StatusHandler } from "../_helpers/StatusHandler";
 
-import { StatusHandler } from "../_helpers/StatusHandler"
+
+// import { QAUsers } from "../entity/User";
+// import { QAIndicatorUser } from "@entity/IndicatorByUser";clear
 // import { StatusHandler } from "@helpers/StatusHandler"
+
 
 @Entity()
 export class QAEvaluations {
@@ -51,4 +54,7 @@ export class QAEvaluations {
     @Column()
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(type => QAComments, comment => comment.evaluation)
+    comments:QAComments;
 }

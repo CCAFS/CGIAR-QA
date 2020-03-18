@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { DashboardService } from "../../services/dashboard.service";
@@ -20,11 +20,10 @@ export class AdminDashboardComponent implements OnInit {
   dashboardData: any[];
   configurationData: any[];
   selectedProgram: string;
+  selectedProg = {}
 
+  programsForm;
 
-  programsForm = this.formBuilder.group({
-    program: ['']
-  })
 
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,
@@ -34,6 +33,9 @@ export class AdminDashboardComponent implements OnInit {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
+    this.programsForm = this.formBuilder.group({
+      program: ['0', Validators.required]
+    })
   }
 
   ngOnInit() {
@@ -49,7 +51,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   goToView(view: string, primary_column: string) {
-    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(),  primary_column]); });
+    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
 
   // all evaluations
@@ -57,6 +59,7 @@ export class AdminDashboardComponent implements OnInit {
     this.dashService.getAllDashboardEvaluations(crp_id).subscribe(
       res => {
         this.dashboardData = this.dashService.groupData(res.data);
+        console.log(this.dashboardData)
       },
       error => {
         console.log("getAllDashData", error);
@@ -71,6 +74,7 @@ export class AdminDashboardComponent implements OnInit {
       res => {
         this.crps = (res.data);
         this.crps.unshift({ id: 0, acronym: 'All', crp_id: 'undefined', name: '0', is_marlo: false })
+        this.selectedProgram = this.crps[0].acronym;
       },
       error => {
         console.log("getAllCRP", error);
@@ -91,6 +95,10 @@ export class AdminDashboardComponent implements OnInit {
         this.alertService.error(error);
       }
     )
+  }
+
+  getPendings(data) {
+    console.log(data)
   }
 
 }

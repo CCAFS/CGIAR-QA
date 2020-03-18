@@ -184,48 +184,83 @@ class IndicatorsController {
     };
 
     static assignIndicatorToUser = async (req: Request, res: Response) => {
-        let { user_id, indicator_id } = req.body;
+        let { user_id, indicator_id, crpId } = req.body;
 
         const userRepository = getRepository(QAUsers);
         const indicatorRepository = getRepository(QAIndicators);
         const indicatorbyUsrRepository = getRepository(QAIndicatorUser);
+        const evaluationsRepository = getRepository(QAEvaluations);
 
         let selectedUser, selectedIndicator, hasAssignedIndicators = null;
 
-        try {
+        if (crpId && indicator_id === null) {
             selectedUser = await userRepository.findOneOrFail(user_id);
-            selectedIndicator = await indicatorRepository.findOneOrFail(indicator_id);
-            hasAssignedIndicators = await indicatorbyUsrRepository.createQueryBuilder('qa_indicator_user')
-                .where('qa_indicator_user.userId=:userId', { userId: user_id })
-                .andWhere('qa_indicator_user.indicatorId=:indicatorId', { indicatorId: indicator_id })
-                .getMany();
+           
+            try {
+                hasAssignedIndicators = await evaluationsRepository.createQueryBuilder("qa_evaluations")
+                    .select('indicators.id AS indicatorId')
+                    .leftJoin(`qa_indicators`, 'indicators', 'indicators.view_name = qa_evaluations.indicator_view_name')
+                    .groupBy('indicator_view_name')
+                    .getRawMany();
 
-            if (hasAssignedIndicators.length > 0) {
-                res.status(200).json({ message: "Indicator already assigned to user", data: [] })
+                let savePromises = [];
+                // let crpIndicators = hasAssignedIndicators.map((data) => { return data.indicatorId })
+                for (let index = 0; index < hasAssignedIndicators.length; index++) {
+                    const element = hasAssignedIndicators[index];
+                    let userbyIndicator = new QAIndicatorUser();
+                    userbyIndicator.user = selectedUser;
+                    userbyIndicator.indicator = element.indicatorId;
+
+                    savePromises.push(userbyIndicator);
+
+                }
+                let res_ = await indicatorbyUsrRepository.save(savePromises);
+                // console.log(hasAssignedIndicators)
+                res.status(200).json({ message: "Indicator by user saved", data: res_ })
+            } catch (error) {
+                console.log(error)
+            }
+
+        } else {
+
+            try {
+                selectedUser = await userRepository.findOneOrFail(user_id);
+                selectedIndicator = await indicatorRepository.findOneOrFail(indicator_id);
+                hasAssignedIndicators = await indicatorbyUsrRepository.createQueryBuilder('qa_indicator_user')
+                    .where('qa_indicator_user.userId=:userId', { userId: user_id })
+                    .andWhere('qa_indicator_user.indicatorId=:indicatorId', { indicatorId: indicator_id })
+                    .getMany();
+
+                if (hasAssignedIndicators.length > 0) {
+                    res.status(200).json({ message: "Indicator already assigned to user", data: [] })
+                    return;
+                }
+
+            } catch (error) {
+                console.log(error)
+                res.status(404).json({ message: "User / Indicator not found" });
                 return;
             }
 
-        } catch (error) {
-            console.log(error)
-            res.status(404).json({ message: "User / Indicator not found" });
-            return;
+            let userbyIndicator = new QAIndicatorUser();
+            userbyIndicator.user = selectedUser;
+            userbyIndicator.indicator = selectedIndicator;
+            let res_;
+            try {
+                userbyIndicator = await indicatorbyUsrRepository.save(userbyIndicator);
+                res_ = await IndicatorsController.createEvaluations(userbyIndicator, selectedIndicator);
+
+            } catch (e) {
+                res.status(409).json({ message: "Indicator by user not saved" });
+                return;
+            }
+
+            // res.status(200).json({ message: "Indicator by user saved", data:hasAssignedIndicators })
+            res.status(200).json({ message: "Indicator by user saved", data: res_ })
         }
 
-        let userbyIndicator = new QAIndicatorUser();
-        userbyIndicator.user = selectedUser;
-        userbyIndicator.indicator = selectedIndicator;
-        let res_;
-        try {
-            userbyIndicator = await indicatorbyUsrRepository.save(userbyIndicator);
-            res_ = await IndicatorsController.createEvaluations(userbyIndicator, selectedIndicator);
 
-        } catch (e) {
-            res.status(409).json({ message: "Indicator by user not saved" });
-            return;
-        }
 
-        // res.status(200).json({ message: "Indicator by user saved", data:hasAssignedIndicators })
-        res.status(200).json({ message: "Indicator by user saved", data: res_ })
 
     }
 
