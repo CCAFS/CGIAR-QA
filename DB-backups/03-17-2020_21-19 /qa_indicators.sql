@@ -1,0 +1,2 @@
+INSERT INTO `qa_indicators` (`id`, `name`, `description`, `view_name`, `createdAt`, `updatedAt`, `primary_field`) VALUES (1, 'Policies', 'This is the indicator for policies', 'qa_policies', '2020-2-12 15:30:30', '2020-2-12 15:57:41', 'project_innovation_id');
+INSERT INTO `qa_indicators` (`id`, `name`, `description`, `view_name`, `createdAt`, `updatedAt`, `primary_field`) VALUES (3, 'Innovations', 'This is the indicator for Innovations', 'qa_innovations', '2020-2-17 08:37:16', '2020-2-21 16:08:40', 'project_innovation_id');

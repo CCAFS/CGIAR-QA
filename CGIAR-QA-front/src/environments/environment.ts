@@ -4,8 +4,12 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3300'
+  apiUrl: 'http://felipeelvira-tasv.localhost.run:3300'
 };
+// export const environment = {
+//   production: false,
+//   apiUrl: 'http://localhost:3300'
+// };
 
 /*
  * For easier debugging in development mode, you can import the following file
