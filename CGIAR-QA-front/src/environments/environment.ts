@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://felipeelvira-tasv.localhost.run:3300'
+  apiUrl: 'http://60c0ca19.ngrok.io'
 };
 // export const environment = {
 //   production: false,
