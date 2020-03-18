@@ -1,9 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToMany, ManyToOne, JoinTable, OneToMany } from "typeorm";
 import { Length, IsEmail, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
 
 import { QARoles } from "../entity/Roles";
 import { QAIndicatorUser } from "../entity/IndicatorByUser";
+import { QACrp } from "../entity/CRP";
+import { QAComments } from "../entity/Comments";
 // import { QARoles } from "@entity/Roles";
 // import { QAIndicatorUser } from "@entity/IndicatorByUser";
 
@@ -53,6 +55,9 @@ export class QAUsers {
     @CreateDateColumn()
     createdAt: Date;
 
+    @OneToMany(type => QAComments, comment => comment.user)
+    comments:QAComments
+
     @Column()
     @UpdateDateColumn()
     updatedAt: Date;
@@ -61,6 +66,9 @@ export class QAUsers {
         eager: true, cascade: true
     })
     indicators: QAIndicatorUser[];
+
+    @ManyToOne(type => QACrp, crp => crp.user, { eager: true })
+    crp: QACrp;
 
     // @Column("simple-array", { nullable: true })
     // indicators: string[];

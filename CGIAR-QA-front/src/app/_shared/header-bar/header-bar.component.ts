@@ -51,6 +51,17 @@ export class HeaderBarComponent implements OnInit {
 
   }
 
+  isCRP() {
+    if (this.currentUser) {
+      let mapped_roles = this.currentUser.roles.map(role => { return role.description });
+      let has_roles = mapped_roles.find(role_ => {
+        return this.allRoles.crp.indexOf(role_) > -1
+      });
+      return has_roles
+    }
+    return false;
+  }
+
   logout() {
     this.authenticationService.logout();
     this.router.navigate(['/login']);

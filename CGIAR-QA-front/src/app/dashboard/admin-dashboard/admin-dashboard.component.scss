@@ -73,6 +73,7 @@
         color: var(--white);
         border-color: var(--yellow-primary);
         background-color: var(--yellow-primary);
+        border-radius: 50%;
       }
     }
   }
@@ -90,7 +91,7 @@
     }
     .activity-container {
       .activity-item {
-        padding: 10px 15px;
+        padding: 10px 10px;
         // margin: 10px 15px 0;
         border-bottom: 1px solid var(--gray-primary);
       }

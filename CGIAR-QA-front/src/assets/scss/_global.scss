@@ -21,11 +21,17 @@
 .icon-message {
   content: url("~/assets/icons/comment_icon.svg");
 }
+.icon-message-inactive {
+  content: url("~/assets/icons/comment_icon_inactive.svg");
+}
 .icon-close {
   content: url("~/assets/icons/close_icon.svg");
 }
 .icon-star-gray {
   content: url("~/assets/icons/starred_comment.svg");
+}
+.icon-star-gold {
+  content: url("~/assets/icons/starred_comment_gold.svg");
 }
 .cgiar-logo {
   content: url("~/assets/icons/cgiar_logo.svg");
@@ -123,6 +129,9 @@
 /***
 ** Toggle
 ***/
+.custom-control-label::before{
+  border-radius: 50%;
+}
 
 .qa-toggle.custom-switch {
   padding-left: 0;

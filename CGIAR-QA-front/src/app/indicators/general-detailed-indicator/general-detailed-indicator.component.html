@@ -11,9 +11,12 @@
                     <p *ngIf="!field.value" class="empty-value">Empty Value</p>
                 </div>
 
-                <!-- <div *ngIf="field.enable_comments" (click)="showComments(comment)"   class="activate-messages-container"> -->
-                <div #commentsElem *ngIf="field.enable_comments" [ngClass]="{'active' : field.clicked }"  (click)="showComments(i, field); comment.updateData(field,params)"   class="activate-messages-container">
+                
+                <div #commentsElem *ngIf="gnralInfo.status !== statusHandler.Complete && field.enable_comments" (click)="showComments(i, field); comment.updateData(field,params)"   class="activate-messages-container">
                     <i class="icon-message"></i>
+                </div>
+                <div *ngIf="gnralInfo.status === statusHandler.Complete && field.enable_comments" class="activate-messages-container">
+                    <i class="icon-message-inactive"></i>
                 </div>
             </div>
 
@@ -32,8 +35,8 @@
                 </form>
                 <div class="bton-container">
                     <button type="button" class="btn btn-green-secondary"
-                        [disabled]="!generalCommentGroup.valid">SAVE</button>
-                    <button type="button"
+                        [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete" (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
+                    <button type="button" (click)="updateEvaluation('status', detailedData)"
                         class="btn btn-primary">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
                 </div>
             </div>

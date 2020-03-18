@@ -29,19 +29,21 @@ export class QAPolicies {
     included_AR: string;
 
     @ViewColumn()
-    policy_id: number;
+    //policy_id: number;
+    project_innovation_id: number;
 
     @ViewColumn()
     title: string;
 
     @ViewColumn()
-    narrative_evidence: string;
+    //narrative_evidence: string;
+    evidence_link: string;
 
     @ViewColumn()
     year: number;
 
-    @ViewColumn()
-    policy_type: string;
+    //@ViewColumn()
+    //policy_type: string;
     
     @ViewColumn()
     countries: string;

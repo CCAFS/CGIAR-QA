@@ -24,7 +24,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   params: any;
   spinner1 = 'spinner1';
   spinner2 = 'spinner2';
-  gnralInfo = {};
+  gnralInfo = {
+    status: "",
+    evaluation_id: '',
+    general_comment: '',
+    crp_id: ''
+  };
   statusHandler = DetailedStatus;
   generalCommentGroup: FormGroup;
 
@@ -61,6 +66,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
       res => {
         this.detailedData = res.data;
+        //console.log(res.data)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -81,21 +87,51 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
   }
 
-  showComments(index: number, field:any) {
+  // convenience getter for easy access to form fields
+  get formData() { return this.generalCommentGroup.controls; }
+
+  showComments(index: number, field: any) {
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
-    // console.log(this.activeCommentArr)
-    // console.log(this.activeCommentArr[index])
+  }
 
-    // console.log('show comments')
-    console.log(this.commentsElem.nativeElement.getBoundingClientRect());
-    console.log(this.commentsElem.nativeElement.offsetTop);
-    // this.renderer.setStyle(this.commentsElem.nativeElement, 'top', '20em');
-    // this.commentContainerData.is_active = true;
-    // this.commentContainerData.is_active = !this.commentContainerData.is_active;
-    // this.updateView.emit();
-    // this.router.navigate(['comment']);
+  updateEvaluation(type: string, data: any) {
+    let evaluationData = {
+      evaluation_id: data[0].evaluation_id,
+      general_comments: data[0].general_comments,
+      status: data[0].status,
+    };
+
+    switch (type) {
+      case 'general_comment':
+        if (this.generalCommentGroup.invalid) {
+          this.alertService.error('A general comment is required', false)
+          return;
+        }
+        evaluationData['general_comments'] = this.formData.general_comment.value
+        break;
+      case "status":
+        evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
+        break;
+
+      default:
+        break;
+    }
+    console.log(evaluationData)
+
+    this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
+      res => {
+        console.log(res)
+        this.getDetailedData();
+      },
+      error => {
+        console.log("updateEvaluation", error);
+        this.hideSpinner('spinner1');
+        this.alertService.error(error);
+      }
+    )
+
   }
 
   /***

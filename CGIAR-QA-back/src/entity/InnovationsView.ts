@@ -7,15 +7,13 @@ import { Length, IsNotEmpty } from "class-validator";
         SELECT * FROM qa_innovations_view 
         WHERE included_AR = 'Yes' 
         AND phase_name = 'AR'
+        AND phase_year = '2019'
     `
 })
 export class QAInnovations{
     @ViewColumn()
     crp_id: string;
-
-    @ViewColumn()
-    crp: string;
-
+    
     @ViewColumn()
     phase_name: string;
 
@@ -38,6 +36,9 @@ export class QAInnovations{
     year: number;
 
     @ViewColumn()
+    stage: string;
+
+    @ViewColumn()
     evidence_link: string;
 
     @ViewColumn()
@@ -48,4 +49,31 @@ export class QAInnovations{
     
     @ViewColumn()
     pdf: string;
+        
+    @ViewColumn()
+    link: string;
+    
+    @ViewColumn()
+    contrib_crp: string;
+    
+    @ViewColumn()
+    contributors: string;
+    
+    @ViewColumn()
+    leader: string;
+    
+    @ViewColumn()
+    is_clear_lead:string
+    
+    @ViewColumn()
+    regions:string
+    
+    @ViewColumn()
+    geographic_scope:string
+    
+    @ViewColumn()
+    description_stage:string
+    
+
+
 }
