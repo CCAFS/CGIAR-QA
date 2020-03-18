@@ -2,10 +2,11 @@ import { Router } from "express";
 import AuthController from "@controllers/AuthController";
 import { RolesHandler } from "@helpers/RolesHandler";
 
-const { checkJwt } = require( "@middleware/checkJwt");
-const { checkRole } = require( "@middleware/CheckRole");
+import  * as checkJwt_ from "../middlewares/CheckJwt";
+import  * as checkRole_  from "../middlewares/CheckRole";
 
-
+const checkJwt = checkJwt_.checkJwt
+const checkRole = checkRole_.checkRole
 
 
 const router = Router();
