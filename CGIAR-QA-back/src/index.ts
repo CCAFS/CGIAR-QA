@@ -3,10 +3,14 @@
 import "reflect-metadata";
 require('module-alias/register')
 import { createConnection } from "typeorm";
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import * as helmet from "helmet";
-import * as cors from "cors";
+import express from "express";
+import bodyParser from "body-parser";
+import helmet from "helmet";
+import cors from "cors";
+//import * as express from "express";
+//import * as bodyParser from "body-parser";
+//import * as helmet from "helmet";
+//import * as cors from "cors";
 // import Routes from "./routes/IndexRoute";
 import Routes from "@routes/IndexRoute";
 import config from "@config/config";
