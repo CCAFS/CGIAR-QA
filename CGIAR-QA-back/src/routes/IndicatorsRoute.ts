@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { checkJwt } from "@middleware/checkJwt";
-import { checkRole } from "@middleware/checkRole";
+import  * as checkJwt_ from "../middlewares/CheckJwt";
+import  * as checkRole_  from "../middlewares/CheckRole";
+
+const checkJwt = checkJwt_.checkJwt
+const checkRole = checkRole_.checkRole
 // const { checkJwt } = require( "@middlewares/checkJwt");
 // const { checkRole } = require( "@middlewares/checkRole");
 
