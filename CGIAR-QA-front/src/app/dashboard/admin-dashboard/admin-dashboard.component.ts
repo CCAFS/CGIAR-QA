@@ -8,6 +8,7 @@ import { AlertService } from '../../services/alert.service';
 
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
+import { Observable, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -39,9 +40,11 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAllDashData();
-    this.getAllCRP();
-    this.getIndicatorsByCRP();
+
+    this.loadDashData();
+    // this.getAllDashData();
+    // this.getAllCRP();
+    // this.getIndicatorsByCRP();
   }
 
 
@@ -53,19 +56,41 @@ export class AdminDashboardComponent implements OnInit {
   goToView(view: string, primary_column: string) {
     this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
+  getPendings(data) {
+    //console.log(data)
+  }
 
+
+  async loadDashData() {
+    let responses = forkJoin([
+      this.getAllDashData()
+    ])
+    // console.log('res', responses)
+    responses.subscribe(res => {
+      console.log('res', res)
+    })
+  }
+
+
+  /**
+   * 
+   * 
+   * GET DASHBOARD data
+   * 
+   */
   // all evaluations
-  getAllDashData(crp_id?) {
-    this.dashService.getAllDashboardEvaluations(crp_id).subscribe(
-      res => {
-        this.dashboardData = this.dashService.groupData(res.data);
-        console.log(this.dashboardData)
-      },
-      error => {
-        console.log("getAllDashData", error);
-        this.alertService.error(error);
-      }
-    )
+  getAllDashData(crp_id?): Observable<any> {
+    return this.dashService.getAllDashboardEvaluations(crp_id).pipe();
+    // .subscribe(
+    //   res => {
+    //     this.dashboardData = this.dashService.groupData(res.data);
+    //     console.log(this.dashboardData)
+    //   },
+    //   error => {
+    //     console.log("getAllDashData", error);
+    //     this.alertService.error(error);
+    //   }
+    // )
   }
 
   // all active CRPS
@@ -97,8 +122,6 @@ export class AdminDashboardComponent implements OnInit {
     )
   }
 
-  getPendings(data) {
-    //console.log(data)
-  }
+
 
 }
