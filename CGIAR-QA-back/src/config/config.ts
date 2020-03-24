@@ -1,5 +1,5 @@
 export default {
     jwtSecret: "@QEGTUI",
-    port: 3300,
+    port: 8800,
     jwtTime: '5h',
 };
