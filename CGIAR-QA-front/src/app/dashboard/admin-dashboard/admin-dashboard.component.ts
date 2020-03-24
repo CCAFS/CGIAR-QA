@@ -98,7 +98,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   getPendings(data) {
-    console.log(data)
+    //console.log(data)
   }
 
 }

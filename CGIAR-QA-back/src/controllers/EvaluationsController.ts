@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getRepository, In } from "typeorm";
+import { getRepository, In, getConnection, QueryRunner } from "typeorm";
 
 import { QAIndicatorUser } from "@entity/IndicatorByUser";
 import { QACrp } from "@entity/CRP";
@@ -28,29 +28,43 @@ class EvaluationsController {
     static getEvaluationsDash = async (req: Request, res: Response) => {
         //Get the ID from the url
         const id = req.params.id;
+        let queryRunner = getConnection().createQueryBuilder();
 
         //Get evaluations from database
         try {
-            const indicatorByUserRepository = getRepository(QAIndicatorUser);
-            let rawData = await indicatorByUserRepository
-                .createQueryBuilder("qa_indicator_user")
-                .where("qa_indicator_user.user=:userId", { userId: id })
-                .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
-                .addSelect("`indicator`.primary_field AS primary_field")
-                .addSelect("COUNT(evaluations.`status`)", "count")
-                .groupBy("evaluations.`status`")
-                .orderBy("evaluations.`status`", 'ASC')
-                .addGroupBy("evaluations.`indicator_view_name`")
-                .getRawMany();
+            //const indicatorByUserRepository = getRepository(QAIndicatorUser);
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                evaluations.status AS status,
+                evaluations.indicator_view_name AS indicator_view_name,
+                indicator.primary_field AS primary_field,
+                COUNT (DISTINCT evaluations.id) AS count
+            FROM
+                qa_indicator_user qa_indicator_user
+            LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+            LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+            WHERE
+                qa_indicator_user.userId = :user_Id
+            GROUP BY
+                evaluations.status,
+                evaluations.indicator_view_name,
+                indicator.primary_field
+            ORDER BY
+                evaluations.status ASC `,
+                { user_Id: id },
+                {}
+            );
+            // console.log(query, parameters)
+            let rawData = await queryRunner.connection.query(query, parameters);
 
             let response = []
             for (let index = 0; index < rawData.length; index++) {
                 const element = rawData[index];
                 response.push({
-                    indicator_view_name: element['evaluations_indicator_view_name'],
-                    status: element['evaluations_status'],
-                    type: EvaluationsController.getType(element['evaluations_status']),
+                    indicator_view_name: element['indicator_view_name'],
+                    status: element['status'],
+                    type: EvaluationsController.getType(element['status']),
                     value: element['count'],
                     label: `${element['count']}`,
                     primary_field: element["primary_field"]
@@ -85,7 +99,7 @@ class EvaluationsController {
                 let rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .select(`${view_name}.title AS title`)
-                    //.addSelect(`${view_name}.crp AS crp`)
+                    .addSelect(`${view_name}.crp_id AS crp`)
                     .andWhere(`${view_name}.phase_year=:phase_year`, { phase_year: '2019' })
                     .andWhere(`evaluations.indicator_view_name=:view_name`, { view_name })
                     .andWhere('title IS NOT NULL')
@@ -112,7 +126,7 @@ class EvaluationsController {
             let rawData = await indicatorByUserRepository
                 .createQueryBuilder("qa_indicator_user")
                 .select(`${view_name}.title AS title`)
-                //.addSelect(`${view_name}.crp AS crp`)
+                .addSelect(`${view_name}.crp_id AS crp`)
                 .where("qa_indicator_user.user=:userId", { userId: id })
                 //.andWhere(`${view_name}.phase_year=:phase_year`, { phase_year: '2019' })
                 .andWhere('title IS NOT NULL')
@@ -160,9 +174,9 @@ class EvaluationsController {
                     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
                     .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
-                    .groupBy('meta.id')
+                    //.groupBy('meta.id')
                     .getRawMany();
-                    //.getSql();
+                //.getSql();
             } else {
                 const indicatorByUserRepository = getRepository(QAIndicatorUser);
                 rawData = await indicatorByUserRepository
@@ -175,7 +189,7 @@ class EvaluationsController {
                     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
                     .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
-                    .groupBy('meta.id')
+                    //.groupBy('meta.id')
                     .getRawMany();
                 //.getSql();
 
@@ -217,36 +231,86 @@ class EvaluationsController {
     static getAllEvaluationsDash = async (req: Request, res: Response) => {
 
         let { crp_id } = req.query;
+        let queryRunner = getConnection().createQueryBuilder();
+
+
         try {
             const indicatorByUserRepository = getRepository(QAIndicatorUser);
             let rawData;
             if (crp_id !== undefined && crp_id !== "undefined") {
-                rawData = await indicatorByUserRepository
-                    .createQueryBuilder("qa_indicator_user")
-                    .where("`evaluations`.`crp_id` = :crp_id", { crp_id: crp_id })
-                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                    .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
-                    .addSelect("COUNT(evaluations.`status`)", "count")
-                    .addSelect("`indicator`.primary_field AS primary_field")
-                    .groupBy("evaluations.`status`")
-                    .orderBy("evaluations.`status`", 'ASC')
-                    .addGroupBy("evaluations.`indicator_view_name`")
-                    // .getSql()
-                    .getRawMany()
+                // rawData = await indicatorByUserRepository
+                //     .createQueryBuilder("qa_indicator_user")
+                //     .where("`evaluations`.`crp_id` = :crp_id", { crp_id: crp_id })
+                //     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                //     .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
+                //     .addSelect("COUNT(evaluations.`status`)", "count")
+                //     .addSelect("`indicator`.primary_field AS primary_field")
+                //     .groupBy("evaluations.`status`")
+                //     .orderBy("evaluations.`status`", 'ASC')
+                //     .addGroupBy("evaluations.`indicator_view_name`")
+                //     // .getSql()
+                //     .getRawMany()
 
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT
+                    evaluations.status AS status,
+                    evaluations.crp_id AS crp_id,
+                    evaluations.indicator_view_name AS indicator_view_name,
+                    indicator.primary_field AS primary_field,
+                    COUNT (DISTINCT evaluations.id) AS count
+                FROM
+                    qa_indicator_user qa_indicator_user
+                LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+                LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+                WHERE
+                    crp_id = :crp_id
+                GROUP BY
+                    evaluations.status,
+                    evaluations.indicator_view_name,
+                    evaluations.crp_id,
+                    indicator.primary_field
+                ORDER BY
+                    evaluations.status ASC `,
+                    { crp_id: crp_id },
+                    {}
+                );
+                rawData = await queryRunner.connection.query(query, parameters);
             } else {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT
+                    evaluations.status AS status,
+                   
+                    evaluations.indicator_view_name AS indicator_view_name,
+                    indicator.primary_field AS primary_field,
+                    COUNT (DISTINCT evaluations.id) AS count
+                FROM
+                    qa_indicator_user qa_indicator_user
+                LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+                LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+                GROUP BY
+                    evaluations.status,
+                    evaluations.indicator_view_name,
+                   
+                    indicator.primary_field
+                ORDER BY
+                    evaluations.status ASC `,
+                    {},
+                    {}
+                );
+                rawData = await queryRunner.connection.query(query, parameters);
+                // console.log(query, parameters)
 
-                rawData = await indicatorByUserRepository
-                    .createQueryBuilder("qa_indicator_user")
-                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                    .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
-                    .addSelect("`indicator`.primary_field AS primary_field")
-                    .addSelect("COUNT(evaluations.`status`)", "count")
-                    .groupBy("evaluations.`status`")
-                    .orderBy("evaluations.`status`", 'ASC')
-                    .addGroupBy("evaluations.`indicator_view_name`")
-                    // .getSql()
-                    .getRawMany()
+                // rawData = await indicatorByUserRepository
+                //     .createQueryBuilder("qa_indicator_user")
+                //     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                //     .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
+                //     .addSelect("`indicator`.primary_field AS primary_field")
+                //     .addSelect("COUNT(evaluations.`status`)", "count")
+                //     .groupBy("evaluations.`status`")
+                //     .orderBy("evaluations.`status`", 'ASC')
+                //     .addGroupBy("evaluations.`indicator_view_name`")
+                //     .getSql()
+                // .getRawMany()
             }
 
             let response = []
@@ -254,11 +318,11 @@ class EvaluationsController {
             for (let index = 0; index < rawData.length; index++) {
                 const element = rawData[index];
                 response.push({
-                    indicator_view_name: element['evaluations_indicator_view_name'],
-                    status: element['evaluations_status'],
-                    type: EvaluationsController.getType(element['evaluations_status']),
+                    indicator_view_name: element['indicator_view_name'],
+                    status: element['status'],
+                    type: EvaluationsController.getType(element['status']),
                     value: element['count'],
-                    crp_id: (crp_id) ? element['evaluations_crp_id'] : null,
+                    crp_id: (crp_id) ? element['crp_id'] : null,
                     label: `${element['count']}`,
                     primary_field: element["primary_field"]
                 })
@@ -266,6 +330,7 @@ class EvaluationsController {
             }
 
             let result = EvaluationsController.groupBy(response, 'indicator_view_name');
+            // res.status(200).json({ data: rawData, message: "All evaluations" });
             res.status(200).json({ data: result, message: "All evaluations" });
         } catch (error) {
             console.log(error);
@@ -291,20 +356,44 @@ class EvaluationsController {
 
     //get indicators by crp (admin dashboard)
     static getIndicatorsByCrp = async (req: Request, res: Response) => {
-        const indiUserRepository = getRepository(QAIndicatorUser);
-        // const evaluationsRepository = getRepository(QAEvaluations);
+        //const indiUserRepository = getRepository(QAIndicatorUser);
+        let queryRunner = getConnection().createQueryBuilder();
         try {
 
-            let evalData = await indiUserRepository.createQueryBuilder("qa_indicator_user")
-                .select('qa_indicator_user.`userId`, `evaluations`.`indicatorUserId`, crps.name, crps.acronym')
-                .leftJoinAndSelect(QAEvaluations, "evaluations", "evaluations.indicatorUserId  = qa_indicator_user.id")
-                .leftJoinAndSelect(QAIndicators, "indicators", "indicators.view_name = evaluations.indicator_view_name")
-                .leftJoinAndSelect(QACrp, "crps", "evaluations.crp_id = crps.crp_id")
-                .groupBy('`evaluations`.crp_id,evaluations.`indicator_view_name`')
-                .orderBy('evaluations.`crp_id`', "ASC")
-                .getRawMany();
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                indicators.name AS indicator_view_name,
+                evaluations.crp_id AS crp_id,
+                crps.name,
+                crps.acronym
+            FROM
+                qa_indicator_user qa_indicator_user
+            LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+            LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+            LEFT JOIN qa_crp crps ON evaluations.crp_id = crps.crp_id
+            GROUP BY
+                evaluations.crp_id,
+                indicators.name,
+                evaluations.indicator_view_name
+            ORDER BY
+                evaluations.crp_id ASC `,
+                {},
+                {}
+            );
+            let evalData = await queryRunner.connection.query(query, parameters);
+            // []
+            // await indiUserRepository.createQueryBuilder("qa_indicator_user")
+            //     .select('qa_indicator_user.`userId`, `evaluations`.`indicatorUserId`, crps.name, crps.acronym')
+            //     .leftJoinAndSelect(QAEvaluations, "evaluations", "evaluations.indicatorUserId  = qa_indicator_user.id")
+            //     .leftJoinAndSelect(QAIndicators, "indicators", "indicators.view_name = evaluations.indicator_view_name")
+            //     .leftJoinAndSelect(QACrp, "crps", "evaluations.crp_id = crps.crp_id")
+            //     .groupBy('`evaluations`.crp_id,evaluations.`indicator_view_name`')
+            //     .orderBy('evaluations.`crp_id`', "ASC")
+            //     //.getRawMany();
+            //     .getSql();
+            //console.log(evalData)
 
-            evalData = EvaluationsController.groupBy(evalData, 'indicators_name')
+            evalData = EvaluationsController.groupBy(evalData, 'indicator_view_name')
 
             res.status(200).json({ data: evalData, message: "Indicators by crp" });
 

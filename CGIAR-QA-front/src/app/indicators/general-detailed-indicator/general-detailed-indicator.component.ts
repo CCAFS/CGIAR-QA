@@ -109,6 +109,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           this.alertService.error('A general comment is required', false)
           return;
         }
+        // this.showSpinner('spinner1');
         evaluationData['general_comments'] = this.formData.general_comment.value
         break;
       case "status":
@@ -118,11 +119,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       default:
         break;
     }
-    console.log(evaluationData)
+    // console.log(evaluationData)
 
     this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
       res => {
         console.log(res)
+        this.alertService.success(res.message)
         this.getDetailedData();
       },
       error => {

@@ -56,9 +56,9 @@ export class IndicatorsComponent implements OnInit {
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
       res => {
         this.evaluationList = res.data;
-        // console.log(this.evaluationList)
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.orderPipe.transform(this.evaluationList.slice(0, 10), 'id');
+        console.log(this.returnedArray)
         this.hideSpinner();
       },
       error => {

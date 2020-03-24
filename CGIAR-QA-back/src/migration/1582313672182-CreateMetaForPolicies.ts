@@ -6,14 +6,17 @@ import { QAIndicators } from "../entity/Indicators";
 export class CreateMetaForPolicies1582313672182 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
+        let view_name = 'qa_policies'
+        let primary_field = "policy_id";
+        let view_indicator_id = 1;
 
-        let pols_meta = getConnection().getMetadata('qa_innovations').ownColumns.map(column => column.propertyName);
-        let primary = "project_innovation_id";
+        
+        let pols_meta = getConnection().getMetadata(view_name).ownColumns.map(column => column.propertyName);
 
         const indicatorRepository = getRepository(QAIndicators);
         const indicatorMetaRepository = getRepository(QAIndicatorsMeta);
 
-        let indicator_ = await indicatorRepository.findOneOrFail(3);
+        let indicator_ = await indicatorRepository.findOneOrFail(view_indicator_id);
         let savePromises = [];
         console.log(pols_meta)
         for (let index = 0; index < pols_meta.length; index++) {
@@ -27,7 +30,7 @@ export class CreateMetaForPolicies1582313672182 implements MigrationInterface {
             indicator_meta.include_general = true;
             indicator_meta.indicator = indicator_;
 
-            indicator_meta.is_primay = (element == 'project_innovation_id') ? true : false;
+            indicator_meta.is_primay = (element == primary_field) ? true : false;
             savePromises.push(indicator_meta);
 
         }

@@ -4,12 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://60c0ca19.ngrok.io'
+  apiUrl: 'http://localhost:3300'
 };
-// export const environment = {
-//   production: false,
-//   apiUrl: 'http://localhost:3300'
-// };
 
 /*
  * For easier debugging in development mode, you can import the following file

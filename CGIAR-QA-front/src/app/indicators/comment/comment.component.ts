@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -22,6 +22,8 @@ export class CommentComponent implements OnInit {
   commentsByCol: any = [];
   currentUser: User;
 
+  @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
+
 
   constructor(
     private activeRoute: ActivatedRoute,
@@ -40,17 +42,24 @@ export class CommentComponent implements OnInit {
     this.commentGroup = this.formBuilder.group({
       comment: ['', Validators.required]
     });
+    this.dataFromItem = [];
   }
 
   updateData(data: any, params: any) {
     Object.assign(this.dataFromItem, data, params)
-    //console.log('comment component data=>', this.dataFromItem, this.currentUser)
-    this.showSpinner('spinner2');
+    // console.log('comment component data=>', this.dataFromItem)
+    this.showSpinner('spinner_Comment');
     this.getItemCommentData();
   }
 
   // convenience getter for easy access to form fields
   get formData() { return this.commentGroup.controls; }
+
+  closeComments() {
+    // this.dataFromItem.clicked = !this.dataFromItem.clicked;
+    this.parentFun.emit();
+    // console.log(this.dataFromItem)
+  }
 
   addComment() {
 
@@ -113,12 +122,12 @@ export class CommentComponent implements OnInit {
     let params = { evaluationId: this.dataFromItem.evaluation_id, metaId: this.dataFromItem.field_id }
     this.evaluationService.getDataComment(params).subscribe(
       res => {
-        this.hideSpinner('spinner2');
+        this.hideSpinner('spinner_Comment');
         this.commentsByCol = res.data
       },
       error => {
         console.log("getItemCommentData", error);
-        this.hideSpinner('spinner2');
+        this.hideSpinner('spinner_Comment');
         this.alertService.error(error);
       }
     )
@@ -131,11 +140,14 @@ export class CommentComponent implements OnInit {
   * 
   ***/
   showSpinner(name: string) {
-    this.spinner.show(name);
+    console.log(name)
+    this.spinner.show();
+    // this.spinner.show(name);
   }
 
   hideSpinner(name: string) {
-    this.spinner.hide(name);
+    this.spinner.hide();
+    // this.spinner.hide(name);
   }
 
 }

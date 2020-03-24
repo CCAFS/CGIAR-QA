@@ -16,8 +16,8 @@ export class QAPolicies {
     @ViewColumn()
     crp_id: string;
 
-    @ViewColumn()
-    crp: string;
+    // @ViewColumn()
+    // crp: string;
 
     @ViewColumn()
     phase_name: string;
@@ -30,22 +30,54 @@ export class QAPolicies {
 
     @ViewColumn()
     //policy_id: number;
-    project_innovation_id: number;
+    policy_id: number;
 
     @ViewColumn()
     title: string;
 
     @ViewColumn()
-    //narrative_evidence: string;
-    evidence_link: string;
+    narrative_evidence: string;
+    //evidence_link: string;
 
     @ViewColumn()
     year: number;
 
-    //@ViewColumn()
-    //policy_type: string;
+    @ViewColumn()
+    policy_type: string;
     
     @ViewColumn()
-    countries: string;
+    maturity_level: string;
+    
+    @ViewColumn()
+    policy_owners: string;
+    
+    @ViewColumn()
+    sub_ido: string;
+    
+    @ViewColumn()
+    contrib_crp: string;
+    
+    @ViewColumn()
+    gender: string;
 
+    @ViewColumn()
+    youth: string;
+
+    @ViewColumn()
+    capdev: string;
+    
+    @ViewColumn()
+    climate: string;
+    
+    @ViewColumn()
+    geographic_scope: string;
+    
+    @ViewColumn()
+    regions: string;
+   
+    @ViewColumn()
+    countries: string;
+    
+    @ViewColumn()
+    link: string;
 }

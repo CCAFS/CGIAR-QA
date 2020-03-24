@@ -9,20 +9,22 @@ export class CreatePoliciesEvaluations1582059974720 implements MigrationInterfac
     public async up(queryRunner: QueryRunner): Promise<any> {
         const indicatorUsrRepository = getRepository(QAIndicatorUser);
         const evaluationsRepository = getRepository(QAEvaluations);
+        let primary_field = 'policy_id'
 
         let indByUsr = await indicatorUsrRepository.find({
-            where: { userId: 26 },
+            where: { userId: 6 },
         });
 
 
         let view_data = await createQueryBuilder(indByUsr[0].indicator.view_name)
             .getMany();
+        console.log(view_data[0])
         let savePromises = [];
         for (let index = 0; index < view_data.length; index++) {
-            let element= view_data[index];
-            
+            let element = view_data[index];
+
             const evaluations = new QAEvaluations();
-            evaluations.indicator_view_id = element['project_innovation_id'] ;
+            evaluations.indicator_view_id = element[primary_field];
             evaluations.indicator_view_name = indByUsr[0].indicator.view_name;
             evaluations.indicator_user = indByUsr[0];
             evaluations.status = StatusHandler.Pending;
@@ -32,7 +34,7 @@ export class CreatePoliciesEvaluations1582059974720 implements MigrationInterfac
         }
 
         let a = await evaluationsRepository.save(savePromises);
-
+        console.log(a)
 
     }
 

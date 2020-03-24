@@ -44,6 +44,6 @@
 
     </div>
     <div  [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }"  class="col-sm-4 comments-container">
-        <app-comment #comment></app-comment>
+        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"></app-comment>
     </div>
 </div>

@@ -93,12 +93,13 @@ class IndicatorsController {
 
     static createIndicator = async (req: Request, res: Response) => {
 
-        let { name, description, view_name } = req.body;
+        let { name, description, view_name, primary_field } = req.body;
 
         let indicator = new QAIndicators();
         indicator.name = name;
         indicator.description = description;
         indicator.view_name = view_name;
+        indicator.primary_field = primary_field;
 
         //Validade if the parameters are ok
         const errors = await validate(indicator);
@@ -110,7 +111,10 @@ class IndicatorsController {
 
         //Get indicators from database
         try {
-            await indicatorRepository.save(indicator);
+            indicator = await indicatorRepository.save(indicator);
+            if (indicator.primary_field && indicator.primary_field !== " ") {
+                IndicatorsController.createMetaForIndicator(indicator, indicator.primary_field);
+            }
         } catch (e) {
             res.status(409).json({ message: "Indicator already in use" });
             return;
@@ -195,7 +199,7 @@ class IndicatorsController {
 
         if (crpId && indicator_id === null) {
             selectedUser = await userRepository.findOneOrFail(user_id);
-           
+
             try {
                 hasAssignedIndicators = await evaluationsRepository.createQueryBuilder("qa_evaluations")
                     .select('indicators.id AS indicatorId')
@@ -232,7 +236,7 @@ class IndicatorsController {
                     .getMany();
 
                 if (hasAssignedIndicators.length > 0) {
-                    res.status(200).json({ message: "Indicator already assigned to user", data: [] })
+                    res.status(200).json({ message: "Indicator already assigned to user", data: selectedIndicator })
                     return;
                 }
 
@@ -249,6 +253,8 @@ class IndicatorsController {
             try {
                 userbyIndicator = await indicatorbyUsrRepository.save(userbyIndicator);
                 res_ = await IndicatorsController.createEvaluations(userbyIndicator, selectedIndicator);
+                // console.log("res_", res_)
+                res.status(200).json({ message: "Indicator by user saved", data: res_ })
 
             } catch (e) {
                 res.status(409).json({ message: "Indicator by user not saved" });
@@ -256,7 +262,6 @@ class IndicatorsController {
             }
 
             // res.status(200).json({ message: "Indicator by user saved", data:hasAssignedIndicators })
-            res.status(200).json({ message: "Indicator by user saved", data: res_ })
         }
 
 
@@ -304,18 +309,20 @@ class IndicatorsController {
 
     }
 
-    static createEvaluations = async (indiByUsr: QAIndicatorUser, indicator: QAIndicators) => {
+    static createEvaluations = async (indiByUsr: QAIndicatorUser, indicator: QAIndicators): Promise<any> => {
         const evaluationsRepository = getRepository(QAEvaluations);
         try {
             let evaluations = await evaluationsRepository.find({ where: { indicator_user: indiByUsr.id } });
-            // console.log("ddd")
-            // console.log(indiByUsr.id, indicator.primary_field, evaluations)
+            let response;
             if (evaluations.length > 0) {
-                return;
+                console.log("ddd")
+                return [];
             } else {
-                // console.log("Evaluations")
+                // console.log("Evaluations", indiByUsr.id, indicator.view_name, indicator.primary_field)
                 let view_data = await createQueryBuilder(indicator.view_name)
+                    //.getRawMany()
                     .getMany();
+                // console.log("Evaluations", view_data.length)
                 let savePromises = [];
                 for (let index = 0; index < view_data.length; index++) {
                     let element = view_data[index];
@@ -323,21 +330,26 @@ class IndicatorsController {
                     const evaluations = new QAEvaluations();
                     evaluations.indicator_view_id = element[indicator.primary_field];
                     evaluations.indicator_view_name = indicator.view_name;
+                    evaluations.crp_id = element['crp_id'];
                     evaluations.indicator_user = indiByUsr;
                     evaluations.status = StatusHandler.Pending;
+
+                    // console.log(evaluations, element)
 
                     savePromises.push(evaluations);
 
                 }
 
-                console.log(savePromises.length)
-                let response = await evaluationsRepository.save(savePromises);
-                console.log("savePromises")
-                console.log(response.length)
+                // console.log(savePromises.length)
+                response = await evaluationsRepository.save(savePromises);
+                // //console.log("savePromises")
+                // console.log(response.length)
             }
-            console.log(evaluations)
+            // console.log(evaluations);
+            return response;
         } catch (error) {
-            return;
+            console.log(error)
+            return error;
         }
     }
 
