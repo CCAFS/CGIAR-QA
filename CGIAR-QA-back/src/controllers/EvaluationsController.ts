@@ -38,6 +38,7 @@ class EvaluationsController {
                 `SELECT
                 evaluations.status AS status,
                 evaluations.indicator_view_name AS indicator_view_name,
+                qa_indicator_user.status AS indicator_status,
                 indicator.primary_field AS primary_field,
                 COUNT (DISTINCT evaluations.id) AS count
             FROM
@@ -49,6 +50,7 @@ class EvaluationsController {
             GROUP BY
                 evaluations.status,
                 evaluations.indicator_view_name,
+                qa_indicator_user.status,
                 indicator.primary_field
             ORDER BY
                 evaluations.status ASC `,
@@ -64,6 +66,7 @@ class EvaluationsController {
                 response.push({
                     indicator_view_name: element['indicator_view_name'],
                     status: element['status'],
+                    indicator_status: element['indicator_status'],
                     type: EvaluationsController.getType(element['status']),
                     value: element['count'],
                     label: `${element['count']}`,

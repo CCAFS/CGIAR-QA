@@ -16,6 +16,7 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 
 import { SortByPipe } from '../pipes/sort-by.pipe';
 import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
         ProgressbarModule.forRoot(),
         ButtonsModule.forRoot(),
         CollapseModule.forRoot(),
+        NgxSpinnerModule,
         ReactiveFormsModule
     ],
     declarations: [AssessorDashboardComponent, SortByPipe, AdminDashboardComponent, CrpDashboardComponent]

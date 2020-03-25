@@ -9,6 +9,7 @@ import { AlertService } from '../../services/alert.service';
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
 import { Observable, forkJoin } from 'rxjs';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -29,6 +30,7 @@ export class AdminDashboardComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,
     private router: Router,
+    private spinner: NgxSpinnerService,
     private authenticationService: AuthenticationService,
     private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
@@ -42,15 +44,20 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit() {
 
     this.loadDashData();
-    // this.getAllDashData();
-    // this.getAllCRP();
-    // this.getIndicatorsByCRP();
   }
 
 
   onProgramChange({ target }, value) {
     this.selectedProgram = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
-    this.getAllDashData(value.crp_id)
+    this.getAllDashData(value.crp_id).subscribe(
+      res => { 
+        this.dashboardData = this.dashService.groupData(res.data);
+      },
+      error => {
+        console.log("getAllDashData", error);
+        this.alertService.error(error);
+      }
+    )
   }
 
   goToView(view: string, primary_column: string) {
@@ -61,13 +68,30 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
-  async loadDashData() {
+  loadDashData() {
+    this.showSpinner()
     let responses = forkJoin([
-      this.getAllDashData()
-    ])
-    // console.log('res', responses)
+      this.getAllDashData(),
+      this.getAllCRP(),
+      this.getIndicatorsByCRP()
+    ]);
+
     responses.subscribe(res => {
-      console.log('res', res)
+      const [dashData, crps, indicatorsByCrps] = res;
+
+      this.dashboardData = this.dashService.groupData(dashData.data);
+
+      this.crps = crps.data;
+      this.crps.unshift({ id: 0, acronym: 'All', crp_id: 'undefined', name: '0', is_marlo: false })
+      this.selectedProgram = this.crps[0].acronym;
+
+      this.configurationData = indicatorsByCrps.data;
+
+      this.hideSpinner()
+    }, error => {
+      this.hideSpinner()
+      console.log("getAllDashData", error);
+      this.alertService.error(error);
     })
   }
 
@@ -81,45 +105,29 @@ export class AdminDashboardComponent implements OnInit {
   // all evaluations
   getAllDashData(crp_id?): Observable<any> {
     return this.dashService.getAllDashboardEvaluations(crp_id).pipe();
-    // .subscribe(
-    //   res => {
-    //     this.dashboardData = this.dashService.groupData(res.data);
-    //     console.log(this.dashboardData)
-    //   },
-    //   error => {
-    //     console.log("getAllDashData", error);
-    //     this.alertService.error(error);
-    //   }
-    // )
   }
 
   // all active CRPS
-  getAllCRP() {
-    this.dashService.getCRPS().subscribe(
-      res => {
-        this.crps = (res.data);
-        this.crps.unshift({ id: 0, acronym: 'All', crp_id: 'undefined', name: '0', is_marlo: false })
-        this.selectedProgram = this.crps[0].acronym;
-      },
-      error => {
-        console.log("getAllCRP", error);
-        this.alertService.error(error);
-      }
-    )
+  getAllCRP(): Observable<any> {
+    return this.dashService.getCRPS();
   }
 
   // indicators by CRPS
-  getIndicatorsByCRP() {
-    this.dashService.getIndicatorsByCRP().subscribe(
-      res => {
-        // console.log(res.data);
-        this.configurationData = res.data;
-      },
-      error => {
-        console.log("getAllCRP", error);
-        this.alertService.error(error);
-      }
-    )
+  getIndicatorsByCRP(): Observable<any> {
+    return this.dashService.getIndicatorsByCRP().pipe();
+  }
+
+
+  /***
+   * 
+   *  Spinner 
+   * 
+   ***/
+  showSpinner() {
+    this.spinner.show();
+  }
+  hideSpinner() {
+    this.spinner.hide();
   }
 
 

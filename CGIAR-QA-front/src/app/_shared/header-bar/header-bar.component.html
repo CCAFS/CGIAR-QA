@@ -25,7 +25,7 @@
             <a class="nav-item nav-link"
                 routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
             <a class="nav-item nav-link" *ngFor="let indicator of indicators; index as i"
-                (click)="goToView(indicator.indicator.name, indicator.indicator.primary_field)">{{indicator.indicator.name}}</a>
+                (click)="goToView(indicator)">{{indicator.indicator.name}}</a>
 
         </div>
     </div>

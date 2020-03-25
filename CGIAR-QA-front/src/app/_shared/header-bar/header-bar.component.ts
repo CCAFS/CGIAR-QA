@@ -9,6 +9,7 @@ import { AlertService } from '../../services/alert.service';
 
 import { User } from '../../_models/user.model';
 import { Role } from '../../_models/roles.model';
+import { GeneralStatus } from '../../_models/general-status.model';
 
 @Component({
   selector: 'header-bar',
@@ -18,6 +19,7 @@ import { Role } from '../../_models/roles.model';
 export class HeaderBarComponent implements OnInit {
   currentUser: User;
   allRoles = Role;
+  generalStatus = GeneralStatus;
   indicators = [];
 
   constructor(private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
@@ -32,8 +34,13 @@ export class HeaderBarComponent implements OnInit {
     this.getHeaderLinks()
   }
 
-  goToView(view: string, primary_column: string) {
-    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+  goToView(indicator: any) {
+    let view = indicator.indicator.name;
+    let primary_column = indicator.indicator.primary_field;
+    // console.log(indicator, view, primary_column)
+    if (indicator.status !== this.generalStatus.Close) {
+      this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+    }
   }
 
   getHeaderLinks() {
@@ -41,6 +48,7 @@ export class HeaderBarComponent implements OnInit {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
           this.indicators = res.data;
+          console.log(res.data)
         },
         error => {
           console.log("getHeaderLinks", error);

@@ -77,10 +77,10 @@ class IndicatorsController {
             const indicators = await indicatorByUserRepository.find({
                 relations: ["indicator"],
                 where: { user: id },
-                select: ["id", 'indicator']
+                select: ["id", 'indicator', 'status']
             });
 
-            // delete indicators.user_indicator;
+            console.log(indicators)
 
             //Send the indicators object
             res.status(200).json({ data: indicators, message: "User indicators" });
