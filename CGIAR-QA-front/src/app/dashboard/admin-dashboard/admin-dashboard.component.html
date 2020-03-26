@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="col col-progress">
-        <p class="card-title">Progress on Quality Assurance by Assessors</p>
+        <p class="card-title">Progress on Quality Assessment by Assessors</p>
         <div class="card">
             <div class="card-body">
                 <div class="card-title example-container d-flex"
@@ -58,45 +58,51 @@
                 <div class="col-sm">
                 </div>
                 <div class="col-sm">
-                    Enable Assurance
+                    Enable Assessment
                 </div>
                 <div class="col-sm">
                     Submit comments
                 </div>
             </div>
-            <div *ngFor="let indicator of configurationData | keyvalue" class="activity-container">
-                <div class="row row-padding activity-item">
-                    <!--<div class="col-sm" (click)="indicator.value.isCollapsed = !indicator.value.isCollapsed">-->
-                    <div class="col-sm">
-                        {{indicator.key}}
-                    </div>
-                    <div class="col-sm">
-                        <div class="custom-switch qa-toggle">
-                            <input type="checkbox" class="custom-control-input" id="switch-a-{{indicator.key}}">
-                            <label class="custom-control-label" for="switch-a-{{indicator.key}}"></label>
+            <form [formGroup]="settingsForm" novalidate>
+                <div *ngFor="let indicator of configurationData" class="activity-container">
+                    <!-- <div *ngFor="let indicator of configurationData | keyvalue" class="activity-container"> -->
+                    <div class="row row-padding activity-item">
+                        <!--<div class="col-sm" (click)="indicator.value.isCollapsed = !indicator.value.isCollapsed">-->
+                        <div class="col-sm">
+                            {{indicator.indicator_view_name}}
+                        </div>
+                        <div class="col-sm">
+                            <div class="custom-switch qa-toggle">
+                                <input [value]="indicator.id" [checked]="isChecked(indicator, 'enableQA')" (change)="onCheckboxChange($event,'enableQA')" type="checkbox"
+                                    class="custom-control-input" id="switch-a-{{indicator.id}}">
+                                <label class="custom-control-label" for="switch-a-{{indicator.id}}"></label>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="custom-switch qa-toggle">
+                                <input type="checkbox" class="custom-control-input" id="switch-b-{{indicator.key}}">
+                                <label class="custom-control-label" for="switch-b-{{indicator.key}}"></label>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm">
-                        <div class="custom-switch qa-toggle">
-                            <input type="checkbox" class="custom-control-input" id="switch-b-{{indicator.key}}">
-                            <label class="custom-control-label" for="switch-b-{{indicator.key}}"></label>
+
+                    <!-- <div id="collapseBasic-{{indicator.key}}" [collapse]="!indicator.value.isCollapsed"
+                        class="indicator-container" [isAnimated]="true">
+                        <h4>Submit Indicator by Program / Platform</h4>
+                        <div class="crps-container">
+                            <div class="crp-item" *ngFor="let crp of indicator.value | sortBy:'asc':'name'">
+                                {{(crp.acronym === '' || crp.acronym === ' ') ? crp.name: crp.acronym}}
+                                <button>
+                                    submit
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
-                <div id="collapseBasic-{{indicator.key}}" [collapse]="!indicator.value.isCollapsed"
-                    class="indicator-container" [isAnimated]="true">
-                    <h4>Submit Indicator by Program / Platform</h4>
-                    <div class="crps-container">
-                        <div class="crp-item" *ngFor="let crp of indicator.value | sortBy:'asc':'name'">
-                            {{(crp.acronym === '' || crp.acronym === ' ') ? crp.name: crp.acronym}}
-                            <button>
-                                submit
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </form>
+
         </div>
     </div>
 </div>

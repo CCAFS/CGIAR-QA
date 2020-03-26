@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { DashboardService } from "../../services/dashboard.service";
@@ -8,6 +8,8 @@ import { AlertService } from '../../services/alert.service';
 
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
+import { GeneralStatus } from '../../_models/general-status.model';
+
 import { Observable, forkJoin } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 
@@ -23,7 +25,8 @@ export class AdminDashboardComponent implements OnInit {
   configurationData: any[];
   selectedProgram: string;
   selectedProg = {}
-
+  settingsForm: FormGroup;
+  generalStatus = GeneralStatus;
   programsForm;
 
 
@@ -36,21 +39,56 @@ export class AdminDashboardComponent implements OnInit {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
+
+    /**
+     * initialize forms
+     */
     this.programsForm = this.formBuilder.group({
       program: ['0', Validators.required]
+    });
+    this.settingsForm = this.formBuilder.group({
+      enableQA: this.formBuilder.array([], [Validators.required])
     })
   }
 
   ngOnInit() {
 
     this.loadDashData();
+
+  }
+
+ 
+  isChecked(indicator) {
+    return indicator.status === this.generalStatus.Open ? true : false;
+  }
+
+  submitForm(type) {
+    // let id = 
+    console.log(this.settingsForm.value[type])
+  }
+  onCheckboxChange(e, type) {
+    const checkboxData: FormArray = this.settingsForm.get(type) as FormArray;
+
+    if (e.target.checked) {
+      checkboxData.push(new FormControl(e.target.value));
+    } else {
+      let i: number = 0;
+      checkboxData.controls.forEach((item: FormControl) => {
+        if (item.value == e.target.value) {
+          checkboxData.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
+    this.submitForm(type);
   }
 
 
   onProgramChange({ target }, value) {
     this.selectedProgram = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
     this.getAllDashData(value.crp_id).subscribe(
-      res => { 
+      res => {
         this.dashboardData = this.dashService.groupData(res.data);
       },
       error => {
@@ -66,7 +104,6 @@ export class AdminDashboardComponent implements OnInit {
   getPendings(data) {
     //console.log(data)
   }
-
 
   loadDashData() {
     this.showSpinner()
@@ -86,8 +123,12 @@ export class AdminDashboardComponent implements OnInit {
       this.selectedProgram = this.crps[0].acronym;
 
       this.configurationData = indicatorsByCrps.data;
+      // console.log(this.configurationData);
 
-      this.hideSpinner()
+      // const enableQA: FormArray = this.settingsForm.get('enableQA') as FormArray;
+      // console.log(this.settingsForm.get('enableQA'))
+
+      this.hideSpinner();
     }, error => {
       this.hideSpinner()
       console.log("getAllDashData", error);
@@ -109,7 +150,7 @@ export class AdminDashboardComponent implements OnInit {
 
   // all active CRPS
   getAllCRP(): Observable<any> {
-    return this.dashService.getCRPS();
+    return this.dashService.getCRPS().pipe();
   }
 
   // indicators by CRPS

@@ -24,7 +24,7 @@ export class HeaderBarComponent implements OnInit {
 
   constructor(private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
-      console.log(x)
+      // console.log(x)
       this.currentUser = x;
       this.ngOnInit();
     });
@@ -48,7 +48,7 @@ export class HeaderBarComponent implements OnInit {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
           this.indicators = res.data;
-          console.log(res.data)
+          // console.log(res.data)
         },
         error => {
           console.log("getHeaderLinks", error);
