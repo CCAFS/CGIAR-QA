@@ -15,6 +15,10 @@ export class IndicatorsService {
   getIndicatorsByUser(id) {
     return this.http.get<any>(`${environment.apiUrl}/indicator/user/${id}`);
   }
+  // update indicators by user
+  updateIndicatorsByUser(id, params) {
+    return this.http.patch<any>(`${environment.apiUrl}/indicator/${id}/user`, params);
+  }
   //get all indicators
   getIndicators() {
     return this.http.get<any>(`${environment.apiUrl}/indicator/`);

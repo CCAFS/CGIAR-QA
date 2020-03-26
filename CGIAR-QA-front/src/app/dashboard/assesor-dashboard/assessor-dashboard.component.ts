@@ -45,7 +45,7 @@ export class AssessorDashboardComponent implements OnInit {
     this.dashService.getDashboardEvaluations(this.currentUser.id).subscribe(
       res => {
         this.dashboardData = this.dashService.groupData(res.data);
-        // console.log(this.dashboardData)
+        console.log(this.dashboardData)
         this.hideSpinner();
       },
       error => {

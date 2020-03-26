@@ -1,13 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
-// import { QAUsers } from "../entity/User";
-// import { QAIndicators } from "../entity/Indicators";
-// import { QAEvaluations } from "../entity/Evaluations";
-import { QAUsers } from "@entity/User";
-import { QAIndicators } from "@entity/Indicators";
-import { QAEvaluations } from "@entity/Evaluations";
-import { StatusGeneralHandler } from "@helpers/StatusGeneralHandler"
+import { QAUsers } from "../entity/User";
+import { QAIndicators } from "../entity/Indicators";
+import { QAEvaluations } from "../entity/Evaluations";
+import { StatusGeneralHandler } from "../_helpers/StatusGeneralHandler"
+// import { QAUsers } from "@entity/User";
+// import { QAIndicators } from "@entity/Indicators";
+// import { QAEvaluations } from "@entity/Evaluations";
 
 
 @Entity()
@@ -27,12 +27,12 @@ export class QAIndicatorUser {
     @OneToMany(type => QAEvaluations, evaluations => evaluations.indicator_user)
     evaluations: QAEvaluations[];
 
-    @Column({
-        type: "enum",
-        enum: StatusGeneralHandler,
-        default: StatusGeneralHandler.Close
-    })
-    status:StatusGeneralHandler
+    // @Column({
+    //     type: "enum",
+    //     enum: StatusGeneralHandler,
+    //     default: StatusGeneralHandler.Close
+    // })
+    // status:StatusGeneralHandler
 
     @Column()
     @CreateDateColumn()

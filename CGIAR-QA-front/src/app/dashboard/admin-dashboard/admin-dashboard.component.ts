@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DashboardService } from "../../services/dashboard.service";
 import { AuthenticationService } from "../../services/authentication.service";
 import { AlertService } from '../../services/alert.service';
+import { IndicatorsService } from '../../services/indicators.service';
 
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
@@ -26,8 +27,8 @@ export class AdminDashboardComponent implements OnInit {
   selectedProgram: string;
   selectedProg = {}
   settingsForm: FormGroup;
+  programsForm: FormGroup;
   generalStatus = GeneralStatus;
-  programsForm;
 
 
   constructor(private formBuilder: FormBuilder,
@@ -35,6 +36,7 @@ export class AdminDashboardComponent implements OnInit {
     private router: Router,
     private spinner: NgxSpinnerService,
     private authenticationService: AuthenticationService,
+    private indicatorService: IndicatorsService,
     private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
@@ -47,7 +49,8 @@ export class AdminDashboardComponent implements OnInit {
       program: ['0', Validators.required]
     });
     this.settingsForm = this.formBuilder.group({
-      enableQA: this.formBuilder.array([], [Validators.required])
+      enableQA: this.formBuilder.array([], [Validators.required]),
+      enableCRP: this.formBuilder.array([], [Validators.required]),
     })
   }
 
@@ -57,15 +60,44 @@ export class AdminDashboardComponent implements OnInit {
 
   }
 
- 
-  isChecked(indicator) {
-    return indicator.status === this.generalStatus.Open ? true : false;
+
+  isChecked(indicator, type) {
+    return type === 'enableQA' ? indicator.enable_assessor : indicator.enable_crp;
+    // return indicator.status === this.generalStatus.Open ? true : false;
   }
 
-  submitForm(type) {
+  updateConfig(type: string, id: number, isActive: boolean) {
     // let id = 
-    console.log(this.settingsForm.value[type])
+    let status = isActive ? this.generalStatus.Open : this.generalStatus.Close;
+    // console.log(type, id, status);
+    let request = null;
+    switch (type) {
+      case 'enableQA':
+        request = this.indicatorService.updateIndicatorsByUser(id, { enable_assessor: isActive, enable_crp: null })
+        break;
+      case 'enableCRP':
+        request = this.indicatorService.updateIndicatorsByUser(id, { enable_assessor: null, enable_crp: isActive })
+        break;
+
+      default:
+        break;
+    }
+
+    this.showSpinner();
+    request.subscribe(
+      res => {
+        // console.log(res)
+        this.hideSpinner();
+      },
+      error => {
+        this.hideSpinner()
+        console.log("getAllDashData", error);
+        this.alertService.error(error);
+      },
+    );
   }
+
+
   onCheckboxChange(e, type) {
     const checkboxData: FormArray = this.settingsForm.get(type) as FormArray;
 
@@ -81,18 +113,21 @@ export class AdminDashboardComponent implements OnInit {
         i++;
       });
     }
-    this.submitForm(type);
+    this.updateConfig(type, e.target.value, e.target.checked);
   }
 
 
   onProgramChange({ target }, value) {
     this.selectedProgram = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
+    this.showSpinner()
     this.getAllDashData(value.crp_id).subscribe(
       res => {
         this.dashboardData = this.dashService.groupData(res.data);
+        this.hideSpinner()
       },
       error => {
         console.log("getAllDashData", error);
+        this.hideSpinner()
         this.alertService.error(error);
       }
     )
@@ -102,7 +137,7 @@ export class AdminDashboardComponent implements OnInit {
     this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
   getPendings(data) {
-    //console.log(data)
+    return data.acronym === 'All' ? '' : '- ' + (data.qa_active === this.generalStatus.Open ? 'Open' : 'Pending')
   }
 
   loadDashData() {
@@ -123,10 +158,7 @@ export class AdminDashboardComponent implements OnInit {
       this.selectedProgram = this.crps[0].acronym;
 
       this.configurationData = indicatorsByCrps.data;
-      // console.log(this.configurationData);
-
-      // const enableQA: FormArray = this.settingsForm.get('enableQA') as FormArray;
-      // console.log(this.settingsForm.get('enableQA'))
+      // console.log(this.crps)
 
       this.hideSpinner();
     }, error => {

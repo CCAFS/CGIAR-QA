@@ -2,6 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Length } from "class-validator";
 
 import { QAUsers } from "../entity/User"
+import { StatusGeneralHandler } from "../_helpers/StatusGeneralHandler"
+
 
 @Entity()
 @Unique(["crp_id"])
@@ -35,4 +37,11 @@ export class QACrp {
 
     @OneToMany(type => QAUsers, user => user.crp)
     user: QAUsers;
+
+    @Column({
+        type: "enum",
+        enum: StatusGeneralHandler,
+        default: StatusGeneralHandler.Close
+    })
+    qa_active:StatusGeneralHandler
 }

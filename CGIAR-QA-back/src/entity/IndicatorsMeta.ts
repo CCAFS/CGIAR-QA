@@ -31,7 +31,7 @@ export class QAIndicatorsMeta {
         default : true
     })
     enable_comments: boolean;
-    
+   
     @Column({
         default : false
     })
@@ -49,4 +49,12 @@ export class QAIndicatorsMeta {
 
     @OneToMany(type => QAComments, comment => comment.meta)
     comments:QAComments;
+    
+    @Column()
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @Column()
+    @UpdateDateColumn()
+    updatedAt: Date;
 }

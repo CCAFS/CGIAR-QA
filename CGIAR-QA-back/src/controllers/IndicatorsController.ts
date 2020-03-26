@@ -7,6 +7,7 @@ import { QAIndicators } from "@entity/Indicators";
 import { QAIndicatorUser } from "@entity/IndicatorByUser";
 import { QAEvaluations } from "@entity/Evaluations";
 import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
+import { QACommentsMeta } from "@entity/CommentsMeta";
 
 import { StatusHandler } from "@helpers/StatusHandler"
 import { RolesHandler } from "@helpers/RolesHandler"
@@ -77,7 +78,7 @@ class IndicatorsController {
             const indicators = await indicatorByUserRepository.find({
                 relations: ["indicator"],
                 where: { user: id },
-                select: ["id", 'indicator', 'status']
+                select: ["id", 'indicator']
             });
 
             console.log(indicators)
@@ -269,6 +270,51 @@ class IndicatorsController {
 
     }
 
+
+
+    static editCommentsMeta = async (req: Request, res: Response) => {
+
+        //Get the ID from the url
+        const id = req.params.id;
+
+        let { enable_assessor, enable_crp } = req.body;
+
+        console.log(enable_assessor, enable_crp)
+
+        const commentMetaRepository = getRepository(QACommentsMeta);
+        let commentMeta;
+
+        try {
+            commentMeta = await commentMetaRepository.createQueryBuilder('qa_comments_meta')
+                .select('id, enable_crp, enable_assessor')
+                .where("qa_comments_meta.indicatorId=:indicatorId", { indicatorId: id })
+                // .getSql()
+                .getRawOne()
+            console.log(commentMeta)
+            commentMeta.enable_assessor = enable_assessor ? enable_assessor : commentMeta.enable_assessor;
+            commentMeta.enable_crp = enable_crp ? enable_crp : commentMeta.enable_crp;
+            //Validade if the parameters are ok
+            const errors = await validate(commentMeta);
+            if (errors.length > 0) {
+                res.status(400).json({ data: errors, message: "Error found" });
+                return;
+            }
+
+            // update indicator by user
+            commentMeta = await commentMetaRepository.save(commentMeta);
+
+        } catch (error) {
+            console.log(error)
+            //If not found, send a 404 response
+            res.status(404).json({ message: 'User indicator not found.', data: error });
+            // throw new ErrorHandler(404, 'User not found.');
+        }
+
+        //If all ok, send 200 response
+        res.status(200).json({ message: "User indicator updated", data: commentMeta });
+
+
+    };
 
     /*****
      * 

@@ -8,9 +8,10 @@
                         <input (change)="onProgramChange($event, program)" id="program-{{program.id}}" type="radio"
                             class="custom-control-input" value="{{program.id}}" name="program"
                             formControlName="program">
-                        <label class="custom-control-label"
-                            for="program-{{program.id}}">{{(program.acronym === '' || program.acronym === ' ') ? program.name: program.acronym}}
-                            {{getPendings(program)}}</label>
+                        <label class="custom-control-label" for="program-{{program.id}}">
+                            {{(program.acronym === '' || program.acronym === ' ') ? program.name: program.acronym}}
+                            {{getPendings(program)}}
+                        </label>
                     </div>
                 </form>
             </div>
@@ -74,15 +75,19 @@
                         </div>
                         <div class="col-sm">
                             <div class="custom-switch qa-toggle">
-                                <input [value]="indicator.id" [checked]="isChecked(indicator, 'enableQA')" (change)="onCheckboxChange($event,'enableQA')" type="checkbox"
+                                <input [value]="indicator.id" [checked]="isChecked(indicator, 'enableQA')"
+                                    (change)="onCheckboxChange($event,'enableQA')" type="checkbox"
                                     class="custom-control-input" id="switch-a-{{indicator.id}}">
                                 <label class="custom-control-label" for="switch-a-{{indicator.id}}"></label>
                             </div>
                         </div>
                         <div class="col-sm">
                             <div class="custom-switch qa-toggle">
-                                <input type="checkbox" class="custom-control-input" id="switch-b-{{indicator.key}}">
-                                <label class="custom-control-label" for="switch-b-{{indicator.key}}"></label>
+                                <input [value]="indicator.id" type="checkbox"
+                                    [checked]="isChecked(indicator, 'enableCRP')"
+                                    (change)="onCheckboxChange($event,'enableCRP')" class="custom-control-input"
+                                    id="switch-b-{{indicator.id}}">
+                                <label class="custom-control-label" for="switch-b-{{indicator.id}}"></label>
                             </div>
                         </div>
                     </div>

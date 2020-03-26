@@ -37,20 +37,23 @@ class EvaluationsController {
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `SELECT
                 evaluations.status AS status,
+                meta.enable_crp,
+                meta.enable_assessor,
                 evaluations.indicator_view_name AS indicator_view_name,
-                qa_indicator_user.status AS indicator_status,
                 indicator.primary_field AS primary_field,
-                COUNT (DISTINCT evaluations.id) AS count
+                COUNT(DISTINCT evaluations.id) AS count
             FROM
                 qa_indicator_user qa_indicator_user
             LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
             LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+            LEFT JOIN qa_comments_meta meta ON meta.indicatorId = indicator.id
             WHERE
-                qa_indicator_user.userId = :user_Id
+                qa_indicator_user.userId = 6
             GROUP BY
                 evaluations.status,
                 evaluations.indicator_view_name,
-                qa_indicator_user.status,
+                meta.enable_crp,
+                meta.enable_assessor,
                 indicator.primary_field
             ORDER BY
                 evaluations.status ASC `,
@@ -66,7 +69,7 @@ class EvaluationsController {
                 response.push({
                     indicator_view_name: element['indicator_view_name'],
                     status: element['status'],
-                    indicator_status: element['indicator_status'],
+                    indicator_status: element['enable_assessor'],
                     type: EvaluationsController.getType(element['status']),
                     value: element['count'],
                     label: `${element['count']}`,
@@ -365,6 +368,28 @@ class EvaluationsController {
 
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `SELECT
+                        indicators.id,
+                        meta.enable_assessor,
+                        meta.enable_crp,
+                        indicators. NAME AS indicator_view_name
+                    FROM
+                        qa_indicator_user qa_indicator_user
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+                    LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+                    LEFT JOIN qa_comments_meta meta ON indicators.id = meta.indicatorId
+                    GROUP BY
+                        indicators.id,
+                        meta.enable_assessor,
+                        meta.enable_crp,
+                        indicators. NAME
+                       `,
+                {},
+                {}
+            );
+            let evalData = await queryRunner.connection.query(query, parameters);
+            /*
+            SELECT
+                qa_indicator_user.status,
                 indicators.name AS indicator_view_name,
                 evaluations.crp_id AS crp_id,
                 crps.name,
@@ -377,26 +402,13 @@ class EvaluationsController {
             GROUP BY
                 evaluations.crp_id,
                 indicators.name,
+                qa_indicator_user.status,
                 evaluations.indicator_view_name
             ORDER BY
-                evaluations.crp_id ASC `,
-                {},
-                {}
-            );
-            let evalData = await queryRunner.connection.query(query, parameters);
-            // []
-            // await indiUserRepository.createQueryBuilder("qa_indicator_user")
-            //     .select('qa_indicator_user.`userId`, `evaluations`.`indicatorUserId`, crps.name, crps.acronym')
-            //     .leftJoinAndSelect(QAEvaluations, "evaluations", "evaluations.indicatorUserId  = qa_indicator_user.id")
-            //     .leftJoinAndSelect(QAIndicators, "indicators", "indicators.view_name = evaluations.indicator_view_name")
-            //     .leftJoinAndSelect(QACrp, "crps", "evaluations.crp_id = crps.crp_id")
-            //     .groupBy('`evaluations`.crp_id,evaluations.`indicator_view_name`')
-            //     .orderBy('evaluations.`crp_id`', "ASC")
-            //     //.getRawMany();
-            //     .getSql();
-            //console.log(evalData)
+                evaluations.crp_id ASC 
+            */
 
-            evalData = EvaluationsController.groupBy(evalData, 'indicator_view_name')
+            // evalData = EvaluationsController.groupBy(evalData, 'indicator_view_name')
 
             res.status(200).json({ data: evalData, message: "Indicators by crp" });
 
@@ -498,6 +510,12 @@ class EvaluationsController {
             res.status(404).json({ message: "Comment can not be retrived.", data: error });
         }
 
+    }
+
+    // get comments by CRP
+
+    static getCRPComments = async (req: Request, res: Response) => {
+        
     }
 
 

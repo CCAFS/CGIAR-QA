@@ -37,10 +37,23 @@ export class HeaderBarComponent implements OnInit {
   goToView(indicator: any) {
     let view = indicator.indicator.name;
     let primary_column = indicator.indicator.primary_field;
-    // console.log(indicator, view, primary_column)
-    if (indicator.status !== this.generalStatus.Close) {
-      this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+    // console.log(indicator, view, primary_column,this.currentUser.roles[0])
+
+    switch (this.currentUser.roles[0].description) {
+      case this.allRoles.admin:
+        this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+        break;
+      case this.allRoles.asesor:
+        if (indicator.enable_assessor) {
+          this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+        }
+        break;
+
+      default:
+        break;
     }
+
+
   }
 
   getHeaderLinks() {
