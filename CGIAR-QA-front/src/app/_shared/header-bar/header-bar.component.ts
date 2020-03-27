@@ -37,7 +37,7 @@ export class HeaderBarComponent implements OnInit {
   goToView(indicator: any) {
     let view = indicator.indicator.name;
     let primary_column = indicator.indicator.primary_field;
-    // console.log(indicator, view, primary_column,this.currentUser.roles[0])
+    console.log(indicator)
 
     switch (this.currentUser.roles[0].description) {
       case this.allRoles.admin:
