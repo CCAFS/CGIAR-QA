@@ -14,7 +14,7 @@ export class QACommentsMeta {
         default: false
     })
     enable_crp: boolean;
-    
+
     @Column({
         default: false
     })

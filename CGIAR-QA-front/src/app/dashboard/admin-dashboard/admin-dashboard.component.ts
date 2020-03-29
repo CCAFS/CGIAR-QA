@@ -30,6 +30,9 @@ export class AdminDashboardComponent implements OnInit {
   programsForm: FormGroup;
   generalStatus = GeneralStatus;
 
+  enableQATooltip :string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
+  enableCommentsTooltip :string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
+
 
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,

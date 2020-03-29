@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, response } from "express";
 import { getRepository, createQueryBuilder, getConnection } from "typeorm";
 import { validate } from "class-validator";
 
@@ -41,8 +41,9 @@ class IndicatorsController {
     static getIndicatorsByUser = async (req: Request, res: Response) => {
         //Get the ID from the url
         const id = req.params.id;
-        const indicatorsRepository = getRepository(QAIndicators);
-        const indicatorByUserRepository = getRepository(QAIndicatorUser);
+        let queryRunner = getConnection().createQueryBuilder();
+        let response = []
+
 
         //Get user by id; if manager all indicators; 
         try {
@@ -50,16 +51,50 @@ class IndicatorsController {
             let user = await userRepository.findOneOrFail({ where: { id } });
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
             if (isAdmin) {
-                const indicators = await indicatorsRepository.createQueryBuilder('qa_indicators')
-                    .select('DISTINCT (`name`), description, primary_field')
-                    .getRawMany();
-                let response = []
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `
+                    SELECT
+                        DISTINCT (name), description, primary_field
+                    FROM
+                        qa_indicators
+                    `,
+                    {},
+                    {}
+                );
+                const indicators =  await queryRunner.connection.query(query, parameters);
                 for (let index = 0; index < indicators.length; index++) {
                     response.push({ indicator: indicators[index] });
 
                 }
                 res.status(200).json({ data: response, message: "User indicators" });
                 return;
+            } else {
+                
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `
+                    SELECT
+                        indicators.name AS name,
+                        indicators.description AS description,
+                        indicators.primary_field AS primary_field,
+                        meta.enable_assessor as enable_assessor
+                    FROM
+                        qa_indicator_user qa_indicator_user
+                    LEFT JOIN qa_indicators indicators ON indicators.id = qa_indicator_user.indicatorId
+                    LEFT JOIN qa_comments_meta meta ON meta.indicatorId = qa_indicator_user.indicatorId
+                    WHERE
+                        qa_indicator_user.userId = :userId `,
+                    { userId: id },
+                    {}
+                );
+                let indicators =  await queryRunner.connection.query(query, parameters);
+                for (let index = 0; index < indicators.length; index++) {
+                    response.push({ indicator: indicators[index] });
+
+                }
+
+                //Send the indicators object
+                res.status(200).json({ data: response, message: "User indicators" });
+
             }
 
             // console.log(userRole.roles)
@@ -73,23 +108,23 @@ class IndicatorsController {
 
 
         //Get indicators from database
-        try {
-            // const indicators = await indicatorRepository.find({});
-            const indicators = await indicatorByUserRepository.find({
-                relations: ["indicator"],
-                where: { user: id },
-                select: ["id", 'indicator']
-            });
+        // try {
+        // const indicators = await indicatorRepository.find({});
+        // const indicators = await indicatorByUserRepository.find({
+        //     relations: ["indicator"],
+        //     where: { user: id },
+        //     select: ["id", 'indicator']
+        // });
 
-            console.log(indicators)
+        // console.log(indicators)
 
-            //Send the indicators object
-            res.status(200).json({ data: indicators, message: "User indicators" });
+        // //Send the indicators object
+        // res.status(200).json({ data: indicators, message: "User indicators" });
 
-        } catch (error) {
-            console.log(error);
-            res.status(404).json({ message: "Could not access to indicators." });
-        }
+        // } catch (error) {
+        //     console.log(error);
+        //     res.status(404).json({ message: "Could not access to indicators." });
+        // }
     }
 
     static createIndicator = async (req: Request, res: Response) => {

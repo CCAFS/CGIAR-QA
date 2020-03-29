@@ -4,6 +4,7 @@ export class User {
     password: string;
     roles:any[];
     config:any[];
+    indicators:any[];
     // firstName: string;
     // lastName: string;
     token: string;

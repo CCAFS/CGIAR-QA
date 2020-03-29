@@ -48,7 +48,7 @@ class EvaluationsController {
             LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
             LEFT JOIN qa_comments_meta meta ON meta.indicatorId = indicator.id
             WHERE
-                qa_indicator_user.userId = 6
+                qa_indicator_user.userId = :user_Id
             GROUP BY
                 evaluations.status,
                 evaluations.indicator_view_name,
@@ -96,26 +96,36 @@ class EvaluationsController {
         const view_name = req.body.view_name;
         const view_primary_field = req.body.view_primary_field;
 
+        let queryRunner = getConnection().createQueryBuilder();
+
         try {
             const userRepository = getRepository(QAUsers);
             let user = await userRepository.findOneOrFail({ where: { id } });
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
             if (isAdmin) {
-                const indicatorByUserRepository = getRepository(QAIndicatorUser);
-                let rawData = await indicatorByUserRepository
-                    .createQueryBuilder("qa_indicator_user")
-                    .select(`${view_name}.title AS title`)
-                    .addSelect(`${view_name}.crp_id AS crp`)
-                    .andWhere(`${view_name}.phase_year=:phase_year`, { phase_year: '2019' })
-                    .andWhere(`evaluations.indicator_view_name=:view_name`, { view_name })
-                    .andWhere('title IS NOT NULL')
-                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                    .leftJoinAndSelect(view_name, view_name, `${view_name}.${view_primary_field}= evaluations.indicator_view_id`)
-                    .getRawMany();
-                //.getSql();
-
-                // console.log(rawData)
-                //res.status(200).json({ data: (rawData), message: "User evaluations list" });
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT
+                        evaluations.id AS evaluations_id,
+                        evaluations.indicator_view_id AS evaluations_indicator_view_id,
+                        evaluations.status AS evaluations_status,
+                        evaluations.indicator_view_name AS evaluations_indicator_view_name,
+                        evaluations.crp_id AS evaluations_crp_id,
+                        evaluations.general_comments AS evaluations_general_comments,
+                        evaluations.indicatorUserId AS evaluations_indicatorUserId,
+                        ${view_name}.title AS title,
+                        crp.acronym AS acronym,
+                        crp.name AS crp_name
+                    FROM
+                        qa_indicator_user qa_indicator_user
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+                    LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                    WHERE title IS NOT NULL
+                    AND evaluations.indicator_view_name = :view_name `,
+                    { view_name },
+                    {}
+                );
+                let rawData =  await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
             }
@@ -128,22 +138,32 @@ class EvaluationsController {
 
         //Get evaluations from database
         try {
-            const indicatorByUserRepository = getRepository(QAIndicatorUser);
-            let rawData = await indicatorByUserRepository
-                .createQueryBuilder("qa_indicator_user")
-                .select(`${view_name}.title AS title`)
-                .addSelect(`${view_name}.crp_id AS crp`)
-                .where("qa_indicator_user.user=:userId", { userId: id })
-                //.andWhere(`${view_name}.phase_year=:phase_year`, { phase_year: '2019' })
-                .andWhere('title IS NOT NULL')
-                .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
-                .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                .leftJoinAndSelect(view_name, view_name, `${view_name}.${view_primary_field}= evaluations.indicator_view_id`)
-                .getRawMany();
-            //.getSql();
-
-            //console.log(rawData)
-            //res.status(200).json({ data:(rawData), message: "User evaluations list" });
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                    evaluations.id AS evaluations_id,
+                    evaluations.indicator_view_id AS evaluations_indicator_view_id,
+                    evaluations.status AS evaluations_status,
+                    evaluations.indicator_view_name AS evaluations_indicator_view_name,
+                    evaluations.crp_id AS evaluations_crp_id,
+                    evaluations.general_comments AS evaluations_general_comments,
+                    evaluations.indicatorUserId AS evaluations_indicatorUserId,
+                    ${view_name}.title AS title,
+                    crp.acronym AS acronym,
+                    crp.name AS crp_name
+                FROM
+                    qa_indicator_user qa_indicator_user
+                LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+                LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
+                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                WHERE
+                    qa_indicator_user.userId = :user_Id
+                AND title IS NOT NULL
+                AND evaluations.indicator_view_name = :view_name `,
+                { user_Id: id, view_name },
+                {}
+            );
+            let rawData = await queryRunner.connection.query(query, parameters);
+            
             res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
         } catch (error) {
             console.log(error);
@@ -214,7 +234,7 @@ class EvaluationsController {
         const { general_comments, status } = req.body;
         const evaluationsRepository = getRepository(QAEvaluations);
 
-        console.log({ general_comments, status }, id)
+        // console.log({ general_comments, status }, id)
         try {
             let evaluation = await evaluationsRepository.findOneOrFail(id);
             evaluation.general_comments = general_comments;
@@ -460,9 +480,9 @@ class EvaluationsController {
 
     // update comment by indicator
     static updateComment = async (req: Request, res: Response) => {
-        console.log('sacrubs')
+        // console.log('sacrubs')
         //Check if username and password are set
-        console.log(req.body)
+        // console.log(req.body)
         const { approved, is_visible, is_deleted, id } = req.body;
         const commentsRepository = getRepository(QAComments);
 
@@ -515,7 +535,7 @@ class EvaluationsController {
     // get comments by CRP
 
     static getCRPComments = async (req: Request, res: Response) => {
-        
+
     }
 
 
@@ -555,7 +575,7 @@ class EvaluationsController {
 
     static parseEvaluationsData(rawData, type?) {
         let response = [];
-        console.log('parseEvaluationsData', type)
+        // console.log('parseEvaluationsData', type)
         switch (type) {
             case 'innovations':
                 for (let index = 0; index < rawData.length; index++) {
@@ -610,7 +630,7 @@ class EvaluationsController {
                         id: element['evaluations_indicator_view_id'],
                         title: element['title'],
                         pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
-                        crp: element['crp'],
+                        crp: element['crp_name'],
                     })
 
                 }

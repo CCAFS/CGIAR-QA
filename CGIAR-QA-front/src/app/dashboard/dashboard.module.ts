@@ -4,19 +4,15 @@ import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { ReactiveFormsModule } from '@angular/forms';
-
-
+import { SortByPipe } from '../pipes/sort-by.pipe';
 import { DashboardRoutingModule } from './dashboard-routing.module';
-
-
-// import { IndicatorsModule } from './indicators/indicators.module';
 
 import { AssessorDashboardComponent } from './assesor-dashboard/assessor-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-
-import { SortByPipe } from '../pipes/sort-by.pipe';
 import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
+
 import { NgxSpinnerModule } from "ngx-spinner";
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 
 @NgModule({
@@ -26,6 +22,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
         ProgressbarModule.forRoot(),
         ButtonsModule.forRoot(),
         CollapseModule.forRoot(),
+        TooltipModule.forRoot(),
         NgxSpinnerModule,
         ReactiveFormsModule
     ],

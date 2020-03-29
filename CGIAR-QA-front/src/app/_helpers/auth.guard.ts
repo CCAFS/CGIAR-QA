@@ -19,9 +19,8 @@ export class AuthGuard implements CanActivate {
     if (currentUser) {
       let userRoles = currentUser.roles.map(role => { return role ? role['description'] : null });
 
-      console.log(this.validateConfig(currentUser)) 
+      // console.log(this.validateConfig(currentUser)) 
       if (this.validateConfig(currentUser)) {
-        console.log("jkawkasdjkasdasd", currentUser.config.length, currentUser)
         this.router.navigate(['/qa-close']);
         return false;
       }
@@ -34,7 +33,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
     // not logged in so redirect to login page with the return url
-    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url.toString() } });
     return false;
   }
 

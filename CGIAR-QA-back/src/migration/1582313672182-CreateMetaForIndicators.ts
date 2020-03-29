@@ -6,9 +6,9 @@ import { QAIndicators } from "../entity/Indicators";
 export class CreateMetaForPolicies1582313672182 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
-        let view_name = 'qa_policies'
-        let primary_field = "policy_id";
-        let view_indicator_id = 1;
+        let view_name = 'qa_innovations'
+        let primary_field = "project_innovation_id";
+        let view_indicator_id = 2;
 
         
         let pols_meta = getConnection().getMetadata(view_name).ownColumns.map(column => column.propertyName);

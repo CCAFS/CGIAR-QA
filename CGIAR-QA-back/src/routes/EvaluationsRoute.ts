@@ -54,6 +54,8 @@ router.patch("/detail/comment", [checkJwt, checkRole([RolesHandler.admin, RolesH
 // get comment from indicator item
 router.get("/:evaluationId([0-9]+)/detail/comment/:metaId([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.getComments)
 
+// get comments for CRP
+// router.get("/:evaluationId([0-9]+)/detail/comment/:metaId([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.getComments)
 
 
 export default router;

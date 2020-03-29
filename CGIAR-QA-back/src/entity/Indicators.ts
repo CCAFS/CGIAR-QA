@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany, OneToOne } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAIndicatorUser } from "../entity/IndicatorByUser";
 import { QAIndicatorsMeta } from "../entity/IndicatorsMeta";
+import { QACommentsMeta } from "../entity/CommentsMeta";
 // import { QAIndicatorUser } from "@entity/IndicatorByUser";
-// import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 
 @Entity()
 @Unique(["name", "view_name"])
@@ -21,7 +21,7 @@ export class QAIndicators {
     @Column()
     @Length(4, 200)
     description: string;
-   
+
     @Column()
     @Length(1, 200)
     primary_field: string;
@@ -36,6 +36,9 @@ export class QAIndicators {
 
     @OneToMany(type => QAIndicatorsMeta, meta => meta.indicator, { eager: true })
     meta: QAIndicatorsMeta[];
+
+    @OneToOne(type => QACommentsMeta, comments_meta => comments_meta.indicator, { eager: true }) // specify inverse side as a second parameter
+    comment_meta: QACommentsMeta;
 
     @Column()
     @CreateDateColumn()

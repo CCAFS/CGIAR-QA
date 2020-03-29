@@ -37,15 +37,43 @@ export class QAInnovations{
 
     @ViewColumn()
     stage: string;
-
+    
     @ViewColumn()
-    evidence_link: string;
-
+    description_stage: string;
+    
+    @ViewColumn()
+    innovation_type: string;
+    
     @ViewColumn()
     number_of_innovations: number;
     
     @ViewColumn()
+    geographic_scope:string
+    
+    @ViewColumn()
+    regions:string
+
+
+    @ViewColumn()
     countries: string;
+    
+    @ViewColumn()
+    is_clear_lead:string
+
+    @ViewColumn()
+    leader: string;
+
+    @ViewColumn()
+    contributors: string;
+    
+    @ViewColumn()
+    sub_ido: string;
+    
+    @ViewColumn()
+    contrib_crp: string;
+
+    @ViewColumn()
+    evidence_link: string;
     
     @ViewColumn()
     pdf: string;
@@ -53,27 +81,4 @@ export class QAInnovations{
     @ViewColumn()
     link: string;
     
-    @ViewColumn()
-    contrib_crp: string;
-    
-    @ViewColumn()
-    contributors: string;
-    
-    @ViewColumn()
-    leader: string;
-    
-    @ViewColumn()
-    is_clear_lead:string
-    
-    @ViewColumn()
-    regions:string
-    
-    @ViewColumn()
-    geographic_scope:string
-    
-    @ViewColumn()
-    description_stage:string
-    
-
-
 }
