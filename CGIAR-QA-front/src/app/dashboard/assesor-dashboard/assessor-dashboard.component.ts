@@ -8,7 +8,7 @@ import { AuthenticationService } from "../../services/authentication.service";
 import { AlertService } from '../../services/alert.service';
 
 import { User } from '../../_models/user.model';
-import { GeneralStatus } from "../../_models/general-status.model"
+import { GeneralStatus, GeneralIndicatorName } from "../../_models/general-status.model"
 
 @Component({
   selector: 'app-assessor-dashboard',
@@ -20,6 +20,7 @@ export class AssessorDashboardComponent implements OnInit {
   currentUser: User;
   dashboardData: any[];
   generalStatus = GeneralStatus;
+  indicatorsName = GeneralIndicatorName;
 
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
@@ -35,7 +36,12 @@ export class AssessorDashboardComponent implements OnInit {
     this.getDashData();
   }
 
+  getIndicatorName(indicator:string){
+    return this.indicatorsName[indicator]
+  }
+
   goToView(view: string, primary_column: string) {
+    console.log(view,primary_column)
     this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
 

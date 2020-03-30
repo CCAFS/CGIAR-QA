@@ -14,18 +14,18 @@
 
             <ng-container *ngIf="(dashboardData | json) != ({} | json)">
                 <div *ngFor="let item of dashboardData | keyvalue"  [ngClass]="{'closed': !item.value[0].indicator_status }"  class="progress-container">
-                    <p>{{item.value.total}} {{item.key.split('qa_')[1]}}</p>
+                    <p>{{item.value.total}}  {{getIndicatorName(item.key)}}</p>
                     <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                         <span>{{item.value.total}}</span>
                     </progressbar>
                     <!-- <a [routerLink]="['/indicator', item.key.split('qa_')[1], {primary_field:item.value[0].primary_field}]">
-                        Goto {{item.key.split('qa_')[1]}}
+                        Goto  {{getIndicatorName(item.key)}}
                     </a> -->
                     <a *ngIf="item.value[0].indicator_status" (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
-                        Go to {{item.key.split('qa_')[1]}}
+                        Go to {{getIndicatorName(item.key)}}
                     </a>
                     <a *ngIf="!item.value[0].indicator_status">
-                        Go to {{item.key.split('qa_')[1]}}
+                        Go to  {{getIndicatorName(item.key)}}
                     </a>
                 </div>
 

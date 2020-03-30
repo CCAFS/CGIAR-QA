@@ -1,5 +1,7 @@
 @import "../../../assets/variables.scss";
 .dashboard-container {
+ 
+
   .col-programs {
     ul {
       background: var(--gray-primary);
@@ -53,10 +55,10 @@
           border-radius: 50%;
         }
         .complete {
-          background-color: var(--green-tertiary);
+          background-color: var(--yellow-primary);
         }
         .pending {
-          background-color: var(--red-primary);
+          background-color: var(--blue-primary);
         }
       }
       .progress-container {

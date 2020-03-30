@@ -8,3 +8,8 @@ export enum GeneralStatus {
     Open = 'open',
     Close = 'close'
 }
+
+export enum GeneralIndicatorName {
+    qa_policies = 'Policies',
+    qa_innovations = 'Innovations',
+}

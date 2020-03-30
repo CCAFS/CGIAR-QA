@@ -60,19 +60,16 @@
 .btn-green-secondary:not(:disabled):not(.disabled).active,
 .btn-green-secondary:not(:disabled):not(.disabled):active,
 .show > .btn-green-secondary.dropdown-toggle {
-  background-color: var( --green-secondary);
-  border-color: var( --green-secondary);
+  background-color: var(--green-secondary);
+  border-color: var(--green-secondary);
   color: var(--white);
 }
 .btn-green-secondary.disabled,
 .btn-green-secondary:disabled {
   color: var(--white);
-  background-color: var( --green-secondary);
-  border-color: var( --green-secondary);
+  background-color: var(--green-secondary);
+  border-color: var(--green-secondary);
 }
-
-
-
 
 /***
 *** Type-ahead
@@ -129,7 +126,7 @@
 /***
 ** Toggle
 ***/
-.custom-control-label::before{
+.custom-control-label::before {
   border-radius: 50%;
 }
 
@@ -177,4 +174,17 @@
 .informative-text::before {
   content: "*";
   color: var(--red-primary);
+}
+
+/**
+**
+*
+**/
+progressbar {
+  .bg-info {
+    background-color: var(--blue-primary) !important;
+  }
+  .bg-warning {
+    background-color: var(--yellow-primary) !important;
+  }
 }

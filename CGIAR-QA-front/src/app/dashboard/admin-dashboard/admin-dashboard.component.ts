@@ -9,7 +9,7 @@ import { IndicatorsService } from '../../services/indicators.service';
 
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
-import { GeneralStatus } from '../../_models/general-status.model';
+import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-status.model';
 
 import { Observable, forkJoin } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -29,6 +29,7 @@ export class AdminDashboardComponent implements OnInit {
   settingsForm: FormGroup;
   programsForm: FormGroup;
   generalStatus = GeneralStatus;
+  indicatorsName = GeneralIndicatorName;
 
   enableQATooltip :string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
   enableCommentsTooltip :string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
@@ -63,6 +64,10 @@ export class AdminDashboardComponent implements OnInit {
 
   }
 
+
+  getIndicatorName(indicator:string){
+    return this.indicatorsName[indicator]
+  }
 
   isChecked(indicator, type) {
     return type === 'enableQA' ? indicator.enable_assessor : indicator.enable_crp;
