@@ -15,7 +15,6 @@ class CommentController {
 
     static commentsCount = async (req: Request, res: Response) => {
         const { crp_id, id } = req.query;
-        console.log(crp_id)
         let queryRunner = getConnection().createQueryBuilder();
         try {
 
@@ -40,10 +39,6 @@ class CommentController {
                     {}
                 );
                 let rawData = await queryRunner.connection.query(query, parameters);
-                // GROUP BY
-                //     evaluations.indicator_view_name,
-                //      count
-                console.log()
                 res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
             }
         } catch (error) {

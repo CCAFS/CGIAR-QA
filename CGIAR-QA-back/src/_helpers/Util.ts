@@ -111,7 +111,7 @@ class Util {
             const element = grouped_data[key];
             if (grouped_data.hasOwnProperty(key)) {
                 let itm = [
-                    { indicator_view_name: key, label: 0, value: 0, type: 'success',status: 'answered', total: element.length },
+                    { indicator_view_name: key, label: 0, value: 0, type: 'warning',status: 'answered', total: element.length },
                     { indicator_view_name: key, label: 0, value: 0, type: 'info',status: 'unanswered', total: element.length },
                 ];
                 element.total = element.length;

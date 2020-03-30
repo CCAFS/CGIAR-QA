@@ -23,17 +23,19 @@ createConnection()
         app.use(helmet());
         app.use(bodyParser.json());
 
-        
-        
+
+
         //Set all routes from routes folder
         app.use("/", Routes);
-        
+
         //Handle Errors
         app.use((err, req, res, next) => {
             handleError(err, res);
         });
-        app.listen(config.port, () => {
-            console.log(`Server started on port ${config.port}!`);
+        let server = app.listen(config.port, config.host, () => {
+            // let host = app.address().address;
+            // let port = app.address().port;
+            console.log(`Server started on port ${server.address().port} and host ${server.address().address}!`);
         });
     })
     .catch(error => console.log('createConnection', error));
