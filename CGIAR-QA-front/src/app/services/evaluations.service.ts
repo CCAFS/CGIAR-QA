@@ -14,7 +14,6 @@ export class EvaluationsService {
 
   // get data for evaluation
   getDataEvaluation(id, params) {
-    // this.http.get<any>(`${environment.apiUrl}/auth/login`, params)
     return this.http.post<any>(`${environment.apiUrl}/evaluation/${id}/detail`, params)
   }
 

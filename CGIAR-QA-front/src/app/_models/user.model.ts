@@ -5,6 +5,7 @@ export class User {
     roles:any[];
     config:any[];
     indicators:any[];
+    crp:any;
     // firstName: string;
     // lastName: string;
     token: string;

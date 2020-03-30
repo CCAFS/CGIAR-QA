@@ -12,6 +12,9 @@ import { QAComments } from "@entity/Comments";
 import { StatusHandler } from "@helpers/StatusHandler";
 import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
 import { RolesHandler } from "@helpers/RolesHandler";
+import Util from "@helpers/Util"
+
+
 
 // import { validate } from "class-validator";
 // import { runInNewContext } from "vm";
@@ -70,7 +73,7 @@ class EvaluationsController {
                     indicator_view_name: element['indicator_view_name'],
                     status: element['status'],
                     indicator_status: element['enable_assessor'],
-                    type: EvaluationsController.getType(element['status']),
+                    type: Util.getType(element['status']),
                     value: element['count'],
                     label: `${element['count']}`,
                     primary_field: element["primary_field"]
@@ -80,7 +83,7 @@ class EvaluationsController {
             }
 
 
-            let result = EvaluationsController.groupBy(response, 'indicator_view_name');
+            let result = Util.groupBy(response, 'indicator_view_name');
             // console.log(result)
             res.status(200).json({ data: result, message: "User evaluations" });
         } catch (error) {
@@ -125,8 +128,8 @@ class EvaluationsController {
                     { view_name },
                     {}
                 );
-                let rawData =  await queryRunner.connection.query(query, parameters);
-                res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
+                let rawData = await queryRunner.connection.query(query, parameters);
+                res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
             }
 
@@ -163,8 +166,8 @@ class EvaluationsController {
                 {}
             );
             let rawData = await queryRunner.connection.query(query, parameters);
-            
-            res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData), message: "User evaluations list" });
+
+            res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: "Could not access to evaluations." });
@@ -222,7 +225,7 @@ class EvaluationsController {
             }
             //console.log(rawData)
             // res.status(200).json({ data: (rawData), message: "User evaluation detail" });
-            res.status(200).json({ data: EvaluationsController.parseEvaluationsData(rawData, view_name_psdo), message: "User evaluation detail" });
+            res.status(200).json({ data: Util.parseEvaluationsData(rawData, view_name_psdo), message: "User evaluation detail" });
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: "Could not access to evaluations." });
@@ -346,7 +349,7 @@ class EvaluationsController {
                 response.push({
                     indicator_view_name: element['indicator_view_name'],
                     status: element['status'],
-                    type: EvaluationsController.getType(element['status']),
+                    type: Util.getType(element['status']),
                     value: element['count'],
                     crp_id: (crp_id) ? element['crp_id'] : null,
                     label: `${element['count']}`,
@@ -355,7 +358,7 @@ class EvaluationsController {
 
             }
 
-            let result = EvaluationsController.groupBy(response, 'indicator_view_name');
+            let result = Util.groupBy(response, 'indicator_view_name');
             // res.status(200).json({ data: rawData, message: "All evaluations" });
             res.status(200).json({ data: result, message: "All evaluations" });
         } catch (error) {
@@ -541,106 +544,107 @@ class EvaluationsController {
 
 
 
-    /***
-     * 
-     *  PRIVATE FUNCTIONS
-     * 
-     ***/
+    // /***
+    //  * 
+    //  *  PRIVATE FUNCTIONS
+    //  * 
+    //  ***/
 
-    static getType(status) {
-        let res = ""
-        switch (status) {
-            case StatusHandler.Pending:
-                res = 'danger'
-                break;
-            case StatusHandler.Complete:
-                res = 'success'
-                break;
+    // static getType(status) {
+    //     let res = ""
+    //     switch (status) {
+    //         case StatusHandler.Pending:
+    //             res = 'danger'
+    //             break;
+    //         case StatusHandler.Complete:
+    //             res = 'success'
+    //             break;
 
-            default:
-                break;
-        }
+    //         default:
+    //             break;
+    //     }
 
-        return res;
-    }
+    //     return res;
+    // }
 
-    static groupBy(array, key) {
-        return array.reduce((result, currentValue) => {
-            (result[currentValue[key]] = result[currentValue[key]] || []).push(
-                currentValue
-            );
-            return result;
-        }, {});
-    };
+    // static groupBy(array, key) {
+    //     return array.reduce((result, currentValue) => {
+    //         (result[currentValue[key]] = result[currentValue[key]] || []).push(
+    //             currentValue
+    //         );
+    //         return result;
+    //     }, {});
+    // };
 
-    static parseEvaluationsData(rawData, type?) {
-        let response = [];
-        // console.log('parseEvaluationsData', type)
-        switch (type) {
-            case 'innovations':
-                for (let index = 0; index < rawData.length; index++) {
-                    const element = rawData[index];
-                    let field = element["meta_display_name"].split(' ').join("_");
+    // static parseEvaluationsData(rawData, type?) {
+    //     let response = [];
+    //     // console.log('parseEvaluationsData', type)
+    //     switch (type) {
+    //         case 'innovations':
+    //             for (let index = 0; index < rawData.length; index++) {
+    //                 const element = rawData[index];
+    //                 let field = element["meta_display_name"].split(' ').join("_");
 
-                    if (!element["meta_is_primay"] && element['meta_include_detail']) {
-                        response.push({
-                            enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
-                            display_name: element["meta_display_name"],
-                            display_type: DisplayTypeHandler.Paragraph,
-                            value: element[`${type}_${field}`],
-                            field_id: element["meta_id"],
-                            evaluation_id: element["evaluations_id"],
-                            general_comment: element["evaluations_general_comments"],
-                            status: element["evaluations_status"],
-                        })
+    //                 if (!element["meta_is_primay"] && element['meta_include_detail']) {
+    //                     response.push({
+    //                         enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
+    //                         display_name: element["meta_display_name"],
+    //                         display_type: DisplayTypeHandler.Paragraph,
+    //                         value: element[`${type}_${field}`],
+    //                         field_id: element["meta_id"],
+    //                         evaluation_id: element["evaluations_id"],
+    //                         general_comment: element["evaluations_general_comments"],
+    //                         status: element["evaluations_status"],
+    //                     })
 
-                    }
-                }
-                break;
-            case "policies":
-                for (let index = 0; index < rawData.length; index++) {
-                    const element = rawData[index];
-                    let field = element["meta_display_name"].split(' ').join("_");
+    //                 }
+    //             }
+    //             break;
+    //         case "policies":
+    //             for (let index = 0; index < rawData.length; index++) {
+    //                 const element = rawData[index];
+    //                 let field = element["meta_display_name"].split(' ').join("_");
 
-                    if (!element["meta_is_primay"] && element['meta_include_detail']) {
-                        response.push({
-                            enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
-                            display_name: element["meta_display_name"],
-                            display_type: DisplayTypeHandler.Paragraph,
-                            value: element[`${type}_${field}`],
-                            field_id: element["meta_id"],
-                            evaluation_id: element["evaluations_id"],
-                            general_comment: element["evaluations_general_comments"],
-                            status: element["evaluations_status"],
-                        })
+    //                 if (!element["meta_is_primay"] && element['meta_include_detail']) {
+    //                     response.push({
+    //                         enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
+    //                         display_name: element["meta_display_name"],
+    //                         display_type: DisplayTypeHandler.Paragraph,
+    //                         value: element[`${type}_${field}`],
+    //                         field_id: element["meta_id"],
+    //                         evaluation_id: element["evaluations_id"],
+    //                         general_comment: element["evaluations_general_comments"],
+    //                         status: element["evaluations_status"],
+    //                     })
 
-                    }
-                }
-                break;
-
-
-            default:
-                for (let index = 0; index < rawData.length; index++) {
-                    const element = rawData[index];
-                    response.push({
-                        indicator_view_name: element['evaluations_indicator_view_name'],
-                        status: element['evaluations_status'],
-                        type: EvaluationsController.getType(element['evaluations_status']),
-                        value: element['count'],
-                        id: element['evaluations_indicator_view_id'],
-                        title: element['title'],
-                        pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
-                        crp: element['crp_name'],
-                    })
-
-                }
-
-                break;
-        }
+    //                 }
+    //             }
+    //             break;
 
 
-        return response;
-    }
+    //         default:
+    //             for (let index = 0; index < rawData.length; index++) {
+    //                 const element = rawData[index];
+    //                 response.push({
+    //                     indicator_view_name: element['evaluations_indicator_view_name'],
+    //                     status: element['evaluations_status'],
+    //                     type: EvaluationsController.getType(element['evaluations_status']),
+    //                     value: element['count'],
+    //                     id: element['evaluations_indicator_view_id'],
+    //                     title: element['title'],
+    //                     pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
+    //                     crp: element['crp_name'],
+    //                 })
+
+    //             }
+
+    //             break;
+    //     }
+
+
+    //     return response;
+    // }
 }
+import { format } from "url";
 
 export default EvaluationsController;

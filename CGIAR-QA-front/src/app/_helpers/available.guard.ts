@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Location } from '@angular/common';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -13,7 +12,6 @@ import { Role } from "../_models/roles.model"
 })
 export class AvailableGuard implements CanActivate {
   constructor(
-    private _location: Location,
     private router: Router,
     private authenticationService: AuthenticationService
   ) { }
@@ -29,7 +27,7 @@ export class AvailableGuard implements CanActivate {
       let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });
       let found = meta_indicators.find(meta => { return meta.name.toLocaleLowerCase() === current_indicator })
       if (isAdmin === Role.admin) return true;
-      if (isAssessor && found.comment_meta.enable_assessor) {
+      if (isAssessor === Role.asesor && found.comment_meta.enable_assessor) {
         return true
       } else {
         //this._location.back();
