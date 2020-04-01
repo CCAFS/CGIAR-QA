@@ -1,0 +1,30 @@
+@import "../../assets/variables.scss";
+.dashboard-container {
+    .col-programs {
+        ul {
+            background: var(--gray-primary);
+            border-radius: 1em;
+        }
+        .list-group {
+            .list-group-item {
+                cursor: pointer;
+                border: transparent;
+                background-color: transparent;
+            }
+            .list-group-item.active {
+                background-color: transparent;
+                color: var(--green-tertiary);
+                font-weight: $bold;
+            }
+        }
+        .programs-form {
+            margin: 0 $size-lg;
+            .custom-control-input:checked ~ .custom-control-label::before {
+                color: var(--white);
+                border-color: var(--yellow-primary);
+                background-color: var(--yellow-primary);
+                border-radius: 50%;
+            }
+        }
+    }
+}

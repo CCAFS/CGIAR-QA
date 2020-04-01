@@ -49,7 +49,9 @@ class IndicatorsController {
         try {
             const userRepository = getRepository(QAUsers);
             let user = await userRepository.findOneOrFail({ where: { id } });
+            // console.log(user)
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
+            let isCRP = user.roles.find(x => x.description == RolesHandler.crp);
             if (isAdmin) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
@@ -61,15 +63,53 @@ class IndicatorsController {
                     {},
                     {}
                 );
-                const indicators =  await queryRunner.connection.query(query, parameters);
+                const indicators = await queryRunner.connection.query(query, parameters);
                 for (let index = 0; index < indicators.length; index++) {
                     response.push({ indicator: indicators[index] });
 
                 }
                 res.status(200).json({ data: response, message: "User indicators" });
                 return;
-            } else {
-                
+            } 
+            else if (isCRP) {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `
+                    SELECT DISTINCT
+                    (
+                        evaluations.indicator_view_name
+                    ),
+                    evaluations.crp_id,
+                    (
+                        SELECT
+                            NAME
+                        FROM
+                            qa_indicators
+                        WHERE
+                            view_name = evaluations.indicator_view_name
+                    ) as name,
+                    (
+                        SELECT
+                            primary_field
+                        FROM
+                            qa_indicators
+                        WHERE
+                            view_name = evaluations.indicator_view_name
+                    ) as primary_field
+                    FROM
+                        qa_evaluations evaluations
+                    WHERE
+                        evaluations.crp_id = :crp_id
+                    `,
+                    { crp_id: user.crp.crp_id },
+                    {}
+                );
+
+                const indicators = await queryRunner.connection.query(query, parameters);
+                res.status(200).json({ data: indicators, message: "CRP indicators" });
+                return;
+            }
+            else {
+
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
@@ -86,7 +126,7 @@ class IndicatorsController {
                     { userId: id },
                     {}
                 );
-                let indicators =  await queryRunner.connection.query(query, parameters);
+                let indicators = await queryRunner.connection.query(query, parameters);
                 for (let index = 0; index < indicators.length; index++) {
                     response.push({ indicator: indicators[index] });
 
@@ -396,7 +436,6 @@ class IndicatorsController {
             let evaluations = await evaluationsRepository.find({ where: { indicator_user: indiByUsr.id } });
             let response;
             if (evaluations.length > 0) {
-                console.log("ddd")
                 return [];
             } else {
                 // console.log("Evaluations", indiByUsr.id, indicator.view_name, indicator.primary_field)

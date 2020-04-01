@@ -9,7 +9,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 
 import { AssessorDashboardComponent } from './assesor-dashboard/assessor-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
+import { CrpDashboardComponent } from '../crp/crp-dashboard/crp-dashboard.component';
 
 import { NgxSpinnerModule } from "ngx-spinner";
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -26,6 +26,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
         NgxSpinnerModule,
         ReactiveFormsModule
     ],
-    declarations: [AssessorDashboardComponent, SortByPipe, AdminDashboardComponent, CrpDashboardComponent]
+    declarations: [AssessorDashboardComponent, SortByPipe, AdminDashboardComponent]
 })
 export class DashboardModule { }

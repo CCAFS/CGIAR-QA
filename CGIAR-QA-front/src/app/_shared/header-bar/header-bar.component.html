@@ -1,10 +1,11 @@
-<nav *ngIf="isCRP()">
+<!-- <nav *ngIf="isCRP()">
     <img src="../../../assets/img/fk-header.png" alt="">
-</nav>
+</nav> -->
 
 
 
-<nav class="navbar navbar-expand header-bar" *ngIf="currentUser && !isCRP() && router.url !== '/qa-close'">
+<nav class="navbar navbar-expand header-bar"
+    *ngIf="currentUser && !isCRP() && (router.url !== '/qa-close' && router.url !== '/crp')">
     <div class="logo-container">
         <i class="cgiar-logo"></i>
         <h3>QA PLATFORM</h3>

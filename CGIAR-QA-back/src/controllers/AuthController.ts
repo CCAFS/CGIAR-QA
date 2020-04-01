@@ -1,12 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
-import { getRepository, In } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 import { validate } from "class-validator";
 
 import config from "@config/config";
 
 import { QAUsers } from "@entity/User";
+import { QATokenAuth } from "@entity/TokenAuth";
 import { QAGeneralConfiguration } from "@entity/GeneralConfig";
+import { QACrp } from "@entity/CRP";
+import { QARoles } from "@entity/Roles";
+import { RolesHandler } from "@helpers/RolesHandler";
 
 const { ErrorHandler } = require("@helpers/ErrorHandler")
 
@@ -69,6 +73,47 @@ class AuthController {
         }
 
     };
+
+
+    static tokenLogin = async (req: Request, res: Response) => {
+        try {
+            //Check if username and password are set
+            let { crp_id, token } = req.body;
+
+            if (!(crp_id && token)) {
+                res.status(404).json({ message: 'Not authorized.' })
+            }
+            let queryRunner = getConnection().createQueryBuilder();
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                    *, (SELECT id FROM qa_crp WHERE crp_id = 'CRP-22') AS qa_crp_id
+                FROM
+                    qa_token_auth
+                WHERE
+                    crp_id = :crp_id
+                AND
+                    token = :token
+                AND 
+                    DATE(expiration_date) >= CURDATE()
+                    `,
+                { crp_id, token },
+                {}
+            );
+
+            let r = await queryRunner.connection.query(query, parameters);
+            let auth_token = r[0];
+
+            let user = await AuthController.createOrReturnUser(auth_token);
+            //Send the jwt in the response
+            res.status(200).json({ data: user, message: 'CRP Logged' })
+
+        } catch (error) {
+            console.log(error)
+            res.status(400).json(error)
+            // next(error)
+        }
+    }
 
     static changePassword = async (req: Request, res: Response) => {
         //Get ID from JWT
@@ -140,6 +185,60 @@ class AuthController {
             res.status(400).send({ data: error, message: 'Configuration can not be created' });
         }
     }
+
+    /**
+     * 
+     * *
+     */
+
+    static createOrReturnUser = async (authToken: any): Promise<any> => {
+        const userRepository = getRepository(QAUsers);
+        const roleRepository = getRepository(QARoles);
+        const crpRepository = getRepository(QACrp);
+        const grnlConfg = getRepository(QAGeneralConfiguration);
+        let user;
+        try {
+            user = await userRepository.findOne({ where: { email: authToken.email, crp: authToken.qa_crp_id } });
+            let crp = await crpRepository.findOneOrFail({ where: { crp_id: authToken.crp_id } });
+            let role = await roleRepository.find({ where: { description: RolesHandler.crp } })
+            if (!user) {
+                user = new QAUsers();
+                user.crp = crp;
+                user.password = '';
+                user.username = authToken.username;
+                user.email = authToken.email;
+                user.name = authToken.name;
+                user.roles = role;
+                user = await userRepository.save(user);
+                // return user;
+            }
+            //  // get general config by user role
+            let generalConfig = await grnlConfg
+                .createQueryBuilder("qa_general_config")
+                .select('*')
+                .where(`roleId IN (${user.roles.map(role => { return role.id })})`)
+                .andWhere("DATE(qa_general_config.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
+                .getRawMany();
+
+            // //Sing JWT, valid for ``config.jwtTime`` 
+            const token = jwt.sign(
+                { userId: user.id, username: user.username },
+                config.jwtSecret,
+                { expiresIn: config.jwtTime }
+            );
+
+
+            user["token"] = token;
+            user["config"] = generalConfig;
+
+            return user
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
 
 
 }

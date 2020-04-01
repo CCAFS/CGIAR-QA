@@ -13,7 +13,7 @@ const routes: Routes = [
     {
         path: '',
         component: IndicatorsComponent,
-        canActivate: [AuthGuard],
+        canActivate: [AuthGuard, AvailableGuard],
         data: { roles: [Role.asesor, Role.admin] },
     },
     {

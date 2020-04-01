@@ -4,11 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AuthenticationService } from "../../services/authentication.service";
-import { EvaluationsService } from "../../services/evaluations.service";
-import { AlertService } from '../../services/alert.service';
+import { AuthenticationService } from "../services/authentication.service";
+import { EvaluationsService } from "../services/evaluations.service";
+import { AlertService } from '../services/alert.service';
 
-import { User } from '../../_models/user.model';
+import { User } from '../_models/user.model';
 
 @Component({
   selector: 'app-comment',

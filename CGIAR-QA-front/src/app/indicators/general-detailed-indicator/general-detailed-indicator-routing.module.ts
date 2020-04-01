@@ -5,7 +5,7 @@ import { AuthGuard } from '../../_helpers/auth.guard';
 import { Role } from '../../_models/roles.model';
 
 import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator.component';
-import { CommentComponent } from '../comment/comment.component';
+import { CommentComponent } from '../../comment/comment.component';
 
 
 const routes: Routes = [

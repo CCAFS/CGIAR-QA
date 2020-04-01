@@ -35,6 +35,17 @@ export class AuthenticationService {
       }));
   }
 
+  tokenLogin(parmas:{}){
+    return this.http.post<any>(`${environment.apiUrl}/auth/token/login`, parmas)
+    .pipe(map(user => {
+      let currentUsr = user.data
+      // store user details and jwt token in local storage to keep user logged in between page refreshes
+      localStorage.setItem('currentUser', JSON.stringify(currentUsr));
+      this.currentUserSubject.next(currentUsr);
+      return currentUsr;
+    }));
+  }
+
   logout() {
     // remove user from local storage and set current user to null
     localStorage.removeItem('currentUser');

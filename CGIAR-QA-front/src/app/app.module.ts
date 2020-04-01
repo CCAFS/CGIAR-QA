@@ -28,7 +28,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
 import { QaCloseComponent } from './qa-close/qa-close.component';
-import { CrpComponent } from './crp/crp.component';
+// import { CrpComponent } from './crp/crp.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +40,6 @@ import { CrpComponent } from './crp/crp.component';
     FilterByRolePipe,
     HeaderBarComponent,
     QaCloseComponent,
-    CrpComponent,
   ],
   imports: [
     BrowserModule,
