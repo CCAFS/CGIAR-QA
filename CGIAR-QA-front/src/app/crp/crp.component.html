@@ -6,7 +6,7 @@
                 *ngFor="let indicator of indicators; index as i">{{indicator.name}}</li>
             <li class="list-group-item" (click)="logout()">Logout</li>
         </ul>
-        <ngx-spinner [fullScreen]="false"></ngx-spinner>
+        <ngx-spinner [name]="spinner_name" [fullScreen]="false"></ngx-spinner>
     </div>
     <div class="col-10 col-progress">
         <router-outlet></router-outlet>

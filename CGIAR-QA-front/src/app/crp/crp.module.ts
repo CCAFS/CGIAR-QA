@@ -12,6 +12,7 @@ import { CRPRoutingModule } from './crp-routing.module';
 import { CrpComponent } from './crp.component';
 import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
 import { CRPIndicatorsComponent } from './crp-indicators/indicators.component';
+import { DetailIndicatorComponent } from './detail-indicator/detail-indicator.component';
 
 
 
@@ -27,6 +28,6 @@ import { CRPIndicatorsComponent } from './crp-indicators/indicators.component';
     OrderModule,
     ReactiveFormsModule
   ],
-  declarations: [CrpComponent, CrpDashboardComponent, CRPIndicatorsComponent]
+  declarations: [CrpComponent, CrpDashboardComponent, /*CRPIndicatorsComponent, DetailIndicatorComponent*/]
 })
 export class CrpModule { }

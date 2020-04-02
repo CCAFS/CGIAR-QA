@@ -36,7 +36,9 @@ class AuthController {
                     { email: username }
                 ]
             });
-            // console.log(user)
+            if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp)) {
+                res.status(401).json({ message: 'Unauthorized' })
+            }
             // get general config by user role
             let generalConfig = await grnlConfg
                 .createQueryBuilder("qa_general_config")
@@ -102,8 +104,10 @@ class AuthController {
             );
 
             let r = await queryRunner.connection.query(query, parameters);
+            if (!r.length) {
+                res.status(401).json({ data: [], message: 'Invalid token' });
+            }
             let auth_token = r[0];
-
             let user = await AuthController.createOrReturnUser(auth_token);
             //Send the jwt in the response
             res.status(200).json({ data: user, message: 'CRP Logged' })

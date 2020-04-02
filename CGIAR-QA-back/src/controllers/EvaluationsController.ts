@@ -14,6 +14,8 @@ import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
 import { RolesHandler } from "@helpers/RolesHandler";
 import Util from "@helpers/Util"
 
+import { format } from "url";
+import { QACommentsReplies } from "@entity/CommentsReplies";
 
 
 // import { validate } from "class-validator";
@@ -131,43 +133,73 @@ class EvaluationsController {
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
+            } else if (user.crp) {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT
+                        evaluations.id AS evaluations_id,
+                        evaluations.indicator_view_id AS evaluations_indicator_view_id,
+                        evaluations.status AS evaluations_status,
+                        evaluations.indicator_view_name AS evaluations_indicator_view_name,
+                        evaluations.crp_id AS evaluations_crp_id,
+                        evaluations.general_comments AS evaluations_general_comments,
+                        evaluations.indicatorUserId AS evaluations_indicatorUserId,
+                        ${view_name}.title AS title,
+                        crp.acronym AS acronym,
+                        crp.name AS crp_name,
+                        (
+                            SELECT COUNT(id)
+                            FROM qa_comments
+                            WHERE qa_comments.evaluationId = evaluations.id
+                        ) AS comments_count
+                    FROM
+                        qa_indicator_user qa_indicator_user
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+                    LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                    WHERE
+                        evaluations.crp_id = :crp_id
+                    AND title IS NOT NULL
+                    AND evaluations.indicator_view_name = :view_name `,
+                    { crp_id: user.crp.crp_id, view_name },
+                    {}
+                );
+                console.log(user.crp.crp_id)
+                let rawData = await queryRunner.connection.query(query, parameters);
+                res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "CRP evaluations list" });
+
+            }
+            else {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT
+                        evaluations.id AS evaluations_id,
+                        evaluations.indicator_view_id AS evaluations_indicator_view_id,
+                        evaluations.status AS evaluations_status,
+                        evaluations.indicator_view_name AS evaluations_indicator_view_name,
+                        evaluations.crp_id AS evaluations_crp_id,
+                        evaluations.general_comments AS evaluations_general_comments,
+                        evaluations.indicatorUserId AS evaluations_indicatorUserId,
+                        ${view_name}.title AS title,
+                        crp.acronym AS acronym,
+                        crp.name AS crp_name
+                    FROM
+                        qa_indicator_user qa_indicator_user
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+                    LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                    WHERE
+                        qa_indicator_user.userId = :user_Id
+                    AND title IS NOT NULL
+                    AND evaluations.indicator_view_name = :view_name `,
+                    { user_Id: id, view_name },
+                    {}
+                );
+                let rawData = await queryRunner.connection.query(query, parameters);
+                console.log(rawData)
+                res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
+
             }
 
 
-        } catch (error) {
-            console.log(error);
-            res.status(200).json({ data: [], message: "User indicators." });
-        }
-
-        //Get evaluations from database
-        try {
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                `SELECT
-                    evaluations.id AS evaluations_id,
-                    evaluations.indicator_view_id AS evaluations_indicator_view_id,
-                    evaluations.status AS evaluations_status,
-                    evaluations.indicator_view_name AS evaluations_indicator_view_name,
-                    evaluations.crp_id AS evaluations_crp_id,
-                    evaluations.general_comments AS evaluations_general_comments,
-                    evaluations.indicatorUserId AS evaluations_indicatorUserId,
-                    ${view_name}.title AS title,
-                    crp.acronym AS acronym,
-                    crp.name AS crp_name
-                FROM
-                    qa_indicator_user qa_indicator_user
-                LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
-                LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
-                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                WHERE
-                    qa_indicator_user.userId = :user_Id
-                AND title IS NOT NULL
-                AND evaluations.indicator_view_name = :view_name `,
-                { user_Id: id, view_name },
-                {}
-            );
-            let rawData = await queryRunner.connection.query(query, parameters);
-
-            res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: "Could not access to evaluations." });
@@ -206,7 +238,24 @@ class EvaluationsController {
                     //.groupBy('meta.id')
                     .getRawMany();
                 //.getSql();
-            } else {
+            }
+            else if (user.crp) {
+
+                const indicatorByUserRepository = getRepository(QAIndicatorUser);
+                rawData = await indicatorByUserRepository
+                    .createQueryBuilder("qa_indicator_user")
+                    .select(`${view_name_psdo}.title AS title`)
+                    //.addSelect(`${view_name_psdo}.crp AS crp`)
+                    .where("evaluations.crp_id=:crp_id", { crp_id: user.crp.crp_id })
+                    .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
+                    .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
+                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
+                    .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
+                    //.groupBy('meta.id')
+                    .getRawMany();
+            }
+            else {
                 const indicatorByUserRepository = getRepository(QAIndicatorUser);
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
@@ -220,10 +269,10 @@ class EvaluationsController {
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     //.groupBy('meta.id')
                     .getRawMany();
-                //.getSql();
+                // .getSql();
 
             }
-            //console.log(rawData)
+            console.log(rawData)
             // res.status(200).json({ data: (rawData), message: "User evaluation detail" });
             res.status(200).json({ data: Util.parseEvaluationsData(rawData, view_name_psdo), message: "User evaluation detail" });
         } catch (error) {
@@ -264,22 +313,8 @@ class EvaluationsController {
 
 
         try {
-            const indicatorByUserRepository = getRepository(QAIndicatorUser);
             let rawData;
             if (crp_id !== undefined && crp_id !== "undefined") {
-                // rawData = await indicatorByUserRepository
-                //     .createQueryBuilder("qa_indicator_user")
-                //     .where("`evaluations`.`crp_id` = :crp_id", { crp_id: crp_id })
-                //     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                //     .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
-                //     .addSelect("COUNT(evaluations.`status`)", "count")
-                //     .addSelect("`indicator`.primary_field AS primary_field")
-                //     .groupBy("evaluations.`status`")
-                //     .orderBy("evaluations.`status`", 'ASC')
-                //     .addGroupBy("evaluations.`indicator_view_name`")
-                //     // .getSql()
-                //     .getRawMany()
-
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
                     evaluations.status AS status,
@@ -327,19 +362,6 @@ class EvaluationsController {
                     {}
                 );
                 rawData = await queryRunner.connection.query(query, parameters);
-                // console.log(query, parameters)
-
-                // rawData = await indicatorByUserRepository
-                //     .createQueryBuilder("qa_indicator_user")
-                //     .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
-                //     .leftJoinAndSelect("qa_indicators", "indicator", "indicator.view_name =`evaluations`.`indicator_view_name`")
-                //     .addSelect("`indicator`.primary_field AS primary_field")
-                //     .addSelect("COUNT(evaluations.`status`)", "count")
-                //     .groupBy("evaluations.`status`")
-                //     .orderBy("evaluations.`status`", 'ASC')
-                //     .addGroupBy("evaluations.`indicator_view_name`")
-                //     .getSql()
-                // .getRawMany()
             }
 
             let response = []
@@ -410,29 +432,6 @@ class EvaluationsController {
                 {}
             );
             let evalData = await queryRunner.connection.query(query, parameters);
-            /*
-            SELECT
-                qa_indicator_user.status,
-                indicators.name AS indicator_view_name,
-                evaluations.crp_id AS crp_id,
-                crps.name,
-                crps.acronym
-            FROM
-                qa_indicator_user qa_indicator_user
-            LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
-            LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
-            LEFT JOIN qa_crp crps ON evaluations.crp_id = crps.crp_id
-            GROUP BY
-                evaluations.crp_id,
-                indicators.name,
-                qa_indicator_user.status,
-                evaluations.indicator_view_name
-            ORDER BY
-                evaluations.crp_id ASC 
-            */
-
-            // evalData = EvaluationsController.groupBy(evalData, 'indicator_view_name')
-
             res.status(200).json({ data: evalData, message: "Indicators by crp" });
 
         } catch (error) {
@@ -445,6 +444,44 @@ class EvaluationsController {
 
     // create general comment 
 
+
+    // create reply by comment
+    static createCommentReply = async (req: Request, res: Response) => {
+
+        //Check if username and password are set
+        const { detail, userId, commentId, crp_approved, approved } = req.body;
+        // const evaluationId = req.params.id;
+
+        const userRepository = getRepository(QAUsers);
+        const commentReplyRepository = getRepository(QACommentsReplies);
+        const commentsRepository = getRepository(QAComments);
+
+        try {
+
+            let user = await userRepository.findOneOrFail({ where: { id: userId } });
+            let comment = await commentsRepository.findOneOrFail({ where: { id: commentId } });
+            let reply = new QACommentsReplies();
+            reply.detail = detail;
+            reply.comment = comment;
+            reply.user = user;
+
+            let new_replay = await commentReplyRepository.save(reply);
+            if (user.roles.find(x => x.description == RolesHandler.crp)) {
+                comment.crp_approved = crp_approved;
+                comment = await commentsRepository.save(comment);
+            }
+            // else if(user.roles.find(x => x.description == RolesHandler.admin)){
+            //     comment.approved = approved;
+            //     comment = await commentsRepository.save(comment);
+            // }
+            // console.log(new_replay)
+            res.status(200).send({ data: new_replay, message: 'Comment created' });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Comment can not be created.", data: error });
+        }
+    }
 
     // create comment by indicator
     static createComment = async (req: Request, res: Response) => {
@@ -483,9 +520,8 @@ class EvaluationsController {
 
     // update comment by indicator
     static updateComment = async (req: Request, res: Response) => {
-        // console.log('sacrubs')
+
         //Check if username and password are set
-        // console.log(req.body)
         const { approved, is_visible, is_deleted, id } = req.body;
         const commentsRepository = getRepository(QAComments);
 
@@ -512,20 +548,37 @@ class EvaluationsController {
         const metaId = req.params.metaId;
 
         const commentsRepository = getRepository(QAComments);
+        let queryRunner = getConnection().createQueryBuilder();
         try {
-            let comments = await commentsRepository
-                .find({
-
-                    where: {
-                        meta: metaId, evaluation: evaluationId
-                    }, relations: ['user']
-                })
-            /*.createQueryBuilder('qa_comments')
-            .where(`metaId = ${metaId}`)
-            .andWhere(`evaluationId = ${evaluationId}`)
-            .*/
-            //.
-            //.findOneOrFail({ where: { evaluationId } });
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                id, (
+                    SELECT
+                        COUNT(DISTINCT id)
+                    FROM
+                        qa_comments_replies
+                    WHERE
+                        commentId = qa_comments.id
+                ) AS replies_count
+                FROM
+                    qa_comments
+                WHERE
+                    metaId = :metaId
+                AND evaluationId = :evaluationId
+                `,
+                { metaId, evaluationId },
+                {}
+            );
+            let replies = await queryRunner.connection.query(query, parameters);
+            let comments = await commentsRepository.find({
+                where: {
+                    meta: metaId, evaluation: evaluationId
+                }, relations: ['user']
+            });
+            for (let index = 0; index < comments.length; index++) {
+                const comment = comments[index];
+                comment.replies = replies.find(reply => reply.id == comment.id)
+            }
             res.status(200).send({ data: comments, message: 'Comments' });
 
         } catch (error) {
@@ -535,116 +588,39 @@ class EvaluationsController {
 
     }
 
-    // get comments by CRP
+    // get comments replies
+    static getCommentsReplies = async (req: Request, res: Response) => {
+        const commentId = req.params.commentId;
 
-    static getCRPComments = async (req: Request, res: Response) => {
-
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+            // const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+            //     `SELECT
+            //     *
+            //     FROM
+            //         qa_comments_replies
+            //     WHERE
+            //         commentId = :commentId
+            //     `,
+            //     { commentId },
+            //     {}
+            // );
+            // let replies = await queryRunner.connection.query(query, parameters);
+            let replies = await getRepository(QACommentsReplies).find(
+                {
+                    where: [{
+                        comment: commentId
+                    }],
+                    relations: ['user']
+                }
+            )
+            res.status(200).send({ data: replies, message: 'Comments' });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Comment can not be retrived.", data: error });
+        }
     }
-
-
-
-
-    // /***
-    //  * 
-    //  *  PRIVATE FUNCTIONS
-    //  * 
-    //  ***/
-
-    // static getType(status) {
-    //     let res = ""
-    //     switch (status) {
-    //         case StatusHandler.Pending:
-    //             res = 'danger'
-    //             break;
-    //         case StatusHandler.Complete:
-    //             res = 'success'
-    //             break;
-
-    //         default:
-    //             break;
-    //     }
-
-    //     return res;
-    // }
-
-    // static groupBy(array, key) {
-    //     return array.reduce((result, currentValue) => {
-    //         (result[currentValue[key]] = result[currentValue[key]] || []).push(
-    //             currentValue
-    //         );
-    //         return result;
-    //     }, {});
-    // };
-
-    // static parseEvaluationsData(rawData, type?) {
-    //     let response = [];
-    //     // console.log('parseEvaluationsData', type)
-    //     switch (type) {
-    //         case 'innovations':
-    //             for (let index = 0; index < rawData.length; index++) {
-    //                 const element = rawData[index];
-    //                 let field = element["meta_display_name"].split(' ').join("_");
-
-    //                 if (!element["meta_is_primay"] && element['meta_include_detail']) {
-    //                     response.push({
-    //                         enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
-    //                         display_name: element["meta_display_name"],
-    //                         display_type: DisplayTypeHandler.Paragraph,
-    //                         value: element[`${type}_${field}`],
-    //                         field_id: element["meta_id"],
-    //                         evaluation_id: element["evaluations_id"],
-    //                         general_comment: element["evaluations_general_comments"],
-    //                         status: element["evaluations_status"],
-    //                     })
-
-    //                 }
-    //             }
-    //             break;
-    //         case "policies":
-    //             for (let index = 0; index < rawData.length; index++) {
-    //                 const element = rawData[index];
-    //                 let field = element["meta_display_name"].split(' ').join("_");
-
-    //                 if (!element["meta_is_primay"] && element['meta_include_detail']) {
-    //                     response.push({
-    //                         enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
-    //                         display_name: element["meta_display_name"],
-    //                         display_type: DisplayTypeHandler.Paragraph,
-    //                         value: element[`${type}_${field}`],
-    //                         field_id: element["meta_id"],
-    //                         evaluation_id: element["evaluations_id"],
-    //                         general_comment: element["evaluations_general_comments"],
-    //                         status: element["evaluations_status"],
-    //                     })
-
-    //                 }
-    //             }
-    //             break;
-
-
-    //         default:
-    //             for (let index = 0; index < rawData.length; index++) {
-    //                 const element = rawData[index];
-    //                 response.push({
-    //                     indicator_view_name: element['evaluations_indicator_view_name'],
-    //                     status: element['evaluations_status'],
-    //                     type: EvaluationsController.getType(element['evaluations_status']),
-    //                     value: element['count'],
-    //                     id: element['evaluations_indicator_view_id'],
-    //                     title: element['title'],
-    //                     pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
-    //                     crp: element['crp_name'],
-    //                 })
-
-    //             }
-
-    //             break;
-    //     }
-
-
-    //     return response;
-    // }
 }
-import { format } from "url";
+
 
 export default EvaluationsController;

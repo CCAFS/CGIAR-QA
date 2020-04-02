@@ -51,7 +51,7 @@ class IndicatorsController {
             let user = await userRepository.findOneOrFail({ where: { id } });
             // console.log(user)
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
-            let isCRP = user.roles.find(x => x.description == RolesHandler.crp);
+            let isCRP = user.crp; //user.roles.find(x => x.description == RolesHandler.crp);
             if (isAdmin) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
@@ -143,28 +143,6 @@ class IndicatorsController {
             console.log(error);
             res.status(200).json({ data: [], message: "User indicators." });
         }
-
-
-
-
-        //Get indicators from database
-        // try {
-        // const indicators = await indicatorRepository.find({});
-        // const indicators = await indicatorByUserRepository.find({
-        //     relations: ["indicator"],
-        //     where: { user: id },
-        //     select: ["id", 'indicator']
-        // });
-
-        // console.log(indicators)
-
-        // //Send the indicators object
-        // res.status(200).json({ data: indicators, message: "User indicators" });
-
-        // } catch (error) {
-        //     console.log(error);
-        //     res.status(404).json({ message: "Could not access to indicators." });
-        // }
     }
 
     static createIndicator = async (req: Request, res: Response) => {

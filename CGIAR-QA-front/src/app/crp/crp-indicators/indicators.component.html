@@ -40,6 +40,9 @@
                         <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status')">
                             QA Status
                         </th>
+                        <th scope="col" [class.active]="order === 'comments_count'" (click)="setOrder('comments_count')">
+                            Comments
+                        </th>
                         <th style="width: 2em;" (click)="setOrder(null)">
                             <span [hidden]="reverse">▼</span>
                             <span [hidden]="!reverse">▲</span>
@@ -53,10 +56,10 @@
                             {{ item.title }}
                         </td>
                         <td>{{ item.crp }}</td>
-                        <!-- <td>{{ item.pdf }}</td> -->
                         <td>
                             <div class="circle {{ item.status }}"></div>
                         </td>
+                        <td>{{ item.comments_count }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -67,9 +70,9 @@
             </div>
 
 
-            <!-- Loading Spinner -->
-            <ngx-spinner [fullScreen]="false"></ngx-spinner>
         </div>
-
+        
+        <!-- Loading Spinner -->
+        <ngx-spinner [name]="spinner_name" [fullScreen]="false"></ngx-spinner>
     </div>
 </div>

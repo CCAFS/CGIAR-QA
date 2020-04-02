@@ -27,6 +27,8 @@ export class CRPIndicatorsComponent implements OnInit {
   maxSize = 5;
   pageSize = 4;
   collectionSize = 0;
+  spinner_name = 'spIndicators';
+
 
   order: string = 'id';
   configTemplate: string;
@@ -48,6 +50,7 @@ export class CRPIndicatorsComponent implements OnInit {
     this.indicatorType = this.route.snapshot.params.type;
     this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
     this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
+    this.getEvaluationsList(this.route.snapshot.params);
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -55,6 +58,24 @@ export class CRPIndicatorsComponent implements OnInit {
     const endItem = event.page * event.itemsPerPage;
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
+
+  getEvaluationsList(params) {
+    this.showSpinner(this.spinner_name);
+    this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
+      res => {
+        this.evaluationList = res.data;
+        this.collectionSize = this.evaluationList.length;
+        this.returnedArray = this.orderPipe.transform(this.evaluationList.slice(0, 10), 'id');
+        this.hideSpinner(this.spinner_name);
+      },
+      error => {
+        console.log("getEvaluationsList", error);
+        this.hideSpinner(this.spinner_name);
+        this.alertService.error(error);
+      }
+    )
+  }
+
 
 
   setOrder(value: string) {
@@ -70,7 +91,7 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
   goToView(indicatorId) {
-    // this.router.navigate(['detail', indicatorId], { relativeTo: this.route });
+    this.router.navigate(['detail', indicatorId], { relativeTo: this.route });
   }
 
   goToPDF(type: string) {
@@ -87,17 +108,18 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
 
-
   /***
    * 
    *  Spinner 
    * 
    ***/
-  showSpinner() {
-    this.spinner.show();
+  showSpinner(name: string) {
+    this.spinner.show(name);
   }
-  hideSpinner() {
-    this.spinner.hide();
+
+  hideSpinner(name: string) {
+    this.spinner.hide(name);
   }
+
 
 }

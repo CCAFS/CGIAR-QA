@@ -34,7 +34,7 @@ export class CrpDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.getCommentStats();
-    
+    console.log('crp-dashboard')
   }
 
   getCommentStats(){

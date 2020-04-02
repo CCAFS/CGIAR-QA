@@ -41,17 +41,21 @@
       margin: 0;
     }
   }
+  .add-comment-container.reply-comment {
+    background-color: var(--gray-primary);
+    flex-direction: column;
+    padding: 10px 15px;
+  }
   .add-comment-container {
     display: flex;
-    flex-direction: column;
-    padding: 2em 0;
+    justify-content: space-around;
     textarea {
       width: 100%;
       border: 1px solid var(--gray-primary);
     }
     button {
       margin-top: 1em;
-      width: 20%;
+      // width: 20%;
       align-self: flex-end;
     }
   }

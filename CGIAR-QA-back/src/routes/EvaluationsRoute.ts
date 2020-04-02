@@ -48,12 +48,17 @@ router.get("/crp/indicators", [checkJwt, checkRole([RolesHandler.admin])], Evalu
 // create comment in indicator item
 router.post("/detail/comment", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.createComment)
 
+// create reply by comment
+router.post("/detail/comment/reply", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.createCommentReply)
+
 // update comment in indicator item
 router.patch("/detail/comment", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.updateComment)
 
 // get comment from indicator item
 router.get("/:evaluationId([0-9]+)/detail/comment/:metaId([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.getComments)
 
+// get replies by comment
+router.get("/:evaluationId([0-9]+)/detail/comment/:commentId([0-9]+)/replies", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.getCommentsReplies)
 // get comments for CRP
 // router.get("/:evaluationId([0-9]+)/detail/comment/:metaId([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.getComments)
 

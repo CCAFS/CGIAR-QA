@@ -15,6 +15,10 @@ import { GeneralStatus, GeneralIndicatorName } from '../_models/general-status.m
   styleUrls: ['./crp.component.scss']
 })
 export class CrpComponent implements OnInit {
+  currentUser: User;
+  indicators = [];
+  params;
+  spinner_name = 'sp1';
 
   constructor(private authenticationService: AuthenticationService,
     private route: ActivatedRoute,
@@ -23,23 +27,25 @@ export class CrpComponent implements OnInit {
     private alertService: AlertService,
     private spinner: NgxSpinnerService, ) {
 
+    this.route.queryParamMap.subscribe(params => {
+      this.params = params;
+      // this.router.navigate([`/crp/dashboard`])
+      this.ngOnInit();
+    });
   }
-  currentUser: User;
-  indicators = [];
 
   ngOnInit() {
-    this.route.queryParamMap.subscribe(params => {
-      this.currentUser = this.authenticationService.currentUserValue;
-      if (!this.currentUser) {
-        this.validateToken(params['params']);
-      } else {
-        this.getCRPIndicators();
-      }
-    });
-
+    this.currentUser = this.authenticationService.currentUserValue;
+    if (!this.currentUser) {
+      this.validateToken(this.params['params']);
+    } else {
+      this.getCRPIndicators();
+    }
+    // this.router.navigate([`/crp/dashboard`])
   }
 
   validateToken(params: {}) {
+    console.log(this.currentUser, params)
     this.authenticationService.tokenLogin(params).subscribe(
       res => {
         console.log(res)
@@ -50,27 +56,25 @@ export class CrpComponent implements OnInit {
         })
       },
       error => {
-        this.hideSpinner()
         console.log("validateToken", error);
+        this.logout()
         this.alertService.error(error);
-        // this.router.navigate(['/qa-close']);
       }
     )
   }
 
   getCRPIndicators() {
-    console.log(this.indicators)
-    if (!this.indicators.length) {
-      this.showSpinner()
+    if (!this.indicators.length && this.currentUser) {
+      this.showSpinner(this.spinner_name)
       this.indicatorService.getIndicatorsByUser(this.currentUser.id)
         .subscribe(
           res => {
             this.indicators = res.data;
-            this.hideSpinner();
+            this.hideSpinner(this.spinner_name);
             // console.log(this.indicators)
           },
           error => {
-            this.hideSpinner();
+            this.hideSpinner(this.spinner_name);
             console.log("getCRPIndicators", error);
             this.alertService.error(error);
           }
@@ -88,7 +92,7 @@ export class CrpComponent implements OnInit {
 
   logout() {
     this.authenticationService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/qa-close'], { relativeTo: this.route });
   }
 
   /***
@@ -96,11 +100,12 @@ export class CrpComponent implements OnInit {
    *  Spinner 
    * 
    ***/
-  showSpinner() {
-    this.spinner.show();
+  showSpinner(name: string) {
+    this.spinner.show(name);
   }
-  hideSpinner() {
-    this.spinner.hide();
+
+  hideSpinner(name: string) {
+    this.spinner.hide(name);
   }
 
 
