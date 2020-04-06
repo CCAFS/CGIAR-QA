@@ -12,12 +12,12 @@
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">
-                    <div *ngFor="let item of dashboardData | keyvalue" class="progress-container">
+                    <div *ngFor="let item of dashboardData | keyvalue"  [ngClass]="{'no-available': !item.value[0].crp_enable}" class="progress-container">
                         <p>{{getIndicatorName(item.key)}} evaluations: {{item.value[0].total}}</p>
                         <progressbar class="progress" [value]="item.value" [max]="item.value[0].total">
                             <span>{{item.value[0].total}}</span>
                         </progressbar>
-                        <a (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
+                        <a *ngIf="item.value[0].crp_enable" (click)="goToView(getIndicatorName(item.key).toLowerCase(), item.value[0].primary_field)">
                             Go to {{getIndicatorName(item.key)}}
                         </a>
                     </div>

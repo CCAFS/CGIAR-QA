@@ -44,7 +44,8 @@ export class HeaderBarComponent implements OnInit {
         this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
         break;
       case this.allRoles.asesor:
-        if (indicator.enable_assessor) {
+        console.log(indicator)
+        if (indicator.indicator.enable_assessor) {
           this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
         }
         break;

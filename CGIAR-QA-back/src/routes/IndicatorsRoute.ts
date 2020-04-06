@@ -41,6 +41,6 @@ router.delete("/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin])], Indic
 router.get("/user/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp, RolesHandler.guest])], IndicatorsController.getIndicatorsByUser);
 
 // // edit indicator by user
-router.patch("/:id([0-9]+/user)", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.editCommentsMeta);
+router.patch("/:id([0-9]+)/user", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.editCommentsMeta);
 
 export default router;

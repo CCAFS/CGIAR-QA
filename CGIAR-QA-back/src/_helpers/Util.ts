@@ -2,6 +2,15 @@
 import { StatusHandler } from "@helpers/StatusHandler";
 import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
 import { RolesHandler } from "@helpers/RolesHandler";
+import { getRepository } from "typeorm";
+import { QAUsers } from "@entity/User";
+import { QARoles } from "@entity/Roles";
+import { QACrp } from "@entity/CRP";
+import { QAGeneralConfiguration } from "@entity/GeneralConfig";
+import { config } from "process";
+import * as jwt from "jsonwebtoken";
+import config_ from "@config/config";
+
 
 class Util {
 
@@ -55,7 +64,9 @@ class Util {
                             field_id: element["meta_id"],
                             evaluation_id: element["evaluations_id"],
                             general_comment: element["evaluations_general_comments"],
-                            // comments_count: element["comments_count"],
+                            enable_assessor: element['enable_assessor'],
+                            enable_crp: element['enable_crp'],
+                            replies_count: element['replies_count'],
                             status: element["evaluations_status"],
                         })
 
@@ -76,7 +87,9 @@ class Util {
                             field_id: element["meta_id"],
                             evaluation_id: element["evaluations_id"],
                             general_comment: element["evaluations_general_comments"],
-                        //    /comments_count: element["comments_count"],
+                            enable_assessor: element['enable_assessor'],
+                            enable_crp: element['enable_crp'],
+                            replies_count: element['replies_count'],
                             status: element["evaluations_status"],
                         })
 
@@ -97,6 +110,9 @@ class Util {
                         title: element['title'],
                         comments_count: element["comments_count"],
                         pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
+                        enable_assessor: element['enable_assessor'],
+                        enable_crp: element['enable_crp'],
+                        replies_count: element['replies_count'],
                         crp: element['crp_name'],
                     })
 
@@ -114,8 +130,8 @@ class Util {
             const element = grouped_data[key];
             if (grouped_data.hasOwnProperty(key)) {
                 let itm = [
-                    { indicator_view_name: key, label: 0, value: 0, type: 'warning', status: 'answered', total: element.length },
-                    { indicator_view_name: key, label: 0, value: 0, type: 'info', status: 'unanswered', total: element.length },
+                    { indicator_view_name: key, label: 0, value: 0, type: 'warning', status: 'answered', enable_crp: element[0].enable_crp, enable_assessor: element[0].enable_assessor, primary_field: element[0].primary_field, total: element.length },
+                    { indicator_view_name: key, label: 0, value: 0, type: 'info', status: 'unanswered', enable_crp: element[0].enable_crp, enable_assessor: element[0].enable_assessor, primary_field: element[0].primary_field, total: element.length },
                 ];
                 element.total = element.length;
                 element.forEach(ele => {
@@ -135,6 +151,56 @@ class Util {
 
         return grouped_data;
     }
+
+    
+    static createOrReturnUser = async (authToken: any): Promise<any> => {
+        const userRepository = getRepository(QAUsers);
+        const roleRepository = getRepository(QARoles);
+        const crpRepository = getRepository(QACrp);
+        const grnlConfg = getRepository(QAGeneralConfiguration);
+        let user;
+        try {
+            user = await userRepository.findOne({ where: { email: authToken.email, crp: authToken.qa_crp_id } });
+            let crp = await crpRepository.findOneOrFail({ where: { crp_id: authToken.crp_id } });
+            let role = await roleRepository.find({ where: { description: RolesHandler.crp } })
+            if (!user) {
+                user = new QAUsers();
+                user.crp = crp;
+                user.password = '';
+                user.username = authToken.username;
+                user.email = authToken.email;
+                user.name = authToken.name;
+                user.roles = role;
+                user = await userRepository.save(user);
+                // return user;
+            }
+            //  // get general config by user role
+            let generalConfig = await grnlConfg
+                .createQueryBuilder("qa_general_config")
+                .select('*')
+                .where(`roleId IN (${user.roles.map(role => { return role.id })})`)
+                .andWhere("DATE(qa_general_config.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
+                .getRawMany();
+
+            // //Sing JWT, valid for ``config.jwtTime`` 
+            const token = jwt.sign(
+                { userId: user.id, username: user.username },
+                config_.jwtSecret,
+                { expiresIn: config_.jwtTime }
+            );
+
+
+            user["token"] = token;
+            user["config"] = generalConfig;
+
+            return user
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
 }
 
 export default Util;

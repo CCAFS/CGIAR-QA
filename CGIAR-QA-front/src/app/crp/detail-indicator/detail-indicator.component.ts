@@ -9,6 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 
 import { User } from '../../_models/user.model';
 import { DetailedStatus } from "../../_models/general-status.model"
+import { Role } from 'src/app/_models/roles.model';
 
 @Component({
   selector: 'app-detail-indicator',
@@ -131,6 +132,26 @@ export class DetailIndicatorComponent implements OnInit {
     )
 
   }
+
+
+  
+  validateCommentAvility(field, is_embed) {
+
+    let userRole = this.currentUser.roles[0].description, avility = false;
+    switch (userRole) {
+      case Role.admin:
+        avility = true
+        break;
+      case Role.crp:
+        avility = field.enable_crp ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments): field.enable_crp
+        break;
+      default:
+        break;
+    }
+    return avility;
+
+  }
+
 
 
 

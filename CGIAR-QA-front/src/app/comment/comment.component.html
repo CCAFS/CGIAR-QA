@@ -24,12 +24,12 @@
                         {{comment.detail}}
                     </p>
                     <a *ngIf="comment.replies.replies_count"
-                        (click)="comment.isCollapsed = !comment.isCollapsed; getCommentReplies(comment)">{{comment.replies.replies_count}}
-                        replies:</a>
+                        (click)="comment.isCollapsed = !comment.isCollapsed; getCommentReplies(comment)">
+                        {{comment.replies.replies_count}} replies:
+                    </a>
                     <div [attr.aria-expanded]="!comment.isCollapsed">
                         <div id="collapseBasic-{{comment.id}}" [collapse]="!comment.isCollapsed" [isAnimated]="true">
                             <div class="well well-lg card card-block card-header">
-                                <!--  -->
                                 <ng-container *ngFor="let reply of commentsByColReplies" class="replies-container">
                                     <div class="comment-title">
                                         <div>
@@ -50,10 +50,12 @@
                                         {{reply.detail}}
                                     </p>
                                 </ng-container>
+                                <div class="comment-add-reply">
+
+                                </div>
                             </div>
                         </div>
-                        <ngx-spinner [name]="spinner_replies" [fullScreen]="false" bdColor="rgba(51,51,51,0.3)"
-                            type="ball-clip-rotate" size="medium">
+                        <ngx-spinner [name]="spinner_replies" [fullScreen]="false">
                         </ngx-spinner>
                     </div>
                 </div>
@@ -79,7 +81,15 @@
         <button type="button" class="btn btn-primary" (click)="replyComment()">ADD</button>
 
     </div>
-    <ngx-spinner [name]="spinner_comments" [fullScreen]="false" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
-        size="medium">
+    <div *ngIf="!availableComment" class="add-comment-container reply-comment">
+        <!-- <i class="icon-close" (click)="availableComment = !availableComment"></i>
+        <h2>{{is_approved ? 'ACCEPT':'REJECT'}} COMMENT</h2> -->
+        <form [formGroup]="commentGroup">
+            <textarea cols="30" rows="3" formControlName="comment"></textarea>
+        </form>
+        <button type="button" class="btn btn-primary" (click)="addComment()">ADD</button>
+
+    </div>
+    <ngx-spinner [name]="spinner_comment" [fullScreen]="false" >
     </ngx-spinner>
 </div>

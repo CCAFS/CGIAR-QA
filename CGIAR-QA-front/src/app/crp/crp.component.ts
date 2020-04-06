@@ -39,6 +39,7 @@ export class CrpComponent implements OnInit {
     if (!this.currentUser) {
       this.validateToken(this.params['params']);
     } else {
+      this.router.navigate([`/crp/dashboard`])
       this.getCRPIndicators();
     }
     // this.router.navigate([`/crp/dashboard`])
@@ -86,7 +87,8 @@ export class CrpComponent implements OnInit {
     if (data === null) {
       this.router.navigate([`/crp/${view}`])
     } else {
-      this.router.navigate(['/reload']).then(() => { this.router.navigate([`/crp/indicator/${data.name.toLowerCase()}/${data.primary_field}`]) });
+      this.router.navigate([`/crp/indicator/${data.name.toLowerCase()}/${data.primary_field}`])
+      // this.router.navigate(['/reload']).then(() => { this.router.navigate([`/crp/indicator/${data.name.toLowerCase()}/${data.primary_field}`]) });
     }
   }
 

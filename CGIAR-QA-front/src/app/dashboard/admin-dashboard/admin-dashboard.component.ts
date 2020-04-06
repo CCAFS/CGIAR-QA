@@ -31,8 +31,8 @@ export class AdminDashboardComponent implements OnInit {
   generalStatus = GeneralStatus;
   indicatorsName = GeneralIndicatorName;
 
-  enableQATooltip :string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
-  enableCommentsTooltip :string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
+  enableQATooltip: string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
+  enableCommentsTooltip: string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
 
 
   constructor(private formBuilder: FormBuilder,
@@ -59,13 +59,13 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.showSpinner()
     this.loadDashData();
 
   }
 
 
-  getIndicatorName(indicator:string){
+  getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
 
@@ -79,12 +79,15 @@ export class AdminDashboardComponent implements OnInit {
     let status = isActive ? this.generalStatus.Open : this.generalStatus.Close;
     // console.log(type, id, status);
     let request = null;
+    // console.log(type, { enable_assessor: null, enable_crp: isActive })
     switch (type) {
       case 'enableQA':
-        request = this.indicatorService.updateIndicatorsByUser(id, { enable_assessor: isActive, enable_crp: null })
+        request = this.indicatorService.updateIndicatorsByUser(id, { enable:'enable_assessor', isActive })
+        console.log(type, { enable:'enable_assessor', isActive })
         break;
       case 'enableCRP':
-        request = this.indicatorService.updateIndicatorsByUser(id, { enable_assessor: null, enable_crp: isActive })
+        request = this.indicatorService.updateIndicatorsByUser(id, { enable: 'enable_crp' ,isActive })
+        console.log(type,  { enable: 'enable_crp' ,isActive })
         break;
 
       default:
@@ -94,8 +97,9 @@ export class AdminDashboardComponent implements OnInit {
     this.showSpinner();
     request.subscribe(
       res => {
-        // console.log(res)
-        this.hideSpinner();
+        console.log(res)
+        // this.hideSpinner();
+        this.loadDashData();
       },
       error => {
         this.hideSpinner()
@@ -144,12 +148,12 @@ export class AdminDashboardComponent implements OnInit {
   goToView(view: string, primary_column: string) {
     this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
+  
   getPendings(data) {
     return data.acronym === 'All' ? '' : '- ' + (data.qa_active === this.generalStatus.Open ? 'Open' : 'Pending')
   }
 
   loadDashData() {
-    this.showSpinner()
     let responses = forkJoin([
       this.getAllDashData(),
       this.getAllCRP(),
@@ -166,7 +170,7 @@ export class AdminDashboardComponent implements OnInit {
       this.selectedProgram = this.crps[0].acronym;
 
       this.configurationData = indicatorsByCrps.data;
-      // console.log(this.crps)
+      console.log(this.configurationData)
 
       this.hideSpinner();
     }, error => {

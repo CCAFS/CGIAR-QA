@@ -11,11 +11,13 @@
                     <p *ngIf="!field.value" class="empty-value">Empty Value</p>
                 </div>
 
-                
-                <div #commentsElem *ngIf="gnralInfo.status !== statusHandler.Complete && field.enable_comments" (click)="showComments(i, field); comment.updateData(field,params)"   class="activate-messages-container">
+
+                <div #commentsElem *ngIf="validateCommentAvility(field,true)"
+                    (click)="showComments(i, field); comment.updateData(field,params)"
+                    class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
                     <i class="icon-message"></i>
                 </div>
-                <div *ngIf="gnralInfo.status === statusHandler.Complete && field.enable_comments" class="activate-messages-container">
+                <div *ngIf="!validateCommentAvility(field)" class="activate-messages-container">
                     <i class="icon-message-inactive"></i>
                 </div>
             </div>
@@ -35,7 +37,8 @@
                 </form>
                 <div class="bton-container">
                     <button type="button" class="btn btn-green-secondary"
-                        [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete" (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
+                        [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
+                        (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
                     <button type="button" (click)="updateEvaluation('status', detailedData)"
                         class="btn btn-primary">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
                 </div>
@@ -43,7 +46,7 @@
         </div>
 
     </div>
-    <div  [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }"  class="col-sm-4 comments-container">
+    <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" class="col-sm-4 comments-container">
         <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"></app-comment>
     </div>
 </div>

@@ -70,7 +70,7 @@ class IndicatorsController {
                 }
                 res.status(200).json({ data: response, message: "User indicators" });
                 return;
-            } 
+            }
             else if (isCRP) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
@@ -330,12 +330,10 @@ class IndicatorsController {
         //Get the ID from the url
         const id = req.params.id;
 
-        let { enable_assessor, enable_crp } = req.body;
-
-        console.log(enable_assessor, enable_crp)
+        let { enable, isActive } = req.body;
 
         const commentMetaRepository = getRepository(QACommentsMeta);
-        let commentMeta;
+        let commentMeta, updatedCommentMeta;
 
         try {
             commentMeta = await commentMetaRepository.createQueryBuilder('qa_comments_meta')
@@ -343,9 +341,9 @@ class IndicatorsController {
                 .where("qa_comments_meta.indicatorId=:indicatorId", { indicatorId: id })
                 // .getSql()
                 .getRawOne()
-            console.log(commentMeta)
-            commentMeta.enable_assessor = enable_assessor ? enable_assessor : commentMeta.enable_assessor;
-            commentMeta.enable_crp = enable_crp ? enable_crp : commentMeta.enable_crp;
+            console.log(commentMeta[enable], enable, isActive)
+            // commentMeta[enable] = isActive;
+
             //Validade if the parameters are ok
             const errors = await validate(commentMeta);
             if (errors.length > 0) {
@@ -354,7 +352,8 @@ class IndicatorsController {
             }
 
             // update indicator by user
-            commentMeta = await commentMetaRepository.save(commentMeta);
+            updatedCommentMeta = await commentMetaRepository.save(commentMeta);
+            console.log(updatedCommentMeta)
 
         } catch (error) {
             console.log(error)
@@ -364,7 +363,7 @@ class IndicatorsController {
         }
 
         //If all ok, send 200 response
-        res.status(200).json({ message: "User indicator updated", data: commentMeta });
+        res.status(200).json({ message: "User indicator updated", data: updatedCommentMeta });
 
 
     };

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { CommentService } from "../../services/comment.service";
 import { AuthenticationService } from "../../services/authentication.service";
@@ -22,11 +23,13 @@ export class CrpDashboardComponent implements OnInit {
   currentUser: User;
   indicatorsName = GeneralIndicatorName;
 
-  constructor(private authenticationService: AuthenticationService, 
-              private commentService: CommentService,
-              private dashServicce: DashboardService,
-              private alertService: AlertService,
-              private spinner: NgxSpinnerService,) { 
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    private commentService: CommentService,
+    private dashServicce: DashboardService,
+    private alertService: AlertService,
+    private spinner: NgxSpinnerService, ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
@@ -34,32 +37,37 @@ export class CrpDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.getCommentStats();
-    console.log('crp-dashboard')
+    // console.log('crp-dashboard')
   }
 
-  getCommentStats(){
+  getCommentStats() {
     this.showSpinner();
-    this.commentService.getCommentCRPStats({crp_id: this.currentUser.crp.crp_id})
-    .subscribe(
-      res => {
-        console.log(res)
-        this.dashboardData = res.data;
-        this.hideSpinner();
-      },
-      error => {
-        this.hideSpinner()
-        console.log("getAllDashData", error);
-        this.alertService.error(error);
-      },
-    )
-   
+    this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
+      .subscribe(
+        res => {
+          // console.log(res)
+          this.dashboardData = res.data;
+          this.hideSpinner();
+        },
+        error => {
+          this.hideSpinner()
+          console.log("getAllDashData", error);
+          this.alertService.error(error);
+        },
+      )
+
   }
 
-  getIndicatorName(indicator:string){
+  getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
 
-  
+  goToView(indicatorId, primary_column) {
+    console.log(indicatorId, primary_column)
+    this.router.navigate([`crp/indicator/${indicatorId}/${primary_column}`]);
+  }
+
+
   /***
    * 
    *  Spinner 

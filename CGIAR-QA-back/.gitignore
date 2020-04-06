@@ -8,3 +8,5 @@ temp/
 ormconfig.json
 ./ormconfig_.json
 ormconfig_.json
+
+./src/config/config.ts

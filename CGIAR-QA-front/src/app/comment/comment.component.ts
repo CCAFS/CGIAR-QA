@@ -9,6 +9,7 @@ import { EvaluationsService } from "../services/evaluations.service";
 import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
+import { CommentService } from '../services/comment.service';
 
 @Component({
   selector: 'app-comment',
@@ -40,6 +41,7 @@ export class CommentComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService,
+    private commentService: CommentService,
     private spinner: NgxSpinnerService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
@@ -57,7 +59,6 @@ export class CommentComponent implements OnInit {
     Object.assign(this.dataFromItem, data, params)
     this.availableComment = false;
     // console.log('comment component data=>', this.dataFromItem)
-    this.showSpinner('spinner_Comment');
     this.getItemCommentData();
   }
 
@@ -66,6 +67,10 @@ export class CommentComponent implements OnInit {
 
   closeComments() {
     this.parentFun.emit();
+    this.commentsByCol = [];
+    this.commentsByColReplies = [];
+    this.availableComment = false;
+    this.is_approved = false;
   }
 
   addComment() {
@@ -75,7 +80,7 @@ export class CommentComponent implements OnInit {
       return;
     }
     this.showSpinner('spinner_Comment');
-    this.evaluationService.createDataComment({
+    this.commentService.createDataComment({
       detail: this.formData.comment.value,
       userId: this.currentUser.id,
       evaluationId: this.dataFromItem.evaluation_id,
@@ -115,7 +120,7 @@ export class CommentComponent implements OnInit {
     }
     data[type] = !data[type];
     this.showSpinner('spinner_Comment');
-    this.evaluationService.updateDataComment(data).subscribe(
+    this.commentService.updateDataComment(data).subscribe(
       res => {
         this.hideSpinner('spinner_Comment');
         //console.log(res.data)
@@ -130,34 +135,36 @@ export class CommentComponent implements OnInit {
   }
 
   getItemCommentData() {
+    this.showSpinner(this.spinner_comment);
+
     let params = { evaluationId: this.dataFromItem.evaluation_id, metaId: this.dataFromItem.field_id }
-    this.evaluationService.getDataComment(params).subscribe(
+    this.commentService.getDataComment(params).subscribe(
       res => {
-        this.hideSpinner('spinner_Comment');
+        this.hideSpinner(this.spinner_comment);
         console.log(res)
         this.commentsByCol = res.data.filter(data => data.approved)
       },
       error => {
         console.log("getItemCommentData", error);
-        this.hideSpinner('spinner_Comment');
+        this.hideSpinner(this.spinner_comment);
         this.alertService.error(error);
       }
     )
   }
 
   getCommentReplies(comment) {
-    this.showSpinner('spinner_Comment_Rply');
+    this.showSpinner(this.spinner_replies);
     if (comment.isCollapsed) {
       let params = { commentId: comment.id, evaluationId: this.dataFromItem.evaluation_id, }
-      this.evaluationService.getDataCommentReply(params).subscribe(
+      this.commentService.getDataCommentReply(params).subscribe(
         res => {
-          this.hideSpinner('spinner_Comment_Rply');
+          this.hideSpinner(this.spinner_replies);
           console.log(res)
           this.commentsByColReplies = res.data
         },
         error => {
           console.log("getItemCommentData", error);
-          this.hideSpinner('spinner_Comment_Rply');
+          this.hideSpinner(this.spinner_replies);
           this.alertService.error(error);
         }
       )
@@ -176,8 +183,8 @@ export class CommentComponent implements OnInit {
       this.alertService.error('comment is required', false)
       return;
     }
-    this.showSpinner('spinner_Comment');
-    this.evaluationService.createDataCommentReply({
+    this.showSpinner(this.spinner_replies);
+    this.commentService.createDataCommentReply({
       detail: this.formData.comment.value,
       userId: this.currentUser.id,
       commentId: this.currentComment.id,
@@ -185,7 +192,7 @@ export class CommentComponent implements OnInit {
       // approved: this.approved,
     }).subscribe(
       res => {
-        this.hideSpinner('spinner_Comment');
+        this.hideSpinner(this.spinner_replies);
         this.availableComment = false;
         // this.commentsByCol = res.data;
         this.getItemCommentData()
@@ -193,7 +200,7 @@ export class CommentComponent implements OnInit {
       },
       error => {
         console.log("getEvaluationsList", error);
-        this.hideSpinner('spinner_Comment');
+        this.hideSpinner(this.spinner_replies);
         this.alertService.error(error);
       }
     )
@@ -207,13 +214,13 @@ export class CommentComponent implements OnInit {
   ***/
   showSpinner(name: string) {
     console.log(name)
-    this.spinner.show();
-    // this.spinner.show(name);
+    // this.spinner.show();
+    this.spinner.show(name);
   }
 
   hideSpinner(name: string) {
-    this.spinner.hide();
-    // this.spinner.hide(name);
+    // this.spinner.hide();
+    this.spinner.hide(name);
   }
 
   private validComment(type, data) {

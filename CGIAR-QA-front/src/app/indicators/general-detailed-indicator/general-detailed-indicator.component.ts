@@ -10,6 +10,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 
 import { User } from '../../_models/user.model';
 import { DetailedStatus } from "../../_models/general-status.model"
+import { Role } from "../../_models/roles.model"
 
 
 
@@ -77,7 +78,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner('spinner1');
-        // console.log(res, this.gnralInfo)
+        console.log(res, this.detailedData )
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -134,6 +135,22 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       }
     )
 
+  }
+
+  validateCommentAvility(field, is_embed) {
+
+    let userRole = this.currentUser.roles[0].description, avility = false;
+    switch (userRole) {
+      case Role.admin:
+        avility = true
+        break;
+      case Role.asesor:
+        avility = field.enable_assessor ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments): field.enable_assessor
+        break;
+      default:
+        break;
+    }
+    return avility;
   }
 
   /***

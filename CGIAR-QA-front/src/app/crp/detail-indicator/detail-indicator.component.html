@@ -11,8 +11,15 @@
                     <p *ngIf="!field.value" class="empty-value">Empty Value</p>
                 </div>
 
-
-                <div #commentsElem *ngIf="gnralInfo.status !== statusHandler.Complete && field.enable_comments"
+                <div #commentsElem *ngIf="validateCommentAvility(field,true)"
+                    (click)="showComments(i, field); comment.updateData(field,params)"
+                    class="activate-messages-container">
+                    <i class="icon-message"></i>
+                </div>
+                <div *ngIf="!validateCommentAvility(field)" class="activate-messages-container">
+                    <i class="icon-message-inactive"></i>
+                </div>
+                <!-- <div #commentsElem *ngIf="gnralInfo.status !== statusHandler.Complete && field.enable_comments"
                     (click)="showComments(i, field); comment.updateData(field,params)"
                     class="activate-messages-container">
                     <i class="icon-message"></i>
@@ -20,7 +27,7 @@
                 <div *ngIf="gnralInfo.status === statusHandler.Complete && field.enable_comments"
                     class="activate-messages-container">
                     <i class="icon-message-inactive"></i>
-                </div>
+                </div> -->
             </div>
 
 
