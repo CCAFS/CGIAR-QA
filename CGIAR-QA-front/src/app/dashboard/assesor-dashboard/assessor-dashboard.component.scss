@@ -31,7 +31,7 @@
           border-radius: 50%;
         }
         .complete {
-          background-color: var(--green-tertiary);
+          background-color: var(--green-primary);
         }
         .pending {
           background-color: var(--red-primary);
@@ -49,6 +49,8 @@
           margin-left: auto;
           text-align: right;
           margin-top: 1em;
+          text-decoration: underline;
+
           // text-transform: capitalize;
         }
         .progress {

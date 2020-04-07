@@ -36,15 +36,22 @@ export class HeaderBarComponent implements OnInit {
   }
 
   goToView(indicator: any) {
+    if(indicator === 'logo'){
+      this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]); });
+      return
+    }
+
+    
     let view = indicator.indicator.name;
     let primary_column = indicator.indicator.primary_field;
+
 
     switch (this.currentUser.roles[0].description) {
       case this.allRoles.admin:
         this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
         break;
       case this.allRoles.asesor:
-        console.log(indicator)
+        // console.log(indicator)
         if (indicator.indicator.enable_assessor) {
           this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
         }

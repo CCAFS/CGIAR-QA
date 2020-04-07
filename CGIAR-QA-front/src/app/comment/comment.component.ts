@@ -8,8 +8,12 @@ import { AuthenticationService } from "../services/authentication.service";
 import { EvaluationsService } from "../services/evaluations.service";
 import { AlertService } from '../services/alert.service';
 
+import { SortByPipe } from '../pipes/sort-by.pipe'
+
 import { User } from '../_models/user.model';
+import { Role } from '../_models/roles.model';
 import { CommentService } from '../services/comment.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-comment',
@@ -20,6 +24,7 @@ export class CommentComponent implements OnInit {
 
   dataFromItem: any = {};
   commentGroup: FormGroup;
+  // replyGroup: FormGroup;
   commentsByCol: any = [];
   commentsByColReplies: any = [];
   currentUser: User;
@@ -32,15 +37,13 @@ export class CommentComponent implements OnInit {
   currentComment;
 
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
+  allRoles = Role;
 
 
   constructor(
-    private activeRoute: ActivatedRoute,
-    private router: Router,
     private alertService: AlertService,
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
-    private evaluationService: EvaluationsService,
     private commentService: CommentService,
     private spinner: NgxSpinnerService) {
     this.authenticationService.currentUser.subscribe(x => {
@@ -52,6 +55,9 @@ export class CommentComponent implements OnInit {
     this.commentGroup = this.formBuilder.group({
       comment: ['', Validators.required]
     });
+    // this.replyGroup = this.formBuilder.group({
+    //   reply: ['', Validators.required]
+    // });
     this.dataFromItem = [];
   }
 
@@ -64,6 +70,7 @@ export class CommentComponent implements OnInit {
 
   // convenience getter for easy access to form fields
   get formData() { return this.commentGroup.controls; }
+  // get replyformData() { return this.replyGroup.controls; }
 
   closeComments() {
     this.parentFun.emit();
@@ -142,7 +149,16 @@ export class CommentComponent implements OnInit {
       res => {
         this.hideSpinner(this.spinner_comment);
         console.log(res)
-        this.commentsByCol = res.data.filter(data => data.approved)
+        // this.sortBy.transform(res.data,'asc','createdAt')
+        switch (this.currentUser.roles[0].description) {
+          case this.allRoles.crp:
+            this.commentsByCol = res.data.filter(data => data.approved)
+            // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+            break;
+          default:
+            this.commentsByCol = res.data
+            break;
+        }
       },
       error => {
         console.log("getItemCommentData", error);
@@ -153,8 +169,8 @@ export class CommentComponent implements OnInit {
   }
 
   getCommentReplies(comment) {
-    this.showSpinner(this.spinner_replies);
     if (comment.isCollapsed) {
+      this.showSpinner(this.spinner_replies);
       let params = { commentId: comment.id, evaluationId: this.dataFromItem.evaluation_id, }
       this.commentService.getDataCommentReply(params).subscribe(
         res => {
@@ -178,7 +194,7 @@ export class CommentComponent implements OnInit {
     this.availableComment = true
   }
 
-  replyComment() {
+  replyComment(currentComment) {
     if (this.commentGroup.invalid) {
       this.alertService.error('comment is required', false)
       return;
@@ -187,7 +203,7 @@ export class CommentComponent implements OnInit {
     this.commentService.createDataCommentReply({
       detail: this.formData.comment.value,
       userId: this.currentUser.id,
-      commentId: this.currentComment.id,
+      commentId: currentComment ? currentComment.id : this.currentComment.id,
       crp_approved: this.is_approved,
       // approved: this.approved,
     }).subscribe(
@@ -207,13 +223,17 @@ export class CommentComponent implements OnInit {
 
   }
 
+  validateStartedMssgs() {
+    let isAdmin = this.currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin })
+    return isAdmin;
+  }
+
   /***
   * 
   *  Spinner 
   * 
   ***/
   showSpinner(name: string) {
-    console.log(name)
     // this.spinner.show();
     this.spinner.show(name);
   }
