@@ -2,7 +2,7 @@
 
 Both projects require of [node](https://nodejs.org/es/download/).
 
-After cloning the reposotory, in both subfolders:
+After cloning the repository, in both subfolders:
 
 ```bash
 cd CGIAR-QA-[front or back]
