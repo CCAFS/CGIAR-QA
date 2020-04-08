@@ -23,9 +23,9 @@ const routes: Routes = [
   { path: 'indicator/:type/:primary_column', loadChildren: () => import('./indicators/indicators.module').then(mod => mod.IndicatorsModule) },
   { path: 'qa-close', component: QaCloseComponent },
   { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // { path: '', redirectTo: 'login', pathMatch: 'full' },
   // otherwise redirect to home
-  { path: '**', redirectTo: '' }
+  // { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({

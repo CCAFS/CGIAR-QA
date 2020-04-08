@@ -6,34 +6,30 @@ import { Role } from '../_models/roles.model';
 
 import { AssessorDashboardComponent } from './assesor-dashboard/assessor-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { CrpDashboardComponent } from '../crp/crp-dashboard/crp-dashboard.component';
+import { DashBoardComponent } from './dashboard.component';
 
 
 const routes: Routes = [
   {
     path: '',
+    component: DashBoardComponent,
     children: [
       {
         path: 'assessor',
         canActivate: [AuthGuard],
         data: { roles: [Role.asesor] },
-        component: AssessorDashboardComponent
+        component: AssessorDashboardComponent,
       },
       {
         path: 'admin',
         canActivate: [AuthGuard],
         data: { roles: [Role.admin] },
-        component: AdminDashboardComponent
+        component: AdminDashboardComponent,
       },
-      // {
-      //   path: 'crp',
-      //   canActivate: [AuthGuard],
-      //   data: { roles: [Role.crp] },
-      //   component: CrpDashboardComponent
-      // },
-      // { path: 'indicator/:type', loadChildren: () => import(`./indicators/indicators.module`).then(m => m.IndicatorsModule) },
     ],
-  }
+  },
+  // otherwise redirect to home
+  // { path: '**', redirectTo: 'dashboard' }
 ];
 
 @NgModule({

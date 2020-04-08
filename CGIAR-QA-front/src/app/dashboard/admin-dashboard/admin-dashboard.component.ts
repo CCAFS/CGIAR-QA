@@ -146,7 +146,8 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   goToView(view: string, primary_column: string) {
-    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+    this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
+    // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
   
   getPendings(data) {

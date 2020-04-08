@@ -36,13 +36,14 @@ export class AssessorDashboardComponent implements OnInit {
     this.getDashData();
   }
 
-  getIndicatorName(indicator:string){
+  getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
 
   goToView(view: string, primary_column: string) {
-    console.log(view,primary_column)
-    this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+    console.log(view, primary_column)
+    this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
+    // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
 
 

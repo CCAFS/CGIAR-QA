@@ -59,6 +59,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       general_comment: ['', Validators.required]
     });
     this.params = this.activeRoute.snapshot.params;
+    // this.params['view_name'] = this.params.type;
+    console.log(this.params)
     this.showSpinner('spinner1')
     this.getDetailedData()
   }

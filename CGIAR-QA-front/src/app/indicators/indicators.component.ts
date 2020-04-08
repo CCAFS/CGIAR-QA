@@ -45,6 +45,7 @@ export class IndicatorsComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('loaded indicators')
     this.indicatorType = this.route.snapshot.params.type;
     this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
     this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthenticationService } from "../../services/authentication.service";
 import { IndicatorsService } from "../../services/indicators.service";
@@ -22,38 +22,40 @@ export class HeaderBarComponent implements OnInit {
   generalStatus = GeneralStatus;
   indicators = [];
 
-  constructor(private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
+  constructor(private activeRoute: ActivatedRoute, private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
-      if(x){
+      if (x) {
         this.ngOnInit();
       }
     });
   }
 
   ngOnInit() {
-    this.getHeaderLinks()
+    this.getHeaderLinks();
   }
 
   goToView(indicator: any) {
-    if(indicator === 'logo'){
+    if (indicator === 'logo') {
       this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]); });
       return
     }
 
-    
+
     let view = indicator.indicator.name;
     let primary_column = indicator.indicator.primary_field;
 
 
     switch (this.currentUser.roles[0].description) {
       case this.allRoles.admin:
-        this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+        this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
+        // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+        // this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.allRoles.admin.toLocaleLowerCase()}/indicator`, view.toLocaleLowerCase(), primary_column]) });
         break;
       case this.allRoles.asesor:
-        // console.log(indicator)
         if (indicator.indicator.enable_assessor) {
-          this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+          this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
+          // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
         }
         break;
 
@@ -65,7 +67,7 @@ export class HeaderBarComponent implements OnInit {
   }
 
   getHeaderLinks() {
-    if (this.currentUser && !this.isCRP() ) {
+    if (this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
           this.indicators = res.data;
