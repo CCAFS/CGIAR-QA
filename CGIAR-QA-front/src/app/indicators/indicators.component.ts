@@ -95,7 +95,7 @@ export class IndicatorsComponent implements OnInit {
 
 
   goToView(indicatorId) {
-    this.router.navigate(['detail', indicatorId], { relativeTo: this.route });
+    this.router.navigate(['detail', indicatorId], { relativeTo: this.activeRoute });
   }
 
   goToPDF(type: string) {
