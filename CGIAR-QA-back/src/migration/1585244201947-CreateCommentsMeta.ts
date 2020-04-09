@@ -9,8 +9,22 @@ export class CreateCommentsMeta1585244201947 implements MigrationInterface {
         const indicatorRepository = getRepository(QAIndicators);
         const commentsMetaRepository = getRepository(QACommentsMeta);
 
-        let indicators = await indicatorRepository.find();
+        const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+            `SELECT
+                *
+            FROM
+                qa_indicators
+            WHERE
+                qa_indicators.id NOT IN (SELECT indicatorId FROM qa_comments_meta )`,
+            {},
+            {}
+        );
+
+        let indicators = await queryRunner.query(query, parameters);
+        // let indicators = await indicatorRepository.find();
         // let indicatorsId = indicators.map(indicator => { return indicator.id });
+        // let savePromises = [];
+
 
         try {
             let savePromises = [];

@@ -23,22 +23,39 @@
     <thead class="table-header">
         <tr>
             <th scope="col" [class.active]="order === 'id'" (click)="setOrder('id')">
-                Id
+                <div class="header-row">
+                    Id
+                    <div class="order-icon" *ngIf="order === 'id'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
             </th>
             <th scope="col" [class.active]="order === 'title'" (click)="setOrder('title')">
-                Title
+                <div class="header-row">
+                    Title
+                    <div class="order-icon" *ngIf="order === 'title'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
             </th>
             <th scope="col" [class.active]="order === 'crp'" (click)="setOrder('crp')">
-                CRP</th>
-            <!-- <th scope="col" [class.active]="order === 'pdf'" (click)="setOrder('pdf')">
-                PDF
-            </th> -->
-            <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status')">
-                QA Status
+                <div class="header-row">
+                    CRP
+                    <div class="order-icon" *ngIf="order === 'crp'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
             </th>
-            <th style="width: 2em;" (click)="setOrder(null)">
-                <span [hidden]="reverse">▼</span>
-                <span [hidden]="!reverse">▲</span>
+            <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status')">
+                <div class="header-row"> QA Status
+                    <div class="order-icon" *ngIf="order === 'status'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
             </th>
         </tr>
     </thead>

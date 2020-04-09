@@ -14,7 +14,8 @@ const routes: Routes = [
         path: '',
         component: IndicatorsComponent,
         canActivate: [AuthGuard, AvailableGuard],
-        data: { roles: [Role.asesor, Role.admin] },
+        data: { roles: [Role.asesor, Role.admin] }, 
+        pathMatch: 'full'
     },
     {
         path: 'detail/:indicatorId',

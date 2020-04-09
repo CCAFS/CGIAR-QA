@@ -4,8 +4,7 @@
 
 
 
-<nav class="navbar navbar-expand header-bar"
-    *ngIf="currentUser && !isCRP() && (router.url !== '/qa-close')">
+<nav class="navbar navbar-expand header-bar" *ngIf="currentUser && !isCRP() && (router.url !== '/qa-close')">
     <div (click)="goToView('logo')" class="logo-container">
         <i class="cgiar-logo"></i>
         <h3>QA PLATFORM</h3>
@@ -23,11 +22,10 @@
             </div>
         </div>
 
-        <div class="navbar-nav" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: false}">
-            <a class="nav-item nav-link"
-                routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
-            <a class="nav-item nav-link" *ngFor="let indicator of indicators; index as i"
-                (click)="goToView(indicator)">{{indicator.indicator.name}}</a>
+        <div class="navbar-nav custom-header-links" routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{exact: true}">
+            <a class="nav-item nav-link" [routerLinkActive]="['active']" routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
+            <a class="nav-item nav-link" [routerLinkActive]="['active']" [routerLink]="['./indicator', indicator.indicator.type, indicator.indicator.primary_field]" *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a>
 
         </div>
     </div>

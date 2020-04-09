@@ -28,15 +28,15 @@
       }
       .example-container {
         margin-bottom: 2em;
+        justify-content: center;
         p {
           margin: 0 15px;
           line-height: $size-lg;
           align-self: center;
         }
         .circle {
-          height: $size-lg;
-          width: $size-lg;
-          border-radius: 50%;
+          height: $size-md;
+          width: $size-md;
         }
         .complete {
           background-color: var(--green-primary);
@@ -58,6 +58,7 @@
           text-align: right;
           margin-top: 1em;
           text-decoration: underline;
+          cursor: pointer;
           // text-transform: capitalize;
         }
         .progress {
@@ -136,6 +137,11 @@
             }
           }
         }
+      }
+    }
+    .qa-settings{
+      .col-sm{
+        text-align: center;
       }
     }
   }

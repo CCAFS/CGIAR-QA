@@ -11,9 +11,13 @@ import { QACommentsMeta } from "@entity/CommentsMeta";
 
 import { StatusHandler } from "@helpers/StatusHandler"
 import { RolesHandler } from "@helpers/RolesHandler"
+import Util from "@helpers/Util";
 
 
 class IndicatorsController {
+    static editCommentsMeta(arg0: string, arg1: ((req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response, next: import("express").NextFunction) => void)[], editCommentsMeta: any) {
+        throw new Error("Method not implemented.");
+    }
 
     /**
      * 
@@ -167,15 +171,18 @@ class IndicatorsController {
         try {
             indicator = await indicatorRepository.save(indicator);
             if (indicator.primary_field && indicator.primary_field !== " ") {
-                IndicatorsController.createMetaForIndicator(indicator, indicator.primary_field);
+                let indicatorMeta = await Util.createMetaForIndicator(indicator, indicator.primary_field);
+                //If all ok, send 200 response
+                res.status(200).json({ message: "Indicator created", data : {indicator, indicatorMeta} });
+                return;
             }
         } catch (e) {
             res.status(409).json({ message: "Indicator already in use" });
             return;
         }
 
-        //If all ok, send 200 response
-        res.status(200).json({ message: "Indicator created" });
+        // //If all ok, send 200 response
+        res.status(401).json({ message: "Something wrong." });
     };
 
     static editIndicators = async (req: Request, res: Response) => {
@@ -201,7 +208,7 @@ class IndicatorsController {
         indicator.view_name = view_name;
 
         if (primary_field && primary_field !== " ") {
-            IndicatorsController.createMetaForIndicator(indicator, primary_field);
+            Util.createMetaForIndicator(indicator, primary_field);
         }
 
         //Validade if the parameters are ok
@@ -306,7 +313,7 @@ class IndicatorsController {
             let res_;
             try {
                 userbyIndicator = await indicatorbyUsrRepository.save(userbyIndicator);
-                res_ = await IndicatorsController.createEvaluations(userbyIndicator, selectedIndicator);
+                res_ = await Util.createEvaluations(userbyIndicator, selectedIndicator);
                 // console.log("res_", res_)
                 res.status(200).json({ message: "Indicator by user saved", data: res_ })
 
@@ -322,135 +329,6 @@ class IndicatorsController {
 
 
     }
-
-
-
-    static editCommentsMeta = async (req: Request, res: Response) => {
-
-        //Get the ID from the url
-        const id = req.params.id;
-
-        let { enable, isActive } = req.body;
-
-        const commentMetaRepository = getRepository(QACommentsMeta);
-        let commentMeta, updatedCommentMeta;
-
-        try {
-            commentMeta = await commentMetaRepository.createQueryBuilder('qa_comments_meta')
-                .select('id, enable_crp, enable_assessor')
-                .where("qa_comments_meta.indicatorId=:indicatorId", { indicatorId: id })
-                // .getSql()
-                .getRawOne()
-            console.log(commentMeta[enable], enable, isActive)
-            // commentMeta[enable] = isActive;
-
-            //Validade if the parameters are ok
-            const errors = await validate(commentMeta);
-            if (errors.length > 0) {
-                res.status(400).json({ data: errors, message: "Error found" });
-                return;
-            }
-
-            // update indicator by user
-            updatedCommentMeta = await commentMetaRepository.save(commentMeta);
-            console.log(updatedCommentMeta)
-
-        } catch (error) {
-            console.log(error)
-            //If not found, send a 404 response
-            res.status(404).json({ message: 'User indicator not found.', data: error });
-            // throw new ErrorHandler(404, 'User not found.');
-        }
-
-        //If all ok, send 200 response
-        res.status(200).json({ message: "User indicator updated", data: updatedCommentMeta });
-
-
-    };
-
-    /*****
-     * 
-     * Private functions
-     * 
-     *****/
-
-    static createMetaForIndicator = async (indicator: QAIndicators, primary_field: string) => {
-        let pols_meta = getConnection().getMetadata(indicator.view_name).ownColumns.map(column => column.propertyName);
-        let primary = primary_field;
-
-        const indicatorMetaRepository = getRepository(QAIndicatorsMeta);
-
-        let savePromises = [];
-        for (let index = 0; index < pols_meta.length; index++) {
-            const element = pols_meta[index];
-
-            const indicator_meta = new QAIndicatorsMeta();
-            indicator_meta.col_name = element;
-            indicator_meta.display_name = element.split("_").join(" ");
-            indicator_meta.enable_comments = true;
-            indicator_meta.include_detail = true;
-            indicator_meta.include_general = true;
-            indicator_meta.indicator = indicator;
-
-            indicator_meta.is_primay = (element == primary) ? true : false;
-            savePromises.push(indicator_meta);
-
-        }
-
-        try {
-            let response = await indicatorMetaRepository.save(savePromises);
-            return response;
-        } catch (error) {
-            console.log(error);
-            return false;
-        }
-
-    }
-
-    static createEvaluations = async (indiByUsr: QAIndicatorUser, indicator: QAIndicators): Promise<any> => {
-        const evaluationsRepository = getRepository(QAEvaluations);
-        try {
-            let evaluations = await evaluationsRepository.find({ where: { indicator_user: indiByUsr.id } });
-            let response;
-            if (evaluations.length > 0) {
-                return [];
-            } else {
-                // console.log("Evaluations", indiByUsr.id, indicator.view_name, indicator.primary_field)
-                let view_data = await createQueryBuilder(indicator.view_name)
-                    //.getRawMany()
-                    .getMany();
-                // console.log("Evaluations", view_data.length)
-                let savePromises = [];
-                for (let index = 0; index < view_data.length; index++) {
-                    let element = view_data[index];
-
-                    const evaluations = new QAEvaluations();
-                    evaluations.indicator_view_id = element[indicator.primary_field];
-                    evaluations.indicator_view_name = indicator.view_name;
-                    evaluations.crp_id = element['crp_id'];
-                    evaluations.indicator_user = indiByUsr;
-                    evaluations.status = StatusHandler.Pending;
-
-                    // console.log(evaluations, element)
-
-                    savePromises.push(evaluations);
-
-                }
-
-                // console.log(savePromises.length)
-                response = await evaluationsRepository.save(savePromises);
-                // //console.log("savePromises")
-                // console.log(response.length)
-            }
-            // console.log(evaluations);
-            return response;
-        } catch (error) {
-            console.log(error)
-            return error;
-        }
-    }
-
-
 
 }
 

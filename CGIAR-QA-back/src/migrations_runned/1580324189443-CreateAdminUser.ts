@@ -4,36 +4,28 @@ import { QARoles } from "../entity/Roles";
 import { QAIndicatorUser } from "../entity/IndicatorByUser";
 import { QAIndicators } from "../entity/Indicators";
 import { View } from "typeorm/schema-builder/view/View";
+import { RolesHandler } from "../_helpers/RolesHandler";
 
 export class CreateAdminUser1580324189443 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         const userRepository = getRepository(QAUsers);
-        const indicatorbyUsrRepository = getRepository(QAIndicatorUser);
+        // const indicatorbyUsrRepository = getRepository(QAIndicatorUser);
+        const roleRepository = getRepository(QARoles);
         let user = new QAUsers();
-        user.username = "felipe-admin";
+        user.username = "felipe-super";
         user.password = "12345678";
         user.name = "Felipe";
-        user.email = "felipe.admin@cgiar.org";
+        user.email = "felipe.super@cgiar.org";
         user.hashPassword();
-        const roleRepository = getRepository(QARoles);
-        user = await userRepository.save(user);
-        // let role = await roleRepository.find({
-        //     select: ["id"]
-        // });
-        // user.roles = role;
 
-        // const indicatorRepository = getRepository(QAIndicators);
-        // let indicator = await indicatorRepository.find({
-        //     select: ["id"]
-        // });
-
+        let role = await roleRepository.find({
+            select: ["id"],
+            where: { description: RolesHandler.admin }
+        });
+        user.roles = role;
         
-        // let indiByUsr = new QAIndicatorUser();
-        // indiByUsr.indicator = indicator[0];
-        // indiByUsr.user = user;
-        // await indicatorbyUsrRepository.save(indiByUsr);
-
+        user = await userRepository.save(user);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> { }

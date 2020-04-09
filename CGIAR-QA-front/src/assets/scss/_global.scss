@@ -162,9 +162,9 @@
 ** Circle
 **/
 .circle {
-  margin: auto;
-  height: $size-lg;
-  width: $size-lg;
+  margin: auto 0;
+  height: $size-md;
+  width: $size-md;
   border-radius: 50%;
 }
 

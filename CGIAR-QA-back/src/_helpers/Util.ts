@@ -2,7 +2,7 @@
 import { StatusHandler } from "@helpers/StatusHandler";
 import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
 import { RolesHandler } from "@helpers/RolesHandler";
-import { getRepository } from "typeorm";
+import { getRepository, getConnection, createQueryBuilder } from "typeorm";
 import { QAUsers } from "@entity/User";
 import { QARoles } from "@entity/Roles";
 import { QACrp } from "@entity/CRP";
@@ -10,6 +10,10 @@ import { QAGeneralConfiguration } from "@entity/GeneralConfig";
 import { config } from "process";
 import * as jwt from "jsonwebtoken";
 import config_ from "@config/config";
+import { QAIndicators } from "@entity/Indicators";
+import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
+import { QAEvaluations } from "@entity/Evaluations";
+import { QAIndicatorUser } from "@entity/IndicatorByUser";
 
 
 class Util {
@@ -76,6 +80,8 @@ class Util {
             case "policies":
                 for (let index = 0; index < rawData.length; index++) {
                     const element = rawData[index];
+                    // console.log(element)
+                    // console.log(element["meta_display_name"])
                     let field = element["meta_display_name"].split(' ').join("_");
 
                     if (!element["meta_is_primay"] && element['meta_include_detail']) {
@@ -197,6 +203,86 @@ class Util {
             return user
         } catch (error) {
             console.log(error);
+            return error;
+        }
+    }
+
+
+
+    static createMetaForIndicator = async (indicator: QAIndicators, primary_field: string) => {
+        let pols_meta = getConnection().getMetadata(indicator.view_name).ownColumns.map(column => column.propertyName);
+        let primary = primary_field;
+
+        const indicatorMetaRepository = getRepository(QAIndicatorsMeta);
+
+        let savePromises = [];
+        for (let index = 0; index < pols_meta.length; index++) {
+            const element = pols_meta[index];
+
+            const indicator_meta = new QAIndicatorsMeta();
+            indicator_meta.col_name = element;
+            indicator_meta.display_name = element.split("_").join(" ");
+            indicator_meta.enable_comments = true;
+            indicator_meta.include_detail = true;
+            indicator_meta.include_general = true;
+            indicator_meta.indicator = indicator;
+
+            indicator_meta.is_primay = (element == primary) ? true : false;
+            savePromises.push(indicator_meta);
+
+        }
+
+        try {
+            let response = await indicatorMetaRepository.save(savePromises);
+            console.log(response)
+            return response;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+
+    }
+
+
+    static createEvaluations = async (indiByUsr: QAIndicatorUser, indicator: QAIndicators): Promise<any> => {
+        const evaluationsRepository = getRepository(QAEvaluations);
+        try {
+            let evaluations = await evaluationsRepository.find({ where: { indicator_user: indiByUsr.id } });
+            let response;
+            if (evaluations.length > 0) {
+                return [];
+            } else {
+                // console.log("Evaluations", indiByUsr.id, indicator.view_name, indicator.primary_field)
+                let view_data = await createQueryBuilder(indicator.view_name)
+                    //.getRawMany()
+                    .getMany();
+                // console.log("Evaluations", view_data.length)
+                let savePromises = [];
+                for (let index = 0; index < view_data.length; index++) {
+                    let element = view_data[index];
+
+                    const evaluations = new QAEvaluations();
+                    evaluations.indicator_view_id = element[indicator.primary_field];
+                    evaluations.indicator_view_name = indicator.view_name;
+                    evaluations.crp_id = element['crp_id'];
+                    evaluations.indicator_user = indiByUsr;
+                    evaluations.status = StatusHandler.Pending;
+
+                    // console.log(evaluations, element)
+
+                    savePromises.push(evaluations);
+
+                }
+
+                // console.log(savePromises.length)
+                response = await evaluationsRepository.save(savePromises);
+                // //console.log("savePromises")
+                // console.log(response.length)
+            }
+            // console.log(evaluations);
+            return response;
+        } catch (error) {
+            console.log(error)
             return error;
         }
     }

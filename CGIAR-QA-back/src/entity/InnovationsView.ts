@@ -10,6 +10,7 @@ import { Length, IsNotEmpty } from "class-validator";
         AND phase_year = '2019'
     `
 })
+
 export class QAInnovations{
     @ViewColumn()
     crp_id: string;
@@ -53,7 +54,6 @@ export class QAInnovations{
     @ViewColumn()
     regions:string
 
-
     @ViewColumn()
     countries: string;
     
@@ -66,6 +66,9 @@ export class QAInnovations{
     @ViewColumn()
     contributors: string;
     
+    @ViewColumn()
+    milestones: string;
+
     @ViewColumn()
     sub_ido: string;
     

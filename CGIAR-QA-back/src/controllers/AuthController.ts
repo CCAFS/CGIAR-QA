@@ -39,6 +39,7 @@ class AuthController {
             });
             if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp)) {
                 res.status(401).json({ message: 'Unauthorized' })
+                return
             }
             // get general config by user role
             let generalConfig = await grnlConfg
@@ -61,12 +62,12 @@ class AuthController {
                 config.jwtSecret,
                 { expiresIn: config.jwtTime }
             );
-
-
+            
             user["token"] = token;
             user["config"] = generalConfig;
             delete user.password;
             //Send the jwt in the response
+            console.log(user)
             res.status(200).json({ data: user })
 
         } catch (error) {
@@ -90,7 +91,7 @@ class AuthController {
 
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `SELECT
-                    *, (SELECT id FROM qa_crp WHERE crp_id = ${crp_id}) AS qa_crp_id
+                    *, (SELECT id FROM qa_crp WHERE crp_id = '${crp_id}') AS qa_crp_id
                 FROM
                     qa_token_auth
                 WHERE
@@ -190,6 +191,6 @@ class AuthController {
             res.status(400).send({ data: error, message: 'Configuration can not be created' });
         }
     }
-    
+
 }
 export default AuthController;

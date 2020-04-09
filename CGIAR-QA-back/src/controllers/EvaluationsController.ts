@@ -217,6 +217,7 @@ class EvaluationsController {
         const view_primary_field = req.body.primary_column;
         const indicatorId = req.body.indicatorId;
 
+        console.log(view_name, view_primary_field)
         //Get indicator item data from view
         try {
             const userRepository = getRepository(QAUsers);
@@ -238,8 +239,8 @@ class EvaluationsController {
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_comments_meta", "comment_meta", `comment_meta.indicatorId= qa_indicator_user.indicatorId`)
                     //.groupBy('meta.id')
-                    .getRawMany();
-                //.getSql();
+                   .getRawMany();
+                // .getSql();
             }
             else if (user.crp) {
 
@@ -399,7 +400,7 @@ class EvaluationsController {
         const crpRepository = await getRepository(QACrp);
 
         try {
-            let allCRP = await crpRepository.find();
+            let allCRP = await crpRepository.find({ where: { active: true } });
             res.status(200).json({ data: allCRP, message: "All CRPs" });
         } catch (error) {
             console.log(error);
@@ -408,7 +409,7 @@ class EvaluationsController {
 
     }
 
-    //get indicators by crp (admin dashboard)
+    //get active indicators (admin dashboard)
     static getIndicatorsByCrp = async (req: Request, res: Response) => {
         //const indiUserRepository = getRepository(QAIndicatorUser);
         let queryRunner = getConnection().createQueryBuilder();
@@ -420,10 +421,8 @@ class EvaluationsController {
                         meta.enable_assessor,
                         meta.enable_crp,
                         indicators.name AS indicator_view_name
-                    FROM
-                        qa_indicator_user qa_indicator_user
-                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
-                    LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+                        FROM
+                        qa_indicators indicators
                     LEFT JOIN qa_comments_meta meta ON indicators.id = meta.indicatorId
                     GROUP BY
                         indicators.id,

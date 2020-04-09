@@ -12,6 +12,7 @@ const checkRole = checkRole_.checkRole
 
 import IndicatorsController from "@controllers/IndicatorsController";
 import { RolesHandler } from "@helpers/RolesHandler";
+import CommentController from "@controllers/CommentController";
 
 const router = Router();
 
@@ -41,6 +42,7 @@ router.delete("/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin])], Indic
 router.get("/user/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp, RolesHandler.guest])], IndicatorsController.getIndicatorsByUser);
 
 // // edit indicator by user
-router.patch("/:id([0-9]+)/user", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.editCommentsMeta);
+router.patch("/:id([0-9]+)/user", [checkJwt, checkRole([RolesHandler.admin])], CommentController.editCommentsMeta);
+
 
 export default router;

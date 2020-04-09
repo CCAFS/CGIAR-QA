@@ -40,10 +40,10 @@ router.post("/:id([0-9]+)/detail", [checkJwt, checkRole([RolesHandler.admin, Rol
 // update detailed evaluations by user
 router.patch("/:id([0-9]+)/detail", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.updateDetailedEvaluation);
 
-// get crp by user
+// get crp for admin
 router.get("/crp", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getCRPS);
 
-// get crp by user
+// get active indicators by admin
 router.get("/crp/indicators", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getIndicatorsByCrp);
 
 // create comment in indicator item

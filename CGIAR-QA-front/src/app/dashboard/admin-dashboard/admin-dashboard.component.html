@@ -41,7 +41,7 @@
                             Go to {{getIndicatorName(item.key)}}
                         </a> -->
                         <a  routerLinkActive="active" (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
-                            Go to {{getIndicatorName(item.key)}}
+                            Go to all {{getIndicatorName(item.key)}}
                         </a>
                     </div>
 
@@ -59,7 +59,7 @@
             <p class="card-title">QA Settings</p>
         </div>
         <div class="card">
-            <div class="row row-padding">
+            <div class="row row-padding qa-settings">
                 <div class="col-sm">
                 </div>
                 <div class="col-sm" tooltip="{{enableQATooltip}}" placement="top">
@@ -95,19 +95,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- <div id="collapseBasic-{{indicator.key}}" [collapse]="!indicator.value.isCollapsed"
-                        class="indicator-container" [isAnimated]="true">
-                        <h4>Submit Indicator by Program / Platform</h4>
-                        <div class="crps-container">
-                            <div class="crp-item" *ngFor="let crp of indicator.value | sortBy:'asc':'name'">
-                                {{(crp.acronym === '' || crp.acronym === ' ') ? crp.name: crp.acronym}}
-                                <button>
-                                    submit
-                                </button>
-                            </div>
-                        </div>
-                    </div> -->
+                    
                 </div>
 
             </form>

@@ -36,8 +36,10 @@ export class HeaderBarComponent implements OnInit {
   }
 
   goToView(indicator: any) {
-    if (indicator === 'logo') {
-      this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]); });
+    // console.log(this.router.navigate(['/reload']), this.activeRoute.pathFromRoot.toString(), this.router.url.toString().indexOf('/indicator'))
+
+    if (indicator === 'logo' || indicator === 'home') {
+      this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]);
       return
     }
 
@@ -48,8 +50,11 @@ export class HeaderBarComponent implements OnInit {
 
     switch (this.currentUser.roles[0].description) {
       case this.allRoles.admin:
-        this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
-        // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+        // this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column], { relativeTo: this.activeRoute });
+        // if(this.router.url.toString().indexOf('/indicator') !== -1){
+          this.router.navigate(['/reload']).then(() => { this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column]); });
+        // }else{
+        // }
         // this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.allRoles.admin.toLocaleLowerCase()}/indicator`, view.toLocaleLowerCase(), primary_column]) });
         break;
       case this.allRoles.asesor:
@@ -70,7 +75,8 @@ export class HeaderBarComponent implements OnInit {
     if (this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
-          this.indicators = res.data;
+          this.indicators = res.data.filter( indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
+          console.log(res.data, this.currentUser.roles[0])
         },
         error => {
           console.log("getHeaderLinks", error);

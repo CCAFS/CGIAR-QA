@@ -24,7 +24,7 @@ export class QACrp {
     @Length(2, 50)
     name: string;
 
-    @Column({ nullable: true })
+    @Column()
     @Length(2, 20)
     crp_id: string;
 
@@ -37,6 +37,11 @@ export class QACrp {
 
     @OneToMany(type => QAUsers, user => user.crp)
     user: QAUsers;
+
+    @Column({
+        default : false
+    })
+    active: boolean;
 
     @Column({
         type: "enum",

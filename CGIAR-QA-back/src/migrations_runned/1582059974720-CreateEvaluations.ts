@@ -4,37 +4,41 @@ import { QAEvaluations } from "../entity/Evaluations";
 import { QAPolicies } from "../entity/PoliciesView";
 import { StatusHandler } from "../_helpers/StatusHandler"
 
-export class CreatePoliciesEvaluations1582059974720 implements MigrationInterface {
+export class CreateEvaluations1582059974720 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         const indicatorUsrRepository = getRepository(QAIndicatorUser);
         const evaluationsRepository = getRepository(QAEvaluations);
-        let primary_field = 'policy_id'
+        let primary_field = 'project_innovation_id' //CHANGE
+        let view_name = 'qa_innovations' //CHANGE
+        let indicatorId = 2 //CHANGE
+        let userId = 2
 
         let indByUsr = await indicatorUsrRepository.find({
-            where: { userId: 6 },
+            where: { userId: userId, indicator: indicatorId },
         });
 
 
-        let view_data = await createQueryBuilder(indByUsr[0].indicator.view_name)
+        let view_data = await createQueryBuilder(view_name)
             .getMany();
-        console.log(view_data[0])
         let savePromises = [];
         for (let index = 0; index < view_data.length; index++) {
             let element = view_data[index];
 
             const evaluations = new QAEvaluations();
             evaluations.indicator_view_id = element[primary_field];
-            evaluations.indicator_view_name = indByUsr[0].indicator.view_name;
+            evaluations.crp_id = element['crp_id'];
+            evaluations.indicator_view_name = view_name;
             evaluations.indicator_user = indByUsr[0];
             evaluations.status = StatusHandler.Pending;
 
             savePromises.push(evaluations);
 
         }
-
+        console.log(savePromises.length)
+        
         let a = await evaluationsRepository.save(savePromises);
-        console.log(a)
+        console.log(a.length)
 
     }
 

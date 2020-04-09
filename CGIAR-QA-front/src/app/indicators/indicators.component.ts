@@ -32,7 +32,7 @@ export class IndicatorsComponent implements OnInit {
   configTemplate: string;
   reverse: boolean = false;
 
-  constructor(private route: ActivatedRoute,
+  constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
     private authenticationService: AuthenticationService,
@@ -46,10 +46,14 @@ export class IndicatorsComponent implements OnInit {
 
   ngOnInit() {
     console.log('loaded indicators')
-    this.indicatorType = this.route.snapshot.params.type;
-    this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
-    this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
-    this.getEvaluationsList(this.route.snapshot.params);
+    this.activeRoute.params.subscribe(routeParams => {
+      console.log(routeParams);
+      this.indicatorType = routeParams.type;
+      this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
+      this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
+      this.getEvaluationsList(routeParams);
+    });
+
   }
 
   getEvaluationsList(params) {

@@ -3,22 +3,26 @@ import { MigrationInterface, QueryRunner, getConnection, getRepository } from "t
 import { QAIndicatorsMeta } from "../entity/IndicatorsMeta";
 import { QAIndicators } from "../entity/Indicators";
 
-export class CreateMetaForPolicies1582313672182 implements MigrationInterface {
+export class CreateMetaForIndicator1582313672182 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         let view_name = 'qa_innovations'
         let primary_field = "project_innovation_id";
         let view_indicator_id = 2;
 
-        
+
         let pols_meta = getConnection().getMetadata(view_name).ownColumns.map(column => column.propertyName);
 
         const indicatorRepository = getRepository(QAIndicators);
         const indicatorMetaRepository = getRepository(QAIndicatorsMeta);
 
         let indicator_ = await indicatorRepository.findOneOrFail(view_indicator_id);
+        let existingMeta = await indicatorMetaRepository.find({ where: { indicator: view_indicator_id } })
         let savePromises = [];
-        console.log(pols_meta)
+        console.log(pols_meta, existingMeta)
+        if (existingMeta.length > 0) {
+            return
+        }
         for (let index = 0; index < pols_meta.length; index++) {
             const element = pols_meta[index];
 
@@ -37,7 +41,7 @@ export class CreateMetaForPolicies1582313672182 implements MigrationInterface {
 
         let response = await indicatorMetaRepository.save(savePromises);
 
-       console.log(response.length)
+        console.log(response.length)
 
     }
 

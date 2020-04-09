@@ -188,7 +188,11 @@ class CommentController {
             let comments = await commentsRepository.find({
                 where: {
                     meta: metaId, evaluation: evaluationId
-                }, relations: ['user']
+                }, 
+                relations: ['user'],
+                order: {
+                    createdAt: "ASC"
+                }
             });
             for (let index = 0; index < comments.length; index++) {
                 const comment = comments[index];
@@ -223,6 +227,52 @@ class CommentController {
             res.status(404).json({ message: "Comment can not be retrived.", data: error });
         }
     }
+
+    //edit comment meta data
+    static editCommentsMeta = async (req: Request, res: Response) => {
+
+        //Get the ID from the url
+        const id = req.params.id;
+
+        let { enable, isActive } = req.body;
+
+        const commentMetaRepository = getRepository(QACommentsMeta);
+        let commentMeta, updatedCommentMeta;
+
+        try {
+            commentMeta = await commentMetaRepository.createQueryBuilder('qa_comments_meta')
+                .select('id, enable_crp, enable_assessor')
+                .where("qa_comments_meta.indicatorId=:indicatorId", { indicatorId: id })
+                // .getSql()
+                .getRawOne()
+            // console.log(commentMeta, enable, isActive)
+            commentMeta[enable] = isActive;
+            // console.log(commentMeta, 'after')
+
+            //Validade if the parameters are ok
+            const errors = await validate(commentMeta);
+            if (errors.length > 0) {
+                res.status(400).json({ data: errors, message: "Error found" });
+                return;
+            }
+
+            // update indicator by user
+            commentMeta = await commentMetaRepository.save(commentMeta);
+            // console.log(commentMeta)
+
+        } catch (error) {
+            console.log(error)
+            //If not found, send a 404 response
+            res.status(404).json({ message: 'User indicator not found.', data: error });
+            // throw new ErrorHandler(404, 'User not found.');
+        }
+
+        //If all ok, send 200 response
+        res.status(200).json({ message: "User indicator updated", data: commentMeta });
+
+
+    };
+
 }
 
 export default CommentController;
