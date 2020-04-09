@@ -279,7 +279,7 @@ class EvaluationsController {
                 // .getSql();
 
             }
-            // console.log(rawData)
+            console.log(rawData)
             // res.status(200).json({ data: (rawData), message: "User evaluation detail" });
             res.status(200).json({ data: Util.parseEvaluationsData(rawData, view_name_psdo), message: "User evaluation detail" });
         } catch (error) {

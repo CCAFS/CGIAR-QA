@@ -57,7 +57,7 @@ class Util {
             case 'innovations':
                 for (let index = 0; index < rawData.length; index++) {
                     const element = rawData[index];
-                    let field = element["meta_display_name"].split(' ').join("_");
+                    let field = element["meta_col_name"]//.split(' ').join("_");
 
                     if (!element["meta_is_primay"] && element['meta_include_detail']) {
                         response.push({
@@ -82,7 +82,7 @@ class Util {
                     const element = rawData[index];
                     // console.log(element)
                     // console.log(element["meta_display_name"])
-                    let field = element["meta_display_name"].split(' ').join("_");
+                    let field = element["meta_col_name"]//.split(' ').join("_");
 
                     if (!element["meta_is_primay"] && element['meta_include_detail']) {
                         response.push({
