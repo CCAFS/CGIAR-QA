@@ -8,6 +8,8 @@
                 <div class="col">
                     <h2>{{field.display_name}}</h2>
                     <p *ngIf="field.value">{{field.value}}</p>
+                    <!-- <div *ngIf="field.value" [innerHTML]="field.value">
+                    </div> -->
                     <p *ngIf="!field.value" class="empty-value">Empty Value</p>
                 </div>
 
@@ -46,7 +48,7 @@
         </div>
 
     </div>
-    <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" class="col-sm-4 comments-container">
+    <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }"  [style.padding-top.px]="currentY" class="col-sm-4 comments-container">
         <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"></app-comment>
     </div>
 </div>

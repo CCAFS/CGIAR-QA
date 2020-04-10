@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ViewportScroller } from '@angular/common';
 
 import { EvaluationsService } from "../../services/evaluations.service";
 import { AuthenticationService } from "../../services/authentication.service";
@@ -25,6 +26,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   params: any;
   spinner1 = 'spinner1';
   spinner2 = 'spinner2';
+  currentY = 0;
   gnralInfo = {
     status: "",
     evaluation_id: '',
@@ -41,6 +43,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   fieldIndex: number;
 
   constructor(private activeRoute: ActivatedRoute,
+    private viewportScroller: ViewportScroller,
     private router: Router,
     private alertService: AlertService,
     private spinner: NgxSpinnerService,
@@ -80,7 +83,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner('spinner1');
-        console.log(res, this.detailedData )
+        console.log(res, this.detailedData)
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -97,6 +100,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
+    this.currentY = (index * 100)
+    console.log(this.currentY)
   }
 
   updateEvaluation(type: string, data: any) {
@@ -147,7 +152,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         avility = true
         break;
       case Role.asesor:
-        avility = field.enable_assessor ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments): field.enable_assessor
+        avility = field.enable_assessor ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments) : field.enable_assessor
         break;
       default:
         break;
