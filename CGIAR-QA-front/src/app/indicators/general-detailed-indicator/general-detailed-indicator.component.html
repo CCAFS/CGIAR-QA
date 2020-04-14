@@ -1,8 +1,10 @@
 <div class="row detail-header-container">
-    <p *ngIf="detailedData" class="indicator-item-name">{{detailedData[0].crp_name}} / {{params.type}} / QA-{{params.indicatorId}}</p>
+    <p *ngIf="detailedData" class="indicator-item-name">{{detailedData[0].crp_name}} / {{params.type}} /
+        QA-{{params.indicatorId}}</p>
     <div>
         <div *ngIf="detailedData && detailedData[0].public_link">
-           <a href="detailedData[0].public_link">{{params.type}} public link</a> 
+            <!-- <a (click)="goToLink(detailedData[0].public_link)">{{params.type}} public link</a> -->
+            <a [href]="detailedData[0].public_link" target="_blank">{{params.type}} public link</a>
         </div>
         <!-- <div *ngIf="detailedData && !detailedData[0].public_link">
            <p>{{params.type}} public link</p> 
@@ -39,8 +41,7 @@
             </ng-container>
 
 
-            <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
-                size="medium"></ngx-spinner>
+
         </div>
         <div *ngIf="detailedData" class="col data-container">
             <div class="data-row  gnral-commnts">
@@ -56,15 +57,17 @@
                         [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
                         (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
                     <button type="button" (click)="updateEvaluation('status', detailedData)"
-                        class="btn btn-primary">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
+                        class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
                 </div>
             </div>
         </div>
-
+        <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
+            size="medium"></ngx-spinner>
     </div>
     <!-- [style.padding-top.px]="currentY" -->
     <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY"
         class="col-sm-4 comments-container">
-        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])" (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
+        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
+            (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
     </div>
 </div>

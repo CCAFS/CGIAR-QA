@@ -73,6 +73,7 @@ class Util {
                             replies_count: element['replies_count'],
                             status: element["evaluations_status"],
                             crp_name: element["crp_name"],
+                            public_link: element[`${type}_public_link`],
                         })
 
                     }
@@ -85,7 +86,7 @@ class Util {
                     // console.log(element["meta_display_name"])
                     let field = element["meta_col_name"]//.split(' ').join("_");
 
-                    if (!element["meta_is_primay"] && element['meta_include_detail']) {
+                    if (!element["meta_is_primay"]) {
                         response.push({
                             enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
                             display_name: element["meta_display_name"],
@@ -98,6 +99,7 @@ class Util {
                             enable_crp: element['enable_crp'],
                             replies_count: element['replies_count'],
                             crp_name: element["crp_name"],
+                            public_link:  element[`${type}_public_link`],
                             status: element["evaluations_status"],
                         })
 
@@ -121,6 +123,7 @@ class Util {
                         enable_assessor: element['enable_assessor'],
                         enable_crp: element['enable_crp'],
                         crp_name: element["crp_name"],
+                        public_link:  element[`${type}_public_link`],
                         replies_count: element['replies_count'],
                         crp: element['crp_name'],
                     })

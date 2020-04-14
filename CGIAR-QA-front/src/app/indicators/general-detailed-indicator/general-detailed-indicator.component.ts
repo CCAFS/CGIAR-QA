@@ -68,6 +68,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   ngOnInit() {
   }
 
+  goToLink(url: string) {
+    window.open(url, "_blank");
+  }
+
   getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
       res => {
@@ -85,7 +89,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner('spinner1');
-        console.log(res, this.detailedData)
+        // console.log(this.detailedData)
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -137,8 +141,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
     this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
       res => {
-        console.log(res)
-        this.alertService.success(res.message)
+        // console.log(res)
+        this.alertService.success(res.message);
+        this.showSpinner('spinner1')
         this.getDetailedData();
       },
       error => {
