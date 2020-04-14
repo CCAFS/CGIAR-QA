@@ -14,6 +14,7 @@ export class AuthenticationService {
 
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
+  public userHeaders = [];
   public NOT_APPLICABLE = '<Not applicable>';
 
   constructor(private http: HttpClient) {
@@ -36,15 +37,15 @@ export class AuthenticationService {
       }));
   }
 
-  tokenLogin(parmas:{}){
+  tokenLogin(parmas: {}) {
     return this.http.post<any>(`${environment.apiUrl}/auth/token/login`, parmas)
-    .pipe(map(user => {
-      let currentUsr = user.data
-      // store user details and jwt token in local storage to keep user logged in between page refreshes
-      localStorage.setItem('currentUser', JSON.stringify(currentUsr));
-      this.currentUserSubject.next(currentUsr);
-      return currentUsr;
-    }));
+      .pipe(map(user => {
+        let currentUsr = user.data
+        // store user details and jwt token in local storage to keep user logged in between page refreshes
+        localStorage.setItem('currentUser', JSON.stringify(currentUsr));
+        this.currentUserSubject.next(currentUsr);
+        return currentUsr;
+      }));
   }
 
   logout() {

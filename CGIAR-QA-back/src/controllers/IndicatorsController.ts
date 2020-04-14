@@ -15,10 +15,7 @@ import Util from "@helpers/Util";
 
 
 class IndicatorsController {
-    static editCommentsMeta(arg0: string, arg1: ((req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response, next: import("express").NextFunction) => void)[], editCommentsMeta: any) {
-        throw new Error("Method not implemented.");
-    }
-
+    
     /**
      * 
      * Indicators CRUD
@@ -98,9 +95,18 @@ class IndicatorsController {
                             qa_indicators
                         WHERE
                             view_name = evaluations.indicator_view_name
-                    ) as primary_field
+                    ) as primary_field,
+                    meta.enable_crp AS enable_crp
                     FROM
                         qa_evaluations evaluations
+                    LEFT JOIN qa_comments_meta meta ON meta.indicatorId = (
+                        SELECT
+                            id
+                        FROM
+                            qa_indicators
+                        WHERE
+                            view_name = evaluations.indicator_view_name
+                    )
                     WHERE
                         evaluations.crp_id = :crp_id
                     `,

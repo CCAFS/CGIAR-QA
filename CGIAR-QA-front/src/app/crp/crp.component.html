@@ -1,11 +1,16 @@
 <div class="row justify-content-center dashboard-container">
-    <div class="col col-programs">
-        <ul class="list-group">
-            <li (click)='goToView("dashboard", null)' class="list-group-item active">Home</li>
-            <li (click)='goToView(null,indicator)' class="list-group-item"
-                *ngFor="let indicator of indicators; index as i">{{indicator.name}}</li>
-            <li class="list-group-item" (click)="logout()">Logout</li>
-        </ul>
+    <div class="col col-2 col-programs crp-list-group" routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{exact: true}">
+        <a class="nav-item nav-link" [routerLinkActive]="['active']" routerLink="/crp/dashboard">Home</a>
+        <ng-container *ngFor="let indicator of indicators; index as i">
+            <a *ngIf="indicator.enable_crp" class="nav-item nav-link" [routerLinkActive]="['active']"
+                routerLink="/crp/indicator/{{ indicator.name.toLowerCase()}}/{{ indicator.primary_field}}">
+                {{indicator.name}}
+            </a>
+            <a *ngIf="!indicator.enable_crp" class="nav-item nav-link" [routerLinkActive]="['active']">
+                {{indicator.name}}
+            </a>
+        </ng-container>
         <ngx-spinner [name]="spinner_name" [fullScreen]="false"></ngx-spinner>
     </div>
     <div class="col-10 col-progress">

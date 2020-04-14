@@ -34,23 +34,29 @@ export class CRPIndicatorsComponent implements OnInit {
   configTemplate: string;
   reverse: boolean = false;
 
-  constructor(private route: ActivatedRoute,
+  constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
     private authenticationService: AuthenticationService,
     private spinner: NgxSpinnerService,
     private orderPipe: OrderPipe,
     private alertService: AlertService) {
-    this.authenticationService.currentUser.subscribe(x => {
-      this.currentUser = x;
-    });
+    this.activeRoute.params.subscribe(routeParams => {
+      this.authenticationService.currentUser.subscribe(x => {
+        this.currentUser = x;
+      });
+      this.indicatorType = routeParams.type;
+      this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
+      this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
+      this.getEvaluationsList(routeParams);
+    })
   }
 
   ngOnInit() {
-    this.indicatorType = this.route.snapshot.params.type;
-    this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
-    this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
-    this.getEvaluationsList(this.route.snapshot.params);
+    // this.indicatorType = this.route.snapshot.params.type;
+    // this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
+    // this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
+    // this.getEvaluationsList(this.route.snapshot.params);
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -91,7 +97,7 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
   goToView(indicatorId) {
-    this.router.navigate(['detail', indicatorId], { relativeTo: this.route });
+    this.router.navigate(['detail', indicatorId], { relativeTo: this.activeRoute });
   }
 
   goToPDF(type: string) {

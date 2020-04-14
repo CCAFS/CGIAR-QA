@@ -218,7 +218,10 @@ class CommentController {
                     where: [{
                         comment: commentId
                     }],
-                    relations: ['user']
+                    relations: ['user'],
+                    order: {
+                        createdAt: "ASC"
+                    }
                 }
             )
             res.status(200).send({ data: replies, message: 'Comments' });

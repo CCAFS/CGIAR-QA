@@ -1,10 +1,11 @@
 <div class="row detail-header-container">
-    <p *ngIf="detailedData" class="indicator-item-name">{{detailedData[0].crp_name}} / {{params.type}} /
-        QA-{{params.indicatorId}}</p>
+    <p *ngIf="detailedData" class="indicator-item-name">
+        {{detailedData[0].crp_name}} / {{params.type}} / QA-{{params.indicatorId}}
+    </p>
     <div>
         <div *ngIf="detailedData && detailedData[0].public_link">
             <!-- <a (click)="goToLink(detailedData[0].public_link)">{{params.type}} public link</a> -->
-            <a [href]="detailedData[0].public_link" target="_blank">{{params.type}} public link</a>
+            <a [href]="detailedData[0].public_link" target="_blank">Public link</a>
         </div>
         <!-- <div *ngIf="detailedData && !detailedData[0].public_link">
            <p>{{params.type}} public link</p> 

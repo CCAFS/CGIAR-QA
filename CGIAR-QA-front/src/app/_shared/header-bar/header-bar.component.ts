@@ -48,25 +48,27 @@ export class HeaderBarComponent implements OnInit {
     let primary_column = indicator.indicator.primary_field;
 
 
-    switch (this.currentUser.roles[0].description) {
-      case this.allRoles.admin:
-        // this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column], { relativeTo: this.activeRoute });
-        // if(this.router.url.toString().indexOf('/indicator') !== -1){
-          this.router.navigate(['/reload']).then(() => { this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column]); });
-        // }else{
-        // }
-        // this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.allRoles.admin.toLocaleLowerCase()}/indicator`, view.toLocaleLowerCase(), primary_column]) });
-        break;
-      case this.allRoles.asesor:
-        if (indicator.indicator.enable_assessor) {
-          this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
-          // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
-        }
-        break;
+    // switch (this.currentUser.roles[0].description) {
+    //   case this.allRoles.admin:
+    //     // this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column], { relativeTo: this.activeRoute });
+    //     // if(this.router.url.toString().indexOf('/indicator') !== -1){
+    //       this.router.navigate(['/reload']).then(() => { this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column]); });
+    //     // }else{
+    //     // }
+    //     // this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.allRoles.admin.toLocaleLowerCase()}/indicator`, view.toLocaleLowerCase(), primary_column]) });
+    //     break;
+    //   case this.allRoles.asesor:
+    //     if (indicator.indicator.enable_assessor) {
+    //       this.router.navigate(['/reload']).then(() => { this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column]); });
 
-      default:
-        break;
-    }
+    //       // this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
+    //       // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
+    //     }
+    //     break;
+
+    //   default:
+    //     break;
+    // }
 
 
   }

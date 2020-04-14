@@ -13,7 +13,7 @@ export class CreateAdminUser1580324189443 implements MigrationInterface {
         // const indicatorbyUsrRepository = getRepository(QAIndicatorUser);
         const roleRepository = getRepository(QARoles);
         let user = new QAUsers();
-        user.username = "felipe-super";
+        user.username = "felipe-admin";
         user.password = "12345678";
         user.name = "Felipe";
         user.email = "felipe.super@cgiar.org";

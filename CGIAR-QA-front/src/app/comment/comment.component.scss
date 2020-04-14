@@ -47,6 +47,9 @@
       margin: 0;
     }
   }
+  .replies-container{
+    border: 1px solid var(--gray-primary);
+  }
   .add-comment-container.reply-comment {
     background-color: var(--gray-primary);
     // flex-direction: column;

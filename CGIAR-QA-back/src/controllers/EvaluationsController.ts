@@ -52,7 +52,10 @@ class EvaluationsController {
             LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
             LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
             LEFT JOIN qa_comments_meta meta ON meta.indicatorId = indicator.id
+            LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
             WHERE
+                crp.active = 1
+            AND
                 qa_indicator_user.userId = :user_Id
             GROUP BY
                 evaluations.status,
@@ -158,9 +161,10 @@ class EvaluationsController {
                     LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                     WHERE
+                        crp.active
+                    AND
                         evaluations.crp_id = :crp_id
                     AND title IS NOT NULL
-                    AND crp.active = 1
                     AND evaluations.indicator_view_name = :view_name `,
                     { crp_id: user.crp.crp_id, view_name },
                     {}
@@ -171,33 +175,35 @@ class EvaluationsController {
 
             }
             else {
+                var sql =  `SELECT
+                evaluations.id AS evaluations_id,
+                evaluations.indicator_view_id AS evaluations_indicator_view_id,
+                evaluations.status AS evaluations_status,
+                evaluations.indicator_view_name AS evaluations_indicator_view_name,
+                evaluations.crp_id AS evaluations_crp_id,
+                evaluations.general_comments AS evaluations_general_comments,
+                evaluations.indicatorUserId AS evaluations_indicatorUserId,
+                ${view_name}.title AS title,
+                crp.acronym AS acronym,
+                crp.name AS crp_name
+            FROM
+                qa_indicator_user qa_indicator_user
+            LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+            LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
+            LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+            WHERE
+                crp.active = 1
+            AND
+                qa_indicator_user.userId = :user_Id
+            AND title IS NOT NULL
+            AND evaluations.indicator_view_name = :view_name `;
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                    `SELECT
-                        evaluations.id AS evaluations_id,
-                        evaluations.indicator_view_id AS evaluations_indicator_view_id,
-                        evaluations.status AS evaluations_status,
-                        evaluations.indicator_view_name AS evaluations_indicator_view_name,
-                        evaluations.crp_id AS evaluations_crp_id,
-                        evaluations.general_comments AS evaluations_general_comments,
-                        evaluations.indicatorUserId AS evaluations_indicatorUserId,
-                        ${view_name}.title AS title,
-                        crp.acronym AS acronym,
-                        crp.name AS crp_name
-                    FROM
-                        qa_indicator_user qa_indicator_user
-                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
-                    LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
-                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                    WHERE
-                        qa_indicator_user.userId = :user_Id
-                    AND title IS NOT NULL
-                    AND crp.active = 1
-                    AND evaluations.indicator_view_name = :view_name `,
+                    sql,
                     { user_Id: id, view_name },
                     {}
                 );
                 let rawData = await queryRunner.connection.query(query, parameters);
-                console.log(rawData)
+                console.log(sql)
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
 
             }

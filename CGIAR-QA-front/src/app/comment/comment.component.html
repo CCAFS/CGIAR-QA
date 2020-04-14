@@ -32,18 +32,10 @@
                             <div class="well well-lg card card-block card-header">
                                 <ng-container *ngFor="let reply of commentsByColReplies" class="replies-container">
                                     <div class="comment-title">
-                                        <div>
+                                        <div style="flex-direction: column;">
                                             <span>ADDED BY {{reply.user.username}} </span>
                                             <p>On {{reply.createdAt}}</p>
                                         </div>
-                                        <!-- <div>
-                                            <i *ngIf="!reply.approved" (click)="updateComment('approved', reply)"
-                                                class="icon-star-gray"></i>
-                                            <i *ngIf="reply.approved" (click)="updateComment('approved', reply)"
-                                                class="icon-star-gold"></i>
-                                            <i *ngIf="reply.user.id === currentUser.id" (click)="updateComment('is_deleted', reply)"
-                                                class="icon-remove"></i>
-                                        </div> -->
                                     </div>
                                     <hr style="margin: 0;">
                                     <p class="reply">
@@ -66,7 +58,7 @@
             </ng-container>
 
         </div>
-        <div *ngIf="currentComment && currentComment.crp_approved === null" class="add-comment-container">
+        <div *ngIf="currentComment && currentComment.crp_approved === null" style="flex-direction: row;" class="add-comment-container">
             <button type="button" class="btn btn-danger" (click)="answerComment(false)">REJECT</button>
             <button type="button" class="btn btn-success" (click)="answerComment(true)">ACCEPT</button>
         </div>
@@ -79,7 +71,7 @@
     </div>
 
     <!-- ACCEPT OR REJECT COMMENT / REPLY -->
-    <div *ngIf="availableComment" class="add-comment-container reply-comment">
+    <div *ngIf="availableComment && crpComment" class="add-comment-container reply-comment">
         <i class="icon-close" (click)="availableComment = !availableComment"></i>
         <h2>{{is_approved ? 'ACCEPT':'REJECT'}} COMMENT</h2>
         <form [formGroup]="commentGroup">
@@ -90,7 +82,7 @@
     </div>
 
     <!-- ADD COMMENT -->
-    <div *ngIf="!availableComment" class="add-comment-container">
+    <div *ngIf="!availableComment && !crpComment" class="add-comment-container">
         <form [formGroup]="commentGroup">
             <textarea cols="30" rows="3" formControlName="comment"></textarea>
         </form>

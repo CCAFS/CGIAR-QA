@@ -25,7 +25,8 @@
         <div class="navbar-nav custom-header-links" routerLinkActive="active-link"
             [routerLinkActiveOptions]="{exact: true}">
             <a class="nav-item nav-link" [routerLinkActive]="['active']" routerLink="/dashboard/{{currentUser.roles[0].description.toLowerCase()}}">Home</a>
-            <a class="nav-item nav-link" [routerLinkActive]="['active']" [routerLink]="['./indicator', indicator.indicator.type, indicator.indicator.primary_field]" *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a>
+            <a class="nav-item nav-link" [routerLinkActive]="['active']" routerLink="/indicator/{{ indicator.indicator.type}}/{{ indicator.indicator.primary_field}}" *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a>
+            <!-- <a class="nav-item nav-link" [routerLinkActive]="['active']" [routerLink]="['./indicator', indicator.indicator.type, indicator.indicator.primary_field]" *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a> -->
 
         </div>
     </div>

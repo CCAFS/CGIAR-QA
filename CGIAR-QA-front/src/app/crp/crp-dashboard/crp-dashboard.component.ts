@@ -45,7 +45,7 @@ export class CrpDashboardComponent implements OnInit {
     this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
       .subscribe(
         res => {
-          // console.log(res)
+          console.log(res)
           this.dashboardData = res.data;
           this.hideSpinner();
         },

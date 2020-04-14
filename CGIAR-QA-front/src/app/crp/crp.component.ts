@@ -6,8 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
-import { CRP } from '../_models/crp.model';
-import { GeneralStatus, GeneralIndicatorName } from '../_models/general-status.model'
+import { Role } from '../_models/roles.model';
 
 @Component({
   selector: 'app-crp',
@@ -19,6 +18,7 @@ export class CrpComponent implements OnInit {
   indicators = [];
   params;
   spinner_name = 'sp1';
+  allRoles = Role;
 
   constructor(private authenticationService: AuthenticationService,
     private route: ActivatedRoute,
@@ -40,6 +40,7 @@ export class CrpComponent implements OnInit {
       this.validateToken(this.params['params']);
     } else {
       this.router.navigate([`/crp/dashboard`])
+      this.indicators = this.authenticationService.userHeaders;
       this.getCRPIndicators();
     }
     // this.router.navigate([`/crp/dashboard`])
@@ -71,6 +72,7 @@ export class CrpComponent implements OnInit {
         .subscribe(
           res => {
             this.indicators = res.data;
+            this.authenticationService.userHeaders = res.data;
             this.hideSpinner(this.spinner_name);
             // console.log(this.indicators)
           },
@@ -80,15 +82,6 @@ export class CrpComponent implements OnInit {
             this.alertService.error(error);
           }
         );
-    }
-  }
-
-  goToView(view: string, data) {
-    if (data === null) {
-      this.router.navigate([`/crp/${view}`])
-    } else {
-      this.router.navigate([`/crp/indicator/${data.name.toLowerCase()}/${data.primary_field}`])
-      // this.router.navigate(['/reload']).then(() => { this.router.navigate([`/crp/indicator/${data.name.toLowerCase()}/${data.primary_field}`]) });
     }
   }
 

@@ -25,8 +25,6 @@ const routes: Routes = [
         path: 'indicator/:type/:primary_column',
         loadChildren: () => import('./detail-indicator/detail-indicator.module').then(mod => mod.DetailIndicatorModule)
       },
-
-
     ],
   },
   // otherwise redirect to home

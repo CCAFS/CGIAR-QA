@@ -86,7 +86,7 @@ class Util {
                     // console.log(element["meta_display_name"])
                     let field = element["meta_col_name"]//.split(' ').join("_");
 
-                    if (!element["meta_is_primay"]) {
+                    if (!element["meta_is_primay"] && element['meta_include_detail']) {
                         response.push({
                             enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
                             display_name: element["meta_display_name"],

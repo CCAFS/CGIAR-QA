@@ -9,9 +9,9 @@ export class CreateEvaluations1582059974720 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<any> {
         const indicatorUsrRepository = getRepository(QAIndicatorUser);
         const evaluationsRepository = getRepository(QAEvaluations);
-        let primary_field = 'project_innovation_id' //CHANGE
+        let primary_field = 'id' //NOT CHANGE
         let view_name = 'qa_innovations' //CHANGE
-        let indicatorId = 2 //CHANGE
+        let indicatorId = 1 //CHANGE
         let userId = 2
 
         let indByUsr = await indicatorUsrRepository.find({

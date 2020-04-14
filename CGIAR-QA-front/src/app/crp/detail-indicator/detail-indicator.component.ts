@@ -21,6 +21,7 @@ export class DetailIndicatorComponent implements OnInit {
   detailedData: any[];
   params: any;
   spinner_name = '';
+  notApplicable = '';
   gnralInfo = {
     status: "",
     evaluation_id: '',
@@ -43,27 +44,31 @@ export class DetailIndicatorComponent implements OnInit {
     private renderer: Renderer2,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
-    this.authenticationService.currentUser.subscribe(x => {
-      this.currentUser = x;
-    });
+
+    this.activeRoute.params.subscribe(routeParams => {
+      this.authenticationService.currentUser.subscribe(x => {
+        this.currentUser = x;
+      });
+      this.generalCommentGroup = this.formBuilder.group({
+        general_comment: ['', Validators.required]
+      });
+      this.notApplicable = this.authenticationService.NOT_APPLICABLE;
+      // console.log(routeParams)
+      this.params = routeParams;
+      this.showSpinner(this.spinner_name)
+      this.getDetailedData()
+    })
   }
 
   ngOnInit() {
-    // console.log("general detailed")
-    this.generalCommentGroup = this.formBuilder.group({
-      general_comment: ['', Validators.required]
-    });
-    this.params = this.activeRoute.snapshot.params;
-    this.showSpinner(this.spinner_name)
-    this.getDetailedData()
-    // this.params = this.activeRoute.snapshot.params;
-    // console.log(this.params)
   }
 
   getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
       res => {
-        this.detailedData = res.data;
+        this.detailedData = res.data.filter(field => {
+          return field.value && field.value !== this.notApplicable;
+        });;
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -134,7 +139,7 @@ export class DetailIndicatorComponent implements OnInit {
   }
 
 
-  
+
   validateCommentAvility(field, is_embed) {
 
     let userRole = this.currentUser.roles[0].description, avility = false;
@@ -143,7 +148,7 @@ export class DetailIndicatorComponent implements OnInit {
         avility = true
         break;
       case Role.crp:
-        avility = field.enable_crp ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments): field.enable_crp
+        avility = field.enable_crp ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments) : field.enable_crp
         break;
       default:
         break;

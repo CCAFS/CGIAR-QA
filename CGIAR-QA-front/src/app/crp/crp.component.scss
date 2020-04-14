@@ -1,30 +1,37 @@
 @import "../../assets/variables.scss";
 .dashboard-container {
-    .col-programs {
-        ul {
-            background: var(--gray-primary);
-            border-radius: 1em;
+    .crp-list-group {
+        background: var(--gray-primary);
+        border-radius: 1em;
+        align-self: baseline;
+        // .list-group-item {
+        //     cursor: pointer;
+        //     border: transparent;
+        //     background-color: transparent;
+        // }
+        // .list-group-item.active {
+        //     background-color: transparent;
+        //     color: var(--green-primary);
+        //     font-weight: $bold;
+        // }
+        a {
+            font-weight: $bold;
+            color: var(--black);
+            text-decoration: none;
+            background-color: transparent;
+            cursor: pointer;
         }
-        .list-group {
-            .list-group-item {
-                cursor: pointer;
-                border: transparent;
-                background-color: transparent;
-            }
-            .list-group-item.active {
-                background-color: transparent;
-                color: var(--green-primary);
-                font-weight: $bold;
-            }
+        a.active {
+            color: var(--green-primary);
         }
-        .programs-form {
-            margin: 0 $size-lg;
-            .custom-control-input:checked ~ .custom-control-label::before {
-                color: var(--white);
-                border-color: var(--yellow-primary);
-                background-color: var(--yellow-primary);
-                border-radius: 50%;
-            }
+    }
+    .programs-form {
+        margin: 0 $size-lg;
+        .custom-control-input:checked ~ .custom-control-label::before {
+            color: var(--white);
+            border-color: var(--yellow-primary);
+            background-color: var(--yellow-primary);
+            border-radius: 50%;
         }
     }
 }
