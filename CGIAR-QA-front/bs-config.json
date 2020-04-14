@@ -1,0 +1,10 @@
+{
+    "port": 4200,
+    "host": "0.0.0.0",
+    "files": ["./dist/**/*.{html,htm,css,js}"],
+    "server": { "baseDir": "./dist/qa-app" },
+    "ui": {
+        "port": 4201,
+        "host": "0.0.0.0"
+    }
+  }

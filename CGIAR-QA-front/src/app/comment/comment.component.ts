@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -35,8 +35,9 @@ export class CommentComponent implements OnInit {
   spinner_comment = 'spinner_Comment';
 
   currentComment;
-
+  // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
+  @Output("updateNumCommnts") updateNumCommnts: EventEmitter<any> = new EventEmitter();
   allRoles = Role;
 
 
@@ -55,16 +56,16 @@ export class CommentComponent implements OnInit {
     this.commentGroup = this.formBuilder.group({
       comment: ['', Validators.required]
     });
-    // this.replyGroup = this.formBuilder.group({
-    //   reply: ['', Validators.required]
-    // });
     this.dataFromItem = [];
   }
 
   updateData(data: any, params: any) {
     Object.assign(this.dataFromItem, data, params)
     this.availableComment = false;
+    // console.log(this.commentsElem);
+
     // console.log('comment component data=>', this.dataFromItem)
+    this.showSpinner(this.spinner_comment);
     this.getItemCommentData();
   }
 
@@ -86,7 +87,7 @@ export class CommentComponent implements OnInit {
       this.alertService.error('comment is required', false)
       return;
     }
-    this.showSpinner('spinner_Comment');
+    this.showSpinner(this.spinner_comment);
     this.commentService.createDataComment({
       detail: this.formData.comment.value,
       userId: this.currentUser.id,
@@ -95,14 +96,14 @@ export class CommentComponent implements OnInit {
       approved: null
     }).subscribe(
       res => {
-        this.hideSpinner('spinner_Comment');
+        // this.hideSpinner('spinner_Comment');
         // this.commentsByCol = res.data;
         this.getItemCommentData()
         this.formData.comment.reset()
       },
       error => {
         console.log("getEvaluationsList", error);
-        this.hideSpinner('spinner_Comment');
+        this.hideSpinner(this.spinner_comment);
         this.alertService.error(error);
       }
     )
@@ -126,15 +127,18 @@ export class CommentComponent implements OnInit {
       return;
     }
     data[type] = !data[type];
-    this.showSpinner('spinner_Comment');
+    this.showSpinner(this.spinner_comment);
+
     this.commentService.updateDataComment(data).subscribe(
       res => {
-        this.hideSpinner('spinner_Comment');
+        this.getItemCommentData();
+        // this.hideSpinner('spinner_Comment');
         //console.log(res.data)
       },
       error => {
         console.log("updateComment", error);
-        this.hideSpinner('spinner_Comment');
+        this.hideSpinner(this.spinner_comment);
+
         this.alertService.error(error);
       }
     )
@@ -142,13 +146,14 @@ export class CommentComponent implements OnInit {
   }
 
   getItemCommentData() {
-    this.showSpinner(this.spinner_comment);
 
     let params = { evaluationId: this.dataFromItem.evaluation_id, metaId: this.dataFromItem.field_id }
     this.commentService.getDataComment(params).subscribe(
       res => {
         this.hideSpinner(this.spinner_comment);
         console.log(res)
+        // this.dataFromItem.replies_count = res.data.filter(field => field.is_visible).lenght;
+        this.updateNumCommnts.emit(res.data.filter(field => field.is_deleted == false));
         // this.sortBy.transform(res.data,'asc','createdAt')
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:
@@ -208,7 +213,6 @@ export class CommentComponent implements OnInit {
       // approved: this.approved,
     }).subscribe(
       res => {
-        this.hideSpinner(this.spinner_replies);
         this.availableComment = false;
         // this.commentsByCol = res.data;
         this.getItemCommentData()
@@ -245,6 +249,7 @@ export class CommentComponent implements OnInit {
 
   private validComment(type, data) {
     let response;
+    console.log(type, data)
     switch (type) {
       case 'approved':
         let hasApprovedComments = this.commentsByCol.map(comment => comment.approved).find(approved => true);
@@ -255,7 +260,10 @@ export class CommentComponent implements OnInit {
         break;
 
       default:
-        return true;
+        response = {
+          is_valid: true,
+          message: null
+        }
         break;
     }
 

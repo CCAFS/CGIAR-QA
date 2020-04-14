@@ -27,7 +27,9 @@ export class QAPolicies {
     included_AR: string;
 
     @ViewColumn()
-    policy_id: number;
+    id: number;
+    // @ViewColumn()
+    // policy_id: number;
 
     @ViewColumn()
     title: string;
@@ -77,15 +79,17 @@ export class QAPolicies {
     @ViewColumn()
     countries: string;
     
-    @ViewColumn()
-    narrative_evidence_II: string;
+    // @ViewColumn()
+    // narrative_evidence_II: string;
+    
+    // @ViewColumn()
+    // oicr_pdf: string;
     
     @ViewColumn()
-    oicr_pdf: string;
-    
-    @ViewColumn()
-    pdf: string;
+    editable_link: string;
+    // pdf: string;
 
     @ViewColumn()
-    link: string;
+    public_link: string;
+    // link: st/ring;
 }

@@ -72,6 +72,7 @@ class Util {
                             enable_crp: element['enable_crp'],
                             replies_count: element['replies_count'],
                             status: element["evaluations_status"],
+                            crp_name: element["crp_name"],
                         })
 
                     }
@@ -96,6 +97,7 @@ class Util {
                             enable_assessor: element['enable_assessor'],
                             enable_crp: element['enable_crp'],
                             replies_count: element['replies_count'],
+                            crp_name: element["crp_name"],
                             status: element["evaluations_status"],
                         })
 
@@ -118,6 +120,7 @@ class Util {
                         pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
                         enable_assessor: element['enable_assessor'],
                         enable_crp: element['enable_crp'],
+                        crp_name: element["crp_name"],
                         replies_count: element['replies_count'],
                         crp: element['crp_name'],
                     })
@@ -158,7 +161,7 @@ class Util {
         return grouped_data;
     }
 
-    
+
     static createOrReturnUser = async (authToken: any): Promise<any> => {
         const userRepository = getRepository(QAUsers);
         const roleRepository = getRepository(QARoles);

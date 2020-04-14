@@ -25,7 +25,8 @@ export class QAInnovations{
     included_AR: string;
 
     @ViewColumn()
-    project_innovation_id: number;
+    id: number;
+    // project_innovation_id: number;
 
     @ViewColumn()
     title: string;
@@ -79,9 +80,11 @@ export class QAInnovations{
     evidence_link: string;
     
     @ViewColumn()
-    pdf: string;
-        
+    public_link: string;
+    // pdf: string;
+    
     @ViewColumn()
-    link: string;
+    editable_link: string;
+    // link: string;
     
 }

@@ -27,7 +27,7 @@ class UserController {
         //Get users from database
         try {
             const userRepository = getRepository(QAUsers);
-            const users = await userRepository.find({ relations: ["indicators"],});
+            const users = await userRepository.find({ relations: ["indicators"], });
 
             //Send the users object
             res.status(200).json({ data: users, message: "All users" });
@@ -64,8 +64,8 @@ class UserController {
                 return;
             }
 
-            if(crpId){
-                let crp = await crpRepository.findOneOrFail(crpId);
+            if (crpId) {
+                let crp = await crpRepository.findOneOrFail({ where: { crp_id: crpId } });
                 user.crp = crp;
             }
 

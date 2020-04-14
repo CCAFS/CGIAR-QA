@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ViewportScroller } from '@angular/common';
 
 import { EvaluationsService } from "../../services/evaluations.service";
 import { AuthenticationService } from "../../services/authentication.service";
@@ -41,38 +40,41 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   activeCommentArr = [];
   fieldIndex: number;
+  notApplicable = '';
 
   constructor(private activeRoute: ActivatedRoute,
-    private viewportScroller: ViewportScroller,
     private router: Router,
     private alertService: AlertService,
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
-    private renderer: Renderer2,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
-    this.authenticationService.currentUser.subscribe(x => {
-      this.currentUser = x;
-    });
+    this.activeRoute.params.subscribe(routeParams => {
+      this.authenticationService.currentUser.subscribe(x => {
+        this.currentUser = x;
+      });
+      console.log("general detailed")
+      this.generalCommentGroup = this.formBuilder.group({
+        general_comment: ['', Validators.required]
+      });
+      this.params = routeParams;
+      this.showSpinner('spinner1')
+      this.notApplicable = this.authenticationService.NOT_APPLICABLE;
+      this.getDetailedData()
+
+    })
   }
 
   ngOnInit() {
-    // console.log("general detailed")
-    this.generalCommentGroup = this.formBuilder.group({
-      general_comment: ['', Validators.required]
-    });
-    this.params = this.activeRoute.snapshot.params;
-    // this.params['view_name'] = this.params.type;
-    console.log(this.params)
-    this.showSpinner('spinner1')
-    this.getDetailedData()
   }
 
   getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
       res => {
-        this.detailedData = res.data;
-        //console.log(res.data)
+        this.detailedData = res.data.filter(field => {
+          return field.value && field.value !== this.notApplicable;
+        });
+        // console.log(res.data)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -97,11 +99,15 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   get formData() { return this.generalCommentGroup.controls; }
 
   showComments(index: number, field: any) {
+    // console.log(index, field)
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
-    this.currentY = (index * 100)
-    console.log(this.currentY)
+    this.currentY = (index * 100);
+  }
+
+  updateNumCommnts(event, detailedData) {
+    detailedData.replies_count = event.length;
   }
 
   updateEvaluation(type: string, data: any) {

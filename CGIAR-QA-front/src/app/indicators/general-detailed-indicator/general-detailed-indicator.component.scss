@@ -1,14 +1,19 @@
 @import "../../../assets/variables.scss";
 
 .indicator-item-name {
-  font-size: $font-xs;
+  font-size: $font-md;
   text-transform: capitalize;
 }
 .hide {
   display: none;
 }
+.detail-header-container{
+  display: flex;
+  justify-content: space-between;
+  margin: auto 2em;
+}
 
-.row {
+.detail-container {
   padding: 20px;
   .data-container {
     border: 1px solid var(--gray-primary);
@@ -63,6 +68,18 @@
         background-color: var(--yellow-primary);
         i {
           content: url("~/assets/icons/comment_icon_inactive.svg");
+        }
+        .replies-count {
+          background-color: var(--red-primary);
+          color: var(--white);
+          border-radius: 50%;
+          height: 1.5em;
+          width: 1.5em;
+          position: absolute;
+          text-align: center;
+          font-size: $font-sm;
+          margin-left: $size-md;
+          margin-top: $size-25;
         }
       }
       .activate-messages-container {

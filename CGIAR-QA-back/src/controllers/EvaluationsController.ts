@@ -126,6 +126,7 @@ class EvaluationsController {
                     LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                     WHERE title IS NOT NULL
+                    AND crp.active = 1
                     AND evaluations.indicator_view_name = :view_name `,
                     { view_name },
                     {}
@@ -159,6 +160,7 @@ class EvaluationsController {
                     WHERE
                         evaluations.crp_id = :crp_id
                     AND title IS NOT NULL
+                    AND crp.active = 1
                     AND evaluations.indicator_view_name = :view_name `,
                     { crp_id: user.crp.crp_id, view_name },
                     {}
@@ -189,6 +191,7 @@ class EvaluationsController {
                     WHERE
                         qa_indicator_user.userId = :user_Id
                     AND title IS NOT NULL
+                    AND crp.active = 1
                     AND evaluations.indicator_view_name = :view_name `,
                     { user_Id: id, view_name },
                     {}
@@ -230,7 +233,7 @@ class EvaluationsController {
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND approved = 1) AS replies_count')
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_deleted = 0 AND evaluationId = evaluations.id ) AS replies_count')
                     //.addSelect(`${view_name_psdo}.crp AS crp`)
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
@@ -238,9 +241,11 @@ class EvaluationsController {
                     .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_comments_meta", "comment_meta", `comment_meta.indicatorId= qa_indicator_user.indicatorId`)
+                    .leftJoinAndSelect("qa_crp", "crp", `crp.crp_id = evaluations.crp_id`)
+                    // .leftJoinAndMapOne("crp_name", "qa_crp",'crp', `crp.crp_id = evaluations.crp_id`)
                     //.groupBy('meta.id')
-                   .getRawMany();
-                // .getSql();
+                    .getRawMany();
+                    // .getSql();
             }
             else if (user.crp) {
 
@@ -248,7 +253,7 @@ class EvaluationsController {
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND approved = 1) AS replies_count')
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_deleted = 0 AND approved = 1 AND evaluationId = evaluations.id) AS replies_count')
                     //.addSelect(`${view_name_psdo}.crp AS crp`)
                     .where("evaluations.crp_id=:crp_id", { crp_id: user.crp.crp_id })
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
@@ -257,6 +262,7 @@ class EvaluationsController {
                     .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_comments_meta", "comment_meta", `comment_meta.indicatorId= qa_indicator_user.indicatorId`)
+                    .leftJoinAndSelect("qa_crp", "crp", `crp.crp_id = evaluations.crp_id`)
                     // .getSql()
                     .getRawMany();
             }
@@ -265,7 +271,7 @@ class EvaluationsController {
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND approved = 1) AS replies_count')
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_deleted = 0 AND evaluationId = evaluations.id) AS replies_count')
                     //.addSelect(`${view_name_psdo}.crp AS crp`)
                     .where("qa_indicator_user.user=:userId", { userId: id })
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
@@ -274,6 +280,7 @@ class EvaluationsController {
                     .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_comments_meta", "comment_meta", `comment_meta.indicatorId= qa_indicator_user.indicatorId`)
+                    .leftJoinAndSelect("qa_crp", "crp", `crp.crp_id = evaluations.crp_id`)
                     //.groupBy('meta.id')
                     .getRawMany();
                 // .getSql();
@@ -330,8 +337,11 @@ class EvaluationsController {
                     qa_indicator_user qa_indicator_user
                 LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
                 LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                 WHERE
-                    crp_id = :crp_id
+                    crp.active = 1
+                AND
+                    evaluations.crp_id = :crp_id
                 GROUP BY
                     evaluations.status,
                     evaluations.indicator_view_name,
@@ -347,7 +357,6 @@ class EvaluationsController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
                     evaluations.status AS status,
-                   
                     evaluations.indicator_view_name AS indicator_view_name,
                     indicator.primary_field AS primary_field,
                     COUNT (DISTINCT evaluations.id) AS count
@@ -355,10 +364,12 @@ class EvaluationsController {
                     qa_indicator_user qa_indicator_user
                 LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
                 LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                WHERE
+                    crp.active = 1
                 GROUP BY
                     evaluations.status,
                     evaluations.indicator_view_name,
-                   
                     indicator.primary_field
                 ORDER BY
                     evaluations.status ASC `,
