@@ -1,3 +1,19 @@
 .jumbotron {
   background-color: var(--white);
 }
+.test-env {
+  background-color: rgba(240, 47, 23, 1);
+  position: absolute;
+  text-align: center;
+  transform: rotateY(0deg) rotate(-30deg);
+  width: 40%;
+  z-index: 99;
+  opacity: .86;
+  top: 10%;
+  left: -15%;
+  padding: 0.5em;
+  h1 {
+    font-size: 1.3rem;
+    margin: 0;
+  }
+}
