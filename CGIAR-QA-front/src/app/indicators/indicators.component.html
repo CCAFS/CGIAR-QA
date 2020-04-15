@@ -49,6 +49,14 @@
                     </div>
                 </div>
             </th>
+            <th scope="col" [class.active]="order === 'comments_count'" (click)="setOrder('comments_count')">
+                <div class="header-row"> Comments
+                    <div class="order-icon" *ngIf="order === 'comments_count'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
             <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status')">
                 <div class="header-row"> QA Status
                     <div class="order-icon" *ngIf="order === 'status'">
@@ -67,7 +75,7 @@
                 {{ item.title }}
             </td>
             <td>{{ item.crp }}</td>
-            <!-- <td>{{ item.pdf }}</td> -->
+            <td>{{ item.comments_count }}</td>
             <td>
                 <div class="circle {{ item.status }}"></div>
             </td>

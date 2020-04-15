@@ -53,7 +53,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
       });
-      console.log("general detailed")
+      //console.log("general detailed")
       this.generalCommentGroup = this.formBuilder.group({
         general_comment: ['', Validators.required]
       });
@@ -78,7 +78,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.detailedData = res.data.filter(field => {
           return field.value && field.value !== this.notApplicable;
         });
-        // console.log(res.data)
+        // //console.log(res.data)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -89,21 +89,24 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner('spinner1');
-        // console.log(this.detailedData)
+        // //console.log(this.detailedData)
       },
       error => {
-        console.log("getEvaluationsList", error);
+        //console.log("getEvaluationsList", error);
         this.hideSpinner('spinner1');
         this.alertService.error(error);
       }
     )
   }
 
+  getLink(field) {
+    return (field.col_name === 'evidence_link') ? true: false;
+  }
   // convenience getter for easy access to form fields
   get formData() { return this.generalCommentGroup.controls; }
 
   showComments(index: number, field: any) {
-    // console.log(index, field)
+    // ////console.log(index, field)
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
@@ -137,17 +140,17 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       default:
         break;
     }
-    // console.log(evaluationData)
+    // //console.log(evaluationData)
 
     this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
       res => {
-        // console.log(res)
+        // //console.log(res)
         this.alertService.success(res.message);
         this.showSpinner('spinner1')
         this.getDetailedData();
       },
       error => {
-        console.log("updateEvaluation", error);
+        //console.log("updateEvaluation", error);
         this.hideSpinner('spinner1');
         this.alertService.error(error);
       }

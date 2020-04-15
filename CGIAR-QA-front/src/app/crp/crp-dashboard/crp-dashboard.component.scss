@@ -68,15 +68,17 @@
       .progress-container {
         display: flex;
         flex-direction: column;
+        margin-bottom: 1.5em;
         p {
           margin: 10px 0px;
           text-transform: capitalize;
         }
         a {
-          max-width: 40%;
           margin-left: auto;
           text-align: right;
           margin-top: 1em;
+          text-decoration: underline;
+          cursor: pointer;
           // text-transform: capitalize;
         }
         .progress {

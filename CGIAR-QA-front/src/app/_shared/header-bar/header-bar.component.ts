@@ -32,11 +32,12 @@ export class HeaderBarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.indicators = this.authenticationService.userHeaders;
     this.getHeaderLinks();
   }
 
   goToView(indicator: any) {
-    // console.log(this.router.navigate(['/reload']), this.activeRoute.pathFromRoot.toString(), this.router.url.toString().indexOf('/indicator'))
+    // //console.log(this.router.navigate(['/reload']), this.activeRoute.pathFromRoot.toString(), this.router.url.toString().indexOf('/indicator'))
 
     if (indicator === 'logo' || indicator === 'home') {
       this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]);
@@ -74,14 +75,15 @@ export class HeaderBarComponent implements OnInit {
   }
 
   getHeaderLinks() {
-    if (this.currentUser && !this.isCRP()) {
+    if (!this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
-          this.indicators = res.data.filter( indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
-          console.log(res.data, this.currentUser.roles[0])
+          this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
+          this.authenticationService.userHeaders =this.indicators;
+          // //console.log(res.data, this.currentUser.roles[0])
         },
         error => {
-          console.log("getHeaderLinks", error);
+          //console.log("getHeaderLinks", error);
           this.alertService.error(error);
         }
       )

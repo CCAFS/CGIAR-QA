@@ -122,7 +122,12 @@ class EvaluationsController {
                         evaluations.indicatorUserId AS evaluations_indicatorUserId,
                         ${view_name}.title AS title,
                         crp.acronym AS acronym,
-                        crp.name AS crp_name
+                        crp.name AS crp_name,
+                        (
+                            SELECT COUNT(id)
+                            FROM qa_comments
+                            WHERE qa_comments.evaluationId = evaluations.id
+                        ) AS comments_count
                     FROM
                         qa_indicator_user qa_indicator_user
                     LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
@@ -185,7 +190,12 @@ class EvaluationsController {
                 evaluations.indicatorUserId AS evaluations_indicatorUserId,
                 ${view_name}.title AS title,
                 crp.acronym AS acronym,
-                crp.name AS crp_name
+                crp.name AS crp_name,
+                (
+                    SELECT COUNT(id)
+                    FROM qa_comments
+                    WHERE qa_comments.evaluationId = evaluations.id
+                ) AS comments_count
             FROM
                 qa_indicator_user qa_indicator_user
             LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id

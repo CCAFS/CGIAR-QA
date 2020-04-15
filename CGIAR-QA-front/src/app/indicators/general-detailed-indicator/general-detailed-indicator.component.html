@@ -4,12 +4,8 @@
     </p>
     <div>
         <div *ngIf="detailedData && detailedData[0].public_link">
-            <!-- <a (click)="goToLink(detailedData[0].public_link)">{{params.type}} public link</a> -->
             <a [href]="detailedData[0].public_link" target="_blank">Public link</a>
         </div>
-        <!-- <div *ngIf="detailedData && !detailedData[0].public_link">
-           <p>{{params.type}} public link</p> 
-        </div> -->
     </div>
 </div>
 
@@ -20,9 +16,9 @@
                 <div class="data-row">
                     <div class="col">
                         <h2>{{field.display_name}}</h2>
-                        <!-- <p *ngIf="field.value">{{field.value}}</p> -->
-                        <div *ngIf="field.value" [innerHTML]="field.value">
+                        <div *ngIf="field.value && field.col_name !== 'evidence_link'" [innerHTML]="field.value">
                         </div>
+                        <a *ngIf="getLink(field) && field.col_name === 'evidence_link'" href="{{field.value}}">{{field.value}}</a>
                         <p *ngIf="!field.value" class="empty-value">Empty Value</p>
                     </div>
 

@@ -1,8 +1,9 @@
 @import "../../../assets/variables.scss";
 
+
 h2 {
   text-align: center;
-  margin: 0 1em 1em;
+  margin: 1em;
   font-size: $font-lg;
 }
 
@@ -52,10 +53,18 @@ h2 {
       padding: 0.75em;
       text-transform: uppercase;
       cursor: pointer;
+      .header-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        .order-icon{
+          margin-left: 1em;
+        }
+      }
     }
     th.active {
-      background-color: var(--green-primary);
-      color: var(--white);
+      background-color: var(--green-tertiary);
+      color: var(--black);
     }
   }
 }
@@ -70,6 +79,9 @@ h2 {
     text-align: center;
     vertical-align: middle;
     padding: 0.75em;
+  }
+  .circle {
+    margin: auto !important;
   }
 }
 .circle.complete {

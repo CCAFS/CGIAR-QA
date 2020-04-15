@@ -62,6 +62,8 @@ class Util {
                     if (!element["meta_is_primay"] && element['meta_include_detail']) {
                         response.push({
                             enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
+                            col_name: element["meta_col_name"],
+                            comments_count: element["comments_count"],
                             display_name: element["meta_display_name"],
                             display_type: DisplayTypeHandler.Paragraph,
                             value: element[`${type}_${field}`],
@@ -89,6 +91,8 @@ class Util {
                     if (!element["meta_is_primay"] && element['meta_include_detail']) {
                         response.push({
                             enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
+                            col_name: element["meta_col_name"],
+                            comments_count: element["comments_count"],
                             display_name: element["meta_display_name"],
                             display_type: DisplayTypeHandler.Paragraph,
                             value: element[`${type}_${field}`],
@@ -99,7 +103,7 @@ class Util {
                             enable_crp: element['enable_crp'],
                             replies_count: element['replies_count'],
                             crp_name: element["crp_name"],
-                            public_link:  element[`${type}_public_link`],
+                            public_link: element[`${type}_public_link`],
                             status: element["evaluations_status"],
                         })
 
@@ -113,6 +117,7 @@ class Util {
                     const element = rawData[index];
                     response.push({
                         indicator_view_name: element['evaluations_indicator_view_name'],
+                        col_name: element["meta_col_name"],
                         status: element['evaluations_status'],
                         type: Util.getType(element['evaluations_status']),
                         value: element['count'],
@@ -123,7 +128,7 @@ class Util {
                         enable_assessor: element['enable_assessor'],
                         enable_crp: element['enable_crp'],
                         crp_name: element["crp_name"],
-                        public_link:  element[`${type}_public_link`],
+                        public_link: element[`${type}_public_link`],
                         replies_count: element['replies_count'],
                         crp: element['crp_name'],
                     })

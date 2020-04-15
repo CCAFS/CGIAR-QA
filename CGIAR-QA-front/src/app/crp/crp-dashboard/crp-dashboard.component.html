@@ -17,7 +17,7 @@
                         <progressbar class="progress" [value]="item.value" [max]="item.value[0].total">
                             <span>{{item.value[0].total}}</span>
                         </progressbar>
-                        <a *ngIf="item.value[0].enable_crp" (click)="goToView(getIndicatorName(item.key).toLowerCase(), item.value[0].primary_field)">
+                        <a *ngIf="item.value[0].enable_crp" routerLinkActive="active"  (click)="goToView(getIndicatorName(item.key).toLowerCase(), item.value[0].primary_field)">
                             Go to {{getIndicatorName(item.key)}}
                         </a>
                     </div>
