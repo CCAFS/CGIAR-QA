@@ -1,10 +1,9 @@
 import { ViewEntity, ViewColumn } from "typeorm";
-import { Length, IsNotEmpty } from "class-validator";
 
 
 @ViewEntity({
     expression: `
-        SELECT * FROM qa_policies_view 
+        SELECT * FROM qa_publications_view 
         WHERE included_AR = 'Yes' 
         AND phase_name = 'AR'
         AND phase_year = '2019'
@@ -12,7 +11,7 @@ import { Length, IsNotEmpty } from "class-validator";
 })
 
 
-export class QAPolicies {
+export class QAPublications {
 
     @ViewColumn()
     crp_id: string;
@@ -28,62 +27,46 @@ export class QAPolicies {
 
     @ViewColumn()
     id: number;
-    // @ViewColumn()
-    // policy_id: number;
 
     @ViewColumn()
     title: string;
 
     @ViewColumn()
-    description: string;
+    authors: string;
 
     @ViewColumn()
-    narrative_evidence: string;
+    publication_date: string;
 
     @ViewColumn()
-    year: number;
+    journal: string;
 
     @ViewColumn()
-    policy_type: string;
-    
-    @ViewColumn()
-    maturity_level: string;
-    
-    @ViewColumn()
-    policy_owners: string;
-    
-    @ViewColumn()
-    sub_idos: string;
-    
-    @ViewColumn()
-    contrib_crp: string;
-    
-    @ViewColumn()
-    gender: string;
+    volume: string;
 
     @ViewColumn()
-    youth: string;
+    issue: string;
 
     @ViewColumn()
-    capdev: string;
-    
+    pages: string;
+
     @ViewColumn()
-    climate: string;
-    
+    is_OA: number;
+
     @ViewColumn()
-    geographic_scope: string;
-    
+    is_ISI: number;
+
     @ViewColumn()
-    regions: string;
-   
+    DOI: string;
+
     @ViewColumn()
-    countries: string;
-    
+    Handle: string;
+
+
     @ViewColumn()
     editable_link: string;
-    // pdf: string;
 
     @ViewColumn()
     public_link: string;
-    // link: st/ring;
+
+
 }

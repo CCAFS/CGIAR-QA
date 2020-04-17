@@ -15,7 +15,7 @@ import { SortByPipe } from './pipes/sort-by.pipe';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
+import { ErrorComponent } from './error/404.component';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { AlertComponent } from './_shared/alert/alert.component';
@@ -35,7 +35,7 @@ import { QaCloseComponent } from './qa-close/qa-close.component';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
+    ErrorComponent,
     LoginComponent,
     AlertComponent,
     AdminComponent,

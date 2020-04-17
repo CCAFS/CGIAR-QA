@@ -31,7 +31,7 @@ const routes: Routes = [
     ],
   },
   // otherwise redirect to home
-  // { path: '**', redirectTo: 'dashboard' }
+  // { path: '**', redirectTo: 'home' }
 ];
 
 @NgModule({

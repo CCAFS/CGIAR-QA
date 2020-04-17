@@ -63,9 +63,6 @@ export class CommentComponent implements OnInit {
   updateData(data: any, params: any) {
     Object.assign(this.dataFromItem, data, params)
     this.availableComment = false;
-    // console.log(this.commentsElem);
-
-    // console.log('comment component data=>', this.dataFromItem)
     this.showSpinner(this.spinner_comment);
     this.getItemCommentData();
   }
@@ -133,8 +130,6 @@ export class CommentComponent implements OnInit {
     this.commentService.updateDataComment(data).subscribe(
       res => {
         this.getItemCommentData();
-        // this.hideSpinner('spinner_Comment');
-        //console.log(res.data)
       },
       error => {
         console.log("updateComment", error);

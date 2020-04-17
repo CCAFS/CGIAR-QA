@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
 import { QaCloseComponent } from './qa-close/qa-close.component';
+import { ErrorComponent } from './error/404.component';
 
 
 // import { AuthGuard } from './_helpers/auth.guard';
@@ -26,9 +27,10 @@ const routes: Routes = [
   },
   { path: 'qa-close', component: QaCloseComponent },
   { path: 'login', component: LoginComponent },
+  // { path: 'home', component: HomeComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   // otherwise redirect to home
-  // { path: '**', redirectTo: 'login' }
+  { path: '**', component: ErrorComponent }
 ];
 
 @NgModule({

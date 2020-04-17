@@ -58,6 +58,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         general_comment: ['', Validators.required]
       });
       this.params = routeParams;
+      console.log(routeParams)
       this.showSpinner('spinner1')
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
       this.getDetailedData()
@@ -72,13 +73,17 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     window.open(url, "_blank");
   }
 
+  goToList() {
+    console.log(this.params)
+  }
+
   getDetailedData() {
-    this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
+    this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
         this.detailedData = res.data.filter(field => {
           return field.value && field.value !== this.notApplicable;
         });
-        // //console.log(res.data)
+        // console.log(res.data)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -100,7 +105,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   getLink(field) {
-    return (field.col_name === 'evidence_link') ? true: false;
+    return (field.col_name === 'evidence_link') ? true : false;
   }
   // convenience getter for easy access to form fields
   get formData() { return this.generalCommentGroup.controls; }

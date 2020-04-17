@@ -1,5 +1,11 @@
 @import "../../../assets/variables.scss";
 
+.nav-item{
+  padding-top: 0;
+  margin-bottom: 2em;
+  text-transform: capitalize;
+}
+
 .indicator-item-name {
   font-size: $font-md;
   text-transform: capitalize;
@@ -7,7 +13,7 @@
 .hide {
   display: none;
 }
-.detail-header-container{
+.detail-header-container {
   display: flex;
   justify-content: space-between;
   margin: auto 2em;

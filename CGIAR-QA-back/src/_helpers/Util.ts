@@ -53,91 +53,15 @@ class Util {
     static parseEvaluationsData(rawData, type?) {
         let response = [];
         // console.log('parseEvaluationsData', type)
-        switch (type) {
-            case 'innovations':
-                for (let index = 0; index < rawData.length; index++) {
-                    const element = rawData[index];
-                    let field = element["meta_col_name"]//.split(' ').join("_");
-
-                    if (!element["meta_is_primay"] && element['meta_include_detail']) {
-                        response.push({
-                            enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
-                            col_name: element["meta_col_name"],
-                            comments_count: element["comments_count"],
-                            display_name: element["meta_display_name"],
-                            display_type: DisplayTypeHandler.Paragraph,
-                            value: element[`${type}_${field}`],
-                            field_id: element["meta_id"],
-                            evaluation_id: element["evaluations_id"],
-                            general_comment: element["evaluations_general_comments"],
-                            enable_assessor: element['enable_assessor'],
-                            enable_crp: element['enable_crp'],
-                            replies_count: element['replies_count'],
-                            status: element["evaluations_status"],
-                            crp_name: element["crp_name"],
-                            public_link: element[`${type}_public_link`],
-                        })
-
-                    }
-                }
-                break;
-            case "policies":
-                for (let index = 0; index < rawData.length; index++) {
-                    const element = rawData[index];
-                    // console.log(element)
-                    // console.log(element["meta_display_name"])
-                    let field = element["meta_col_name"]//.split(' ').join("_");
-
-                    if (!element["meta_is_primay"] && element['meta_include_detail']) {
-                        response.push({
-                            enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
-                            col_name: element["meta_col_name"],
-                            comments_count: element["comments_count"],
-                            display_name: element["meta_display_name"],
-                            display_type: DisplayTypeHandler.Paragraph,
-                            value: element[`${type}_${field}`],
-                            field_id: element["meta_id"],
-                            evaluation_id: element["evaluations_id"],
-                            general_comment: element["evaluations_general_comments"],
-                            enable_assessor: element['enable_assessor'],
-                            enable_crp: element['enable_crp'],
-                            replies_count: element['replies_count'],
-                            crp_name: element["crp_name"],
-                            public_link: element[`${type}_public_link`],
-                            status: element["evaluations_status"],
-                        })
-
-                    }
-                }
-                break;
-
-
-            default:
-                for (let index = 0; index < rawData.length; index++) {
-                    const element = rawData[index];
-                    response.push({
-                        indicator_view_name: element['evaluations_indicator_view_name'],
-                        col_name: element["meta_col_name"],
-                        status: element['evaluations_status'],
-                        type: Util.getType(element['evaluations_status']),
-                        value: element['count'],
-                        id: element['evaluations_indicator_view_id'],
-                        title: element['title'],
-                        comments_count: element["comments_count"],
-                        pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
-                        enable_assessor: element['enable_assessor'],
-                        enable_crp: element['enable_crp'],
-                        crp_name: element["crp_name"],
-                        public_link: element[`${type}_public_link`],
-                        replies_count: element['replies_count'],
-                        crp: element['crp_name'],
-                    })
-
-                }
-
-                break;
+        for (let index = 0; index < rawData.length; index++) {
+            if (!type) {
+                response.push(this.formatResponse(rawData[index], type));
+            }
+            else if (!rawData[index]["meta_is_primay"] && rawData[index]['meta_include_detail']) {
+                response.push(this.formatResponse(rawData[index], type));
+            }
         }
-
+        // console.log(response, type)
         return response;
     }
 
@@ -296,6 +220,54 @@ class Util {
             console.log(error)
             return error;
         }
+    }
+
+
+    private static formatResponse = (element, type) => {
+        let field = element["meta_col_name"];
+        var response = {
+            enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
+            col_name: element["meta_col_name"],
+            comments_count: element["comments_count"],
+            display_name: element["meta_display_name"],
+            display_type: DisplayTypeHandler.Paragraph,
+            value: element[`${type}_${field}`],
+            field_id: element["meta_id"],
+            evaluation_id: element["evaluations_id"],
+            general_comment: element["evaluations_general_comments"],
+            enable_assessor: element['enable_assessor'],
+            enable_crp: element['enable_crp'],
+            replies_count: element['replies_count'],
+            status: element["evaluations_status"],
+            crp_name: element["crp_name"],
+            crp_acronym: element["acronym"],
+            public_link: element[`${type}_public_link`],
+        }
+        switch (type) {
+            // case 'publications':
+
+            //     if (response.value &&  typeof response.value === 'object') {
+            //         console.log(response.value.toString())
+            //         console.log(typeof response.value)
+            //         // let val = response.value.data[0];
+            //         // response.value = val;
+            //     }
+            //     break;
+
+            case undefined:
+                response = Object.assign(response, {
+                    indicator_view_name: element['evaluations_indicator_view_name'],
+                    type: Util.getType(element['evaluations_status']),
+                    id: element['evaluations_indicator_view_id'],
+                    title: element['title'],
+                    pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
+                    // crp: element['crp_name'],
+                });
+                break;
+            default:
+                break;
+        }
+        return response;
     }
 
 }
