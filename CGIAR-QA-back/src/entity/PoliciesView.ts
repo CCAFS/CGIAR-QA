@@ -81,9 +81,24 @@ export class QAPolicies {
     
     @ViewColumn()
     editable_link: string;
-    // pdf: string;
 
     @ViewColumn()
     public_link: string;
-    // link: st/ring;
+    
+    @ViewColumn()
+    OICR: string;
+    
+    @ViewColumn()
+    milestones: string;
+    
+    @ViewColumn()
+    innovations: string;
+
+
+
+
+
+
+
+
 }
