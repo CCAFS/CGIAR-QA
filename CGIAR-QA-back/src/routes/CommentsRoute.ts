@@ -14,5 +14,6 @@ const router = Router();
 //Get answering/pending comments
 router.get("/", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], CommentController.commentsCount);
 
+router.get("/excel/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], CommentController.getCommentsExcel);
 
 export default router;

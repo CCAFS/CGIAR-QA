@@ -19,7 +19,10 @@
         </div>
     </div>
     <div class="col col-progress">
-        <p class="card-title">Progress on Quality Assessment by Assessors</p>
+        <div class="row" style="padding: 0 15px;">
+            <p class="card-title col-8">Progress by Assessors</p>
+            <button type="button" class="btn btn-success col-4" (click)="openModal(template)">More Metrics</button>
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="card-title example-container d-flex"
@@ -40,7 +43,8 @@
                         <!-- <a>
                             Go to {{getIndicatorName(item.key)}}
                         </a> -->
-                        <a  routerLinkActive="active" (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
+                        <a routerLinkActive="active"
+                            (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
                             Go to all {{getIndicatorName(item.key)}}
                         </a>
                     </div>
@@ -95,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
 
             </form>
@@ -105,3 +109,47 @@
 </div>
 <ngx-spinner>
 </ngx-spinner>
+
+
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Comments for: {{selectedProg.acronym ? selectedProg.acronym : 'All'}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row justify-content-center dashboard-container">
+
+            <div class="col-12 col-progress">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title comments example-container d-flex"
+                            [ngClass]="{'no-data': (dashboardModalData | json) == ({} | json)}">
+                            <div class="circle complete"></div>
+                            <p>Answer</p>
+                            <div class="circle pending" style="margin-left: 50px;"></div>
+                            <p>Pending</p>
+                        </div>
+
+                        <ng-container *ngIf="(dashboardModalData | json) != ({} | json)">
+                            <div *ngFor="let item of dashboardModalData | keyvalue" class="progress-container">
+                                <p>{{getIndicatorName(item.key)}} evaluations: {{item.value[0].total}}</p>
+                                <progressbar class="progress" [value]="item.value" [max]="item.value[0].total">
+                                    <span>{{item.value[0].total}}</span>
+                                </progressbar>
+                            </div>
+
+                            <!-- <ngx-spinner [fullScreen]="false"></ngx-spinner> -->
+                        </ng-container>
+                        <div class="no-data" *ngIf="(dashboardModalData | json) == ({} | json)">
+                            You don't have any indicator assingned.
+                            Please contact your Administrator.
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

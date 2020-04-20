@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -13,6 +14,7 @@ import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-statu
 
 import { Observable, forkJoin } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { CommentService } from 'src/app/services/comment.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -23,8 +25,9 @@ export class AdminDashboardComponent implements OnInit {
   currentUser: User;
   crps: CRP[];
   dashboardData: any[];
+  dashboardModalData: any[];
   configurationData: any[];
-  selectedProgram: string;
+  selectedProgramName: string;
   selectedProg = {}
   settingsForm: FormGroup;
   programsForm: FormGroup;
@@ -34,13 +37,16 @@ export class AdminDashboardComponent implements OnInit {
   enableQATooltip: string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
   enableCommentsTooltip: string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
 
+  modalRef: BsModalRef;
 
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,
+    private modalService: BsModalService,
     private router: Router,
     private spinner: NgxSpinnerService,
     private authenticationService: AuthenticationService,
     private indicatorService: IndicatorsService,
+    private commentService: CommentService,
     private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
@@ -82,12 +88,12 @@ export class AdminDashboardComponent implements OnInit {
     // console.log(type, { enable_assessor: null, enable_crp: isActive })
     switch (type) {
       case 'enableQA':
-        request = this.indicatorService.updateIndicatorsByUser(id, { enable:'enable_assessor', isActive })
-        console.log(type, { enable:'enable_assessor', isActive })
+        request = this.indicatorService.updateIndicatorsByUser(id, { enable: 'enable_assessor', isActive })
+        console.log(type, { enable: 'enable_assessor', isActive })
         break;
       case 'enableCRP':
-        request = this.indicatorService.updateIndicatorsByUser(id, { enable: 'enable_crp' ,isActive })
-        console.log(type,  { enable: 'enable_crp' ,isActive })
+        request = this.indicatorService.updateIndicatorsByUser(id, { enable: 'enable_crp', isActive })
+        console.log(type, { enable: 'enable_crp', isActive })
         break;
 
       default:
@@ -130,7 +136,8 @@ export class AdminDashboardComponent implements OnInit {
 
 
   onProgramChange({ target }, value) {
-    this.selectedProgram = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
+    this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
+    this.selectedProg = value;
     this.showSpinner()
     this.getAllDashData(value.crp_id).subscribe(
       res => {
@@ -149,7 +156,7 @@ export class AdminDashboardComponent implements OnInit {
     this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
     // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
-  
+
   getPendings(data) {
     return data.acronym === 'All' ? '' : '- ' + (data.qa_active === this.generalStatus.Open ? 'Open' : 'Pending')
   }
@@ -168,7 +175,7 @@ export class AdminDashboardComponent implements OnInit {
 
       this.crps = crps.data;
       this.crps.unshift({ id: 0, acronym: 'All', crp_id: 'undefined', name: '0', is_marlo: false })
-      this.selectedProgram = this.crps[0].acronym;
+      this.selectedProgramName = this.crps[0].acronym;
 
       this.configurationData = indicatorsByCrps.data;
       console.log(this.configurationData)
@@ -203,6 +210,33 @@ export class AdminDashboardComponent implements OnInit {
     return this.dashService.getIndicatorsByCRP().pipe();
   }
 
+  // comments by crp
+
+  getCommentStats() {
+    this.showSpinner();
+    let params = (this.selectedProg) ? this.selectedProg : { crp_id: 'undefined', id: 0 }
+    console.log(this.selectedProg, params)
+    this.commentService.getCommentCRPStats(params)
+      .subscribe(
+        res => {
+          console.log(res)
+          this.dashboardModalData = res.data;
+          this.hideSpinner();
+        },
+        error => {
+          this.hideSpinner()
+          console.log("getAllDashData", error);
+          this.alertService.error(error);
+        },
+      )
+
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.dashboardModalData = []
+    this.getCommentStats()
+    this.modalRef = this.modalService.show(template);
+  }
 
   /***
    * 

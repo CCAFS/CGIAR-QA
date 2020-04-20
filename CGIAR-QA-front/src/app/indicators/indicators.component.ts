@@ -7,6 +7,7 @@ import { OrderPipe } from 'ngx-order-pipe';
 
 import { DashboardService } from "../services/dashboard.service";
 import { AuthenticationService } from "../services/authentication.service";
+import { CommentService } from "../services/comment.service";
 import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
@@ -39,20 +40,20 @@ export class IndicatorsComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private orderPipe: OrderPipe,
     private alertService: AlertService) {
-    this.authenticationService.currentUser.subscribe(x => {
-      this.currentUser = x;
-    });
-  }
-
-  ngOnInit() {
-    console.log('loaded indicators')
     this.activeRoute.params.subscribe(routeParams => {
+      this.authenticationService.currentUser.subscribe(x => {
+        this.currentUser = x;
+      });
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
       this.getEvaluationsList(routeParams);
     });
 
+  }
+
+  ngOnInit() {
+    console.log('loaded indicators')
   }
 
   getEvaluationsList(params) {

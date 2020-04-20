@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { User } from '../../_models/user.model';
 import { DetailedStatus } from "../../_models/general-status.model"
 import { Role } from "../../_models/roles.model"
+import { CommentService } from 'src/app/services/comment.service';
 
 
 
@@ -45,6 +46,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private alertService: AlertService,
+    private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -68,6 +70,33 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   ngOnInit() {
   }
+
+
+  getCommentsExcel(evaluation) {
+    // console.log(evaluation)
+    this.showSpinner('spinner1');
+    let evaluationId = evaluation.evaluation_id;
+    let title = this.detailedData.find(data => data.col_name === 'title');
+    this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: title.display_name }).subscribe(
+      res => {
+        let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
+        let url = window.URL.createObjectURL(blob);
+        let pwa = window.open(url);
+        if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
+          this.alertService.error('Please disable your Pop-up blocker and try again.');
+        }
+        this.hideSpinner('spinner1');
+        // console.log(this.detailedData)
+      },
+      error => {
+        console.log("getCommentsExcel", error);
+        this.hideSpinner('spinner1');
+        this.alertService.error(error);
+      }
+    )
+  }
+
+
 
   goToLink(url: string) {
     window.open(url, "_blank");

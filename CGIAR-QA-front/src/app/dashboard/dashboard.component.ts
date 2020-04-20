@@ -22,7 +22,11 @@ export class DashBoardComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]); });
+    if(this.currentUser){
+      this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]);
+    }else{
+      this.router.navigate([`login`]);
+    }
   }
 
 }

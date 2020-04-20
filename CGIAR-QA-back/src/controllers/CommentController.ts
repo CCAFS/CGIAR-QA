@@ -13,6 +13,7 @@ import { QACommentsReplies } from "@entity/CommentsReplies";
 import { RolesHandler } from "@helpers/RolesHandler";
 import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 import { QAEvaluations } from "@entity/Evaluations";
+import { request } from "http";
 
 class CommentController {
 
@@ -20,9 +21,15 @@ class CommentController {
     static commentsCount = async (req: Request, res: Response) => {
         const { crp_id, id } = req.query;
         let queryRunner = getConnection().createQueryBuilder();
+        let rawData;
         try {
+            console.log(!!crp_id && !!id)
+            console.log(crp_id, id)
+            console.log(crp_id !== null, id)
 
-            if (crp_id) {
+            if (crp_id !== 'undefined') {
+                console.log('crp')
+
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
                         evaluations.indicator_view_name,
@@ -48,9 +55,39 @@ class CommentController {
                     { crp_id },
                     {}
                 );
-                let rawData = await queryRunner.connection.query(query, parameters);
-                res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
+                rawData = await queryRunner.connection.query(query, parameters);
+                // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
             }
+            else if (crp_id == 'undefined') {
+                console.log('admin')
+
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT
+                        evaluations.indicator_view_name,
+                        (
+                            SELECT
+                                COUNT(DISTINCT id)
+                            FROM
+                                qa_comments
+                            WHERE
+                                qa_comments.evaluationId = evaluations.id
+                        ) AS count,
+                        indicators.id,
+                        indicators.primary_field,
+                        comments_meta.enable_crp,
+                        comments_meta.enable_assessor
+                    FROM
+                        qa_evaluations evaluations
+                    LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+                    LEFT JOIN qa_comments_meta comments_meta ON comments_meta.indicatorId = indicators.id
+                        `,
+                    {},
+                    {}
+                );
+                rawData = await queryRunner.connection.query(query, parameters);
+            }
+            res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
+
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: "Could not access to evaluations." });
@@ -162,7 +199,7 @@ class CommentController {
         const evaluationId = req.params.evaluationId;
         const metaId = req.params.metaId;
 
-        const commentsRepository = getRepository(QAComments);
+        // const commentsRepository = getRepository(QAComments);
         let queryRunner = getConnection().createQueryBuilder();
         try {
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
@@ -185,15 +222,8 @@ class CommentController {
                 {}
             );
             let replies = await queryRunner.connection.query(query, parameters);
-            let comments = await commentsRepository.find({
-                where: {
-                    meta: metaId, evaluation: evaluationId
-                }, 
-                relations: ['user'],
-                order: {
-                    createdAt: "ASC"
-                }
-            });
+            let comments = await CommentController.getCommts(metaId, evaluationId);
+
             for (let index = 0; index < comments.length; index++) {
                 const comment = comments[index];
                 comment.replies = replies.find(reply => reply.id == comment.id)
@@ -276,6 +306,89 @@ class CommentController {
 
     };
 
+    //get comments in excel
+    static getCommentsExcel = async (req: Request, res: Response) => {
+        // const { name, id } = req.params;
+        const { evaluationId } = req.params;
+        const { userId, name } = req.query;
+        const commentsRepository = getRepository(QAComments);
+        const userRepository = getRepository(QAUsers);
+        // let queryRunner = getConnection().createQueryBuilder();
+        // const evaluationRepository = getRepository(QAEvaluations);
+        let comments;
+        try {
+
+
+            let user = await userRepository.findOneOrFail({
+                where: [
+                    { id: userId },
+                ]
+            });
+            let currentRole = user.roles.map(role => { return role.description })[0];
+
+            if (currentRole === RolesHandler.admin) {
+                comments = await commentsRepository.find({
+                    where: { is_visible: 1, evaluation: evaluationId },
+                    relations: ['user', 'meta'],
+                    order: {
+                        createdAt: "ASC"
+                    }
+                });
+            } else {
+                comments = await commentsRepository.find({
+                    where: { is_visible: 1, approved: 1, evaluation: evaluationId },
+                    relations: ['user', 'meta'],
+                    order: {
+                        createdAt: "ASC"
+                    }
+                });
+            }
+
+            // const name = 'Comments';
+            const stream: Buffer = await Util.createCommentsExcel([
+                { header: 'Id', key: 'id' },
+                { header: 'Field', key: 'field' },
+                { header: 'User', key: 'user' },
+                { header: 'Email', key: 'email' },
+                { header: 'Comment', key: 'comment' },
+                { header: 'Created Date', key: 'createdAt' }
+            ], comments, 'comments');
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=${name}.xlsx`);
+            res.setHeader('Content-Length', stream.length);
+            res.status(200).send(stream);
+            // res.status(200).send({ data: stream, message: 'File download' });
+        } catch (error) {
+            console.log(error)
+            res.status(404).json({ message: 'Comments not found.', data: error });
+        }
+
+
+
+    }
+
+    private static async getCommts(metaId, evaluationId) {
+        const commentsRepository = getRepository(QAComments);
+        let whereClause = {}
+        if (metaId) {
+            whereClause = {
+                meta: metaId, evaluation: evaluationId
+            }
+
+        } else {
+            whereClause = {
+                evaluation: evaluationId
+            }
+        }
+        let comments = await commentsRepository.find({
+            where: whereClause,
+            relations: ['user'],
+            order: {
+                createdAt: "ASC"
+            }
+        });
+        return comments;
+    }
 }
 
 export default CommentController;

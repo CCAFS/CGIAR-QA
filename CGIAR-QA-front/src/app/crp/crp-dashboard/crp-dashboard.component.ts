@@ -27,7 +27,6 @@ export class CrpDashboardComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
-    private dashServicce: DashboardService,
     private alertService: AlertService,
     private spinner: NgxSpinnerService, ) {
     this.authenticationService.currentUser.subscribe(x => {

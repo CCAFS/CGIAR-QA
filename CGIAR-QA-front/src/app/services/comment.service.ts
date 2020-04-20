@@ -13,12 +13,12 @@ export class CommentService {
   constructor(private http: HttpClient) { }
 
   // get comment stats by crp
-  getCommentCRPStats(params){
+  getCommentCRPStats(params) {
     return this.http.get<any>(`${environment.apiUrl}/comment/?crp_id=${params.crp_id}&id=${params.id}`)
   }
 
 
-   // // get comment data for evaluation
+  // // get comment data for evaluation
   getDataComment(params) {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/${params.evaluationId}/detail/comment/${params.metaId}`)
   }
@@ -27,7 +27,7 @@ export class CommentService {
   createDataComment(params) {
     return this.http.post<any>(`${environment.apiUrl}/evaluation/detail/comment`, params)
   }
-  
+
   // update comment data for evaluation
   updateDataComment(params) {
     return this.http.patch<any>(`${environment.apiUrl}/evaluation/detail/comment`, params)
@@ -37,11 +37,16 @@ export class CommentService {
     return this.http.post<any>(`${environment.apiUrl}/evaluation/detail/comment/reply`, params)
   }
 
-   // get comment data for evaluation
-   getDataCommentReply(params) {
-    return this.http.get<any>(`${environment.apiUrl}/evaluation//${params.evaluationId}/detail/comment/${params.commentId}/replies`)
+  // get comment data for evaluation
+  getDataCommentReply(params) {
+    return this.http.get<any>(`${environment.apiUrl}/evaluation/${params.evaluationId}/detail/comment/${params.commentId}/replies`)
   }
 
+
+  // get comments excel
+  getCommentsExcel(params) {
+    return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}`, { responseType: 'blob' as 'blob' })
+  }
 
 
 }

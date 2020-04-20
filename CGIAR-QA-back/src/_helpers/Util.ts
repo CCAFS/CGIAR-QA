@@ -8,12 +8,14 @@ import { QARoles } from "@entity/Roles";
 import { QACrp } from "@entity/CRP";
 import { QAGeneralConfiguration } from "@entity/GeneralConfig";
 import { config } from "process";
-import * as jwt from "jsonwebtoken";
 import config_ from "@config/config";
 import { QAIndicators } from "@entity/Indicators";
 import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 import { QAEvaluations } from "@entity/Evaluations";
 import { QAIndicatorUser } from "@entity/IndicatorByUser";
+
+import * as jwt from "jsonwebtoken";
+import * as excel from 'exceljs';
 
 
 class Util {
@@ -76,7 +78,6 @@ class Util {
                 ];
                 element.total = element.length;
                 element.forEach(ele => {
-                    console.log(parseInt(ele['count']) > 0)
                     if (parseInt(ele['count']) > 0) {
                         itm[0].value += 1;
                         itm[0].label += 1;
@@ -220,6 +221,36 @@ class Util {
             console.log(error)
             return error;
         }
+    }
+
+    static createCommentsExcel = async (headers: Partial<excel.Column>[], rows: any[], sheetName: string): Promise<Buffer> => {
+        const workbook: excel.stream.xlsx.WorkbookWriter = new excel.stream.xlsx.WorkbookWriter({});
+        const sheet: excel.Worksheet = workbook.addWorksheet(sheetName);
+        sheet.columns = headers;
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i]) {
+                let row = {
+                    id: rows[i].id,
+                    createdAt: rows[i].createdAt,
+                    comment: rows[i].detail,
+                    user: rows[i].user.name,
+                    email: rows[i].user.email,
+                    field: rows[i].meta.display_name,
+                };
+                sheet.addRow(row);
+
+            }
+        }
+        sheet.commit();
+        return new Promise((resolve, reject): void => {
+            workbook.commit().then(() => {
+                const stream: any = (workbook as any).stream;
+                const result: Buffer = stream.read();
+                resolve(result);
+            }).catch((e) => {
+                reject(e);
+            });
+        });
     }
 
 
