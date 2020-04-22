@@ -261,6 +261,54 @@ class CommentController {
         }
     }
 
+    //create comment meta data
+    static createcommentsMeta = async (req: Request, res: Response) => {
+
+        const commentMetaRepository = getRepository(QACommentsMeta);
+        let queryRunner = getConnection().createQueryBuilder();
+
+        try {
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                    *
+                FROM
+                    qa_indicators
+                WHERE
+                    qa_indicators.id NOT IN (SELECT indicatorId FROM qa_comments_meta )`,
+                {},
+                {}
+            );
+
+            let indicators = await queryRunner.connection.query(query, parameters);
+
+            let savePromises = [];
+            for (let index = 0; index < indicators.length; index++) {
+                const element = indicators[index];
+                let newCommentMeta = new QACommentsMeta();
+
+                newCommentMeta.enable_assessor = false;
+                newCommentMeta.enable_crp = false;
+                newCommentMeta.indicator = element;
+                savePromises.push(newCommentMeta);
+
+            }
+
+            let response = await commentMetaRepository.save(savePromises);
+
+            res.status(200).send({ data: response, message: 'Comments meta created' });
+        } catch (error) {
+            console.log(error)
+            //If not found, send a 404 response
+            res.status(404).json({ message: 'Comment meta was not created.', data: error });
+            // throw new ErrorHandler(404, 'User not found.');
+        }
+
+        //If all ok, send 200 response
+        // res.status(200).json({ message: "User indicator updated", data: commentMeta });
+
+
+    };
+
     //edit comment meta data
     static editCommentsMeta = async (req: Request, res: Response) => {
 

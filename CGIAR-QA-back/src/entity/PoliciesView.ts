@@ -28,8 +28,6 @@ export class QAPolicies {
 
     @ViewColumn()
     id: number;
-    // @ViewColumn()
-    // policy_id: number;
 
     @ViewColumn()
     title: string;
