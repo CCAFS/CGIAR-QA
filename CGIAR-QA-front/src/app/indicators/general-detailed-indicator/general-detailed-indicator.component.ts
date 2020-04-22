@@ -86,7 +86,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           this.alertService.error('Please disable your Pop-up blocker and try again.');
         }
         this.hideSpinner('spinner1');
-        // console.log(this.detailedData)
       },
       error => {
         console.log("getCommentsExcel", error);
@@ -123,7 +122,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner('spinner1');
-        // //console.log(this.detailedData)
+        console.log(this.detailedData)
       },
       error => {
         //console.log("getEvaluationsList", error);

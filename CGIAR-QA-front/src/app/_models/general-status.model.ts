@@ -10,5 +10,6 @@ export enum GeneralStatus {
 export enum GeneralIndicatorName {
     qa_policies = 'Policies',
     qa_innovations = 'Innovations',
-    qa_publications= 'Publications'
+    qa_publications= 'Publications',
+    qa_oicr= 'OICR',
 }
