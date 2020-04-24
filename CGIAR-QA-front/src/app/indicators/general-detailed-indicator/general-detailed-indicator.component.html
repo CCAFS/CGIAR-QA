@@ -1,12 +1,9 @@
-<div class="data-header">
-    <a class="nav-item nav-link" [routerLinkActive]="['active']"
-        routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
-        go back to {{currentType}} List
-    </a>
-    <a class="nav-item nav-link active download-link" *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])">
-        download excel
-    </a>
-</div>
+<a class="nav-item nav-link" [routerLinkActive]="['active']"
+    routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
+    <i class=icon-go-back></i> {{currentType}} List
+</a>
+<!-- <div class="data-header">
+</div> -->
 
 
 <div class="row detail-header-container">
@@ -15,8 +12,14 @@
         QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
     </p>
     <div>
-        <div *ngIf="detailedData && detailedData[0].public_link">
-            <a [href]="detailedData[0].public_link" target="_blank">Public link</a>
+        <a *ngIf="detailedData && detailedData[0].public_link" [href]="detailedData[0].public_link" target="_blank">
+            <div  class="btn btn-primary file-button">
+                <i class="icon-public-link"></i>
+            </div>
+        </a>
+
+        <div *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
+            <i class="icon-download-excel"></i>
         </div>
     </div>
 </div>

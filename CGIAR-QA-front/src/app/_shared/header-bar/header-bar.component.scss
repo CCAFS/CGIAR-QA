@@ -11,12 +11,13 @@
     flex-direction: column;
     .upper-navbar {
       display: flex;
-      justify-content: space-around;
+      justify-content: flex-end;
       .panel {
         background-color: var(--gray-primary);
-        padding: 10px;
+        padding: 7px;
         position: relative;
         border-radius: 5px;
+        height: 5%;
         margin: 0 10px;
         display: flex;
         justify-content: center;

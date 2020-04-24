@@ -27,6 +27,24 @@
   justify-content: space-between;
   margin: auto 2em;
 }
+.file-button {
+  height: 2.3em;
+  width: 3em;
+  float: right;
+  margin-right: 5px;
+  .icon-download-excel {
+    content: url("~/assets/icons/download-excel.svg");
+  }
+  .icon-public-link {
+    content: url("~/assets/icons/public-link.svg");
+  }
+}
+.btn-primary:hover{
+  background-color: var(--yellow-secondary);
+}
+.icon-go-back{
+  height:0.8em
+}
 
 .detail-container {
   padding: 20px;
