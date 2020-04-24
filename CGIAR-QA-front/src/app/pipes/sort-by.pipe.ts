@@ -13,6 +13,7 @@ import { orderBy, sortBy } from 'lodash';
 export class SortByPipe implements PipeTransform {
 
   transform(value: any[], order = '', column: string = ''): any[] {
+    // console.log('pip', value, order, column)
     if (!value || order === '' || !order) { return value; } 
     if (!column || column === '') { return sortBy(value); } 
     if (value.length <= 1) { return value; } 

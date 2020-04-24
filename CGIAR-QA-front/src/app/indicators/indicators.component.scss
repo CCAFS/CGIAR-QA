@@ -73,6 +73,13 @@ h2 {
     text-align: center;
     vertical-align: middle;
     padding: 0.75em;
+    .excel-download{
+      cursor: pointer;
+      color: #007bff;
+      text-decoration: underline;
+      a{
+      }
+    }
   }
   th {
     text-align: center;

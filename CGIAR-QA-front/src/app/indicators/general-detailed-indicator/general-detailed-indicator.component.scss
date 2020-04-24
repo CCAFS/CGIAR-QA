@@ -1,5 +1,14 @@
 @import "../../../assets/variables.scss";
 
+.data-header{
+  display: flex;
+  justify-content: space-between;
+  margin: auto 1em;
+  .download-link{
+    cursor: pointer;
+  }
+}
+
 .nav-item{
   padding-top: 0;
   margin-bottom: 2em;
@@ -64,7 +73,7 @@
       }
       h2 {
         font-size: $font-md;
-        text-transform: capitalize;
+        // text-transform: capitalize;
       }
       p {
         font-size: $primary-fs;

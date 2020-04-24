@@ -11,6 +11,7 @@ import { CommentService } from "../services/comment.service";
 import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
+import { GeneralIndicatorName } from '../_models/general-status.model';
 
 @Component({
   selector: 'app-indicators',
@@ -37,6 +38,7 @@ export class IndicatorsComponent implements OnInit {
     private router: Router,
     private dashService: DashboardService,
     private authenticationService: AuthenticationService,
+    private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private orderPipe: OrderPipe,
     private alertService: AlertService) {
@@ -46,7 +48,7 @@ export class IndicatorsComponent implements OnInit {
       });
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
-      this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
+      this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
       this.getEvaluationsList(routeParams);
     });
 
@@ -60,9 +62,11 @@ export class IndicatorsComponent implements OnInit {
     this.showSpinner();
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
       res => {
-        this.evaluationList = res.data;
+        this.evaluationList = this.orderPipe.transform(res.data, 'id');
         this.collectionSize = this.evaluationList.length;
-        this.returnedArray = this.orderPipe.transform(this.evaluationList.slice(0, 10), 'id');
+        this.returnedArray = this.evaluationList.slice(0, 10);
+        // this.returnedArray = this.evaluationList;
+        console.log(this.evaluationList.length, this.returnedArray.length)
         console.log(this.returnedArray)
         this.hideSpinner();
       },
@@ -77,6 +81,8 @@ export class IndicatorsComponent implements OnInit {
   pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
+    console.log(this.evaluationList.length, this.returnedArray.length)
+    // this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
 
@@ -90,6 +96,13 @@ export class IndicatorsComponent implements OnInit {
       }
 
       this.order = value;
+
+      this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order);
+      // this.returnedArray = this.evaluationList;
+      // this.returnedArray = this.returnedArray.slice(0, 10);
+      // console.log(this.evaluationList.slice(0, 10), this.returnedArray.length)
+      // slice(0, 10);
+      // this.returnedArray = this.orderPipe.transform(this.evaluationList, this.order);
     }
   }
 
@@ -113,6 +126,28 @@ export class IndicatorsComponent implements OnInit {
     window.open(pdf_url, "_blank");
   }
 
+
+  exportComments(item) {
+    console.log(item)
+    this.showSpinner();
+    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: item.title }).subscribe(
+      res => {
+        // console.log(res)
+        let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
+        let url = window.URL.createObjectURL(blob);
+        let pwa = window.open(url);
+        if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
+          this.alertService.error('Please disable your Pop-up blocker and try again.');
+        }
+        this.hideSpinner();
+      },
+      error => {
+        console.log("exportComments", error);
+        this.hideSpinner();
+        this.alertService.error(error);
+      }
+    )
+  }
 
 
   /***

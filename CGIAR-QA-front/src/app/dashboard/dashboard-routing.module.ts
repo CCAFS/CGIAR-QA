@@ -26,7 +26,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: [Role.admin] },
         component: AdminDashboardComponent,
-        // pathMatch: 'full',
+        pathMatch: 'full',
       },
     ],
   },

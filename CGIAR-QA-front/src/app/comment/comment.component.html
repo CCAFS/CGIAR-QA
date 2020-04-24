@@ -8,7 +8,7 @@
                     <div class="comment-title">
                         <div>
                             <span>ADDED BY {{comment.user.username}} </span>
-                            <p>On {{comment.createdAt}}</p>
+                            <p>On {{comment.createdAt | date: 'long'}}</p>
                         </div>
                         <div>
                             <i *ngIf="!comment.approved && validateStartedMssgs()"

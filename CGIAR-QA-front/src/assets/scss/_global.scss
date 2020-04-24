@@ -37,6 +37,14 @@
   content: url("~/assets/icons/cgiar_logo.svg");
 }
 
+.qa-timeline-icon {
+  content: url("~/assets/img/qa-process-timeline.svg");
+  height: 20em;
+  margin: -4em auto auto;
+  display: flex;
+  position: relative;
+}
+
 /**
 ** Buttons
 ***/
@@ -171,10 +179,10 @@
 /**
 ** Informtive text ( * ... )
 **/
-.informative-text::before {
-  content: "*";
-  color: var(--red-primary);
-}
+// .informative-text::before {
+//   content: "*";
+//   color: var(--red-primary);
+// }
 
 /**
 **

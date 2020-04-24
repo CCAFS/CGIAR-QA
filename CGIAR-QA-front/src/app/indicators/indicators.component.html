@@ -49,12 +49,27 @@
                     </div>
                 </div>
             </th>
+            <th *ngIf="returnedArray && returnedArray[0].stage" scope="col" [class.active]="order === 'stage'"
+                (click)="setOrder('stage')">
+                <div class="header-row">
+                    Stage
+                    <div class="order-icon" *ngIf="order === 'stage'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
             <th scope="col" [class.active]="order === 'comments_count'" (click)="setOrder('comments_count')">
                 <div class="header-row"> Comments
                     <div class="order-icon" *ngIf="order === 'comments_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
                     </div>
+                </div>
+            </th>
+            <th scope="col">
+                <div class="header-row">
+                    Export comments
                 </div>
             </th>
             <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status')">
@@ -75,8 +90,11 @@
                 {{ item.title }}
             </td>
             <td>{{ item.crp_acronym }}</td>
-            <!-- <td>{{ item.crp }}</td> -->
+            <td *ngIf="item.stage">{{ item.stage }}</td>
             <td>{{ item.comments_count }}</td>
+            <td  (click)="exportComments(item)">
+               <a class="excel-download">excel icon</a> 
+            </td>
             <td>
                 <div class="circle {{ item.status }}"></div>
             </td>

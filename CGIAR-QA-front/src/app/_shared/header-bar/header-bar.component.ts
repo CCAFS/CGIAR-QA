@@ -21,11 +21,13 @@ export class HeaderBarComponent implements OnInit {
   allRoles = Role;
   generalStatus = GeneralStatus;
   indicators = [];
+  currentRole = ''
 
   constructor(private activeRoute: ActivatedRoute, private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
       if (x) {
+        this.currentRole = x.roles[0].description.toLowerCase()
         this.ngOnInit();
       }
     });
@@ -79,7 +81,7 @@ export class HeaderBarComponent implements OnInit {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
           this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
-          this.authenticationService.userHeaders =this.indicators;
+          this.authenticationService.userHeaders = this.indicators;
           // //console.log(res.data, this.currentUser.roles[0])
         },
         error => {

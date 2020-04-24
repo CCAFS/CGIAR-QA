@@ -1,16 +1,18 @@
-<a class="nav-item nav-link" [routerLinkActive]="['active']"
-    routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
-    go back {{params.type}} List 
-</a>
-
-<div *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])">
-    download excel
+<div class="data-header">
+    <a class="nav-item nav-link" [routerLinkActive]="['active']"
+        routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
+        go back to {{currentType}} List
+    </a>
+    <a class="nav-item nav-link active download-link" *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])">
+        download excel
+    </a>
 </div>
 
 
 <div class="row detail-header-container">
     <p *ngIf="detailedData" class="indicator-item-name">
-        {{detailedData[0].crp_name}} / {{params.type}} / QA-{{params.indicatorId}}
+        {{detailedData[0].crp_acronym}} / {{currentType}} /
+        QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
     </p>
     <div>
         <div *ngIf="detailedData && detailedData[0].public_link">
@@ -22,31 +24,49 @@
 <div class="row detail-container">
     <div class="col-sm">
         <div class="col data-container">
-            <ng-container *ngFor="let field of detailedData; let i = index">
-                <div class="data-row">
-                    <div class="col">
-                        <h2>{{field.display_name}}</h2>
-                        <div *ngIf="field.value && field.col_name !== 'evidence_link'" [innerHTML]="field.value">
-                        </div>
-                        <a *ngIf="getLink(field) && field.col_name === 'evidence_link'"
-                            href="{{field.value}}">{{field.value}}</a>
-                        <p *ngIf="!field.value" class="empty-value">Empty Value</p>
-                    </div>
-
-
-                    <div #commentsElem *ngIf="validateCommentAvility(field,true)"
-                        (click)="showComments(i, field); comment.updateData(field,params)"
-                        class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
-                        <i class="icon-message"></i>
-                        <div *ngIf="field.replies_count != '0'" class="replies-count">
-                            {{field.replies_count}}
-                        </div>
-                    </div>
-                    <div *ngIf="!validateCommentAvility(field)" class="activate-messages-container">
-                        <i class="icon-message-inactive"></i>
-                    </div>
+            <form [formGroup]="tickGroup" novalidate>
+                <div class="select-all" *ngIf="detailedData">
+                    <input (change)="onSelectAllChange($event)" id="selectAll" type="checkbox"
+                        class="custom-control-input" value="selectAll" name="selectAll" formControlName="selectAll">
+                    <label class="custom-control-label" for="selectAll">
+                        Select All
+                    </label>
                 </div>
-            </ng-container>
+                <ng-container *ngFor="let field of detailedData; let i = index">
+                    <div class="data-row">
+                        <div class="col">
+                            <input [value]="field.field_id" (change)="onTickChange($event,'tick')" type="checkbox"
+                                class="custom-control-input" id="field-{{field.field_id}}">
+                            <label class="custom-control-label" for="field-{{field.field_id}}">
+                                <h2>{{field.display_name}}</h2>
+                            </label>
+                            <div *ngIf="field.value && field.col_name !== 'evidence_link'" [innerHTML]="field.value">
+                            </div>
+                            <a *ngIf="getLink(field) && field.col_name === 'evidence_link'" href="{{field.value}}"
+                                target="_blank">{{field.value}}</a>
+                            <p *ngIf="!field.value" class="empty-value">Empty Value</p>
+                            <!-- <p>{{field.value}} </p> -->
+                        </div>
+
+
+                        <div #commentsElem *ngIf="validateCommentAvility(field,true)"
+                            (click)="showComments(i, field); comment.updateData(field,params)"
+                            class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
+                            <i class="icon-message"></i>
+                            <div *ngIf="field.replies_count != '0'" class="replies-count">
+                                {{field.replies_count}}
+                            </div>
+                        </div>
+                        <div *ngIf="!validateCommentAvility(field)" class="activate-messages-container">
+                            <i class="icon-message-inactive"></i>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- <p class="error" *ngIf="this.form.controls['checkArray'].errors?.required">
+                    Checkbox is required, select atleast one value.
+                </p> -->
+            </form>
 
 
 

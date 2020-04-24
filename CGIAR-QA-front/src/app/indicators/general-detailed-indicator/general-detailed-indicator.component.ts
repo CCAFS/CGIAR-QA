@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 
 import { EvaluationsService } from "../../services/evaluations.service";
 import { AuthenticationService } from "../../services/authentication.service";
@@ -9,7 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus } from "../../_models/general-status.model"
+import { DetailedStatus, GeneralIndicatorName } from "../../_models/general-status.model"
 import { Role } from "../../_models/roles.model"
 import { CommentService } from 'src/app/services/comment.service';
 
@@ -35,6 +35,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   };
   statusHandler = DetailedStatus;
   generalCommentGroup: FormGroup;
+  currentType = '';
 
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
 
@@ -42,6 +43,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   activeCommentArr = [];
   fieldIndex: number;
   notApplicable = '';
+  tickGroup: FormGroup;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -59,8 +61,16 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.generalCommentGroup = this.formBuilder.group({
         general_comment: ['', Validators.required]
       });
+      this.tickGroup = this.formBuilder.group({
+        selectAll: [''],
+        tick: this.formBuilder.array([], [Validators.required])
+      });
+
+
+
       this.params = routeParams;
-      console.log(routeParams)
+      this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
+      // console.log(routeParams)
       this.showSpinner('spinner1')
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
       this.getDetailedData()
@@ -69,6 +79,36 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+  onSelectAllChange(e) {
+    const checkboxData: FormArray = this.tickGroup.get('tick') as FormArray;
+    const allTickIds = this.detailedData.map(data => data.field_id)
+    if (e.target.checked) {
+      console.log('if', checkboxData, allTickIds)
+      allTickIds.forEach((data, index) => {
+        // checkboxData.push(new FormControl(data));
+        checkboxData.controls.map(value => value.get(data).setValue(true));
+      })
+    } else {
+      console.log('else', checkboxData.controls.length)
+    }
+  }
+
+  onTickChange(e, field) {
+    const checkboxData: FormArray = this.tickGroup.get('tick') as FormArray;
+    if (e.target.checked) {
+      console.log(e.target.value)
+      checkboxData.push(new FormControl(e.target.value));
+    } else {
+      let i: number = 0;
+      checkboxData.controls.forEach((item: FormControl) => {
+        if (item.value == e.target.value) {
+          checkboxData.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
   }
 
 
@@ -95,8 +135,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
   }
 
-
-
   goToLink(url: string) {
     window.open(url, "_blank");
   }
@@ -111,7 +149,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.detailedData = res.data.filter(field => {
           return field.value && field.value !== this.notApplicable;
         });
-        // console.log(res.data)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -122,7 +159,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner('spinner1');
-        console.log(this.detailedData)
+        //  console.log(this.detailedData)
       },
       error => {
         //console.log("getEvaluationsList", error);
