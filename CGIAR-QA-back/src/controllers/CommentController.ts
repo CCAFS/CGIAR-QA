@@ -415,6 +415,75 @@ class CommentController {
 
     }
 
+    static toggleApprovedNoComments = async (req: Request, res: Response) => {
+        const { evaluationId } = req.params;
+        const { meta_array, userId } = req.body;
+        let comments;
+        let queryRunner = getConnection().createQueryBuilder();
+        const userRepository = getRepository(QAUsers);
+        const evaluationsRepository = getRepository(QAEvaluations);
+        const commentsRepository = getRepository(QAComments);
+        // console.log(meta_array)
+        try {
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                    *
+                FROM
+                    qa_comments
+                WHERE
+                    evaluationId = :evaluationId
+                AND metaId IN (:meta_array)
+                AND is_deleted = 0
+                `,
+                { meta_array, evaluationId },
+                {}
+            );
+            comments = await queryRunner.connection.query(query, parameters);
+            // console.log(query)
+            let user = await userRepository.findOneOrFail({ where: { id: userId } });
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
+            let response = []
+
+            
+            if (comments.length == 0) {
+                for (let index = 0; index < meta_array.length; index++) {
+                    let comment_ = new QAComments();
+                    comment_.approved = true;
+                    comment_.is_visible = false;
+                    comment_.detail = '';
+                    comment_.approved_no_comment = true;
+                    comment_.meta = meta_array[index];
+                    comment_.evaluation = evaluation;
+                    comment_.user = user;
+                    response.push(comment_)
+                }
+            } else{
+                console.log('else')
+                // let response = []
+                for (let index = 0; index < comments.length; index++) {
+                    let comment_ = comments[index];
+                    comment_.approved = !comments[index].approved;
+                    comment_.is_visible = !comments[index].is_visible;
+                    comment_.approved_no_comment = !comments[index].approved_no_comment;
+                    response.push(comment_)
+                }
+            }
+            comments = await commentsRepository.save(response);
+
+
+            res.status(200).send({ data: comments, message: 'Comment setted as approved' });
+
+        } catch (error) {
+            console.log(error)
+            res.status(404).json({ message: 'Comments not setted as approved.', data: error });
+        }
+
+    }
+
+    //
+    /*
+    **
+    */
     private static async getCommts(metaId, evaluationId) {
         const commentsRepository = getRepository(QAComments);
         let whereClause = {}

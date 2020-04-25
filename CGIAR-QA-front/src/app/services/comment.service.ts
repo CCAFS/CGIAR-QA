@@ -48,5 +48,9 @@ export class CommentService {
     return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}`, { responseType: 'blob' as 'blob' })
   }
 
+  // get comments excel
+  toggleApprovedNoComments(params, evaluationId) {
+    return this.http.post(`${environment.apiUrl}/comment/approved/${evaluationId}`, params)
+  }
 
 }

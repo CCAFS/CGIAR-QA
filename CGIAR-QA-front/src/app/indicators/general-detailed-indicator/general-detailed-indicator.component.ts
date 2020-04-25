@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray, ValidatorFn, AbstractControl } from '@angular/forms';
 
 import { EvaluationsService } from "../../services/evaluations.service";
 import { AuthenticationService } from "../../services/authentication.service";
@@ -63,7 +63,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       });
       this.tickGroup = this.formBuilder.group({
         selectAll: [''],
-        tick: this.formBuilder.array([], [Validators.required])
+        tick: this.formBuilder.array([], Validators.required)
       });
 
 
@@ -80,37 +80,130 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   ngOnInit() {
   }
-  onSelectAllChange(e) {
-    const checkboxData: FormArray = this.tickGroup.get('tick') as FormArray;
-    const allTickIds = this.detailedData.map(data => data.field_id)
+
+  // convenience getter for easy access to form fields
+  get formData() { return this.generalCommentGroup.controls; }
+  get formTickData() { return this.tickGroup.get('tick') as FormArray; }
+
+  // validateChecbox(min = 1) {
+  //   return (control: AbstractControl): {[key: string]: any} | null => {
+  //     console.log(control)
+  //     // const forbidden = nameRe.test(control.value);
+  //     return null ? {'forbiddenName': {value: control.value}} : null;
+  //   };
+  //   // const validator: ValidatorFn = (formArray: FormArray) => {
+  //   //   console.log(formArray.controls.map(control => control.value).filter(value => { return { count: value.data.replies_count, isChecked: value.isChecked } }))
+  //   //   const totalSelected = formArray.controls
+  //   //     // get a list of checkbox values (boolean)
+  //   //     .map(control => control.value)
+  //   //     // total up the number of checked checkboxes
+  //   //     .reduce((prev, next) => next ? prev + next : prev, 0);
+
+  //   //   // if the total is not greater than the minimum, return the error message
+  //   //   return totalSelected >= min ? null : { required: true };
+  //   //   return { required: true };
+  //   // };
+
+  //   // return validator;
+  // }
+
+
+  addCheckboxes() {
+    this.detailedData.map(x => {
+      console.log(x.approved_no_comment)
+      this.formTickData.controls.push(
+        this.formBuilder.group({
+          data: x,
+          isChecked: x.approved_no_comment == 1 ? x.approved_no_comment : false
+        })
+      )
+    });
+  }
+
+  onChangeSelectAll(e) {
     if (e.target.checked) {
-      console.log('if', checkboxData, allTickIds)
-      allTickIds.forEach((data, index) => {
-        // checkboxData.push(new FormControl(data));
-        checkboxData.controls.map(value => value.get(data).setValue(true));
-      })
+      this.formTickData.controls.map(value => value.get('isChecked').setValue(true));
+      console.log(this.detailedData.filter(data => data.replies_count == '0').map(field => field.field_id))
     } else {
-      console.log('else', checkboxData.controls.length)
+      this.formTickData.controls.map(value => value.get('isChecked').setValue(false));
     }
+    // console.log(this.formTickData.controls.map(value => value.get('isChecked')));
+  }
+
+  validateComments() {
+    let response;
+    for (let index = 0; index < this.detailedData.length; index++) {
+      const element = this.detailedData[index];
+      response = parseInt(element.replies_count) > 0 || this.formTickData.controls[index].value.isChecked;
+      if (!response) return !response
+    }
+    return !response;
   }
 
   onTickChange(e, field) {
-    const checkboxData: FormArray = this.tickGroup.get('tick') as FormArray;
-    if (e.target.checked) {
-      console.log(e.target.value)
-      checkboxData.push(new FormControl(e.target.value));
-    } else {
-      let i: number = 0;
-      checkboxData.controls.forEach((item: FormControl) => {
-        if (item.value == e.target.value) {
-          checkboxData.removeAt(i);
-          return;
+    if (field) {
+      field.loading = true
+      this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], userId: this.currentUser.id }, field.evaluation_id).subscribe(
+        res => {
+          console.log(res);
+          field.loading = false
+        },
+        error => {
+          this.alertService.error(error);
+          field.loading = false
         }
-        i++;
-      });
+      )
     }
+
   }
 
+
+  /*
+  onTickChange(e, field) {
+     const checkboxData: FormArray = this.tickGroup.get('tick') as FormArray;
+     if (e.target.checked) {
+       console.log(e.target.value)
+       checkboxData.push(new FormControl(e.target.value));
+     } else {
+       let i: number = 0;
+       checkboxData.controls.forEach((item: FormControl) => {
+         if (item.value == e.target.value) {
+           checkboxData.removeAt(i);
+           return;
+         }
+         i++;
+       });
+     }
+   }
+   */
+
+
+  getDetailedData() {
+    this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
+      res => {
+        this.detailedData = res.data.filter(field => {
+          return field.value && field.value !== this.notApplicable;
+        });
+        this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
+        this.gnralInfo = {
+          evaluation_id: this.detailedData[0].evaluation_id,
+          general_comment: this.detailedData[0].general_comment,
+          crp_id: this.detailedData[0].evaluation_id,
+          status: this.detailedData[0].status
+        }
+        this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
+
+        this.hideSpinner('spinner1');
+        this.addCheckboxes();
+        //  console.log(this.detailedData)
+      },
+      error => {
+        //console.log("getEvaluationsList", error);
+        this.hideSpinner('spinner1');
+        this.alertService.error(error);
+      }
+    )
+  }
 
   getCommentsExcel(evaluation) {
     // console.log(evaluation)
@@ -143,37 +236,18 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     console.log(this.params)
   }
 
-  getDetailedData() {
-    this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
-      res => {
-        this.detailedData = res.data.filter(field => {
-          return field.value && field.value !== this.notApplicable;
-        });
-        this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
-        this.gnralInfo = {
-          evaluation_id: this.detailedData[0].evaluation_id,
-          general_comment: this.detailedData[0].general_comment,
-          crp_id: this.detailedData[0].evaluation_id,
-          status: this.detailedData[0].status
-        }
-        this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
-        this.hideSpinner('spinner1');
-        //  console.log(this.detailedData)
-      },
-      error => {
-        //console.log("getEvaluationsList", error);
-        this.hideSpinner('spinner1');
-        this.alertService.error(error);
-      }
-    )
-  }
 
   getLink(field) {
     return (field.col_name === 'evidence_link') ? true : false;
   }
-  // convenience getter for easy access to form fields
-  get formData() { return this.generalCommentGroup.controls; }
+
+
+  /**
+   * 
+   * 
+   * 
+   */
 
   showComments(index: number, field: any) {
     // ////console.log(index, field)

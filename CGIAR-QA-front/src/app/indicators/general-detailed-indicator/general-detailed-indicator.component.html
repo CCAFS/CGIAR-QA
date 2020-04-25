@@ -13,7 +13,7 @@
     </p>
     <div>
         <a *ngIf="detailedData && detailedData[0].public_link" [href]="detailedData[0].public_link" target="_blank">
-            <div  class="btn btn-primary file-button">
+            <div class="btn btn-primary file-button">
                 <i class="icon-public-link"></i>
             </div>
         </a>
@@ -24,10 +24,11 @@
     </div>
 </div>
 
-<div class="row detail-container">
-    <div class="col-sm">
-        <div class="col data-container">
-            <form [formGroup]="tickGroup" novalidate>
+<!--<form [formGroup]="tickGroup" novalidate>
+
+    <div class="row detail-container">
+        <div class="col-sm">
+            <div class="col data-container">
                 <div class="select-all" *ngIf="detailedData">
                     <input (change)="onSelectAllChange($event)" id="selectAll" type="checkbox"
                         class="custom-control-input" value="selectAll" name="selectAll" formControlName="selectAll">
@@ -45,10 +46,10 @@
                             </label>
                             <div *ngIf="field.value && field.col_name !== 'evidence_link'" [innerHTML]="field.value">
                             </div>
-                            <a *ngIf="getLink(field) && field.col_name === 'evidence_link'" href="{{field.value}}"
-                                target="_blank">{{field.value}}</a>
+                            <div *ngIf="getLink(field) && field.col_name === 'evidence_link'">
+                                <a href="{{field.value}}" target="_blank">{{field.value}}</a>
+                            </div>
                             <p *ngIf="!field.value" class="empty-value">Empty Value</p>
-                            <!-- <p>{{field.value}} </p> -->
                         </div>
 
 
@@ -65,40 +66,139 @@
                         </div>
                     </div>
                 </ng-container>
+            </div>
+            <div *ngIf="detailedData" class="col data-container">
+                <div class="data-row  gnral-commnts">
+                    <h2>General comments:</h2>
+                    <p class="informative-text">
+                        Please take into consideration that this comments are going to be shown to the CRP.
+                    </p>
+                    <form [formGroup]="generalCommentGroup">
+                        <textarea cols="30" rows="5" formControlName="general_comment"></textarea>
+                    </form>
+                    <div class="bton-container">
+                        <p class="error" *ngIf="this.tickGroup.controls['tick'].errors?.required">
+                            Checkbox is required, select atleast one value.
+                        </p>
+                        <button type="button" class="btn btn-green-secondary"
+                            [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
+                            (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
+                        <button type="button" (click)="updateEvaluation('status', detailedData)"  [disabled]="this.tickGroup.controls['tick'].errors?.required"
+                            class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
+                    </div>
 
-                <!-- <p class="error" *ngIf="this.form.controls['checkArray'].errors?.required">
-                    Checkbox is required, select atleast one value.
-                </p> -->
-            </form>
-
-
-
-        </div>
-        <div *ngIf="detailedData" class="col data-container">
-            <div class="data-row  gnral-commnts">
-                <h2>General comments:</h2>
-                <p class="informative-text">
-                    Please take into consideration that this comments are going to be shown to the CRP.
-                </p>
-                <form [formGroup]="generalCommentGroup">
-                    <textarea cols="30" rows="5" formControlName="general_comment"></textarea>
-                </form>
-                <div class="bton-container">
-                    <button type="button" class="btn btn-green-secondary"
-                        [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
-                        (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
-                    <button type="button" (click)="updateEvaluation('status', detailedData)"
-                        class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
                 </div>
             </div>
+
+            <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
+                size="medium">
+            </ngx-spinner>
         </div>
-        <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
-            size="medium"></ngx-spinner>
+        <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY"
+            class="col-sm-4 comments-container">
+            <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
+                (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
+        </div>
     </div>
-    <!-- [style.padding-top.px]="currentY" -->
-    <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY"
-        class="col-sm-4 comments-container">
-        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
-            (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
+</form> -->
+
+<form [formGroup]="tickGroup">
+    <div class="row detail-container">
+        <div class="col-sm">
+            <div class="col data-container">
+                <div class="select-all" *ngIf="detailedData">
+                    <input (change)="onChangeSelectAll($event)" id="selectAll" type="checkbox"
+                        class="custom-control-input" value="selectAll" name="selectAll" formControlName="selectAll">
+                    <label class="custom-control-label" for="selectAll">
+                        Select All
+                    </label>
+                </div>
+                <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
+                    <ng-container [formGroupName]="i">
+                        <div class="data-row">
+                            <div class="col">
+                                <input *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
+                                    (change)="onTickChange($event,detailedData[i])" [value]="detailedData[i].field_id"
+                                    formControlName="isChecked" type="checkbox" class="custom-control-input"
+                                    id="field-{{detailedData[i].field_id}}">
+                                    
+                                <label *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
+                                    class="custom-control-label" for="field-{{detailedData[i].field_id}}">
+                                    <h2>{{detailedData[i].display_name}}</h2>
+                                </label>
+                                <h2 *ngIf="detailedData[i].replies_count != '0' && !summon.value.isChecked ">
+                                    {{detailedData[i].display_name}}</h2>
+
+                                <!-- evidence link -->
+                                <div *ngIf="detailedData[i].value && detailedData[i].col_name !== 'evidence_link'"
+                                    [innerHTML]="detailedData[i].value">
+                                </div>
+                                <div *ngIf="getLink(detailedData[i]) && detailedData[i].col_name === 'evidence_link'">
+                                    <a href="{{detailedData[i].value}}" target="_blank">{{detailedData[i].value}}</a>
+                                </div>
+                                <!-- evidence link -->
+
+                                <p *ngIf="!detailedData[i].value" class="empty-value">Empty Value</p>
+                            </div>
+                            <div #commentsElem
+                                *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
+                                (click)="showComments(i, detailedData[i]); comment.updateData(detailedData[i],params)"
+                                class="activate-messages-container {{detailedData[i].replies_count == '0' ?  '':'active'}}">
+
+                                <i *ngIf="!detailedData[i].loading" class="icon-message"></i>
+                                <span *ngIf="detailedData[i].loading" class="spinner-border spinner-border-sm mr-1"></span>
+
+                                <div *ngIf="detailedData[i].replies_count != '0'" class="replies-count">
+                                    {{detailedData[i].replies_count}}
+                                </div>
+                            </div>
+                            <div *ngIf="!validateCommentAvility(detailedData[i]) || summon.value.isChecked"
+                                class="activate-messages-container">
+                                <i  *ngIf="!detailedData[i].loading" class="icon-message-inactive"></i>
+                                <span *ngIf="detailedData[i].loading" class="spinner-border spinner-border-sm mr-1"></span>
+                            </div>
+                        </div>
+
+                    </ng-container>
+                </ng-container>
+
+            </div>
+            <div *ngIf="detailedData" class="col data-container">
+                <div class="data-row  gnral-commnts">
+                    <h2>General comments:</h2>
+                    <p class="informative-text">
+                        Please take into consideration that this comments are going to be shown to the CRP.
+                    </p>
+                    <form [formGroup]="generalCommentGroup">
+                        <textarea cols="30" rows="5" formControlName="general_comment"></textarea>
+                    </form>
+                    <div class="bton-container">
+                        <p class="error" *ngIf="this.tickGroup.controls['tick'].errors?.required">
+                            Checkbox is required, select atleast one value.
+                        </p>
+                        <button type="button" class="btn btn-green-secondary"
+                            [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
+                            (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
+                        <button type="button" (click)="updateEvaluation('status', detailedData)"
+                            [disabled]="validateComments()"
+                            class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
+                    </div>
+
+                </div>
+            </div>
+            <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
+                size="medium">
+            </ngx-spinner>
+        </div>
+
+        <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY"
+            class="col-sm-4 comments-container">
+            <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
+                (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
+        </div>
+
+
     </div>
-</div>
+
+
+</form>

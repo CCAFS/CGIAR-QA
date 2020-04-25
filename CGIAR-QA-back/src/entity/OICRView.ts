@@ -4,7 +4,7 @@ import { Length, IsNotEmpty } from "class-validator";
 
 @ViewEntity({
     expression: `
-        SELECT * FROM qa_oicr_view 
+        SELECT * FROM qa_oicr_data  
         WHERE included_AR = 'Yes' 
         AND phase_name = 'AR'
         AND phase_year = '2019'

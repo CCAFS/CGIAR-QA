@@ -32,6 +32,11 @@ export class QAComments {
     @Column({
         nullable : true
     })
+    approved_no_comment: boolean;
+
+    @Column({
+        nullable : true
+    })
     crp_approved: boolean;
 
     @Column({

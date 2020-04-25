@@ -271,20 +271,12 @@ class Util {
             replies_count: element['replies_count'],
             status: element["evaluations_status"],
             crp_name: element["crp_name"],
-            crp_acronym: element["acronym"],
+            crp_acronym: element["crp_acronym"],
             public_link: element[`${type}_public_link`],
+            approved_no_comment: element['approved_no_comment']
         }
         switch (type) {
-            // case 'publications':
-
-            //     if (response.value &&  typeof response.value === 'object') {
-            //         console.log(response.value.toString())
-            //         console.log(typeof response.value)
-            //         // let val = response.value.data[0];
-            //         // response.value = val;
-            //     }
-            //     break;
-
+            // case:
             case undefined:
                 response = Object.assign(response, {
                     indicator_view_name: element['evaluations_indicator_view_name'],
@@ -292,13 +284,13 @@ class Util {
                     id: element['evaluations_indicator_view_id'],
                     title: element['title'],
                     pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
+                    stage: element['stage'] ? element['stage']:undefined,
                     // crp: element['crp_name'],
                 });
                 break;
             default:
                 break;
         }
-
         return response;
     }
 

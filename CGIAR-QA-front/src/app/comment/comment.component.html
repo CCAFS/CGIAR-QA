@@ -4,7 +4,7 @@
         <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
         <div class="comment-container" >
             <ng-container *ngFor="let comment of commentsByCol">
-                <div class="comment-body {{ comment.crp_approved == '1' ? 'approved': ''}} {{  comment.crp_approved == '0' ? 'declined': ''}}" *ngIf="!comment.is_deleted">
+                <div class="comment-body {{ comment.crp_approved == '1' ? 'approved': ''}} {{  comment.crp_approved == '0' ? 'declined': ''}}" *ngIf="!comment.is_deleted && comment.is_visible">
                     <div class="comment-title">
                         <div>
                             <span>ADDED BY {{comment.user.username}} </span>

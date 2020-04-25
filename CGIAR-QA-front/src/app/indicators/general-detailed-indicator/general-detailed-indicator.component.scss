@@ -9,6 +9,10 @@
   }
 }
 
+.custom-control-label{
+  margin-left: 1em;
+}
+
 .nav-item{
   padding-top: 0;
   margin-bottom: 2em;
@@ -86,6 +90,7 @@
       margin: 1em 0;
       flex-direction: row;
       display: flex;
+    
       .empty-value {
         font-style: italic;
       }
