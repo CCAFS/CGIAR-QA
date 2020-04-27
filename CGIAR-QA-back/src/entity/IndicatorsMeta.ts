@@ -51,6 +51,11 @@ export class QAIndicatorsMeta {
         default : 0
     })
     order: number;
+    
+    @Column({
+        nullable : true
+    })
+    description: string;
 
     @OneToMany(type => QAComments, comment => comment.meta)
     comments:QAComments;

@@ -28,6 +28,7 @@ const routes: Routes = [
   { path: 'qa-close', component: QaCloseComponent },
   { path: 'login', component: LoginComponent },
   // { path: 'home', component: HomeComponent },
+
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   // otherwise redirect to home
   { path: '**', component: ErrorComponent }

@@ -23,5 +23,9 @@ export class EvaluationsService {
   updateDataEvaluation(params, id) {
     return this.http.patch<any>(`${environment.apiUrl}/evaluation/${id}/detail/`, params)
   }
-
+  
+  // get criteria by indicator
+  getCriteriaByIndicator(id) {
+    return this.http.get<any>(`${environment.apiUrl}/evaluation/indicator/${id}`)
+  }
 }

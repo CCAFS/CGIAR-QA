@@ -12,6 +12,8 @@ import { DashBoardComponent } from './dashboard.component';
 const routes: Routes = [
   {
     path: '',
+    // pathMatch: 'full',
+
     component: DashBoardComponent,
     children: [
       {
@@ -19,14 +21,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: [Role.asesor] },
         component: AssessorDashboardComponent,
-        pathMatch: 'full',
+        // pathMatch: 'full',
       },
       {
         path: 'admin',
         canActivate: [AuthGuard],
         data: { roles: [Role.admin] },
         component: AdminDashboardComponent,
-        pathMatch: 'full',
+        // pathMatch: 'full',
       },
     ],
   },

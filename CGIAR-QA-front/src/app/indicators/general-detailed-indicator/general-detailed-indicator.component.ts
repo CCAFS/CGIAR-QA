@@ -44,6 +44,13 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   fieldIndex: number;
   notApplicable = '';
   tickGroup: FormGroup;
+  tooltips = {
+    public_link: '',
+    download_excel: 'Click here to download all comments in an excel file.',
+  }
+
+  criteriaData = [];
+  criteria_loading = false;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -70,10 +77,11 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
       this.params = routeParams;
       this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
-      // console.log(routeParams)
+      this.tooltips.public_link = `Click here to see to the ${this.params.type.toUpperCase()} public information`
       this.showSpinner('spinner1')
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
-      this.getDetailedData()
+      this.getDetailedData();
+      this.getIndicatorCriteria(`qa_${this.params.type}`);
 
     })
   }
@@ -85,32 +93,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   get formData() { return this.generalCommentGroup.controls; }
   get formTickData() { return this.tickGroup.get('tick') as FormArray; }
 
-  // validateChecbox(min = 1) {
-  //   return (control: AbstractControl): {[key: string]: any} | null => {
-  //     console.log(control)
-  //     // const forbidden = nameRe.test(control.value);
-  //     return null ? {'forbiddenName': {value: control.value}} : null;
-  //   };
-  //   // const validator: ValidatorFn = (formArray: FormArray) => {
-  //   //   console.log(formArray.controls.map(control => control.value).filter(value => { return { count: value.data.replies_count, isChecked: value.isChecked } }))
-  //   //   const totalSelected = formArray.controls
-  //   //     // get a list of checkbox values (boolean)
-  //   //     .map(control => control.value)
-  //   //     // total up the number of checked checkboxes
-  //   //     .reduce((prev, next) => next ? prev + next : prev, 0);
-
-  //   //   // if the total is not greater than the minimum, return the error message
-  //   //   return totalSelected >= min ? null : { required: true };
-  //   //   return { required: true };
-  //   // };
-
-  //   // return validator;
-  // }
-
-
   addCheckboxes() {
     this.detailedData.map(x => {
-      console.log(x.approved_no_comment)
       this.formTickData.controls.push(
         this.formBuilder.group({
           data: x,
@@ -123,7 +107,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   onChangeSelectAll(e) {
     if (e.target.checked) {
       this.formTickData.controls.map(value => value.get('isChecked').setValue(true));
-      console.log(this.detailedData.filter(data => data.replies_count == '0').map(field => field.field_id))
+      // console.log(this.detailedData.filter(data => data.replies_count == '0').map(field => field.field_id))
     } else {
       this.formTickData.controls.map(value => value.get('isChecked').setValue(false));
     }
@@ -157,25 +141,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   }
 
-
-  /*
-  onTickChange(e, field) {
-     const checkboxData: FormArray = this.tickGroup.get('tick') as FormArray;
-     if (e.target.checked) {
-       console.log(e.target.value)
-       checkboxData.push(new FormControl(e.target.value));
-     } else {
-       let i: number = 0;
-       checkboxData.controls.forEach((item: FormControl) => {
-         if (item.value == e.target.value) {
-           checkboxData.removeAt(i);
-           return;
-         }
-         i++;
-       });
-     }
-   }
-   */
 
 
   getDetailedData() {
@@ -236,10 +201,23 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     console.log(this.params)
   }
 
-
-
   getLink(field) {
     return (field.col_name === 'evidence_link') ? true : false;
+  }
+
+  getIndicatorCriteria(id){
+    this.criteria_loading = true;
+    this.evaluationService.getCriteriaByIndicator(id).subscribe(
+      res =>{
+        this.criteriaData = res.data;
+        this.criteria_loading = false;
+        console.log(this.criteriaData)
+      },
+      error => {
+        this.criteria_loading = false;
+        this.alertService.error(error);
+      }
+    )
   }
 
 

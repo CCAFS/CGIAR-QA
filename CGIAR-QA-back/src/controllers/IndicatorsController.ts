@@ -57,9 +57,11 @@ class IndicatorsController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                        DISTINCT (name), description, primary_field
+                        DISTINCT (name), description, primary_field, qa_indicators.order AS indicator_order
                     FROM
                         qa_indicators
+                    ORDER BY 
+                        indicator_order ASC
                     `,
                     {},
                     {}
@@ -90,6 +92,14 @@ class IndicatorsController {
                     ) as name,
                     (
                         SELECT
+                            order
+                        FROM
+                            qa_indicators
+                        WHERE
+                            view_name = evaluations.indicator_view_name
+                    ) as indicator_order,
+                    (
+                        SELECT
                             primary_field
                         FROM
                             qa_indicators
@@ -109,6 +119,8 @@ class IndicatorsController {
                     )
                     WHERE
                         evaluations.crp_id = :crp_id
+                    ORDER BY 
+                        indicator_order ASC
                     `,
                     { crp_id: user.crp.crp_id },
                     {}
@@ -126,13 +138,16 @@ class IndicatorsController {
                         indicators.name AS name,
                         indicators.description AS description,
                         indicators.primary_field AS primary_field,
+                        indicators.order AS indicator_order,
                         meta.enable_assessor as enable_assessor
                     FROM
                         qa_indicator_user qa_indicator_user
                     LEFT JOIN qa_indicators indicators ON indicators.id = qa_indicator_user.indicatorId
                     LEFT JOIN qa_comments_meta meta ON meta.indicatorId = qa_indicator_user.indicatorId
                     WHERE
-                        qa_indicator_user.userId = :userId `,
+                        qa_indicator_user.userId = :userId 
+                    ORDER BY 
+                        indicator_order ASC`,
                     { userId: id },
                     {}
                 );

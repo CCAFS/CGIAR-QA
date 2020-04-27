@@ -50,7 +50,28 @@ export class DashboardService {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/crp/indicators`);
   }
 
+  sortProperties(obj) {
+    // convert object into array
+    var sortable = [];
+    for (var key in obj)
+      if (obj.hasOwnProperty(key))
+        sortable.push([key, obj[key]]); // each item is an array in format [key, value]
 
+    // sort items by value
+    sortable.sort(function (a, b) {
+      return a[1] - b[1]; // compare numbers
+    });
+
+    let resp = {}
+    for (let index = 0; index < sortable.length; index++) {
+      const element = sortable[index];
+      console.log(element, resp)
+      resp[element[0]] = element[1]
+    }
+
+    console.log(resp)
+    return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
+  }
   // group data
   groupData(data) {
     for (var property in data) {
@@ -59,8 +80,11 @@ export class DashboardService {
         ele['total'] = ele.reduce((sum, currentValue) => {
           return sum + parseInt(currentValue.value);
         }, 0);
+        ele['order'] = ele[0]['order'];
       }
     }
+    // console.log(this.sortProperties(data))
+    // console.log(data)
     return (data);
   }
 }

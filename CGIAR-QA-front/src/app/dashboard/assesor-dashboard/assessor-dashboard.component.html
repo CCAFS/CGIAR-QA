@@ -13,7 +13,7 @@
             </div>
 
             <ng-container *ngIf="(dashboardData | json) != ({} | json)">
-                <div *ngFor="let item of dashboardData | keyvalue"  [ngClass]="{'closed': !item.value[0].indicator_status }"  class="progress-container">
+                <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "  [ngClass]="{'closed': !item.value[0].indicator_status }"  class="progress-container">
                     <p>{{item.value.total}}  {{getIndicatorName(item.key)}}</p>
                     <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                         <span>{{item.value.total}}</span>

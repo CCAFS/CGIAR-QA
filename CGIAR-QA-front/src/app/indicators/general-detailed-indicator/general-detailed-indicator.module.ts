@@ -14,7 +14,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
 import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator.component';
 import { CommentComponent } from '../../comment/comment.component';
-
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 
 @NgModule({
@@ -25,6 +25,7 @@ import { CommentComponent } from '../../comment/comment.component';
         ButtonsModule.forRoot(),
         CollapseModule.forRoot(),
         PaginationModule.forRoot(),
+        TooltipModule.forRoot(),
         NgxSpinnerModule,
         OrderModule,
         ReactiveFormsModule

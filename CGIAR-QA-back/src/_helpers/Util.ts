@@ -44,12 +44,13 @@ class Util {
     }
 
     static groupBy(array, key) {
-        return array.reduce((result, currentValue) => {
+        let result = array.reduce((result, currentValue) => {
             (result[currentValue[key]] = result[currentValue[key]] || []).push(
                 currentValue
             );
             return result;
         }, {});
+        return result;
     };
 
     static parseEvaluationsData(rawData, type?) {
@@ -273,7 +274,8 @@ class Util {
             crp_name: element["crp_name"],
             crp_acronym: element["crp_acronym"],
             public_link: element[`${type}_public_link`],
-            approved_no_comment: element['approved_no_comment']
+            approved_no_comment: element['approved_no_comment'],
+            meta_description: element['meta_description']
         }
         switch (type) {
             // case:

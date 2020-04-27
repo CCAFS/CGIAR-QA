@@ -5,6 +5,18 @@
 <!-- <div class="data-header">
 </div> -->
 
+<div class="row criteria-container">
+    <div *ngIf="!criteria_loading">
+        <h2>CRITERIA</h2>
+        <ul>
+            <li *ngFor="let criteria of criteriaData">{{criteria.description}}</li>
+        </ul>
+    </div>
+    <div style="margin:auto;">
+        <span *ngIf="criteria_loading" class="spinner-border spinner-border-sm mr-1"></span>
+        <!-- <span class="spinner-border spinner-border-sm mr-1"></span> -->
+    </div>
+</div>
 
 <div class="row detail-header-container">
     <p *ngIf="detailedData" class="indicator-item-name">
@@ -13,16 +25,20 @@
     </p>
     <div>
         <a *ngIf="detailedData && detailedData[0].public_link" [href]="detailedData[0].public_link" target="_blank">
-            <div class="btn btn-primary file-button">
+            <div tooltip="{{tooltips.public_link}}" container="body" placement="top"
+                class="btn btn-primary file-button">
                 <i class="icon-public-link"></i>
             </div>
         </a>
 
-        <div *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
+        <div tooltip="{{tooltips.download_excel}}" container="body" placement="top" *ngIf="detailedData"
+            (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
             <i class="icon-download-excel"></i>
         </div>
     </div>
 </div>
+
+
 
 <!--<form [formGroup]="tickGroup" novalidate>
 
@@ -117,28 +133,39 @@
                     <ng-container [formGroupName]="i">
                         <div class="data-row">
                             <div class="col">
-                                <input *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
-                                    (change)="onTickChange($event,detailedData[i])" [value]="detailedData[i].field_id"
-                                    formControlName="isChecked" type="checkbox" class="custom-control-input"
-                                    id="field-{{detailedData[i].field_id}}">
-                                    
-                                <label *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
-                                    class="custom-control-label" for="field-{{detailedData[i].field_id}}">
-                                    <h2>{{detailedData[i].display_name}}</h2>
-                                </label>
-                                <h2 *ngIf="detailedData[i].replies_count != '0' && !summon.value.isChecked ">
-                                    {{detailedData[i].display_name}}</h2>
+                                <div class="row">
 
-                                <!-- evidence link -->
+                                    <input *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
+                                        (change)="onTickChange($event,detailedData[i])"
+                                        [value]="detailedData[i].field_id" formControlName="isChecked" type="checkbox"
+                                        class="custom-control-input" id="field-{{detailedData[i].field_id}}">
+
+                                    <label *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
+                                        class="custom-control-label" for="field-{{detailedData[i].field_id}}">
+                                        <h2>{{detailedData[i].display_name}}</h2>
+                                    </label>
+                                    <h2 *ngIf="detailedData[i].replies_count != '0' && !summon.value.isChecked ">
+                                        {{detailedData[i].display_name}}</h2>
+
+                                    <div *ngIf="detailedData[i].meta_description">
+                                        <i tooltip="{{detailedData[i].meta_description}}" container="body"
+                                            placement="top" class="icon-pdf" style="height: 2em;"></i>
+
+                                    </div>
+                                </div>
+
+
                                 <div *ngIf="detailedData[i].value && detailedData[i].col_name !== 'evidence_link'"
                                     [innerHTML]="detailedData[i].value">
                                 </div>
+                                <!-- evidence link -->
                                 <div *ngIf="getLink(detailedData[i]) && detailedData[i].col_name === 'evidence_link'">
                                     <a href="{{detailedData[i].value}}" target="_blank">{{detailedData[i].value}}</a>
                                 </div>
                                 <!-- evidence link -->
 
                                 <p *ngIf="!detailedData[i].value" class="empty-value">Empty Value</p>
+
                             </div>
                             <div #commentsElem
                                 *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
@@ -146,7 +173,8 @@
                                 class="activate-messages-container {{detailedData[i].replies_count == '0' ?  '':'active'}}">
 
                                 <i *ngIf="!detailedData[i].loading" class="icon-message"></i>
-                                <span *ngIf="detailedData[i].loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                <span *ngIf="detailedData[i].loading"
+                                    class="spinner-border spinner-border-sm mr-1"></span>
 
                                 <div *ngIf="detailedData[i].replies_count != '0'" class="replies-count">
                                     {{detailedData[i].replies_count}}
@@ -154,8 +182,9 @@
                             </div>
                             <div *ngIf="!validateCommentAvility(detailedData[i]) || summon.value.isChecked"
                                 class="activate-messages-container">
-                                <i  *ngIf="!detailedData[i].loading" class="icon-message-inactive"></i>
-                                <span *ngIf="detailedData[i].loading" class="spinner-border spinner-border-sm mr-1"></span>
+                                <i *ngIf="!detailedData[i].loading" class="icon-message-inactive"></i>
+                                <span *ngIf="detailedData[i].loading"
+                                    class="spinner-border spinner-border-sm mr-1"></span>
                             </div>
                         </div>
 

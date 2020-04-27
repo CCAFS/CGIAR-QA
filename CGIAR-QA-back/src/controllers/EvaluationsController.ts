@@ -46,6 +46,7 @@ class EvaluationsController {
                 meta.enable_assessor,
                 evaluations.indicator_view_name AS indicator_view_name,
                 indicator.primary_field AS primary_field,
+                indicator.order AS indicator_order,
                 COUNT(DISTINCT evaluations.id) AS count
             FROM
                 qa_indicator_user qa_indicator_user
@@ -55,6 +56,7 @@ class EvaluationsController {
             LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
             WHERE
                 crp.active = 1
+            AND crp.qa_active = 'open'
             AND
                 qa_indicator_user.userId = :user_Id
             GROUP BY
@@ -62,9 +64,10 @@ class EvaluationsController {
                 evaluations.indicator_view_name,
                 meta.enable_crp,
                 meta.enable_assessor,
+                indicator.order,
                 indicator.primary_field
             ORDER BY
-                evaluations.status ASC `,
+                indicator_order ASC `,
                 { user_Id: id },
                 {}
             );
@@ -81,7 +84,8 @@ class EvaluationsController {
                     type: Util.getType(element['status']),
                     value: element['count'],
                     label: `${element['count']}`,
-                    primary_field: element["primary_field"]
+                    primary_field: element["primary_field"],
+                    order: element['indicator_order']
                     // total: element['sum'],
                 })
 
@@ -89,6 +93,7 @@ class EvaluationsController {
 
 
             let result = Util.groupBy(response, 'indicator_view_name');
+            // console.log('result')
             // console.log(result)
             res.status(200).json({ data: result, message: "User evaluations" });
         } catch (error) {
@@ -104,7 +109,7 @@ class EvaluationsController {
         const view_name = req.body.view_name;
         const view_primary_field = req.body.view_primary_field;
 
-        let innovations_stage = (view_name === 'qa_innovations') ? 'qa_innovations.stage AS stage,':''
+        let innovations_stage = (view_name === 'qa_innovations') ? 'qa_innovations.stage AS stage,' : ''
 
         let queryRunner = getConnection().createQueryBuilder();
 
@@ -138,6 +143,7 @@ class EvaluationsController {
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                     WHERE title IS NOT NULL
                     AND crp.active = 1
+                    AND crp.qa_active = 'open'
                     AND evaluations.indicator_view_name = :view_name `,
                     { view_name },
                     {}
@@ -169,7 +175,8 @@ class EvaluationsController {
                     LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                     WHERE
-                        crp.active
+                        crp.active = 1
+                    AND crp.qa_active = 'open'
                     AND
                         evaluations.crp_id = :crp_id
                     AND title IS NOT NULL
@@ -183,7 +190,7 @@ class EvaluationsController {
 
             }
             else {
-                var sql =  `SELECT
+                var sql = `SELECT
                 evaluations.id AS evaluations_id,
                 evaluations.indicator_view_id AS evaluations_indicator_view_id,
                 evaluations.status AS evaluations_status,
@@ -206,6 +213,7 @@ class EvaluationsController {
             LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
             WHERE
                 crp.active = 1
+            AND crp.qa_active = 'open'
             AND
                 qa_indicator_user.userId = :user_Id
             AND title IS NOT NULL
@@ -264,7 +272,7 @@ class EvaluationsController {
                     .leftJoinAndSelect("qa_crp", "crp", `crp.crp_id = evaluations.crp_id`)
                     .orderBy("meta.order", "ASC")
                     .getRawMany();
-                    // .getSql();
+                // .getSql();
             }
             else if (user.crp) {
 
@@ -355,7 +363,7 @@ class EvaluationsController {
                     evaluations.crp_id AS crp_id,
                     evaluations.indicator_view_name AS indicator_view_name,
                     indicator.primary_field AS primary_field,
-                    COUNT (DISTINCT evaluations.id) AS count
+                    indicator.order AS indicator_order, COUNT (DISTINCT evaluations.id) AS count
                 FROM
                     qa_indicator_user qa_indicator_user
                 LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
@@ -363,15 +371,17 @@ class EvaluationsController {
                 LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                 WHERE
                     crp.active = 1
+                AND crp.qa_active = 'open'
                 AND
                     evaluations.crp_id = :crp_id
                 GROUP BY
                     evaluations.status,
                     evaluations.indicator_view_name,
                     evaluations.crp_id,
+                    indicator_order,
                     indicator.primary_field
                 ORDER BY
-                    evaluations.status ASC `,
+                    indicator.order ASC `,
                     { crp_id: crp_id },
                     {}
                 );
@@ -382,6 +392,7 @@ class EvaluationsController {
                     evaluations.status AS status,
                     evaluations.indicator_view_name AS indicator_view_name,
                     indicator.primary_field AS primary_field,
+                    indicator.order AS indicator_order, 
                     COUNT (DISTINCT evaluations.id) AS count
                 FROM
                     qa_indicator_user qa_indicator_user
@@ -390,12 +401,14 @@ class EvaluationsController {
                 LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                 WHERE
                     crp.active = 1
+                AND crp.qa_active = 'open'
                 GROUP BY
                     evaluations.status,
                     evaluations.indicator_view_name,
+                    indicator_order,
                     indicator.primary_field
                 ORDER BY
-                    evaluations.status ASC `,
+                    indicator.order ASC `,
                     {},
                     {}
                 );
@@ -413,11 +426,12 @@ class EvaluationsController {
                     value: element['count'],
                     crp_id: (crp_id) ? element['crp_id'] : null,
                     label: `${element['count']}`,
-                    primary_field: element["primary_field"]
+                    primary_field: element["primary_field"],
+                    order: element['indicator_order']
                 })
 
             }
-
+            // console.log(response)
             let result = Util.groupBy(response, 'indicator_view_name');
             // res.status(200).json({ data: rawData, message: "All evaluations" });
             res.status(200).json({ data: result, message: "All evaluations" });
@@ -454,25 +468,59 @@ class EvaluationsController {
                         indicators.id,
                         meta.enable_assessor,
                         meta.enable_crp,
-                        indicators.name AS indicator_view_name
-                        FROM
+                        indicators.name AS indicator_view_name,
+                        indicators.order AS indicator_order
+                    FROM
                         qa_indicators indicators
                     LEFT JOIN qa_comments_meta meta ON indicators.id = meta.indicatorId
                     GROUP BY
                         indicators.id,
+                        indicator_order,
                         meta.enable_assessor,
                         meta.enable_crp,
                         indicators.name
+                    ORDER BY
+                        indicators.order ASC
                        `,
                 {},
                 {}
             );
             let evalData = await queryRunner.connection.query(query, parameters);
-            res.status(200).json({ data: evalData, message: "Indicators by crp" });
+            res.status(200).json({ data: evalData, message: "Indicators settings" });
 
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "Could not get indicators by crp." });
+            res.status(404).json({ message: "Could not get indicators settings." });
+        }
+    }
+
+    //get evaluation criteria by indicator 
+    static getCriteriaByIndicator = async (req: Request, res: Response) => {
+        const { indicatorName } = req.params;
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                    meta.order,
+                    meta.description,
+                    indicators.view_name
+                FROM
+                    qa_indicators_meta meta
+                LEFT JOIN qa_indicators indicators ON indicators.id = meta.indicatorId
+                WHERE meta.description IS NOT NULL
+                AND indicators.view_name = :indicatorName
+                ORDER BY
+                    meta.order
+                       `,
+                { indicatorName },
+                {}
+            );
+            let evalData = await queryRunner.connection.query(query, parameters);
+            res.status(200).json({ data: evalData, message: "Indicator evaluation criteria" });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Could not get any evaluation criteria." });
         }
     }
 

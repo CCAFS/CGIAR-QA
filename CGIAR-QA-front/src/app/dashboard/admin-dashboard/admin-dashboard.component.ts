@@ -172,6 +172,7 @@ export class AdminDashboardComponent implements OnInit {
       const [dashData, crps, indicatorsByCrps] = res;
 
       this.dashboardData = this.dashService.groupData(dashData.data);
+      console.log(this.dashboardData)
 
       this.crps = crps.data;
       this.crps.unshift({ id: 0, acronym: 'All', crp_id: 'undefined', name: '0', is_marlo: false })

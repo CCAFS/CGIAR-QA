@@ -24,13 +24,17 @@ export class HeaderBarComponent implements OnInit {
   currentRole = ''
 
   constructor(private activeRoute: ActivatedRoute, private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
-    this.authenticationService.currentUser.subscribe(x => {
-      this.currentUser = x;
-      if (x) {
-        this.currentRole = x.roles[0].description.toLowerCase()
-        this.ngOnInit();
-      }
-    });
+    this.activeRoute.params.subscribe(routeParams => {
+      this.authenticationService.currentUser.subscribe(x => {
+        this.currentUser = x;
+        if (x) {
+          this.currentRole = x.roles[0].description.toLowerCase()
+          this.ngOnInit();
+        }
+      });
+
+    })
+
   }
 
   ngOnInit() {

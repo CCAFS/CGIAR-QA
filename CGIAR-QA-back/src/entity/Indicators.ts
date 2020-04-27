@@ -31,6 +31,9 @@ export class QAIndicators {
     @IsNotEmpty({ message: 'The view name is required' })
     view_name: string;
 
+    @Column({ default: 0 })
+    order: number;
+
     @OneToMany(type => QAIndicatorUser, indicators => indicators.indicator)
     user_indicator: QAIndicatorUser[];
 

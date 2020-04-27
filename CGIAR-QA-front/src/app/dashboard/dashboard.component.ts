@@ -22,6 +22,7 @@ export class DashBoardComponent implements OnInit {
   }
 
   ngOnInit() {
+    // console.log(this.currentUser)
     if(this.currentUser){
       this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]);
     }else{

@@ -13,6 +13,19 @@
   margin-left: 1em;
 }
 
+.criteria-container{
+  display: flex;
+  -webkit-box-pack: justify;
+  margin: auto 2em;
+  ul{
+    margin-left: 2em;
+  }
+  .spinner-border.spinner-border-sm{
+    height: 3em;
+    width: 3em;
+  }
+}
+
 .nav-item{
   padding-top: 0;
   margin-bottom: 2em;
