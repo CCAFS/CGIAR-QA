@@ -15,7 +15,7 @@ import Util from "@helpers/Util";
 
 
 class IndicatorsController {
-    
+
     /**
      * 
      * Indicators CRUD
@@ -194,7 +194,7 @@ class IndicatorsController {
             if (indicator.primary_field && indicator.primary_field !== " ") {
                 let indicatorMeta = await Util.createMetaForIndicator(indicator, indicator.primary_field);
                 //If all ok, send 200 response
-                res.status(200).json({ message: "Indicator created", data : {indicator, indicatorMeta} });
+                res.status(200).json({ message: "Indicator created", data: { indicator, indicatorMeta } });
                 return;
             }
         } catch (e) {
@@ -334,9 +334,10 @@ class IndicatorsController {
             let res_;
             try {
                 userbyIndicator = await indicatorbyUsrRepository.save(userbyIndicator);
-                res_ = await Util.createEvaluations(userbyIndicator, selectedIndicator);
+                // res_ = await Util.createEvaluations(userbyIndicator, selectedIndicator);
                 // console.log("res_", res_)
                 res.status(200).json({ message: "Indicator by user saved", data: res_ })
+                res.status(200).json({ message: "Indicator by user saved", data: userbyIndicator })
 
             } catch (e) {
                 res.status(409).json({ message: "Indicator by user not saved" });

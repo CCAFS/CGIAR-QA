@@ -4,6 +4,7 @@ import { Length, IsNotEmpty } from "class-validator";
 import { QAIndicatorUser } from "../entity/IndicatorByUser";
 import { QAComments } from "../entity/Comments";
 import { StatusHandler } from "../_helpers/StatusHandler";
+import { QAIndicators } from "./Indicators";
 
 
 // import { QAUsers } from "../entity/User";
@@ -17,9 +18,9 @@ export class QAEvaluations {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @IsNotEmpty({ message: 'Indicator by User is required' })
-    @ManyToOne(type => QAIndicatorUser, indicatorByUser => indicatorByUser.evaluations)
-    indicator_user: QAIndicatorUser;
+    // @IsNotEmpty({ message: 'Indicator by User is required' })
+    // @ManyToOne(type => QAIndicators, indicatorByUser => indicatorByUser.evaluations)
+    // indicator: QAIndicators[];
 
     @Column({ nullable: true })
     @IsNotEmpty({ message: 'Id by view is required' })

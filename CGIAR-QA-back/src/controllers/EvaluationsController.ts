@@ -50,10 +50,10 @@ class EvaluationsController {
                 COUNT(DISTINCT evaluations.id) AS count
             FROM
                 qa_indicator_user qa_indicator_user
-            LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
-            LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
-            LEFT JOIN qa_comments_meta meta ON meta.indicatorId = indicator.id
+            LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+            LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
             LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+            LEFT JOIN qa_comments_meta meta ON meta.indicatorId = indicator.id
             WHERE
                 crp.active = 1
             AND crp.qa_active = 'open'
@@ -67,7 +67,8 @@ class EvaluationsController {
                 indicator.order,
                 indicator.primary_field
             ORDER BY
-                indicator_order ASC `,
+                indicator_order ASC 
+                `,
                 { user_Id: id },
                 {}
             );
@@ -98,7 +99,7 @@ class EvaluationsController {
             res.status(200).json({ data: result, message: "User evaluations" });
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "Could not access to evaluations." });
+            res.status(404).json({ message: "User evaluations Could not access to evaluations." });
         }
     }
 
@@ -126,7 +127,6 @@ class EvaluationsController {
                         evaluations.indicator_view_name AS evaluations_indicator_view_name,
                         evaluations.crp_id AS evaluations_crp_id,
                         evaluations.general_comments AS evaluations_general_comments,
-                        evaluations.indicatorUserId AS evaluations_indicatorUserId,
                         ${view_name}.title AS title,
                         ${innovations_stage}
                         crp.acronym AS crp_acronym,
@@ -138,9 +138,12 @@ class EvaluationsController {
                         ) AS comments_count
                     FROM
                         qa_indicator_user qa_indicator_user
-                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+
+                    LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
                     LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+
                     WHERE title IS NOT NULL
                     AND crp.active = 1
                     AND crp.qa_active = 'open'
@@ -160,7 +163,6 @@ class EvaluationsController {
                         evaluations.indicator_view_name AS evaluations_indicator_view_name,
                         evaluations.crp_id AS evaluations_crp_id,
                         evaluations.general_comments AS evaluations_general_comments,
-                        evaluations.indicatorUserId AS evaluations_indicatorUserId,
                         ${view_name}.title AS title,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
@@ -171,14 +173,13 @@ class EvaluationsController {
                         ) AS comments_count
                     FROM
                         qa_indicator_user qa_indicator_user
-                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+                    LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
                     LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                    WHERE
-                        crp.active = 1
+                    WHERE crp.active = 1
                     AND crp.qa_active = 'open'
-                    AND
-                        evaluations.crp_id = :crp_id
+                    AND evaluations.crp_id = :crp_id
                     AND title IS NOT NULL
                     AND evaluations.indicator_view_name = :view_name `,
                     { crp_id: user.crp.crp_id, view_name },
@@ -197,7 +198,6 @@ class EvaluationsController {
                 evaluations.indicator_view_name AS evaluations_indicator_view_name,
                 evaluations.crp_id AS evaluations_crp_id,
                 evaluations.general_comments AS evaluations_general_comments,
-                evaluations.indicatorUserId AS evaluations_indicatorUserId,
                 ${view_name}.title AS title,
                 crp.acronym AS crp_acronym,
                 crp.name AS crp_name,
@@ -208,14 +208,13 @@ class EvaluationsController {
                 ) AS comments_count
             FROM
                 qa_indicator_user qa_indicator_user
-            LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
+            LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+            LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
             LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
             LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-            WHERE
-                crp.active = 1
+            WHERE crp.active = 1
             AND crp.qa_active = 'open'
-            AND
-                qa_indicator_user.userId = :user_Id
+            AND qa_indicator_user.userId = :user_Id
             AND title IS NOT NULL
             AND evaluations.indicator_view_name = :view_name `;
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
@@ -232,7 +231,7 @@ class EvaluationsController {
 
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "Could not access to evaluations." });
+            res.status(404).json({ message: "User evaluations list could not access to evaluations." });
         }
     }
 
@@ -247,7 +246,7 @@ class EvaluationsController {
         const view_primary_field = req.body.primary_column;
         const indicatorId = req.body.indicatorId;
 
-        console.log(view_name, view_primary_field)
+        // console.log(view_name, view_primary_field)
         //Get indicator item data from view
         try {
             const userRepository = getRepository(QAUsers);
@@ -262,10 +261,10 @@ class EvaluationsController {
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
                     .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id ) AS replies_count')
                     .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 ) AS approved_no_comment')
-                    //.addSelect(`${view_name_psdo}.crp AS crp`)
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
-                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect('qa_indicators', 'indicators', `indicators.id = qa_indicator_user.indicatorId`)
+                    .leftJoinAndSelect('qa_evaluations', 'evaluations', `evaluations.indicator_view_name = indicators.view_name`)
                     .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_comments_meta", "comment_meta", `comment_meta.indicatorId= qa_indicator_user.indicatorId`)
@@ -286,7 +285,8 @@ class EvaluationsController {
                     .where("evaluations.crp_id=:crp_id", { crp_id: user.crp.crp_id })
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
-                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect('qa_indicators', 'indicators', `indicators.id = qa_indicator_user.indicatorId`)
+                    .leftJoinAndSelect('qa_evaluations', 'evaluations', `evaluations.indicator_view_name = indicators.view_name`)
                     .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_comments_meta", "comment_meta", `comment_meta.indicatorId= qa_indicator_user.indicatorId`)
@@ -302,17 +302,16 @@ class EvaluationsController {
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
                     .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id ) AS replies_count')
                     .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 ) AS approved_no_comment')
-                    //.addSelect(`${view_name_psdo}.crp AS crp`)
                     .where("qa_indicator_user.user=:userId", { userId: id })
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
-                    .leftJoinAndSelect("qa_indicator_user.evaluations", "evaluations")
+                    .leftJoinAndSelect('qa_indicators', 'indicators', `indicators.id = qa_indicator_user.indicatorId`)
+                    .leftJoinAndSelect('qa_evaluations', 'evaluations', `evaluations.indicator_view_name = indicators.view_name`)
                     .leftJoinAndSelect(view_name, view_name_psdo, `${view_name_psdo}.${view_primary_field}= evaluations.indicator_view_id`)
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_comments_meta", "comment_meta", `comment_meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_crp", "crp", `crp.crp_id = evaluations.crp_id`)
                     .orderBy("meta.order", "ASC")
-                    //.groupBy('meta.id')
                     .getRawMany();
                 // .getSql();
 
@@ -322,7 +321,7 @@ class EvaluationsController {
             res.status(200).json({ data: Util.parseEvaluationsData(rawData, view_name_psdo), message: "User evaluation detail" });
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "Could not access to evaluations." });
+            res.status(404).json({ message: "User evaluation detail could not access to evaluations." });
         }
     }
 
@@ -366,8 +365,8 @@ class EvaluationsController {
                     indicator.order AS indicator_order, COUNT (DISTINCT evaluations.id) AS count
                 FROM
                     qa_indicator_user qa_indicator_user
-                LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
-                LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+                LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
                 LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                 WHERE
                     crp.active = 1
@@ -392,18 +391,19 @@ class EvaluationsController {
                     evaluations.status AS status,
                     evaluations.indicator_view_name AS indicator_view_name,
                     indicator.primary_field AS primary_field,
-                    indicator.order AS indicator_order, 
-                    COUNT (DISTINCT evaluations.id) AS count
+                    indicator.order AS indicator_order,
+                    COUNT(DISTINCT evaluations.id) AS count
                 FROM
                     qa_indicator_user qa_indicator_user
-                LEFT JOIN qa_evaluations evaluations ON evaluations.indicatorUserId = qa_indicator_user.id
-                LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+                
+                LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
                 LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                 WHERE
                     crp.active = 1
                 AND crp.qa_active = 'open'
                 GROUP BY
-                    evaluations.status,
+                    evaluations. STATUS,
                     evaluations.indicator_view_name,
                     indicator_order,
                     indicator.primary_field
@@ -437,7 +437,7 @@ class EvaluationsController {
             res.status(200).json({ data: result, message: "All evaluations" });
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "Could not access to evaluations." });
+            res.status(404).json({ message: "All evaluations could not access to evaluations." });
         }
 
     }

@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany, OneToOne, ManyToOne } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAIndicatorUser } from "../entity/IndicatorByUser";
 import { QAIndicatorsMeta } from "../entity/IndicatorsMeta";
 import { QACommentsMeta } from "../entity/CommentsMeta";
+import { QAEvaluations } from "./Evaluations";
 // import { QAIndicatorUser } from "@entity/IndicatorByUser";
 
 @Entity()
@@ -42,6 +43,11 @@ export class QAIndicators {
 
     @OneToOne(type => QACommentsMeta, comments_meta => comments_meta.indicator, { eager: true }) // specify inverse side as a second parameter
     comment_meta: QACommentsMeta;
+
+    
+    @OneToMany(type => QAEvaluations, evaluations => evaluations.indicator)
+    evaluations: QAEvaluations[];
+
 
     @Column()
     @CreateDateColumn()

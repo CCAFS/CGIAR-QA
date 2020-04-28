@@ -153,10 +153,10 @@ class AuthController {
         }
         //Hash the new password and save
         user.hashPassword();
-        userRepository.save(user);
+        user= await userRepository.save(user);
         delete user.password;
 
-        res.status(204).send({ data: user });
+        res.status(200).send({ data: user });
     };
 
     static createGeneralConfig = async (req: Request, res: Response) => {

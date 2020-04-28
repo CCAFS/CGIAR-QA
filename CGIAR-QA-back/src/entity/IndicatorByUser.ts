@@ -24,16 +24,6 @@ export class QAIndicatorUser {
     @ManyToOne(type => QAIndicators, indicator => indicator.user_indicator, { eager: true })
     indicator: QAIndicators;
 
-    @OneToMany(type => QAEvaluations, evaluations => evaluations.indicator_user)
-    evaluations: QAEvaluations[];
-
-    // @Column({
-    //     type: "enum",
-    //     enum: StatusGeneralHandler,
-    //     default: StatusGeneralHandler.Close
-    // })
-    // status:StatusGeneralHandler
-
     @Column()
     @CreateDateColumn()
     createdAt: Date;
