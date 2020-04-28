@@ -47,6 +47,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   tooltips = {
     public_link: '',
     download_excel: 'Click here to download all comments in an excel file.',
+    all_approved: 'Setting this option true, will approved all items without comments.'
   }
 
   criteriaData = [];
@@ -94,24 +95,20 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   get formTickData() { return this.tickGroup.get('tick') as FormArray; }
 
   addCheckboxes() {
+    this.tickGroup = this.formBuilder.group({
+      selectAll: [''],
+      tick: this.formBuilder.array([], Validators.required)
+    });
     this.detailedData.map(x => {
       this.formTickData.controls.push(
         this.formBuilder.group({
           data: x,
-          isChecked: x.approved_no_comment == 1 ? x.approved_no_comment : false
+          isChecked: x.approved_no_comment ? true : false
         })
       )
     });
-  }
+    console.log(this.formTickData.controls)
 
-  onChangeSelectAll(e) {
-    if (e.target.checked) {
-      this.formTickData.controls.map(value => value.get('isChecked').setValue(true));
-      // console.log(this.detailedData.filter(data => data.replies_count == '0').map(field => field.field_id))
-    } else {
-      this.formTickData.controls.map(value => value.get('isChecked').setValue(false));
-    }
-    // console.log(this.formTickData.controls.map(value => value.get('isChecked')));
   }
 
   validateComments() {
@@ -126,8 +123,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   onTickChange(e, field) {
     if (field) {
+      let noComment = (e.target.checked) ? true : false;
       field.loading = true
-      this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], userId: this.currentUser.id }, field.evaluation_id).subscribe(
+      this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], isAll: false, userId: this.currentUser.id, noComment }, field.evaluation_id).subscribe(
         res => {
           console.log(res);
           field.loading = false
@@ -141,7 +139,35 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   }
 
+  onChangeSelectAll(e) {
+    let selected_meta = [];
+    let noComment;
+    if (e.target.checked) {
+      this.formTickData.controls.map((value, i) => (this.detailedData[i].replies_count == '0') ? value.get('isChecked').setValue(true) : value.get('isChecked'));
+      selected_meta = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
+      noComment = true;
+    } else {
+      this.formTickData.controls.map(value => value.get('isChecked').setValue(false));
+      selected_meta = this.detailedData.filter((data, i) => (!this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
+      noComment = false;
+    }
+    this.showSpinner('spinner1');
+    this.commentService.toggleApprovedNoComments({ meta_array: selected_meta, userId: this.currentUser.id, isAll: true, noComment }, this.gnralInfo.evaluation_id).subscribe(
+      res => {
+        console.log(res);
+        // this.detailedData = []
+        // this.formTickData.reset()
+        // this.getDetailedData()
+        this.hideSpinner('spinner1');
+      },
+      error => {
+        this.alertService.error(error);
+        this.hideSpinner('spinner1');
+      }
+    )
 
+    console.log(selected_meta)
+  }
 
   getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
@@ -159,8 +185,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner('spinner1');
+        this.tickGroup.reset()
+        // console.log(this.detailedData, this.formTickData.controls)
         this.addCheckboxes();
-        //  console.log(this.detailedData)
       },
       error => {
         //console.log("getEvaluationsList", error);
@@ -205,13 +232,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     return (field.col_name === 'evidence_link') ? true : false;
   }
 
-  getIndicatorCriteria(id){
+  getIndicatorCriteria(id) {
     this.criteria_loading = true;
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
-      res =>{
+      res => {
         this.criteriaData = res.data;
         this.criteria_loading = false;
-        console.log(this.criteriaData)
       },
       error => {
         this.criteria_loading = false;

@@ -45,8 +45,8 @@ export class QAIndicators {
     comment_meta: QACommentsMeta;
 
     
-    @OneToMany(type => QAEvaluations, evaluations => evaluations.indicator)
-    evaluations: QAEvaluations[];
+    // @OneToMany(type => QAEvaluations, evaluations => evaluations.indicator)
+    // evaluations: QAEvaluations[];
 
 
     @Column()

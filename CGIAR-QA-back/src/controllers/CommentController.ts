@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { validate, validateOrReject } from "class-validator";
-import { getRepository, In, getConnection, QueryRunner } from "typeorm";
+import { getRepository, In, getConnection, QueryRunner, IsNull } from "typeorm";
 
 import { QAUsers } from "@entity/User";
 import { QARoles } from "@entity/Roles";
@@ -217,6 +217,7 @@ class CommentController {
                 WHERE
                     metaId = :metaId
                 AND evaluationId = :evaluationId
+                AND approved_no_comment IS NULL
                 `,
                 { metaId, evaluationId },
                 {}
@@ -228,7 +229,7 @@ class CommentController {
                 const comment = comments[index];
                 comment.replies = replies.find(reply => reply.id == comment.id)
             }
-            res.status(200).send({ data: comments, message: 'Comments' });
+            res.status(200).send({ data: comments, message: 'All comments' });
 
         } catch (error) {
             console.log(error);
@@ -254,7 +255,7 @@ class CommentController {
                     }
                 }
             )
-            res.status(200).send({ data: replies, message: 'Comments' });
+            res.status(200).send({ data: replies, message: 'All comments replies' });
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: "Comment can not be retrived.", data: error });
@@ -417,7 +418,7 @@ class CommentController {
 
     static toggleApprovedNoComments = async (req: Request, res: Response) => {
         const { evaluationId } = req.params;
-        const { meta_array, userId } = req.body;
+        const { meta_array, userId, isAll, noComment } = req.body;
         let comments;
         let queryRunner = getConnection().createQueryBuilder();
         const userRepository = getRepository(QAUsers);
@@ -433,45 +434,43 @@ class CommentController {
                 WHERE
                     evaluationId = :evaluationId
                 AND metaId IN (:meta_array)
-                AND is_deleted = 0
+                AND approved_no_comment IS NOT NULL
                 `,
                 { meta_array, evaluationId },
                 {}
             );
             comments = await queryRunner.connection.query(query, parameters);
-            // console.log(query)
+            // console.log(comments.length, meta_array)
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
-            let response = []
+            let response = [];
 
-            
-            if (comments.length == 0) {
-                for (let index = 0; index < meta_array.length; index++) {
-                    let comment_ = new QAComments();
-                    comment_.approved = true;
-                    comment_.is_visible = false;
-                    comment_.detail = '';
-                    comment_.approved_no_comment = true;
-                    comment_.meta = meta_array[index];
+            for (let index = 0; index < meta_array.length; index++) {
+                let comment_ = new QAComments();
+                console.log(comments.length, comments.find(data => data.metaId == meta_array[index]))
+                if (comments && comments.find(data => data.metaId == meta_array[index])) {
+                    let existnCommt = comments.find(data => data.metaId == meta_array[index]);
+                    existnCommt.approved = noComment;
+                    existnCommt.is_deleted = !noComment;
+                    existnCommt.evaluation = evaluation;
+                    existnCommt.detail = null;
+                    existnCommt.approved_no_comment = noComment;
+                    existnCommt.user = user;
+                    comment_ = existnCommt;
+                } else {
+                    comment_.approved = noComment;
+                    comment_.is_deleted = !noComment;
                     comment_.evaluation = evaluation;
+                    comment_.meta = meta_array[index];
+                    comment_.detail = null;
+                    comment_.approved_no_comment = noComment;
                     comment_.user = user;
-                    response.push(comment_)
                 }
-            } else{
-                console.log('else')
-                // let response = []
-                for (let index = 0; index < comments.length; index++) {
-                    let comment_ = comments[index];
-                    comment_.approved = !comments[index].approved;
-                    comment_.is_visible = !comments[index].is_visible;
-                    comment_.approved_no_comment = !comments[index].approved_no_comment;
-                    response.push(comment_)
-                }
+                response.push(comment_)
             }
-            comments = await commentsRepository.save(response);
+            let result = await commentsRepository.save(response);
 
-
-            res.status(200).send({ data: comments, message: 'Comment setted as approved' });
+            res.status(200).send({ data: result, message: 'Comment toggle' });
 
         } catch (error) {
             console.log(error)
@@ -489,12 +488,12 @@ class CommentController {
         let whereClause = {}
         if (metaId) {
             whereClause = {
-                meta: metaId, evaluation: evaluationId
+                meta: metaId, evaluation: evaluationId, approved_no_comment: IsNull()
             }
 
         } else {
             whereClause = {
-                evaluation: evaluationId
+                evaluation: evaluationId, approved_no_comment: IsNull()
             }
         }
         let comments = await commentsRepository.find({

@@ -125,16 +125,17 @@
                 <div class="select-all" *ngIf="detailedData">
                     <input (change)="onChangeSelectAll($event)" id="selectAll" type="checkbox"
                         class="custom-control-input" value="selectAll" name="selectAll" formControlName="selectAll">
-                    <label class="custom-control-label" for="selectAll">
-                        Select All
+                    <label tooltip="{{tooltips.all_approved}}" container="body" placement="top"
+                        class="custom-control-label" for="selectAll">
+                        Approved all items to be assessed.
                     </label>
                 </div>
-                <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
-                    <ng-container [formGroupName]="i">
+                <ng-container  formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
+                    
+                    <ng-container *ngIf="detailedData" [formGroupName]="i">
                         <div class="data-row">
                             <div class="col">
                                 <div class="row">
-
                                     <input *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
                                         (change)="onTickChange($event,detailedData[i])"
                                         [value]="detailedData[i].field_id" formControlName="isChecked" type="checkbox"

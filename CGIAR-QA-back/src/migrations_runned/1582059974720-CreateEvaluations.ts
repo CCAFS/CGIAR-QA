@@ -11,13 +11,20 @@ export class CreateEvaluations1582059974720 implements MigrationInterface {
         const indicatorRepository = getRepository(QAIndicators);
         const evaluationsRepository = getRepository(QAEvaluations);
         let primary_field = 'id' //NOT CHANGE
-        let view_name = 'qa_policies' //CHANGE
-        let indicatorId = 2 //CHANGE
-        let userId = 2
+        let view_name = 'qa_capdev';//CHANGE
+        // let indicatorId = 1 //CHANGE
+        // let userId = 2
 
-        let indicator_ = await indicatorRepository.find({
-            where: { id: indicatorId },
-        });
+        let existing_eval = await evaluationsRepository.find({
+            where : {
+                indicator_view_name: view_name
+            }
+        })
+
+        if (existing_eval.length > 0) {
+            console.error(existing_eval.length)
+            throw new Error('indicator evaluations already created')
+        }
 
         let view_data = await createQueryBuilder(view_name)
             .getMany();
@@ -29,15 +36,13 @@ export class CreateEvaluations1582059974720 implements MigrationInterface {
             const evaluation = new QAEvaluations();
             evaluation.indicator_view_id = element[primary_field];
             evaluation.crp_id = element['crp_id'];
-            evaluation.indicator = indicator_;
             evaluation.indicator_view_name = view_name;
             evaluation.status = StatusHandler.Pending;
+            // evaluation.indicator = indicator_;
 
             savePromises.push(evaluation);
 
         }
-        // console.log(savePromises.length)
-
         let a = await evaluationsRepository.save(savePromises);
         console.log(a.length)
 

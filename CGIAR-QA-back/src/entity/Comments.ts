@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne,OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAEvaluations } from "../entity/Evaluations"
@@ -14,44 +14,44 @@ export class QAComments {
 
     @ManyToOne(type => QAEvaluations, evaluation => evaluation.comments)
     evaluation: QAEvaluations;
-    
+
     @ManyToOne(type => QAIndicatorsMeta, meta => meta.comments)
     meta: QAIndicatorsMeta;
-    
+
     @ManyToOne(type => QAUsers, user => user.comments)
     user: QAUsers;
 
     @OneToMany(type => QACommentsReplies, comment => comment.user)
-    replies:QACommentsReplies;
+    replies: QACommentsReplies;
 
     @Column({
-        nullable : true
+        nullable: true
     })
     approved: boolean;
-    
+
     @Column({
-        nullable : true
+        nullable: true
     })
     approved_no_comment: boolean;
 
     @Column({
-        nullable : true
+        nullable: true
     })
     crp_approved: boolean;
 
     @Column({
-        default : true
+        default: true
     })
     is_visible: boolean;
-    
+
     @Column({
-        default : false
+        default: false
     })
     is_deleted: boolean;
-   
-    @Column()
+
+    @Column({ nullable: true })
     @Length(3, 250)
-    @IsNotEmpty({ message: 'Permission is required' })
+    // @IsNotEmpty({ message: 'Permission is required' })
     detail: string;
 
     @Column()

@@ -110,7 +110,8 @@ class EvaluationsController {
         const view_name = req.body.view_name;
         const view_primary_field = req.body.view_primary_field;
 
-        let innovations_stage = (view_name === 'qa_innovations') ? 'qa_innovations.stage AS stage,' : ''
+        let innovations_stage = (view_name === 'qa_innovations') ? 'qa_innovations.stage AS stage,' : '';
+        let innovations_stage_group = (innovations_stage != '') ? 'qa_innovations.stage,' : '';
 
         let queryRunner = getConnection().createQueryBuilder();
 
@@ -147,7 +148,19 @@ class EvaluationsController {
                     WHERE title IS NOT NULL
                     AND crp.active = 1
                     AND crp.qa_active = 'open'
-                    AND evaluations.indicator_view_name = :view_name `,
+                    AND evaluations.indicator_view_name = :view_name 
+                    GROUP BY
+                        evaluations.id,
+                        evaluations.indicator_view_id,
+                        evaluations.status,
+                        evaluations.indicator_view_name,
+                        evaluations.crp_id,
+                        evaluations.general_comments,
+                        ${view_name}.title,
+                        ${innovations_stage_group}
+                        crp.acronym,
+                        crp.name
+                    `,
                     { view_name },
                     {}
                 );
@@ -181,7 +194,19 @@ class EvaluationsController {
                     AND crp.qa_active = 'open'
                     AND evaluations.crp_id = :crp_id
                     AND title IS NOT NULL
-                    AND evaluations.indicator_view_name = :view_name `,
+                    AND evaluations.indicator_view_name = :view_name 
+                    GROUP BY
+                        evaluations.id,
+                        evaluations.indicator_view_id,
+                        evaluations.status,
+                        evaluations.indicator_view_name,
+                        evaluations.crp_id,
+                        evaluations.general_comments,
+                        ${view_name}.title,
+                        ${innovations_stage_group}
+                        crp.acronym,
+                        crp.name
+                    `,
                     { crp_id: user.crp.crp_id, view_name },
                     {}
                 );
@@ -216,7 +241,19 @@ class EvaluationsController {
             AND crp.qa_active = 'open'
             AND qa_indicator_user.userId = :user_Id
             AND title IS NOT NULL
-            AND evaluations.indicator_view_name = :view_name `;
+            AND evaluations.indicator_view_name = :view_name 
+            GROUP BY
+                evaluations.id,
+                evaluations.indicator_view_id,
+                evaluations.status,
+                evaluations.indicator_view_name,
+                evaluations.crp_id,
+                evaluations.general_comments,
+                ${view_name}.title,
+                ${innovations_stage_group}
+                crp.acronym,
+                crp.name
+            `;
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sql,
                     { user_Id: id, view_name },
@@ -258,9 +295,11 @@ class EvaluationsController {
                 const indicatorByUserRepository = getRepository(QAIndicatorUser);
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
-                    .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id ) AS replies_count')
-                    .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 ) AS approved_no_comment')
+                    .select(`meta.id AS meta_id`)
+                    .distinct(true)
+                    .addSelect(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NOT NULL ) AS replies_count')
+                    .addSelect('( SELECT DISTINCT metaId FROM qa_comments WHERE metaId = meta.id AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment = 1 ) AS approved_no_comment')
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })
                     .leftJoinAndSelect('qa_indicators', 'indicators', `indicators.id = qa_indicator_user.indicatorId`)
@@ -269,6 +308,7 @@ class EvaluationsController {
                     .leftJoinAndSelect("qa_indicators_meta", "meta", `meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_comments_meta", "comment_meta", `comment_meta.indicatorId= qa_indicator_user.indicatorId`)
                     .leftJoinAndSelect("qa_crp", "crp", `crp.crp_id = evaluations.crp_id`)
+                    // .leftJoinAndSelect("qa_comments", "comments", `comments.metaId = meta.id`)
                     .orderBy("meta.order", "ASC")
                     .getRawMany();
                 // .getSql();
@@ -279,8 +319,8 @@ class EvaluationsController {
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id ) AS replies_count')
-                    .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 ) AS approved_no_comment')
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NOT NULL ) AS replies_count')
+                    .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 AND approved_no_comment IS NOT NULL) AS approved_no_comment')
                     //.addSelect(`${view_name_psdo}.crp AS crp`)
                     .where("evaluations.crp_id=:crp_id", { crp_id: user.crp.crp_id })
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
@@ -300,8 +340,8 @@ class EvaluationsController {
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id ) AS replies_count')
-                    .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 ) AS approved_no_comment')
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NOT NULL) AS replies_count')
+                    .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 AND approved_no_comment IS NOT NULL) AS approved_no_comment')
                     .where("qa_indicator_user.user=:userId", { userId: id })
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })

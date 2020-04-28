@@ -73,6 +73,7 @@ export class IndicatorsComponent implements OnInit {
       error => {
         console.log("getEvaluationsList", error);
         this.hideSpinner();
+        this.returnedArray = []
         this.alertService.error(error);
       }
     )
