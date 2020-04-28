@@ -136,6 +136,7 @@ class EvaluationsController {
                             SELECT COUNT(id)
                             FROM qa_comments
                             WHERE qa_comments.evaluationId = evaluations.id
+                            AND approved_no_comment IS NULL
                         ) AS comments_count
                     FROM
                         qa_indicator_user qa_indicator_user
@@ -183,6 +184,7 @@ class EvaluationsController {
                             SELECT COUNT(id)
                             FROM qa_comments
                             WHERE qa_comments.evaluationId = evaluations.id
+                            AND approved_no_comment IS NULL
                         ) AS comments_count
                     FROM
                         qa_indicator_user qa_indicator_user
