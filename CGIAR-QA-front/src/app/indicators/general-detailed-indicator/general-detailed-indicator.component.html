@@ -7,7 +7,7 @@
 
 <div class="row criteria-container">
     <div *ngIf="!criteria_loading">
-        <h2>CRITERIA</h2>
+        <h2>QUALITY ASSESSMENT CRITERIA</h2>
         <ul>
             <li *ngFor="let criteria of criteriaData">{{criteria.description}}</li>
         </ul>
@@ -131,7 +131,7 @@
                     </label>
                 </div>
                 <ng-container  formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
-                    
+
                     <ng-container *ngIf="detailedData" [formGroupName]="i">
                         <div class="data-row">
                             <div class="col">
@@ -209,8 +209,8 @@
                         <button type="button" class="btn btn-green-secondary"
                             [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
                             (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
+                            <!-- [disabled]="validateComments()" -->
                         <button type="button" (click)="updateEvaluation('status', detailedData)"
-                            [disabled]="validateComments()"
                             class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
                     </div>
 

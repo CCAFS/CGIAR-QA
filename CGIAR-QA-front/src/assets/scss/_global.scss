@@ -41,11 +41,10 @@
 }
 
 .qa-timeline-icon {
-  content: url("~/assets/img/qa-process-timeline.svg");
-  height: 20em;
-  margin: -4em auto auto;
-  display: flex;
-  position: relative;
+  content: url("~/assets/img/qa-process-timeline.png");
+  // content: url("~/assets/img/qa-process-timeline.svg");
+  width: 80%;
+  margin: 3em auto;
 }
 
 /**
