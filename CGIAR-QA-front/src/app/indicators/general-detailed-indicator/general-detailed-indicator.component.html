@@ -9,7 +9,7 @@
     <div *ngIf="!criteria_loading">
         <h2>QUALITY ASSESSMENT CRITERIA</h2>
         <ul>
-            <li *ngFor="let criteria of criteriaData"   [innerHTML]="criteria.description | markdown"></li>
+            <li *ngFor="let criteria of criteriaData" [innerHTML]="criteria.description | markdown"></li>
         </ul>
     </div>
     <div style="margin:auto;">
@@ -75,9 +75,11 @@
                                     </div>
                                 </div>
 
-                                <div *ngIf="detailedData[i].value "
+                                <div *ngIf="detailedData[i].value && detailedData[i].col_name !== 'evidence_link'"
                                     [innerHTML]="detailedData[i].value | markdown">
                                 </div>
+                                <a *ngIf="detailedData[i].value && detailedData[i].col_name === 'evidence_link'"
+                                    href="{{detailedData[i].value}}" target="_blank"> {{detailedData[i].value}} </a>
                                 <p *ngIf="!detailedData[i].value" class="empty-value">Empty Value</p>
 
                             </div>
