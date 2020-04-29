@@ -25,10 +25,16 @@ export class IndicatorsComponent implements OnInit {
   returnedArray: any[];
   currentUser: User;
 
-  currentPage = 1;
+  currentPage = {
+    startItem: 0,
+    endItem: 10
+  }
   maxSize = 5;
   pageSize = 4;
   collectionSize = 0;
+  searchText;
+
+  notProviedText = '<No provided>'
 
   order: string = 'id';
   configTemplate: string;
@@ -66,8 +72,8 @@ export class IndicatorsComponent implements OnInit {
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         // this.returnedArray = this.evaluationList;
-        console.log(this.evaluationList.length, this.returnedArray.length)
-        console.log(this.returnedArray)
+        // console.log(this.evaluationList.length, this.returnedArray.length)
+        // console.log(this.returnedArray)
         this.hideSpinner();
       },
       error => {
@@ -82,8 +88,12 @@ export class IndicatorsComponent implements OnInit {
   pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
-    console.log(this.evaluationList.length, this.returnedArray.length)
-    // this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order);
+    // console.log(this.evaluationList.length, this.returnedArray.length)
+    this.currentPage = {
+      startItem,
+      endItem
+    }
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order,this.reverse);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
 
@@ -95,16 +105,10 @@ export class IndicatorsComponent implements OnInit {
       if (this.order === value) {
         this.reverse = !this.reverse;
       }
-
       this.order = value;
-
-      this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order);
-      // this.returnedArray = this.evaluationList;
-      // this.returnedArray = this.returnedArray.slice(0, 10);
-      // console.log(this.evaluationList.slice(0, 10), this.returnedArray.length)
-      // slice(0, 10);
-      // this.returnedArray = this.orderPipe.transform(this.evaluationList, this.order);
     }
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
 

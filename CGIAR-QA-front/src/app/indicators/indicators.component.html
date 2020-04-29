@@ -19,6 +19,9 @@
         <p>Pending</p>
     </div>
 </div>
+<div class="form-group">
+    <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
+</div>
 <table class="table table-bordered">
     <thead class="table-header">
         <tr>
@@ -72,7 +75,7 @@
                     Export comments
                 </div>
             </th>
-            <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status')">
+            <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status') ">
                 <div class="header-row"> QA Status
                     <div class="order-icon" *ngIf="order === 'status'">
                         <span [hidden]="reverse">▼</span>
@@ -83,7 +86,7 @@
         </tr>
     </thead>
     <tbody class="table-body">
-        <tr *ngFor="let item of returnedArray | orderBy: order:reverse:'case-insensitive'">
+        <tr *ngFor="let item of returnedArray |filter:searchText">
             <th scope="row">{{ item.id }}</th>
             <!-- <td style="cursor: pointer;"  [routerLinkActive]="['active']" [routerLink]="['./detail', item.id]"> -->
             <td style="cursor: pointer;" (click)="goToView(item.id)">
@@ -91,9 +94,15 @@
             </td>
             <td>{{ item.crp_acronym }}</td>
             <td *ngIf="item.stage">{{ item.stage }}</td>
+            <td *ngIf="!item.stage">{{notProviedText }}</td>
             <td>{{ item.comments_count }}</td>
-            <td  (click)="exportComments(item)">
-               <a class="excel-download">excel icon</a> 
+            <td (click)="exportComments(item)">
+                <a target="_blank">
+                    <div tooltip="Comment in excel format" container="body" placement="top"
+                        class="btn btn-primary file-button">
+                        <i class="icon-public-link"></i>
+                    </div>
+                </a>
             </td>
             <td>
                 <div class="circle {{ item.status }}"></div>

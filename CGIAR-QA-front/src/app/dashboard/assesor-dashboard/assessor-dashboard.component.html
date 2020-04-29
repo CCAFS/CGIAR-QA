@@ -1,3 +1,8 @@
+<div class="row justify-content-center">
+    <i class="qa-timeline-icon"></i>
+</div>
+
+
 <div class="asesor-dashboard row col offset-md-3 col-sm-8">
     <div class="row col col-sm-8">
         <h4>Progress on Quality Assessment</h4>
@@ -13,17 +18,19 @@
             </div>
 
             <ng-container *ngIf="(dashboardData | json) != ({} | json)">
-                <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "  [ngClass]="{'closed': !item.value[0].indicator_status }"  class="progress-container">
-                    <p>{{item.value.total}}  {{getIndicatorName(item.key)}}</p>
+                <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
+                    [ngClass]="{'closed': !item.value[0].indicator_status }" class="progress-container">
+                    <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
                     <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                         <span>{{item.value.total}}</span>
                     </progressbar>
-                    
-                    <a *ngIf="item.value[0].indicator_status" (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
+
+                    <a *ngIf="item.value[0].indicator_status"
+                        (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
                         Go to {{getIndicatorName(item.key)}}
                     </a>
                     <a *ngIf="!item.value[0].indicator_status">
-                        Go to  {{getIndicatorName(item.key)}}
+                        Go to {{getIndicatorName(item.key)}}
                     </a>
                 </div>
 

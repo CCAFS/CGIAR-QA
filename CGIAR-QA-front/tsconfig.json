@@ -13,6 +13,7 @@
     "target": "es2015",
     "strictNullChecks": false,
     "strict": false,
+    "skipLibCheck":true,
     "typeRoots": [
       "node_modules/@types"
     ],

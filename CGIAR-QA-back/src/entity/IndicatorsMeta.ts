@@ -53,7 +53,8 @@ export class QAIndicatorsMeta {
     order: number;
     
     @Column({
-        nullable : true
+        nullable : true,
+        type: 'longtext',
     })
     description: string;
 

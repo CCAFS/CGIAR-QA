@@ -10,6 +10,7 @@ import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TypeaheadModule } from 'ngx-type-ahead';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { MarkdownModule } from 'ngx-markdown';
 import { SortByPipe } from './pipes/sort-by.pipe';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -54,6 +55,7 @@ import { QaCloseComponent } from './qa-close/qa-close.component';
     ModalModule.forRoot(),
     ProgressbarModule.forRoot(),
     ButtonsModule.forRoot(),
+    MarkdownModule.forRoot(),
     TypeaheadModule,
     NgxSpinnerModule,
     CommonModule,

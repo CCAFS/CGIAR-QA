@@ -47,6 +47,19 @@
   margin: 3em auto;
 }
 
+.file-button {
+  height: 2.3em;
+  width: 3em;
+  float: right;
+  margin-right: 5px;
+  .icon-download-excel {
+    content: url("~/assets/icons/download-excel.svg");
+  }
+  .icon-public-link {
+    content: url("~/assets/icons/public-link.svg");
+  }
+}
+
 /**
 ** Buttons
 ***/

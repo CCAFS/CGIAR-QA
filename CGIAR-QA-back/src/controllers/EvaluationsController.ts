@@ -110,7 +110,7 @@ class EvaluationsController {
         const view_name = req.body.view_name;
         const view_primary_field = req.body.view_primary_field;
 
-        let innovations_stage = (view_name === 'qa_innovations') ? 'qa_innovations.stage AS stage,' : '';
+        let innovations_stage = (view_name === 'qa_innovations') ? "NULLIF(qa_innovations.stage,'') stage," : '';
         let innovations_stage_group = (innovations_stage != '') ? 'qa_innovations.stage,' : '';
 
         let queryRunner = getConnection().createQueryBuilder();
@@ -300,7 +300,7 @@ class EvaluationsController {
                     .select(`meta.id AS meta_id`)
                     .distinct(true)
                     .addSelect(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NOT NULL ) AS replies_count')
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NULL ) AS replies_count')
                     .addSelect('( SELECT DISTINCT metaId FROM qa_comments WHERE metaId = meta.id AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment = 1 ) AS approved_no_comment')
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })

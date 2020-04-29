@@ -9,7 +9,7 @@
     <div *ngIf="!criteria_loading">
         <h2>QUALITY ASSESSMENT CRITERIA</h2>
         <ul>
-            <li *ngFor="let criteria of criteriaData">{{criteria.description}}</li>
+            <li *ngFor="let criteria of criteriaData"   [innerHTML]="criteria.description | markdown"></li>
         </ul>
     </div>
     <div style="margin:auto;">
@@ -38,86 +38,6 @@
     </div>
 </div>
 
-
-
-<!--<form [formGroup]="tickGroup" novalidate>
-
-    <div class="row detail-container">
-        <div class="col-sm">
-            <div class="col data-container">
-                <div class="select-all" *ngIf="detailedData">
-                    <input (change)="onSelectAllChange($event)" id="selectAll" type="checkbox"
-                        class="custom-control-input" value="selectAll" name="selectAll" formControlName="selectAll">
-                    <label class="custom-control-label" for="selectAll">
-                        Select All
-                    </label>
-                </div>
-                <ng-container *ngFor="let field of detailedData; let i = index">
-                    <div class="data-row">
-                        <div class="col">
-                            <input [value]="field.field_id" (change)="onTickChange($event,'tick')" type="checkbox"
-                                class="custom-control-input" id="field-{{field.field_id}}">
-                            <label class="custom-control-label" for="field-{{field.field_id}}">
-                                <h2>{{field.display_name}}</h2>
-                            </label>
-                            <div *ngIf="field.value && field.col_name !== 'evidence_link'" [innerHTML]="field.value">
-                            </div>
-                            <div *ngIf="getLink(field) && field.col_name === 'evidence_link'">
-                                <a href="{{field.value}}" target="_blank">{{field.value}}</a>
-                            </div>
-                            <p *ngIf="!field.value" class="empty-value">Empty Value</p>
-                        </div>
-
-
-                        <div #commentsElem *ngIf="validateCommentAvility(field,true)"
-                            (click)="showComments(i, field); comment.updateData(field,params)"
-                            class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
-                            <i class="icon-message"></i>
-                            <div *ngIf="field.replies_count != '0'" class="replies-count">
-                                {{field.replies_count}}
-                            </div>
-                        </div>
-                        <div *ngIf="!validateCommentAvility(field)" class="activate-messages-container">
-                            <i class="icon-message-inactive"></i>
-                        </div>
-                    </div>
-                </ng-container>
-            </div>
-            <div *ngIf="detailedData" class="col data-container">
-                <div class="data-row  gnral-commnts">
-                    <h2>General comments:</h2>
-                    <p class="informative-text">
-                        Please take into consideration that this comments are going to be shown to the CRP.
-                    </p>
-                    <form [formGroup]="generalCommentGroup">
-                        <textarea cols="30" rows="5" formControlName="general_comment"></textarea>
-                    </form>
-                    <div class="bton-container">
-                        <p class="error" *ngIf="this.tickGroup.controls['tick'].errors?.required">
-                            Checkbox is required, select atleast one value.
-                        </p>
-                        <button type="button" class="btn btn-green-secondary"
-                            [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
-                            (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
-                        <button type="button" (click)="updateEvaluation('status', detailedData)"  [disabled]="this.tickGroup.controls['tick'].errors?.required"
-                            class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
-                    </div>
-
-                </div>
-            </div>
-
-            <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
-                size="medium">
-            </ngx-spinner>
-        </div>
-        <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY"
-            class="col-sm-4 comments-container">
-            <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
-                (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
-        </div>
-    </div>
-</form> -->
-
 <form [formGroup]="tickGroup">
     <div class="row detail-container">
         <div class="col-sm">
@@ -130,7 +50,7 @@
                         Approved all items to be assessed.
                     </label>
                 </div>
-                <ng-container  formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
+                <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
 
                     <ng-container *ngIf="detailedData" [formGroupName]="i">
                         <div class="data-row">
@@ -155,16 +75,9 @@
                                     </div>
                                 </div>
 
-
                                 <div *ngIf="detailedData[i].value && detailedData[i].col_name !== 'evidence_link'"
-                                    [innerHTML]="detailedData[i].value">
+                                    [innerHTML]="detailedData[i].value | markdown">
                                 </div>
-                                <!-- evidence link -->
-                                <div *ngIf="getLink(detailedData[i]) && detailedData[i].col_name === 'evidence_link'">
-                                    <a href="{{detailedData[i].value}}" target="_blank">{{detailedData[i].value}}</a>
-                                </div>
-                                <!-- evidence link -->
-
                                 <p *ngIf="!detailedData[i].value" class="empty-value">Empty Value</p>
 
                             </div>
@@ -209,7 +122,7 @@
                         <button type="button" class="btn btn-green-secondary"
                             [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
                             (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
-                            <!-- [disabled]="validateComments()" -->
+                        <!-- [disabled]="validateComments()" -->
                         <button type="button" (click)="updateEvaluation('status', detailedData)"
                             class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
                     </div>

@@ -6,6 +6,7 @@ import { EvaluationsService } from "../../services/evaluations.service";
 import { AuthenticationService } from "../../services/authentication.service";
 import { AlertService } from '../../services/alert.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 
 import { User } from '../../_models/user.model';
