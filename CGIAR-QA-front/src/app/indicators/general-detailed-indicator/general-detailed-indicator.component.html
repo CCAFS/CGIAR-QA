@@ -75,7 +75,7 @@
                                     </div>
                                 </div>
 
-                                <div *ngIf="detailedData[i].value && detailedData[i].col_name !== 'evidence_link'"
+                                <div *ngIf="detailedData[i].value "
                                     [innerHTML]="detailedData[i].value | markdown">
                                 </div>
                                 <p *ngIf="!detailedData[i].value" class="empty-value">Empty Value</p>

@@ -107,8 +107,8 @@ export class IndicatorsComponent implements OnInit {
       }
       this.order = value;
     }
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
-    this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
+    // this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
 

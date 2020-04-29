@@ -86,15 +86,16 @@
         </tr>
     </thead>
     <tbody class="table-body">
-        <tr *ngFor="let item of returnedArray |filter:searchText">
+        <tr *ngFor="let item of evaluationList | filter:searchText | slice:currentPage.startItem:currentPage.endItem">
+        <!-- <tr *ngFor="let item of returnedArray | filter:searchText | slice:1:3"> -->
             <th scope="row">{{ item.id }}</th>
             <!-- <td style="cursor: pointer;"  [routerLinkActive]="['active']" [routerLink]="['./detail', item.id]"> -->
             <td style="cursor: pointer;" (click)="goToView(item.id)">
                 {{ item.title }}
             </td>
             <td>{{ item.crp_acronym }}</td>
-            <td *ngIf="item.stage">{{ item.stage }}</td>
-            <td *ngIf="!item.stage">{{notProviedText }}</td>
+            <td *ngIf="item.stage">{{ (item.stage) ? item.stage: notProviedText}}</td>
+            <!-- <td *ngIf="!item.stage">{{notProviedText }}</td> -->
             <td>{{ item.comments_count }}</td>
             <td (click)="exportComments(item)">
                 <a target="_blank">
