@@ -79,7 +79,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
       this.params = routeParams;
       this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
-      this.tooltips.public_link = `Click here to see more information about the  ${this.params.type}.`
+      this.tooltips.public_link = `Click here to see more information about this  ${this.params.type}.`
       this.showSpinner('spinner1')
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
       this.getDetailedData();
