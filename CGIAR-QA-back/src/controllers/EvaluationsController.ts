@@ -109,10 +109,9 @@ class EvaluationsController {
         const id = req.params.id;
         const view_name = req.body.view_name;
         const view_primary_field = req.body.view_primary_field;
-
-        let innovations_stage = (view_name === 'qa_innovations') ? "NULLIF(qa_innovations.stage,'') stage," : '';
-        let innovations_stage_group = (innovations_stage != '') ? 'qa_innovations.stage,' : '';
-
+        const levelQuery  = EvaluationsController.getLevelQuery(view_name)
+       
+        
         let queryRunner = getConnection().createQueryBuilder();
 
         try {
@@ -129,7 +128,7 @@ class EvaluationsController {
                         evaluations.crp_id AS evaluations_crp_id,
                         evaluations.general_comments AS evaluations_general_comments,
                         ${view_name}.title AS title,
-                        ${innovations_stage}
+                        ${levelQuery.view_sql}
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
                         (
@@ -137,6 +136,7 @@ class EvaluationsController {
                             FROM qa_comments
                             WHERE qa_comments.evaluationId = evaluations.id
                             AND approved_no_comment IS NULL
+                            AND is_deleted = 0
                         ) AS comments_count
                     FROM
                         qa_indicator_user qa_indicator_user
@@ -158,7 +158,7 @@ class EvaluationsController {
                         evaluations.crp_id,
                         evaluations.general_comments,
                         ${view_name}.title,
-                        ${innovations_stage_group}
+                        ${levelQuery.innovations_stage}
                         crp.acronym,
                         crp.name
                     `,
@@ -205,7 +205,7 @@ class EvaluationsController {
                         evaluations.crp_id,
                         evaluations.general_comments,
                         ${view_name}.title,
-                        ${innovations_stage_group}
+                        ${levelQuery.innovations_stage}
                         crp.acronym,
                         crp.name
                     `,
@@ -252,7 +252,7 @@ class EvaluationsController {
                 evaluations.crp_id,
                 evaluations.general_comments,
                 ${view_name}.title,
-                ${innovations_stage_group}
+                ${levelQuery.innovations_stage}
                 crp.acronym,
                 crp.name
             `;
@@ -272,6 +272,35 @@ class EvaluationsController {
             console.log(error);
             res.status(404).json({ message: "User evaluations list could not access to evaluations." });
         }
+    }
+
+    private static getLevelQuery(view_name: string) {
+        let response = {
+            view_sql: '',
+            innovations_stage: '',
+        }
+        switch (view_name) {
+            case 'qa_innovations':
+                response.view_sql = "NULLIF(qa_innovations.stage,'') stage,"
+                response.innovations_stage = "qa_innovations.stage,"
+                break;
+            case 'qa_policies':
+                response.view_sql = "NULLIF(qa_policies.maturity_level,'') stage,"
+                response.innovations_stage = "qa_policies.maturity_level,"
+                break;
+            case 'qa_oicr':
+                response.view_sql = "NULLIF(qa_oicr.maturity_level,'') stage,"
+                response.innovations_stage = "qa_oicr.maturity_level,"
+                break;
+            case 'qa_melia':
+                response.view_sql = "NULLIF(qa_melia.study_type,'') stage,"
+                response.innovations_stage = "qa_melia.study_type,"
+                break;
+
+            default:
+                break;
+        }
+        return response;
     }
 
 

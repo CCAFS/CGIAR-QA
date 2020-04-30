@@ -25,8 +25,7 @@ export class AvailableGuard implements CanActivate {
     if (currentUser) {
       let isAdmin = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin });
       let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });
-      let found = meta_indicators.find(meta => { return meta.name.toLocaleLowerCase() == current_indicator })
-      console.log(meta_indicators, current_indicator, found)
+      let found = meta_indicators.find(meta => { return meta.name.toLocaleLowerCase() == current_indicator });
       if (isAdmin === Role.admin) return true;
       if (isAssessor === Role.asesor && found.comment_meta.enable_assessor) {
         return true

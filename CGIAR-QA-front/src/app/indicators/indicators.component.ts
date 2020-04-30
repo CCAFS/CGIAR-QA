@@ -29,6 +29,13 @@ export class IndicatorsComponent implements OnInit {
     startItem: 0,
     endItem: 10
   }
+  stageHeaderText = {
+    policies: 'Level',
+    oicr: 'Level',
+    innovations: 'Stage',
+    melia: 'Type',
+  }
+
   maxSize = 5;
   pageSize = 4;
   collectionSize = 0;
@@ -61,7 +68,7 @@ export class IndicatorsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('loaded indicators')
+    // console.log('loaded indicators')
   }
 
   getEvaluationsList(params) {
@@ -72,12 +79,12 @@ export class IndicatorsComponent implements OnInit {
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         // this.returnedArray = this.evaluationList;
-        // console.log(this.evaluationList.length, this.returnedArray.length)
-        // console.log(this.returnedArray)
+        // // console.log(this.evaluationList.length, this.returnedArray.length)
+        // // console.log(this.returnedArray)
         this.hideSpinner();
       },
       error => {
-        console.log("getEvaluationsList", error);
+        // console.log("getEvaluationsList", error);
         this.hideSpinner();
         this.returnedArray = []
         this.alertService.error(error);
@@ -88,7 +95,7 @@ export class IndicatorsComponent implements OnInit {
   pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
-    // console.log(this.evaluationList.length, this.returnedArray.length)
+    // // console.log(this.evaluationList.length, this.returnedArray.length)
     this.currentPage = {
       startItem,
       endItem
@@ -107,7 +114,7 @@ export class IndicatorsComponent implements OnInit {
       }
       this.order = value;
     }
-    // this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
@@ -133,11 +140,11 @@ export class IndicatorsComponent implements OnInit {
 
 
   exportComments(item) {
-    console.log(item)
+    // console.log(item)
     this.showSpinner();
     this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: item.title }).subscribe(
       res => {
-        // console.log(res)
+        // // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
         let url = window.URL.createObjectURL(blob);
         let pwa = window.open(url);
@@ -147,7 +154,7 @@ export class IndicatorsComponent implements OnInit {
         this.hideSpinner();
       },
       error => {
-        console.log("exportComments", error);
+        // console.log("exportComments", error);
         this.hideSpinner();
         this.alertService.error(error);
       }

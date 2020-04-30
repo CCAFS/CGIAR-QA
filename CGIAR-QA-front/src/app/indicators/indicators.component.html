@@ -55,7 +55,7 @@
             <th *ngIf="returnedArray && returnedArray[0].stage" scope="col" [class.active]="order === 'stage'"
                 (click)="setOrder('stage')">
                 <div class="header-row">
-                    Stage
+                    {{stageHeaderText[indicatorType]}}
                     <div class="order-icon" *ngIf="order === 'stage'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
@@ -87,11 +87,16 @@
     </thead>
     <tbody class="table-body">
         <tr *ngFor="let item of evaluationList | filter:searchText | slice:currentPage.startItem:currentPage.endItem">
-        <!-- <tr *ngFor="let item of returnedArray | filter:searchText | slice:1:3"> -->
-            <th scope="row">{{ item.id }}</th>
-            <!-- <td style="cursor: pointer;"  [routerLinkActive]="['active']" [routerLink]="['./detail', item.id]"> -->
+            <!-- <tr *ngFor="let item of returnedArray | filter:searchText | slice:1:3"> -->
+            <th scope="row">
+                QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
+            </th>
             <td style="cursor: pointer;" (click)="goToView(item.id)">
-                {{ item.title }}
+                <!-- <a target="_blank" rel="noopener noreferrer" [routerLinkActive]="['active']"
+                    routerLink="./detail/{{item.id}}"> {{ item.title }}</a> -->
+                <a target="_blank"> {{ item.title }}</a>
+                <!-- {{ item.title }} -->
+
             </td>
             <td>{{ item.crp_acronym }}</td>
             <td *ngIf="item.stage">{{ (item.stage) ? item.stage: notProviedText}}</td>

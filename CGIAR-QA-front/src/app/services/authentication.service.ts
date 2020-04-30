@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 import { User } from './../_models/user.model';
+import { CookiesService } from './cookie-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,13 @@ export class AuthenticationService {
   public userHeaders = [];
   public NOT_APPLICABLE = '<Not applicable>';
 
-  constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+  private usrCookie = 'currentUser';
+
+  constructor(private http: HttpClient, private cookiesService: CookiesService) {
+    // this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem(this.usrCookie)));
+    this.currentUserSubject = new BehaviorSubject<User>(this.cookiesService.getData(this.usrCookie));
     this.currentUser = this.currentUserSubject.asObservable();
+
   }
 
   public get currentUserValue(): User {
@@ -31,7 +36,8 @@ export class AuthenticationService {
       .pipe(map(user => {
         let currentUsr = user.data
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(currentUsr));
+        // localStorage.setItem(this.usrCookie, JSON.stringify(currentUsr));
+        this.cookiesService.setData(this.usrCookie, currentUsr);
         this.currentUserSubject.next(currentUsr);
         return currentUsr;
       }));
@@ -42,7 +48,8 @@ export class AuthenticationService {
       .pipe(map(user => {
         let currentUsr = user.data
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(currentUsr));
+        // localStorage.setItem(this.usrCookie, JSON.stringify(currentUsr));
+        this.cookiesService.setData(this.usrCookie, currentUsr);
         this.currentUserSubject.next(currentUsr);
         return currentUsr;
       }));
@@ -50,7 +57,8 @@ export class AuthenticationService {
 
   logout() {
     // remove user from local storage and set current user to null
-    localStorage.removeItem('currentUser');
+    // localStorage.removeItem(this.usrCookie);
+    this.cookiesService.delete(this.usrCookie);
     this.currentUserSubject.next(null);
     console.log('logged out', localStorage)
   }
