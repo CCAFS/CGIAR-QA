@@ -31,7 +31,7 @@ export class IndicatorsComponent implements OnInit {
   }
   stageHeaderText = {
     policies: 'Level',
-    oicr: 'Level',
+    oicr: 'Maturity Level',
     innovations: 'Stage',
     melia: 'Type',
   }
@@ -114,6 +114,7 @@ export class IndicatorsComponent implements OnInit {
       }
       this.order = value;
     }
+    console.log(this.evaluationList, this.order, this.reverse)
     this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }

@@ -173,8 +173,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
         this.detailedData = res.data.filter(field => {
-          return field.value && field.value !== this.notApplicable;
+          // console.log(field.value &&)
+          return  field.value !== this.notApplicable;
         });
+        console.log(res.data[0], this.detailedData)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -186,7 +188,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
         this.hideSpinner('spinner1');
         this.tickGroup.reset()
-        // console.log(this.detailedData, this.formTickData.controls)
+        console.log(this.detailedData, this.formTickData.controls)
         this.addCheckboxes();
       },
       error => {
@@ -236,6 +238,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.criteria_loading = true;
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
       res => {
+        console.log(res.data)
         this.criteriaData = res.data;
         this.criteria_loading = false;
       },

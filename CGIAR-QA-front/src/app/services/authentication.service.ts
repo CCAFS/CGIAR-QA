@@ -19,6 +19,8 @@ export class AuthenticationService {
   public NOT_APPLICABLE = '<Not applicable>';
 
   private usrCookie = 'currentUser';
+  // Tawk_API = Tawk_API || {};
+  Tawk_LoadStart = new Date();
 
   constructor(private http: HttpClient, private cookiesService: CookiesService) {
     // this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem(this.usrCookie)));
@@ -60,6 +62,8 @@ export class AuthenticationService {
     // localStorage.removeItem(this.usrCookie);
     this.cookiesService.delete(this.usrCookie);
     this.currentUserSubject.next(null);
-    console.log('logged out', localStorage)
+    
+    console.log('logged out')
   }
+
 }

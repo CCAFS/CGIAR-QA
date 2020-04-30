@@ -14,17 +14,16 @@
     </div>
     <div style="margin:auto;">
         <span *ngIf="criteria_loading" class="spinner-border spinner-border-sm mr-1"></span>
-        <!-- <span class="spinner-border spinner-border-sm mr-1"></span> -->
     </div>
 </div>
 
-<div class="row detail-header-container">
-    <p *ngIf="detailedData" class="indicator-item-name">
+<div *ngIf="detailedData && detailedData[0] "  class="row detail-header-container">
+    <p class="indicator-item-name">
         {{detailedData[0].crp_acronym}} / {{currentType}} /
         QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
     </p>
-    <div>
-        <a *ngIf="detailedData && detailedData[0].public_link" [href]="detailedData[0].public_link" target="_blank">
+    <div *ngIf="detailedData[0].public_link">
+        <a  [href]="detailedData[0].public_link" target="_blank">
             <div tooltip="{{tooltips.public_link}}" container="body" placement="top"
                 class="btn btn-primary file-button">
                 <i class="icon-public-link"></i>
@@ -80,7 +79,7 @@
                                 </div>
                                 <a *ngIf="detailedData[i].value && detailedData[i].col_name === 'evidence_link'"
                                     href="{{detailedData[i].value}}" target="_blank"> {{detailedData[i].value}} </a>
-                                <p *ngIf="!detailedData[i].value" class="empty-value">Empty Value</p>
+                                <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p>
 
                             </div>
                             <div #commentsElem

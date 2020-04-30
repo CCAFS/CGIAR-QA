@@ -273,8 +273,8 @@ class Util {
             status: element["evaluations_status"],
             crp_name: element["crp_name"],
             crp_acronym: element["crp_acronym"],
-            public_link: element[`${type}_public_link`],
-            approved_no_comment: element['approved_no_comment'],
+            public_link: element[`${type}_public_link`] || '',
+            approved_no_comment: element['approved_no_comment'] || null,
             meta_description: element['meta_description']
         }
         switch (type) {
@@ -286,7 +286,8 @@ class Util {
                     id: element['evaluations_indicator_view_id'],
                     title: element['title'],
                     pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
-                    stage: element['stage'] ? element['stage']:undefined,
+                    stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
+
                     // crp: element['crp_name'],
                 });
                 break;
