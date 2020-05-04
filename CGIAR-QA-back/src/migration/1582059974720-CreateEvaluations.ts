@@ -11,12 +11,12 @@ export class CreateEvaluations1582059974720 implements MigrationInterface {
         const indicatorRepository = getRepository(QAIndicators);
         const evaluationsRepository = getRepository(QAEvaluations);
         let primary_field = 'id' //NOT CHANGE
-        let view_name = 'qa_milestones';//CHANGE
+        let view_name = 'qa_slo';//CHANGE
         // let indicatorId = 1 //CHANGE
         // let userId = 2
 
         let existing_eval = await evaluationsRepository.find({
-            where : {
+            where: {
                 indicator_view_name: view_name
             }
         })

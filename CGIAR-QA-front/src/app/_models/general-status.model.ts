@@ -14,4 +14,6 @@ export enum GeneralIndicatorName {
     qa_oicr= 'OICRs',
     qa_melia= 'MELIAs',
     qa_capdev= 'CapDevs',
+    qa_milestones= 'Milestones',
+    qa_slo= 'SLOs',
 }

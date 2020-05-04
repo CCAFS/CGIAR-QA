@@ -39,18 +39,23 @@ export class TawkToComponent implements OnInit {
   }
 
   openChat() {
-    window.Tawk_API.onLoad = function () {
-      Twindow.awk_API.setAttributes({
-        'name': this.currentUser.name,
-        'email': this.currentUser.email,
-        'hash': 'hash value'
-      }, function (error) { 
-        console.log('set att', error)
-      });
-    }
-    window.Tawk_API.maximize();
+    console.log(window['Tawk_API']);
+    // window['Tawk_API'].onLoad(function () {
+    //   console.log(window['Tawk_API'])
 
-    console.log(window.Tawk_API.isChatMinimized());
+    // })
+    // window.Tawk_API.onLoad = function () {
+    //   window.Tawk_API.setAttributes({
+    //     'name': this.currentUser.name,
+    //     'email': this.currentUser.email,
+    //     'hash': 'hash value'
+    //   }, function (error) { 
+    //     console.log('set att', error)
+    //   });
+    // }
+    if(window['Tawk_API'])
+      window['Tawk_API'].maximize();
+
   }
 
 }

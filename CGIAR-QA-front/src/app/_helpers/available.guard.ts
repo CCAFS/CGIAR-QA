@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { AuthenticationService } from './../services/authentication.service'
 import { Role } from "../_models/roles.model"
+import { CookiesService } from '../services/cookie-service.service';
 
 
 @Injectable({
@@ -13,19 +14,28 @@ import { Role } from "../_models/roles.model"
 export class AvailableGuard implements CanActivate {
   constructor(
     private router: Router,
+    private cookiesService: CookiesService,
     private authenticationService: AuthenticationService
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const currentUser = this.authenticationService.currentUserValue;
     let current_indicator = state.url.split('/')[2];
-    const meta_indicators = currentUser.indicators.map(indi => {
-      return indi.indicator
-    })
+    let user_indicators = JSON.parse(localStorage.getItem('indicators'));
+    let meta_indicators;
+    console.log(user_indicators)
+    if (user_indicators) {
+      meta_indicators = user_indicators.map(indi => {
+        console.log(indi)
+        return indi.indicator
+      })
+
+    }
     if (currentUser) {
       let isAdmin = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin });
       let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });
-      let found = meta_indicators.find(meta => { return meta.name.toLocaleLowerCase() == current_indicator });
+      console.log('what is?', isAdmin, isAssessor)
+      let found = isAdmin ? null : meta_indicators.find(meta => { return meta.name.toLocaleLowerCase() == current_indicator });
       if (isAdmin === Role.admin) return true;
       if (isAssessor === Role.asesor && found.comment_meta.enable_assessor) {
         return true
