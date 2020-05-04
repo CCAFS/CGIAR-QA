@@ -10,7 +10,8 @@ export class CookiesService {
 
   setData(name: string, data: any) {
     let dataString = JSON.stringify(data);
-    this.cookieService.set(name, dataString);
+    console.log(dataString)
+    this.cookieService.set(name, dataString,null,'/');
     return this.cookieService.check(name);
   }
   getData(name: string) {

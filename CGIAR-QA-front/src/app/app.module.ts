@@ -31,6 +31,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
 import { QaCloseComponent } from './qa-close/qa-close.component';
+import { TawkToComponent } from './tawk-to/tawk-to.component';
 // import { CrpComponent } from './crp/crp.component';
 
 @NgModule({
@@ -43,6 +44,7 @@ import { QaCloseComponent } from './qa-close/qa-close.component';
     FilterByRolePipe,
     HeaderBarComponent,
     QaCloseComponent,
+    TawkToComponent,
     // SortByPipe
   ],
   imports: [
