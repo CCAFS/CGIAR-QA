@@ -18,7 +18,7 @@ router.get("/", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], C
 router.get("/meta", [checkJwt, checkRole([RolesHandler.admin])], CommentController.createcommentsMeta);
 
 // excel for comments
-router.get("/excel/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], CommentController.getCommentsExcel);
+router.get("/excel/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.getCommentsExcel);
 
 // set comments as approved
 router.post("/approved/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.toggleApprovedNoComments);

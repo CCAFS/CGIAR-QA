@@ -353,7 +353,7 @@ class EvaluationsController {
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NOT NULL ) AS replies_count')
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NULL ) AS replies_count')
                     .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 AND approved_no_comment IS NOT NULL) AS approved_no_comment')
                     //.addSelect(`${view_name_psdo}.crp AS crp`)
                     .where("evaluations.crp_id=:crp_id", { crp_id: user.crp.crp_id })
@@ -374,7 +374,7 @@ class EvaluationsController {
                 rawData = await indicatorByUserRepository
                     .createQueryBuilder("qa_indicator_user")
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
-                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NOT NULL) AS replies_count')
+                    .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NULL ) AS replies_count')
                     .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 AND approved_no_comment IS NOT NULL) AS approved_no_comment')
                     .where("qa_indicator_user.user=:userId", { userId: id })
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })

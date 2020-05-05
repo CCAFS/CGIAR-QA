@@ -360,12 +360,13 @@ class CommentController {
         // const { name, id } = req.params;
         const { evaluationId } = req.params;
         const { userId, name } = req.query;
-        const commentsRepository = getRepository(QAComments);
-        const userRepository = getRepository(QAUsers);
         // let queryRunner = getConnection().createQueryBuilder();
         // const evaluationRepository = getRepository(QAEvaluations);
+        console.log(evaluationId, userId, name)
         let comments;
         try {
+            const commentsRepository = getRepository(QAComments);
+            const userRepository = getRepository(QAUsers);
 
 
             let user = await userRepository.findOneOrFail({
@@ -408,7 +409,7 @@ class CommentController {
             res.status(200).send(stream);
             // res.status(200).send({ data: stream, message: 'File download' });
         } catch (error) {
-            console.log(error)
+            console.log('excel error', error)
             res.status(404).json({ message: 'Comments not found.', data: error });
         }
 
