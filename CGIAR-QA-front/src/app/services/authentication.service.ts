@@ -59,6 +59,7 @@ export class AuthenticationService {
     localStorage.removeItem('indicators');
     this.cookiesService.delete(this.usrCookie);
     this.currentUserSubject.next(null);
+    console.log(localStorage.getItem('indicators'), this.cookiesService.getAllData(), this.currentUser)
   }
 
   private parseIndicators(user) {
@@ -69,7 +70,6 @@ export class AuthenticationService {
       localStorage.setItem('indicators', JSON.stringify(user.indicators));
       delete user.indicators;
     }
-    console.log(user)
     return user
   }
 

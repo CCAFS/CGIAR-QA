@@ -17,13 +17,13 @@
     </div>
 </div>
 
-<div *ngIf="detailedData && detailedData[0] "  class="row detail-header-container">
+<div *ngIf="detailedData && detailedData[0] " class="row detail-header-container">
     <p class="indicator-item-name">
         {{detailedData[0].crp_acronym}} / {{currentType}} /
         QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
     </p>
-    <div *ngIf="detailedData[0].public_link">
-        <a  [href]="detailedData[0].public_link" target="_blank">
+    <div *ngIf="detailedData[0]">
+        <a *ngIf="detailedData[0].public_link" [href]="detailedData[0].public_link" target="_blank">
             <div tooltip="{{tooltips.public_link}}" container="body" placement="top"
                 class="btn btn-primary file-button">
                 <i class="icon-public-link"></i>
@@ -35,7 +35,10 @@
             <i class="icon-download-excel"></i>
         </div>
     </div>
+    <p>Status: <span  class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span> 
+    </p>
 </div>
+
 
 <form [formGroup]="tickGroup">
     <div class="row detail-container">
@@ -82,6 +85,7 @@
                                 <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p>
 
                             </div>
+
                             <div #commentsElem
                                 *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
                                 (click)="showComments(i, detailedData[i]); comment.updateData(detailedData[i],params)"
@@ -95,11 +99,16 @@
                                     {{detailedData[i].replies_count}}
                                 </div>
                             </div>
+
                             <div *ngIf="!validateCommentAvility(detailedData[i]) || summon.value.isChecked"
                                 class="activate-messages-container">
                                 <i *ngIf="!detailedData[i].loading" class="icon-message-inactive"></i>
                                 <span *ngIf="detailedData[i].loading"
                                     class="spinner-border spinner-border-sm mr-1"></span>
+
+                                <div *ngIf="detailedData[i].replies_count != '0'" class="replies-count">
+                                    {{detailedData[i].replies_count}}
+                                </div>
                             </div>
                         </div>
 
@@ -124,8 +133,8 @@
                             [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
                             (click)="updateEvaluation('general_comment', detailedData)">SAVE</button>
                         <!-- [disabled]="validateComments()" -->
-                        <button type="button" (click)="updateEvaluation('status', detailedData)"
-                            class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button>
+                        <!-- <button type="button" (click)="updateEvaluation('status', detailedData)"
+                            class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button> -->
                     </div>
 
                 </div>

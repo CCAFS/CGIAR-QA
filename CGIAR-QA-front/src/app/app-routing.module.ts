@@ -15,7 +15,8 @@ import { ErrorComponent } from './error/404.component';
 const routes: Routes = [
   {
     path: 'dashboard',
-    loadChildren: () => import('./dashboard/dashboard.module').then(mod => mod.DashboardModule)
+    loadChildren: () => import('./dashboard/dashboard.module').then(mod => mod.DashboardModule),
+    // pathMatch: 'full'
   },
   {
     path: 'crp',

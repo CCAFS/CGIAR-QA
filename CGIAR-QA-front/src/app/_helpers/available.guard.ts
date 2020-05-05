@@ -23,10 +23,8 @@ export class AvailableGuard implements CanActivate {
     let current_indicator = state.url.split('/')[2];
     let user_indicators = JSON.parse(localStorage.getItem('indicators'));
     let meta_indicators;
-    console.log(user_indicators)
     if (user_indicators) {
       meta_indicators = user_indicators.map(indi => {
-        console.log(indi)
         return indi.indicator
       })
 
@@ -34,7 +32,6 @@ export class AvailableGuard implements CanActivate {
     if (currentUser) {
       let isAdmin = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin });
       let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });
-      console.log('what is?', isAdmin, isAssessor)
       let found = isAdmin ? null : meta_indicators.find(meta => { return meta.name.toLocaleLowerCase() == current_indicator });
       if (isAdmin === Role.admin) return true;
       if (isAssessor === Role.asesor && found.comment_meta.enable_assessor) {

@@ -21,25 +21,28 @@ export class HeaderBarComponent implements OnInit {
   allRoles = Role;
   generalStatus = GeneralStatus;
   indicators = [];
-  currentRole = ''
+  currentRole = '';
+  params;
 
   constructor(private activeRoute: ActivatedRoute, private authenticationService: AuthenticationService, private router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
+      this.params = routeParams;
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
         if (x) {
           this.currentRole = x.roles[0].description.toLowerCase()
           this.ngOnInit();
+          this.getHeaderLinks();
+
         }
       });
-
     })
 
   }
 
   ngOnInit() {
     this.indicators = this.authenticationService.userHeaders;
-    this.getHeaderLinks();
+    // this.getHeaderLinks();
   }
 
   goToView(indicator: any) {
@@ -54,39 +57,16 @@ export class HeaderBarComponent implements OnInit {
     let view = indicator.indicator.name;
     let primary_column = indicator.indicator.primary_field;
 
-
-    // switch (this.currentUser.roles[0].description) {
-    //   case this.allRoles.admin:
-    //     // this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column], { relativeTo: this.activeRoute });
-    //     // if(this.router.url.toString().indexOf('/indicator') !== -1){
-    //       this.router.navigate(['/reload']).then(() => { this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column]); });
-    //     // }else{
-    //     // }
-    //     // this.router.navigate(['/reload']).then(() => { this.router.navigate([`dashboard/${this.allRoles.admin.toLocaleLowerCase()}/indicator`, view.toLocaleLowerCase(), primary_column]) });
-    //     break;
-    //   case this.allRoles.asesor:
-    //     if (indicator.indicator.enable_assessor) {
-    //       this.router.navigate(['/reload']).then(() => { this.router.navigate(['./indicator', view.toLocaleLowerCase(), primary_column]); });
-
-    //       // this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
-    //       // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
-    //     }
-    //     break;
-
-    //   default:
-    //     break;
-    // }
-
-
   }
 
   getHeaderLinks() {
+    console.log(this.params, this.router)
+
     if (!this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
           this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
           this.authenticationService.userHeaders = this.indicators;
-          // //console.log(res.data, this.currentUser.roles[0])
         },
         error => {
           //console.log("getHeaderLinks", error);

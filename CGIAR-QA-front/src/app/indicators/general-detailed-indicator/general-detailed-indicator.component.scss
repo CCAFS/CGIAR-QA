@@ -135,6 +135,19 @@
           height: 2em;
           margin: auto;
         }
+        .replies-count {
+          opacity: .7;
+          background-color: var(--red-primary);
+          color: var(--white);
+          border-radius: 50%;
+          height: 1.5em;
+          width: 1.5em;
+          position: absolute;
+          text-align: center;
+          font-size: $font-sm;
+          margin-left: $size-md;
+          margin-top: $size-25;
+        }
       }
     }
   }
