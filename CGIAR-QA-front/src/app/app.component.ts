@@ -12,5 +12,6 @@ export class AppComponent {
 
 
   constructor() {
+    console.log(this.env)
   }
 }
