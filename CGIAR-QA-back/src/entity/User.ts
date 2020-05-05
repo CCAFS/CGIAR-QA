@@ -32,9 +32,13 @@ export class QAUsers {
     email: string;
 
 
-    @Column()
-    @Length(4, 20)
+    @Column({ nullable: true })
+    // @Length(4, 20)
     password: string;
+    
+    @Column({ default: false })
+    is_marlo: boolean;
+
 
     @ManyToMany(type => QARoles, {
         eager: true

@@ -6,7 +6,7 @@
             <hr>
             <p>AR Template</p>
         </div>
-        <div class="model-link-container" (click)="goToPDF(indicatorType)">
+        <div *ngIf="hasTemplate" class="model-link-container" (click)="goToPDF(indicatorType)">
             <i class="icon-pdf"></i>
             <hr>
             <p>{{indicatorTypeName}} Template</p>
@@ -86,7 +86,8 @@
         </tr>
     </thead>
     <tbody class="table-body">
-        <tr *ngFor="let item of evaluationList | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
+        <tr
+            *ngFor="let item of evaluationList | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
             <th scope="row">
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
@@ -114,8 +115,12 @@
         </tr>
     </tbody>
 </table>
-<div class="d-flex justify-content-center p-2 pagination-container">
-    <pagination [rotate]="false" [totalItems]="collectionSize" [maxSize]="3" (pageChanged)="pageChanged($event)">
+<div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
+    <div>
+        Total items: {{evaluationList.length}}
+    </div>
+    <pagination [rotate]="false" [totalItems]="(evaluationList | filter:searchText ).length" [maxSize]="5"
+        (pageChanged)="pageChanged($event)">
     </pagination>
 </div>
 

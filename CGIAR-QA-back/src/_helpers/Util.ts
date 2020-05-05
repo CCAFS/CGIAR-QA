@@ -273,7 +273,7 @@ class Util {
             status: element["evaluations_status"],
             crp_name: element["crp_name"],
             crp_acronym: element["crp_acronym"],
-            public_link: element[`${type}_public_link`] || '',
+            public_link: element[`${type}_public_link`] || null,
             approved_no_comment: element['approved_no_comment'] || null,
             meta_description: element['meta_description']
         }

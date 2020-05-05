@@ -20,14 +20,15 @@ export const checkRole = (roles: Array<string>) => {
             has_roles = mapped_roles.find(role_ => {
                 return roles.indexOf(role_) > -1
             });
-            console.log(has_roles)
+            console.log(has_roles ? 'has' : 'has not')
+            // else res.status(401).send('User unauthorized.');
         } catch (error) {
-            throw res.status(401).send( 'User unauthorized.');
+            res.status(401).send();
         }
-
         //Check if array of authorized roles includes the user's role
         if (has_roles) next();
-        else throw res.status(401).send( 'User unauthorized.');
+        else res.status(401).send();
+
     };
 };
 

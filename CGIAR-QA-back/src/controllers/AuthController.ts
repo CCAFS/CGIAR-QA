@@ -3,15 +3,13 @@ import * as jwt from "jsonwebtoken";
 import { getRepository, getConnection } from "typeorm";
 import { validate } from "class-validator";
 
-import config from "@config/config";
+import config_ from "@config/config";
 
 import { QAUsers } from "@entity/User";
-import { QATokenAuth } from "@entity/TokenAuth";
 import { QAGeneralConfiguration } from "@entity/GeneralConfig";
-import { QACrp } from "@entity/CRP";
-import { QARoles } from "@entity/Roles";
 import { RolesHandler } from "@helpers/RolesHandler";
 import Util from "@helpers/Util";
+let ActiveDirectory = require('activedirectory');
 
 const { ErrorHandler } = require("@helpers/ErrorHandler")
 
@@ -21,22 +19,36 @@ class AuthController {
         try {
             //Check if username and password are set
             let { username, password } = req.body;
-            if (!(username && password)) {
-                res.status(404).json({ message: 'Missing required email and password fields.' })
-                // throw new ErrorHandler(404, 'Missing required email and password fields.')
-            }
-
             //Get user from database
             const userRepository = getRepository(QAUsers);
             const grnlConfg = getRepository(QAGeneralConfiguration);
-            let user: QAUsers;
 
-            user = await userRepository.findOneOrFail({
+            let marlo_user = await userRepository.findOne({
                 where: [
-                    { username },
-                    { email: username }
+                    { email: username, is_marlo: 1 },
+                    { username, is_marlo: 1 },
                 ]
             });
+
+
+            let user: QAUsers;
+            if (marlo_user) {
+                let is_marlo = await AuthController.validateAD(marlo_user, password);
+                if (is_marlo)
+                    user = marlo_user;
+
+            } else if (!(username && password)) {
+                res.status(404).json({ message: 'Missing required email and password fields.' })
+                // throw new ErrorHandler(404, 'Missing required email and password fields.')
+            } else {
+                user = await userRepository.findOneOrFail({
+                    where: [
+                        { username },
+                        { email: username }
+                    ]
+                });
+            }
+
             if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp)) {
                 res.status(401).json({ message: 'Unauthorized' })
                 return
@@ -48,32 +60,31 @@ class AuthController {
                 .where(`roleId IN (${user.roles.map(role => { return role.id })})`)
                 .andWhere("DATE(qa_general_config.start_date) <= CURDATE()")
                 .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
-                // .getSql();
                 .getRawMany();
-            // console.log(generalConfig)
+
             //Check if encrypted password match
-            if (!user.checkIfUnencryptedPasswordIsValid(password)) {
+
+            if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
+                console.log('user')
                 res.status(401).json({ message: 'Password does not match.' });
             }
 
             //Sing JWT, valid for ``config.jwtTime`` 
             const token = jwt.sign(
                 { userId: user.id, username: user.username },
-                config.jwtSecret,
-                { expiresIn: config.jwtTime }
+                config_.jwtSecret,
+                { expiresIn: config_.jwtTime }
             );
-            
+
             user["token"] = token;
             user["config"] = generalConfig;
             delete user.password;
             //Send the jwt in the response
-            console.log(user)
             res.status(200).json({ data: user })
 
         } catch (error) {
             console.log(error)
-            res.status(400).json(error)
-            // next(error)
+            res.status(400).json(error);
         }
 
     };
@@ -110,6 +121,8 @@ class AuthController {
                 res.status(401).json({ data: [], message: 'Invalid token' });
             }
             let auth_token = r[0];
+            console.log('auth_token')
+            console.log(auth_token)
             let user = await Util.createOrReturnUser(auth_token);
             //Send the jwt in the response
             res.status(200).json({ data: user, message: 'CRP Logged' })
@@ -153,7 +166,7 @@ class AuthController {
         }
         //Hash the new password and save
         user.hashPassword();
-        user= await userRepository.save(user);
+        user = await userRepository.save(user);
         delete user.password;
 
         res.status(200).send({ data: user });
@@ -190,6 +203,41 @@ class AuthController {
             console.log(error)
             res.status(400).send({ data: error, message: 'Configuration can not be created' });
         }
+    }
+
+    static validateAD(qa_user, password) {
+        let ad = new ActiveDirectory(config_.active_directory);
+
+        let ad_user = qa_user.username + "@" + config_.active_directory.domain;
+        return new Promise((resolve, reject) => {
+            ad.authenticate(ad_user, password, (err, auth) => {
+
+                if (err) {
+                    if (err.errno == "ENOTFOUND") {
+                        let notFound = {
+                            'errno': 'SERVER_NOT_FOUND',
+                            'description': 'Domain Controller Server not found'
+                        };
+                        reject(notFound);
+                    }
+                }
+
+                if (auth) {
+                    console.log('Authenticated!');
+                    resolve(auth)
+                }
+
+                else {
+                    console.log('Authentication failed!');
+                    let err = {
+                        'errno': 'INVALID_CREDENTIALS',
+                        'description': 'The supplied credential is invalid'
+                    };
+                    reject(err);
+                }
+
+            })
+        });
     }
 
 }

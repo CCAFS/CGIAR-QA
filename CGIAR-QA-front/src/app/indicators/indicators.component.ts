@@ -41,6 +41,8 @@ export class IndicatorsComponent implements OnInit {
   collectionSize = 0;
   searchText;
 
+  hasTemplate = false;
+
   notProviedText = '<No provided>'
 
   order: string = 'id';
@@ -78,9 +80,10 @@ export class IndicatorsComponent implements OnInit {
         this.evaluationList = this.orderPipe.transform(res.data, 'id');
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
+        this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
         // this.returnedArray = this.evaluationList;
         // // console.log(this.evaluationList.length, this.returnedArray.length)
-        // // console.log(this.returnedArray)
+        // console.log(this.currentUser.config[0])
         this.hideSpinner();
       },
       error => {
@@ -100,7 +103,7 @@ export class IndicatorsComponent implements OnInit {
       startItem,
       endItem
     }
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order,this.reverse);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
 
@@ -114,7 +117,7 @@ export class IndicatorsComponent implements OnInit {
       }
       this.order = value;
     }
-    console.log(this.evaluationList, this.order, this.reverse)
+    // console.log(this.evaluationList, this.order, this.reverse)
     this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }

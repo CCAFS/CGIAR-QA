@@ -154,11 +154,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.showSpinner('spinner1');
     this.commentService.toggleApprovedNoComments({ meta_array: selected_meta, userId: this.currentUser.id, isAll: true, noComment }, this.gnralInfo.evaluation_id).subscribe(
       res => {
-        console.log(res);
-        // this.detailedData = []
-        // this.formTickData.reset()
-        // this.getDetailedData()
-        this.hideSpinner('spinner1');
+        this.updateEvaluation('status', this.detailedData)
+        // this.hideSpinner('spinner1');
       },
       error => {
         this.alertService.error(error);
@@ -166,7 +163,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       }
     )
 
-    console.log(selected_meta)
+    // console.log(selected_meta)
   }
 
   getDetailedData() {
@@ -176,7 +173,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           // console.log(field.value &&)
           return  field.value !== this.notApplicable;
         });
-        console.log(res.data[0], this.detailedData)
+        // console.log(res.data[0], this.detailedData)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -188,7 +185,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
         this.hideSpinner('spinner1');
         this.tickGroup.reset()
-        console.log(this.detailedData, this.formTickData.controls)
+        // console.log(this.detailedData, this.formTickData.controls)
         this.addCheckboxes();
       },
       error => {
@@ -238,7 +235,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.criteria_loading = true;
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
       res => {
-        console.log(res.data)
+        // console.log(res.data)
         this.criteriaData = res.data;
         this.criteria_loading = false;
       },

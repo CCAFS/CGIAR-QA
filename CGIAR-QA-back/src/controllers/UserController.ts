@@ -41,24 +41,25 @@ class UserController {
     static newUser = async (req: Request, res: Response) => {
 
         //Get parameters from the body
-        let { username, password, roles, name, email, crpId } = req.body;
+        let { username, password, roles, name, email, crpId, is_marlo } = req.body;
         const roleRepository = getRepository(QARoles);
         const crpRepository = getRepository(QACrp);
-
+        
+        
         let user = new QAUsers();
-        user.username = username;
-        user.password = password;
-        user.name = name;
-        user.email = email;
-        // user.indicators = indicators;
-
         try {
+            user.username = username;
+            user.password = password;
+            user.name = name;
+            user.email = email;
+            user.is_marlo = is_marlo;
+            // user.indicators = indicators;
             // assing role for user
             let repositoryRoles = await roleRepository.find({
                 id: In(roles)
             });
             user.roles = repositoryRoles;
-
+   
             if (repositoryRoles.length === 0) {
                 res.status(409).json({ message: "Role does not exists" });
                 return;
@@ -75,15 +76,17 @@ class UserController {
             return;
         }
 
+        
         //Validade if the parameters are ok
         const errors = await validate(user);
         if (errors.length > 0) {
             res.status(400).json({ data: errors, message: "Error found" });
             return;
         }
-
+        
         //Hash the password, to securely store on DB
-        user.hashPassword();
+        if(!user.is_marlo)
+            user.hashPassword();
 
         //Try to save. If fails, the username is already in use
         const userRepository = getRepository(QAUsers);
