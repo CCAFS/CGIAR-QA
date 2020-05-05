@@ -1,6 +1,6 @@
-./enviroments/enviroment.ts
-./enviroments/enviroment.prod.ts
+./src/enviroments/enviroment.ts
+./src/enviroments/enviroment.prod.ts
 ./src-embeed-exmpl
-enviroments/enviroment.ts
-enviroments/enviroment.prod.ts
+src/enviroments/enviroment.ts
+src/enviroments/enviroment.prod.ts
 src-embeed-exmpl
