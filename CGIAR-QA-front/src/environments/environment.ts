@@ -9,8 +9,8 @@ export const environment = {
 };
 
 /*
-apiUrl: `http://marlotest.ciat.cgiar.org:8800`
 * For easier debugging in development mode, you can import the following file
+apiUrl: `http://marlotest.ciat.cgiar.org:8800`,
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
  *
  * This import should be commented out in production mode because it will have a negative impact

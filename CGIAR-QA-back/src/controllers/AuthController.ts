@@ -67,7 +67,7 @@ class AuthController {
             user["config"] = generalConfig;
             delete user.password;
             //Send the jwt in the response
-            console.log(user)
+            // console.log(user)
             res.status(200).json({ data: user })
 
         } catch (error) {
