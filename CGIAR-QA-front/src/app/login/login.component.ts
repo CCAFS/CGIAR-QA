@@ -6,7 +6,9 @@ import { first } from 'rxjs/operators';
 import { AuthenticationService } from './../services/authentication.service';
 import { AlertService } from './../services/alert.service';
 
-import { GeneralStatus } from '../_models/general-status.model'
+import { GeneralStatus } from '../_models/general-status.model';
+
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +21,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string;
+  env = environment;
 
   constructor(
     private formBuilder: FormBuilder,

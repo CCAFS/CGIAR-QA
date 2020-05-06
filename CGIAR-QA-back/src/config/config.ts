@@ -1,6 +1,6 @@
 export default {
     jwtSecret: "@QEGTUI",
-    port: 8800,
+    port: 4200,
     jwtTime: '5h',
     host: '0.0.0.0',
     active_directory: {

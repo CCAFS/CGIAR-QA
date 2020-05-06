@@ -20,7 +20,6 @@ export const checkRole = (roles: Array<string>) => {
             has_roles = mapped_roles.find(role_ => {
                 return roles.indexOf(role_) > -1
             });
-            console.log(has_roles ? 'has' : 'has not')
             // else res.status(401).send('User unauthorized.');
         } catch (error) {
             res.status(401).send();

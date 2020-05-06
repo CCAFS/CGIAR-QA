@@ -10,3 +10,4 @@ ormconfig.json
 ormconfig_.json
 
 ./src/config/config.ts
+src/config/config.ts

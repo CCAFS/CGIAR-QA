@@ -41,22 +41,9 @@ export class TawkToComponent implements OnInit {
   }
 
   openChat() {
-    console.log(window['Tawk_API']);
-    // window['Tawk_API'].onLoad(function () {
-    //   console.log(window['Tawk_API'])
-
-    // })
-    // window.Tawk_API.onLoad = function () {
-    //   window.Tawk_API.setAttributes({
-    //     'name': this.currentUser.name,
-    //     'email': this.currentUser.email,
-    //     'hash': 'hash value'
-    //   }, function (error) { 
-    //     console.log('set att', error)
-    //   });
-    // }
-    if (window['Tawk_API'])
+    if (window['Tawk_API'].hasOwnProperty('maximize')){
       window['Tawk_API'].maximize();
+    }
 
   }
 

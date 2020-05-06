@@ -12,7 +12,7 @@ export class UpdateEvaluationsWithCRP1582659577926 implements MigrationInterface
         for (let index = 0; index < evaluations.length; index++) {
             const element = evaluations[index];
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                `SELECT crp_id FROM ${element.indicator_user.indicator.view_name} WHERE ${element.indicator_user.indicator.primary_field} = :view_id`,
+                `SELECT crp_id FROM ${element['indicator_user'].indicator.view_name} WHERE ${element['indicator_user'].indicator.primary_field} = :view_id`,
                 { view_id: element.indicator_view_id },
                 {}
             );
