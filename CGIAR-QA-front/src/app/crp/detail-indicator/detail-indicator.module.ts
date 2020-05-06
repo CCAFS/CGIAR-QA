@@ -10,7 +10,7 @@ import { OrderModule } from 'ngx-order-pipe';
 import { DetailIndicatorRoutingModule } from './detail-indicator-routing.module';
 import { DetailIndicatorComponent } from './detail-indicator.component';
 import { CRPIndicatorsComponent } from '../crp-indicators/indicators.component';
-import { CommentComponent } from '../../comment/comment.component';
+// import { CommentComponent } from '../../comment/comment.component';
 
 
 
@@ -26,7 +26,7 @@ import { CommentComponent } from '../../comment/comment.component';
       OrderModule,
       ReactiveFormsModule
     ],
-    declarations: [DetailIndicatorComponent, CRPIndicatorsComponent, CommentComponent]
+    declarations: [DetailIndicatorComponent, CRPIndicatorsComponent]
   })
   export class DetailIndicatorModule { }
   

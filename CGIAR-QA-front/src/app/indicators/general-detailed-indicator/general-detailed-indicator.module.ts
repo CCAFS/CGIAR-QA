@@ -13,9 +13,11 @@ import {GeneralDetailedIndicatorRoutingModule } from './general-detailed-indicat
 import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
 import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator.component';
-import { CommentComponent } from '../../comment/comment.component';
+// import { CommentComponent } from '../../comment/comment.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { MarkdownModule } from 'ngx-markdown';
+
+// import { CommentComponentModule } from '../../comment/comment.component.module';
 
 
 @NgModule({
@@ -30,9 +32,10 @@ import { MarkdownModule } from 'ngx-markdown';
         MarkdownModule.forRoot(),
         NgxSpinnerModule,
         OrderModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        // CommentComponentModule
     ],
-    declarations: [ GeneralDetailedIndicatorComponent, CommentComponent]
+    declarations: [ GeneralDetailedIndicatorComponent]
 })
 export class GeneralDetailedIndicatorModule { }
 

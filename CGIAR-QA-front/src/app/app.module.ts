@@ -22,8 +22,9 @@ import { AdminComponent } from './admin/admin.component';
 import { AlertComponent } from './_shared/alert/alert.component';
 import { HeaderBarComponent } from './_shared/header-bar/header-bar.component';
 
-import { JwtInterceptor } from './_helpers/jwt.interceptor'
-import { ErrorInterceptor } from './_helpers/error.interceptor'
+import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { ErrorInterceptor } from './_helpers/error.interceptor';
+// import { CommentComponent } from './comment/comment.component';
 // import { FakeBackendInterceptor } from './_helpers/fake-back';
 
 
@@ -32,6 +33,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
 import { QaCloseComponent } from './qa-close/qa-close.component';
 import { TawkToComponent } from './tawk-to/tawk-to.component';
+// import { CommentComponentModule } from './comment/comment.component.module';
 // import { CrpComponent } from './crp/crp.component';
 
 @NgModule({
@@ -45,7 +47,6 @@ import { TawkToComponent } from './tawk-to/tawk-to.component';
     HeaderBarComponent,
     QaCloseComponent,
     TawkToComponent,
-    // SortByPipe
   ],
   imports: [
     BrowserModule,
@@ -61,12 +62,11 @@ import { TawkToComponent } from './tawk-to/tawk-to.component';
     TypeaheadModule,
     NgxSpinnerModule,
     CommonModule,
+    // CommentComponentModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    // SortByPipe
-    // { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
