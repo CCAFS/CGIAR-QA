@@ -35,7 +35,7 @@ createConnection()
         let server = app.listen(config.port, config.host, () => {
             // let host = app.address().address;
             // let port = app.address().port;
-            console.log(`Server started on port ${server.address().port} and host ${server.address().address}!`);
+            console.log(`Server started on port ${config.port} and host ${config.host}!`);
         });
     })
     .catch(error => console.log('createConnection', error));

@@ -16,6 +16,7 @@ import { QAIndicatorUser } from "@entity/IndicatorByUser";
 
 import * as jwt from "jsonwebtoken";
 import * as excel from 'exceljs';
+// const excel = require('exceljs');
 
 
 class Util {
@@ -171,7 +172,6 @@ class Util {
 
         try {
             let response = await indicatorMetaRepository.save(savePromises);
-            console.log(response)
             return response;
         } catch (error) {
             console.log(error);
@@ -202,7 +202,7 @@ class Util {
                     evaluations.indicator_view_id = element[indicator.primary_field];
                     evaluations.indicator_view_name = indicator.view_name;
                     evaluations.crp_id = element['crp_id'];
-                    evaluations.indicator_user = indiByUsr;
+                    // evaluations.indicator_user = indiByUsr;
                     evaluations.status = StatusHandler.Pending;
 
                     // console.log(evaluations, element)
