@@ -35,7 +35,8 @@
             <i class="icon-download-excel"></i>
         </div>
     </div>
-    <p>Status: <span  class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span> 
+    <p>Status: <span
+            class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
     </p>
 </div>
 
@@ -77,10 +78,13 @@
                                     </div>
                                 </div>
 
-                                <div *ngIf="detailedData[i].value && detailedData[i].col_name !== 'evidence_link'"
+                                <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' )"
                                     [innerHTML]="detailedData[i].value | markdown">
                                 </div>
-                                <a *ngIf="detailedData[i].value && detailedData[i].col_name === 'evidence_link'"
+                                <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' )"
+                                    [innerHTML]="detailedData[i].value">
+                                </div>
+                                <a *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link'"
                                     href="{{detailedData[i].value}}" target="_blank"> {{detailedData[i].value}} </a>
                                 <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p>
 

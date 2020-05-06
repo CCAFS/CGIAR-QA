@@ -29,8 +29,8 @@ export class QASlo {
     @ViewColumn()
     slo_target_id: string;
 
-    @ViewColumn()
-    slo_target: string;
+    // @ViewColumn()
+    // slo_target: string;
 
     @ViewColumn()
     biref_summary: string;

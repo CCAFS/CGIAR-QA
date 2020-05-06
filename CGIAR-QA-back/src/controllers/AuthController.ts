@@ -30,7 +30,7 @@ class AuthController {
                 ]
             });
 
-
+            // console.log(marlo_user, username, password)
             let user: QAUsers;
             if (marlo_user) {
                 let is_marlo = await AuthController.validateAD(marlo_user, password);
@@ -64,8 +64,8 @@ class AuthController {
 
             //Check if encrypted password match
 
+            // console.log('user',marlo_user)
             if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
-                console.log('user')
                 res.status(401).json({ message: 'Password does not match.' });
             }
 
