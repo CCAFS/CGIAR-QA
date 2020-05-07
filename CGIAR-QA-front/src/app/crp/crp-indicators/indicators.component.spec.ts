@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IndicatorsComponent } from './indicators.component';
+import { CRPIndicatorsComponent } from './indicators.component';
 
-describe('IndicatorsComponent', () => {
-  let component: IndicatorsComponent;
-  let fixture: ComponentFixture<IndicatorsComponent>;
+describe('CRPIndicatorsComponent', () => {
+  let component: CRPIndicatorsComponent;
+  let fixture: ComponentFixture<CRPIndicatorsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IndicatorsComponent ]
+      declarations: [ CRPIndicatorsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IndicatorsComponent);
+    fixture = TestBed.createComponent(CRPIndicatorsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

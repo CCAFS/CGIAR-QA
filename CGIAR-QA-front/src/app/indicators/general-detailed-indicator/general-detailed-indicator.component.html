@@ -50,7 +50,7 @@
                         class="custom-control-input" value="selectAll" name="selectAll" formControlName="selectAll">
                     <label tooltip="{{tooltips.all_approved}}" container="body" placement="top"
                         class="custom-control-label" for="selectAll">
-                        Approved all items to be assessed.
+                        Approve all items to be assessed.
                     </label>
                 </div>
                 <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
@@ -84,8 +84,9 @@
                                 <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' )"
                                     [innerHTML]="detailedData[i].value">
                                 </div>
-                                <a *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link'"
-                                    href="{{detailedData[i].value}}" target="_blank"> {{detailedData[i].value}} </a>
+                                <p *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link'">{{detailedData[i].value}}</p>
+                                <!-- <a *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link'"
+                                    href="{{detailedData[i].value}}" target="_blank"> {{detailedData[i].value}} </a> -->
                                 <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p>
 
                             </div>
