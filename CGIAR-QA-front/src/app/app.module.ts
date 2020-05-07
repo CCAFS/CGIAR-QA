@@ -33,7 +33,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
 import { QaCloseComponent } from './qa-close/qa-close.component';
 import { TawkToComponent } from './tawk-to/tawk-to.component';
-// import { CommentComponentModule } from './comment/comment.component.module';
+import { CommentComponentModule } from './comment/comment.module';
 // import { CrpComponent } from './crp/crp.component';
 
 @NgModule({
@@ -62,7 +62,7 @@ import { TawkToComponent } from './tawk-to/tawk-to.component';
     TypeaheadModule,
     NgxSpinnerModule,
     CommonModule,
-    // CommentComponentModule,
+    CommentComponentModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
