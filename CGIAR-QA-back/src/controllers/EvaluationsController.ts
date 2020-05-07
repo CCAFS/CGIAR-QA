@@ -165,6 +165,7 @@ class EvaluationsController {
                     { view_name },
                     {}
                 );
+                console.log(query)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
@@ -265,7 +266,6 @@ class EvaluationsController {
                     {}
                 );
                 let rawData = await queryRunner.connection.query(query, parameters);
-                // console.log(sql)
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
 
             }
