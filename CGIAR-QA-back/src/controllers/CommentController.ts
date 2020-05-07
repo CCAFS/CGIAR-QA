@@ -360,9 +360,6 @@ class CommentController {
         // const { name, id } = req.params;
         const { evaluationId } = req.params;
         const { userId, name } = req.query;
-        // let queryRunner = getConnection().createQueryBuilder();
-        // const evaluationRepository = getRepository(QAEvaluations);
-        console.log(evaluationId, userId, name)
         let comments;
         try {
             const commentsRepository = getRepository(QAComments);
@@ -376,7 +373,7 @@ class CommentController {
             });
             let currentRole = user.roles.map(role => { return role.description })[0];
 
-            if (currentRole === RolesHandler.admin) {
+            if (currentRole === RolesHandler.admin || currentRole === RolesHandler.assesor) {
                 comments = await commentsRepository.find({
                     where: { is_visible: 1, evaluation: evaluationId },
                     relations: ['user', 'meta'],

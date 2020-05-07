@@ -14,6 +14,8 @@ import { DetailedStatus, GeneralIndicatorName } from "../../_models/general-stat
 import { Role } from "../../_models/roles.model"
 import { CommentService } from 'src/app/services/comment.service';
 
+import { saveAs } from "file-saver";
+
 
 
 @Component({
@@ -121,14 +123,24 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     return !response;
   }
 
+  validateUpdateEvaluation() {
+    let checked_row = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
+    let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id)
+    console.log(checked_row, commented_row, this.detailedData)
+  }
+
+
   onTickChange(e, field) {
     if (field) {
       let noComment = (e.target.checked) ? true : false;
       field.loading = true
+
+
       this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], isAll: false, userId: this.currentUser.id, noComment }, field.evaluation_id).subscribe(
         res => {
-          console.log(res);
+          // console.log(res);
           field.loading = false
+          this.validateUpdateEvaluation();
         },
         error => {
           this.alertService.error(error);
@@ -171,7 +183,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       res => {
         this.detailedData = res.data.filter(field => {
           // console.log(field.value &&)
-          return  field.value !== this.notApplicable;
+          return field.value !== this.notApplicable;
         });
         // console.log(res.data[0], this.detailedData)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
@@ -201,14 +213,13 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.showSpinner('spinner1');
     let evaluationId = evaluation.evaluation_id;
     let title = this.detailedData.find(data => data.col_name === 'title');
+    let filename = `QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}`
+
     this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: title.display_name }).subscribe(
       res => {
+        // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
-        let url = window.URL.createObjectURL(blob);
-        let pwa = window.open(url);
-        if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-          this.alertService.error('Please disable your Pop-up blocker and try again.');
-        }
+        saveAs(blob, filename);
         this.hideSpinner('spinner1');
       },
       error => {
