@@ -13,6 +13,10 @@
   margin-left: 1em;
 }
 
+.custom-control-input:checked~.custom-control-label::before {
+  background-color: #ffc84f;
+}
+
 .criteria-container{
   display: flex;
   -webkit-box-pack: justify;
@@ -42,7 +46,7 @@
 .detail-header-container {
   display: flex;
   justify-content: space-between;
-  margin: auto 2em;
+  margin: auto 1.6em;
 }
 
 .btn-primary:hover{
@@ -52,10 +56,16 @@
   height:0.8em
 }
 
+.file-button{
+  float: right;
+  margin-left: 5px;
+}
+
 .detail-container {
   padding: 20px;
   .data-container {
     border: 1px solid var(--gray-primary);
+    border-radius: 0.2em;
     padding: 20px;
     margin: 0 0.5em 2em;
     min-height: 200px;
@@ -92,7 +102,7 @@
       margin: 1em 0;
       flex-direction: row;
       display: flex;
-    
+
       .empty-value {
         font-style: italic;
       }
@@ -105,9 +115,11 @@
         margin: 0.5em 0;
       }
       .activate-messages-container.active {
-        background-color: var(--yellow-primary);
+        background-color: var(--yellow-secondary);
+        border-color: var(--yellow-secondary);
+        cursor: pointer;
         i {
-          content: url("~/assets/icons/comment_icon_inactive.svg");
+          content: url("~/assets/icons/comment_icon_added.svg");
         }
         .replies-count {
           background-color: var(--red-primary);

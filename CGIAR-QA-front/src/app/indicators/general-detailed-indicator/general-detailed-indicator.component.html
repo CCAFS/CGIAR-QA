@@ -22,6 +22,11 @@
         {{detailedData[0].crp_acronym}} / {{currentType}} /
         QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
     </p>
+
+    <p>Status: <span
+            class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+    </p>
+
     <div *ngIf="detailedData[0]">
         <a *ngIf="detailedData[0].public_link" [href]="detailedData[0].public_link" target="_blank">
             <div tooltip="{{tooltips.public_link}}" container="body" placement="top"
@@ -35,9 +40,6 @@
             <i class="icon-download-excel"></i>
         </div>
     </div>
-    <p>Status: <span
-            class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
-    </p>
 </div>
 
 
