@@ -126,7 +126,6 @@ class EvaluationsController {
                         evaluations.status AS evaluations_status,
                         evaluations.indicator_view_name AS evaluations_indicator_view_name,
                         evaluations.crp_id AS evaluations_crp_id,
-                        evaluations.general_comments AS evaluations_general_comments,
                         ${view_name}.title AS title,
                         ${levelQuery.view_sql}
                         crp.acronym AS crp_acronym,
@@ -157,7 +156,6 @@ class EvaluationsController {
                         evaluations.status,
                         evaluations.indicator_view_name,
                         evaluations.crp_id,
-                        evaluations.general_comments,
                         ${view_name}.title,
                         ${levelQuery.innovations_stage}
                         crp.acronym,
@@ -177,7 +175,6 @@ class EvaluationsController {
                     evaluations.status AS evaluations_status,
                     evaluations.indicator_view_name AS evaluations_indicator_view_name,
                     evaluations.crp_id AS evaluations_crp_id,
-                    evaluations.general_comments AS evaluations_general_comments,
                     ${view_name}.title AS title,
                     crp.acronym AS crp_acronym,
                     crp.name AS crp_name,
@@ -206,7 +203,6 @@ class EvaluationsController {
                         evaluations.status,
                         evaluations.indicator_view_name,
                         evaluations.crp_id,
-                        evaluations.general_comments,
                         ${view_name}.title,
                         ${levelQuery.innovations_stage}
                         crp.acronym,
@@ -227,7 +223,6 @@ class EvaluationsController {
                 evaluations.status AS evaluations_status,
                 evaluations.indicator_view_name AS evaluations_indicator_view_name,
                 evaluations.crp_id AS evaluations_crp_id,
-                evaluations.general_comments AS evaluations_general_comments,
                 ${view_name}.title AS title,
                 crp.acronym AS crp_acronym,
                 crp.name AS crp_name,
@@ -256,7 +251,6 @@ class EvaluationsController {
                     evaluations.status,
                     evaluations.indicator_view_name,
                     evaluations.crp_id,
-                    evaluations.general_comments,
                     ${view_name}.title,
                     ${levelQuery.innovations_stage}
                     crp.acronym,
@@ -415,7 +409,7 @@ class EvaluationsController {
         // console.log({ general_comments, status }, id)
         try {
             let evaluation = await evaluationsRepository.findOneOrFail(id);
-            evaluation.general_comments = general_comments;
+            // evaluation.general_comments = general_comments;
             evaluation.status = status;
 
             let updatedEva = await evaluationsRepository.save(evaluation);

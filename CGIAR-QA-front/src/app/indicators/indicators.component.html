@@ -115,7 +115,7 @@
         </tr>
     </tbody>
 </table>
-    <div class="total-items">
+    <div *ngIf='evaluationList' class="total-items">
         Total items: {{evaluationList.length}}
     </div>
 <div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">

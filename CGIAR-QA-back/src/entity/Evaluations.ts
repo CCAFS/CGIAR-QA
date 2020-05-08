@@ -43,11 +43,6 @@ export class QAEvaluations {
     @IsNotEmpty({ message: 'The CRP identifier is required' })
     crp_id: string;
 
-    // @Column({ default: "" })
-    // @Length(2, 200)
-    // @IsNotEmpty({ message: 'The CRP identifier is required' })
-    // general_comments: string;
-
     @Column()
     @CreateDateColumn()
     createdAt: Date;
