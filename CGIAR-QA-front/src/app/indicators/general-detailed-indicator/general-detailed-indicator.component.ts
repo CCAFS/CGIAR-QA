@@ -34,6 +34,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     status: "",
     evaluation_id: '',
     general_comment: '',
+    general_comment_user: '',
+    general_comment_updatedAt: '',
     crp_id: ''
   };
   statusHandler = DetailedStatus;
@@ -204,7 +206,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           evaluation_id: this.detailedData[0].evaluation_id,
           general_comment: this.detailedData[0].general_comment,
           crp_id: this.detailedData[0].evaluation_id,
-          status: this.detailedData[0].status
+          status: this.detailedData[0].status,
+          general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
+          general_comment_user: this.detailedData[0].general_comment_user,
         }
         this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
         // console.log(this.detailedData, this.gnralInfo)
@@ -349,10 +353,18 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
 
-  addGeneralComment(name, data) {
-    console.log(data[0]);
+  addGeneralComment(name, array) {
+    let data = array[0]
     let request;
-    if (data[0].general_comment) {
+    if (data.general_comment) {
+      request  = this.commentService.updateDataComment({
+        id: data.general_comment_id,
+        detail: this.formData.general_comment.value,
+        userId: this.currentUser.id,
+        evaluationId: this.gnralInfo.evaluation_id,
+        metaId: null,
+        approved: 1
+      })
     } else {
       request = this.commentService.createDataComment({
         detail: this.formData.general_comment.value,

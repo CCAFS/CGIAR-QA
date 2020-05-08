@@ -150,7 +150,9 @@ class CommentController {
         try {
 
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
-            let meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
+            let meta;
+            if(metaId!=null)
+                meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
 
             let comment_ = new QAComments();
@@ -174,7 +176,7 @@ class CommentController {
     static updateComment = async (req: Request, res: Response) => {
 
         //Check if username and password are set
-        const { approved, is_visible, is_deleted, id } = req.body;
+        const { approved, is_visible, is_deleted, id, detail, userId } = req.body;
         const commentsRepository = getRepository(QAComments);
 
         try {
@@ -182,6 +184,10 @@ class CommentController {
             comment_.approved = approved;
             comment_.is_deleted = is_deleted;
             comment_.is_visible = is_visible;
+            if(detail)
+                comment_.detail = detail;
+            if(userId)
+                comment_.user = userId;
 
 
             let updated_comment = await commentsRepository.save(comment_);

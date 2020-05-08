@@ -136,8 +136,11 @@
                     <form [formGroup]="generalCommentGroup">
                         <textarea cols="30" rows="5" formControlName="general_comment"></textarea>
                     </form>
+                    <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong> {{gnralInfo.general_comment_user}} <strong>at:</strong>
+                        {{gnralInfo.general_comment_updatedAt}}</p>
                     <div class="bton-container">
-                        <button type="button" class="btn btn-green-secondary"
+                        <button type="button"
+                            class="btn btn-{{formData.general_comment.value ? 'green':'red'}}-secondary"
                             [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
                             (click)="addGeneralComment('general_comment', detailedData)">SAVE</button>
                         <!-- <p class="error" *ngIf="this.tickGroup.controls['tick'].errors?.required">

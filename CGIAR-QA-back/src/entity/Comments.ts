@@ -15,7 +15,7 @@ export class QAComments {
     @ManyToOne(type => QAEvaluations, evaluation => evaluation.comments)
     evaluation: QAEvaluations;
 
-    @ManyToOne(type => QAIndicatorsMeta, meta => meta.comments)
+    @ManyToOne(type => QAIndicatorsMeta, meta => meta.comments, { nullable: true })
     meta: QAIndicatorsMeta;
 
     @ManyToOne(type => QAUsers, user => user.comments)

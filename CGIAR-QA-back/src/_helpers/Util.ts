@@ -268,6 +268,8 @@ class Util {
             evaluation_id: element["evaluations_id"],
             general_comment: element["general_comment"],
             general_comment_id: element["general_comment_id"],
+            general_comment_user: element["general_comment_user"],
+            general_comment_updatedAt: element["general_comment_updatedAt"],
             enable_assessor: element['enable_assessor'],
             enable_crp: element['enable_crp'],
             replies_count: element['replies_count'],

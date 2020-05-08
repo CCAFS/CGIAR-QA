@@ -82,14 +82,9 @@ export class IndicatorsComponent implements OnInit {
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
-        // this.hasTemplate = this.currentUser.config[0][] ? true : false;
-        // this.returnedArray = this.evaluationList;
-        // // console.log(this.evaluationList.length, this.returnedArray.length)
-        // console.log(this.currentUser.config[0])
         this.hideSpinner();
       },
       error => {
-        // console.log("getEvaluationsList", error);
         this.hideSpinner();
         this.returnedArray = []
         this.alertService.error(error);
