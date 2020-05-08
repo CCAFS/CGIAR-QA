@@ -115,10 +115,10 @@
         </tr>
     </tbody>
 </table>
-<div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
-    <div>
+    <div class="total-items">
         Total items: {{evaluationList.length}}
     </div>
+<div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
     <pagination [rotate]="false" [totalItems]="(evaluationList | filter:searchText ).length" [maxSize]="5"
         (pageChanged)="pageChanged($event)">
     </pagination>
