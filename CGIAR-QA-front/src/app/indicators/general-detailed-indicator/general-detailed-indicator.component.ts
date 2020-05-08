@@ -125,8 +125,19 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   validateUpdateEvaluation() {
     let checked_row = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
-    let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id)
-    console.log(checked_row, commented_row, this.detailedData)
+    let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id);
+
+    // console.log((checked_row.length + commented_row.length) == this.detailedData.length)
+
+    if ((checked_row.length + commented_row.length) == this.detailedData.length) {
+      // console.log('all aproved');
+      this.gnralInfo.status = this.statusHandler.Complete
+      this.updateEvaluation('status', this.detailedData)
+    } else if (this.gnralInfo.status == this.statusHandler.Complete) {
+      // console.log('not approved')
+      this.gnralInfo.status = this.statusHandler.Pending
+      this.updateEvaluation('status', this.detailedData)
+    }
   }
 
 
@@ -293,7 +304,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         evaluationData['general_comments'] = this.formData.general_comment.value
         break;
       case "status":
-        evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
+        evaluationData['status'] = this.gnralInfo.status;
+        // evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
         break;
 
       default:
