@@ -109,9 +109,9 @@ class EvaluationsController {
         const id = req.params.id;
         const view_name = req.body.view_name;
         const view_primary_field = req.body.view_primary_field;
-        const levelQuery  = EvaluationsController.getLevelQuery(view_name)
-       
-        
+        const levelQuery = EvaluationsController.getLevelQuery(view_name)
+
+
         let queryRunner = getConnection().createQueryBuilder();
 
         try {
@@ -137,6 +137,7 @@ class EvaluationsController {
                             WHERE qa_comments.evaluationId = evaluations.id
                             AND approved_no_comment IS NULL
                             AND is_deleted = 0
+                            AND is_visible = 1
                         ) AS comments_count
                     FROM
                         qa_indicator_user qa_indicator_user
@@ -165,41 +166,41 @@ class EvaluationsController {
                     { view_name },
                     {}
                 );
-                console.log(query)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
             } else if (user.crp) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
-                        evaluations.id AS evaluations_id,
-                        evaluations.indicator_view_id AS evaluations_indicator_view_id,
-                        evaluations.status AS evaluations_status,
-                        evaluations.indicator_view_name AS evaluations_indicator_view_name,
-                        evaluations.crp_id AS evaluations_crp_id,
-                        evaluations.general_comments AS evaluations_general_comments,
-                        ${view_name}.title AS title,
-                        crp.acronym AS crp_acronym,
-                        crp.name AS crp_name,
-                        (
-                            SELECT COUNT(id)
-                            FROM qa_comments
-                            WHERE qa_comments.evaluationId = evaluations.id
-                            AND approved_no_comment IS NULL
-                            AND is_deleted = 0
-                        ) AS comments_count
-                    FROM
+                    evaluations.id AS evaluations_id,
+                    evaluations.indicator_view_id AS evaluations_indicator_view_id,
+                    evaluations.status AS evaluations_status,
+                    evaluations.indicator_view_name AS evaluations_indicator_view_name,
+                    evaluations.crp_id AS evaluations_crp_id,
+                    evaluations.general_comments AS evaluations_general_comments,
+                    ${view_name}.title AS title,
+                    crp.acronym AS crp_acronym,
+                    crp.name AS crp_name,
+                    (
+                        SELECT COUNT(id)
+                        FROM qa_comments
+                        WHERE qa_comments.evaluationId = evaluations.id
+                        AND approved_no_comment IS NULL
+                        AND is_deleted = 0
+                        AND is_visible = 1
+                    ) AS comments_count
+                        FROM
                         qa_indicator_user qa_indicator_user
-                    LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
-                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-                    LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
-                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                    WHERE crp.active = 1
-                    AND crp.qa_active = 'open'
-                    AND evaluations.crp_id = :crp_id
-                    AND title IS NOT NULL
-                    AND evaluations.indicator_view_name = :view_name 
-                    GROUP BY
+                        LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                        LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
+                        LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
+                        LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                        WHERE crp.active = 1
+                        AND crp.qa_active = 'open'
+                        AND evaluations.crp_id = :crp_id
+                        AND title IS NOT NULL
+                        AND evaluations.indicator_view_name = :view_name 
+                        GROUP BY
                         evaluations.id,
                         evaluations.indicator_view_id,
                         evaluations.status,
@@ -210,7 +211,7 @@ class EvaluationsController {
                         ${levelQuery.innovations_stage}
                         crp.acronym,
                         crp.name
-                    `,
+                        `,
                     { crp_id: user.crp.crp_id, view_name },
                     {}
                 );
@@ -236,35 +237,37 @@ class EvaluationsController {
                     WHERE qa_comments.evaluationId = evaluations.id
                     AND approved_no_comment IS NULL
                     AND is_deleted = 0
+                    AND is_visible = 1
                 ) AS comments_count
-            FROM
-                qa_indicator_user qa_indicator_user
-            LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
-            LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-            LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
-            LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-            WHERE crp.active = 1
-            AND crp.qa_active = 'open'
-            AND qa_indicator_user.userId = :user_Id
-            AND title IS NOT NULL
-            AND evaluations.indicator_view_name = :view_name 
-            GROUP BY
-                evaluations.id,
-                evaluations.indicator_view_id,
-                evaluations.status,
-                evaluations.indicator_view_name,
-                evaluations.crp_id,
-                evaluations.general_comments,
-                ${view_name}.title,
-                ${levelQuery.innovations_stage}
-                crp.acronym,
-                crp.name
-            `;
+                    FROM
+                    qa_indicator_user qa_indicator_user
+                    LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
+                    LEFT JOIN ${view_name} ${view_name} ON ${view_name}.${view_primary_field}= evaluations.indicator_view_id
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                    WHERE crp.active = 1
+                    AND crp.qa_active = 'open'
+                    AND qa_indicator_user.userId = :user_Id
+                    AND title IS NOT NULL
+                    AND evaluations.indicator_view_name = :view_name 
+                    GROUP BY
+                    evaluations.id,
+                    evaluations.indicator_view_id,
+                    evaluations.status,
+                    evaluations.indicator_view_name,
+                    evaluations.crp_id,
+                    evaluations.general_comments,
+                    ${view_name}.title,
+                    ${levelQuery.innovations_stage}
+                    crp.acronym,
+                    crp.name
+                    `;
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sql,
                     { user_Id: id, view_name },
                     {}
                 );
+                // console.log(query, parameters)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
 
@@ -376,6 +379,11 @@ class EvaluationsController {
                     .select(`${view_name_psdo}.title AS title, comment_meta.enable_assessor AS enable_assessor,comment_meta.enable_crp AS enable_crp`)
                     .addSelect('( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NULL ) AS replies_count')
                     .addSelect('( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 AND approved_no_comment IS NOT NULL) AS approved_no_comment')
+                    
+                    .addSelect('( SELECT id FROM qa_comments WHERE metaId IS NULL  AND evaluationId = `evaluations`.`id`  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_id')
+                    .addSelect('( SELECT detail FROM qa_comments WHERE metaId IS NULL  AND evaluationId = `evaluations`.`id`  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment')
+
+                    
                     .where("qa_indicator_user.user=:userId", { userId: id })
                     .andWhere("evaluations.indicator_view_id=:indicatorId", { indicatorId })
                     .andWhere("evaluations.indicator_view_name=:view_name", { view_name })

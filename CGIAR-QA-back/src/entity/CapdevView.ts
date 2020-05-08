@@ -1,5 +1,4 @@
 import { ViewEntity, ViewColumn } from "typeorm";
-import { Length, IsNotEmpty } from "class-validator";
 
 
 @ViewEntity({
