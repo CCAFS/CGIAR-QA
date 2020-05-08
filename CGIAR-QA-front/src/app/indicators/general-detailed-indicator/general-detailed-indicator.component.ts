@@ -40,6 +40,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   generalCommentGroup: FormGroup;
   currentType = '';
 
+  approveAllitems;
+
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
 
 
@@ -127,14 +129,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let checked_row = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
     let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id);
 
-    // console.log((checked_row.length + commented_row.length) == this.detailedData.length)
-
     if ((checked_row.length + commented_row.length) == this.detailedData.length) {
-      // console.log('all aproved');
       this.gnralInfo.status = this.statusHandler.Complete
       this.updateEvaluation('status', this.detailedData)
     } else if (this.gnralInfo.status == this.statusHandler.Complete) {
-      // console.log('not approved')
       this.gnralInfo.status = this.statusHandler.Pending
       this.updateEvaluation('status', this.detailedData)
     }
@@ -163,22 +161,27 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   onChangeSelectAll(e) {
+    console.log(this.approveAllitems)
+
     let selected_meta = [];
     let noComment;
-    if (e.target.checked) {
+    if (e) {
       this.formTickData.controls.map((value, i) => (this.detailedData[i].replies_count == '0') ? value.get('isChecked').setValue(true) : value.get('isChecked'));
       selected_meta = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
       noComment = true;
+      this.gnralInfo.status = this.statusHandler.Complete;
     } else {
       this.formTickData.controls.map(value => value.get('isChecked').setValue(false));
       selected_meta = this.detailedData.filter((data, i) => (!this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
       noComment = false;
+      this.gnralInfo.status = this.statusHandler.Pending;
     }
+    // console.log(e, selected_meta, this.gnralInfo.status)
     this.showSpinner('spinner1');
     this.commentService.toggleApprovedNoComments({ meta_array: selected_meta, userId: this.currentUser.id, isAll: true, noComment }, this.gnralInfo.evaluation_id).subscribe(
       res => {
-        this.updateEvaluation('status', this.detailedData)
-        // this.hideSpinner('spinner1');
+        this.updateEvaluation('status', this.detailedData);
+        this.approveAllitems = !e;
       },
       error => {
         this.alertService.error(error);
@@ -196,7 +199,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           // console.log(field.value &&)
           return field.value !== this.notApplicable;
         });
-        // console.log(res.data[0], this.detailedData)
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
@@ -204,6 +206,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           crp_id: this.detailedData[0].evaluation_id,
           status: this.detailedData[0].status
         }
+        this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
+        // console.log(this.detailedData, this.gnralInfo)
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner('spinner1');
@@ -290,19 +294,19 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   updateEvaluation(type: string, data: any) {
     let evaluationData = {
       evaluation_id: data[0].evaluation_id,
-      general_comments: data[0].general_comments,
+      // general_comments: data[0].general_comments,
       status: data[0].status,
     };
 
     switch (type) {
-      case 'general_comment':
-        if (this.generalCommentGroup.invalid) {
-          this.alertService.error('A general comment is required', false)
-          return;
-        }
-        // this.showSpinner('spinner1');
-        evaluationData['general_comments'] = this.formData.general_comment.value
-        break;
+      // case 'general_comment':
+      //   if (this.generalCommentGroup.invalid) {
+      //     this.alertService.error('A general comment is required', false)
+      //     return;
+      //   }
+      //   // this.showSpinner('spinner1');
+      //   // evaluationData['general_comments'] = this.formData.general_comment.value
+      //   break;
       case "status":
         evaluationData['status'] = this.gnralInfo.status;
         // evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
@@ -311,7 +315,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       default:
         break;
     }
-    // //console.log(evaluationData)
 
     this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
       res => {
@@ -343,6 +346,38 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         break;
     }
     return avility;
+  }
+
+
+  addGeneralComment(name, data) {
+    console.log(data[0]);
+    let request;
+    if (data[0].general_comment) {
+    } else {
+      request = this.commentService.createDataComment({
+        detail: this.formData.general_comment.value,
+        userId: this.currentUser.id,
+        evaluationId: this.gnralInfo.evaluation_id,
+        metaId: null,
+        approved: 1
+      })
+    }
+
+    request.subscribe(
+      res => {
+        console.log(res)
+        this.alertService.success(res.message);
+        this.showSpinner('spinner1')
+        this.getDetailedData();
+      },
+      error => {
+        //console.log("updateEvaluation", error);
+        this.hideSpinner('spinner1');
+        this.alertService.error(error);
+      }
+    )
+
+
   }
 
   /***
