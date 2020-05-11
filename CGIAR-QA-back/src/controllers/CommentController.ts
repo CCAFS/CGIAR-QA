@@ -228,6 +228,7 @@ class CommentController {
                 { metaId, evaluationId },
                 {}
             );
+            console.log(query, parameters)
             let replies = await queryRunner.connection.query(query, parameters);
             let comments = await CommentController.getCommts(metaId, evaluationId);
 

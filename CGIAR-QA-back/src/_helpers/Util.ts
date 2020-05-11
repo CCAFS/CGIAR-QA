@@ -280,7 +280,7 @@ class Util {
                 display_type: DisplayTypeHandler.Paragraph,
                 value: element[`${field}`],
                 field_id: element["meta_id"],
-                evaluation_id: element["evaluations_id"],
+                evaluation_id: element["evaluation_id"],
                 general_comment: element["general_comment"],
                 general_comment_id: element["general_comment_id"],
                 general_comment_user: element["general_comment_user"],
