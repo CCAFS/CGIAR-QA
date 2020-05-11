@@ -137,7 +137,7 @@ class CommentController {
 
     // create comment by indicator
     static createComment = async (req: Request, res: Response) => {
-
+        // approved
         //Check if username and password are set
         const { detail, approved, userId, metaId, evaluationId } = req.body;
         // const evaluationId = req.params.id;
@@ -161,7 +161,6 @@ class CommentController {
             comment_.meta = meta;
             comment_.evaluation = evaluation;
             comment_.user = user;
-
             let new_comment = await commentsRepository.save(comment_);
 
             res.status(200).send({ data: new_comment, message: 'Comment created' });
@@ -228,7 +227,6 @@ class CommentController {
                 { metaId, evaluationId },
                 {}
             );
-            console.log(query, parameters)
             let replies = await queryRunner.connection.query(query, parameters);
             let comments = await CommentController.getCommts(metaId, evaluationId);
 
@@ -379,7 +377,8 @@ class CommentController {
                 ]
             });
             let currentRole = user.roles.map(role => { return role.description })[0];
-
+            
+            console.log({ is_visible: 1, evaluation: evaluationId })
             if (currentRole === RolesHandler.admin || currentRole === RolesHandler.assesor) {
                 comments = await commentsRepository.find({
                     where: { is_visible: 1, evaluation: evaluationId },
@@ -398,7 +397,6 @@ class CommentController {
                 });
             }
 
-            // const name = 'Comments';
             const stream: Buffer = await Util.createCommentsExcel([
                 { header: 'Id', key: 'id' },
                 { header: 'Field', key: 'field' },

@@ -37,7 +37,7 @@
       "start-dev": "set debug=* && npx tsnd --respawn --transpileOnly ./src/index.ts --host=172.22.33.55 --disable-host-check",
       "prod": "tsc && node ./build/index.js",
       "migration": "ts-node ./node_modules/typeorm/cli.js migration:run",
-      "synchronize": "ts-node ./node_modules/typeorm/cli.js schema:sync"
+      "synch": "ts-node ./node_modules/typeorm/cli.js schema:sync"
    },
    "_moduleAliases": {
       "@root": ".",

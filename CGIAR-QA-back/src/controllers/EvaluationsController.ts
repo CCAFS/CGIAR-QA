@@ -16,6 +16,7 @@ import Util from "@helpers/Util"
 
 import { format } from "url";
 import { QACommentsReplies } from "@entity/CommentsReplies";
+import { QACrpView } from "@entity/CRPView";
 
 
 // import { validate } from "class-validator";
@@ -113,7 +114,6 @@ class EvaluationsController {
 
 
         let queryRunner = getConnection().createQueryBuilder();
-
         try {
             const userRepository = getRepository(QAUsers);
             let user = await userRepository.findOneOrFail({ where: { id } });
@@ -136,6 +136,7 @@ class EvaluationsController {
                         WHERE
                             qa_comments.evaluationId = evaluations.id
                         AND approved_no_comment IS NULL
+                        AND metaId IS NOT NULL
                         AND is_deleted = 0
                         AND is_visible = 1
                     ) AS comments_count,
@@ -182,6 +183,7 @@ class EvaluationsController {
                             WHERE
                                 qa_comments.evaluationId = evaluations.id
                             AND approved_no_comment IS NULL
+                            AND metaId IS NOT NULL
                             AND is_deleted = 0
                             AND is_visible = 1
                         ) AS comments_count,
@@ -233,6 +235,7 @@ class EvaluationsController {
                             WHERE
                                 qa_comments.evaluationId = evaluations.id
                             AND approved_no_comment IS NULL
+                            AND metaId IS NOT NULL
                             AND is_deleted = 0
                             AND is_visible = 1
                         ) AS comments_count,
@@ -262,7 +265,6 @@ class EvaluationsController {
                     { user_Id: id, view_name },
                     {}
                 );
-                console.log(query, parameters)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
 
@@ -593,7 +595,7 @@ class EvaluationsController {
     // get all CRPS
     static getCRPS = async (req: Request, res: Response) => {
 
-        const crpRepository = await getRepository(QACrp);
+        const crpRepository = await getRepository(QACrpView);
 
         try {
             let allCRP = await crpRepository.find({ where: { active: true } });

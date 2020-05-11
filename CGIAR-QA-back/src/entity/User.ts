@@ -35,7 +35,7 @@ export class QAUsers {
     @Column({ nullable: true })
     // @Length(4, 20)
     password: string;
-    
+
     @Column({ default: false })
     is_marlo: boolean;
 
@@ -75,7 +75,7 @@ export class QAUsers {
     })
     indicators: QAIndicatorUser[];
 
-    @ManyToOne(type => QACrp, crp => crp.user, { eager: true })
+    @ManyToOne(type => QACrp, crp => crp.id, { eager: true })
     crp: QACrp;
 
     // @Column("simple-array", { nullable: true })

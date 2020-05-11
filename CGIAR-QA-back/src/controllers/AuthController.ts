@@ -121,8 +121,6 @@ class AuthController {
                 res.status(401).json({ data: [], message: 'Invalid token' });
             }
             let auth_token = r[0];
-            console.log('auth_token')
-            console.log(auth_token)
             let user = await Util.createOrReturnUser(auth_token);
             //Send the jwt in the response
             res.status(200).json({ data: user, message: 'CRP Logged' })
