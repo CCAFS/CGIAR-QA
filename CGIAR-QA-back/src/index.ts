@@ -23,6 +23,7 @@ createConnection()
         app.use(helmet.contentSecurityPolicy({
             directives: {
                 defaultSrc: ["'self'"],
+                styleSrc: ["'self'", 'cdnjs.cloudflare.com'],
                 childSrc: ["'self'", 'http://qatest.ciat.cgiar.org/crp']
             }
         }))
