@@ -23,7 +23,7 @@ createConnection()
         app.use(helmet.contentSecurityPolicy({
             directives: {
                 // defaultSrc: ["'self'"],
-                frameSrc: ["", 'http://qatest.ciat.cgiar.org/crp']
+                frameSrc: ["'self'", 'http://qatest.ciat.cgiar.org/crp']
             }
         }))
         // app.use(helmet.contentSecurityPolicy({
