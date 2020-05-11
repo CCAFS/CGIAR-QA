@@ -26,12 +26,12 @@ createConnection()
                 frameSrc: ["'self'", 'http://qatest.ciat.cgiar.org']
             }
         }))
-        app.use(helmet.contentSecurityPolicy({
-            directives: {
-                defaultSrc: ["'self'"],
-                frameSrc: ["'self'", 'http://qa.cgiar.org']
-            }
-        }))
+        // app.use(helmet.contentSecurityPolicy({
+        //     directives: {
+        //         defaultSrc: ["'self'"],
+        //         frameSrc: ["'self'", 'http://qa.cgiar.org']
+        //     }
+        // }))
         
         app.use(bodyParser.json());
         app.use(express.static(parentDir + '/CGIAR-QA-front/dist/qa-app'));
