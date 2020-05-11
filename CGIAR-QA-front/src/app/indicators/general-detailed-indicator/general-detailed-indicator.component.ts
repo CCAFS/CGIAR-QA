@@ -45,6 +45,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   approveAllitems;
 
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
+  @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
 
 
   activeCommentArr = [];
@@ -163,7 +164,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   onChangeSelectAll(e) {
-    console.log(this.approveAllitems)
 
     let selected_meta = [];
     let noComment;
@@ -265,8 +265,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.criteria_loading = true;
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
       res => {
-        // console.log(res.data)
-        this.criteriaData = res.data;
+        console.log(res.data)
+        this.criteriaData = res.data[0];
         this.criteria_loading = false;
       },
       error => {
@@ -283,12 +283,16 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
    * 
    */
 
-  showComments(index: number, field: any) {
-    // ////console.log(index, field)
+  showComments(index: number, field: any, e) {
+    // console.log(index, this.detailedData[index],this.params)
+    const { x, y } = this.commentsElem.nativeElement.getBoundingClientRect();
+    // console.log(x, y, e.clientY)
+    if (e) {
+      this.currentY = e.clientY - y;
+    }
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
-    this.currentY = (index * 100);
   }
 
   updateNumCommnts(event, detailedData) {
@@ -341,7 +345,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let userRole = this.currentUser.roles[0].description, avility = false;
     switch (userRole) {
       case Role.admin:
-        avility = true
+        avility = field.enable_comments ? true : false;
         break;
       case Role.asesor:
         avility = field.enable_assessor ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments) : field.enable_assessor
@@ -357,13 +361,13 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let data = array[0]
     let request;
     if (data.general_comment) {
-      request  = this.commentService.updateDataComment({
+      request = this.commentService.updateDataComment({
         id: data.general_comment_id,
         detail: this.formData.general_comment.value,
         userId: this.currentUser.id,
         evaluationId: this.gnralInfo.evaluation_id,
         metaId: null,
-        approved: 1
+        approved: true
       })
     } else {
       request = this.commentService.createDataComment({
@@ -371,7 +375,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         userId: this.currentUser.id,
         evaluationId: this.gnralInfo.evaluation_id,
         metaId: null,
-        approved: 1
+        approved: true
       })
     }
 

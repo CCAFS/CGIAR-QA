@@ -2,15 +2,10 @@
     routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
     <i class=icon-go-back></i> {{currentType}} List
 </a>
-<!-- <div class="data-header">
-</div> -->
-
 <div class="row criteria-container">
     <div *ngIf="!criteria_loading">
         <h2>QUALITY ASSESSMENT CRITERIA</h2>
-        <ul>
-            <li *ngFor="let criteria of criteriaData" [innerHTML]="criteria.description | markdown"></li>
-        </ul>
+        <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
     </div>
     <div style="margin:auto;">
         <span *ngIf="criteria_loading" class="spinner-border spinner-border-sm mr-1"></span>
@@ -43,7 +38,7 @@
 </div>
 
 
-<form [formGroup]="tickGroup">
+<form #containerElement [formGroup]="tickGroup">
     <div class="row detail-container">
         <div class="col-sm">
             <div class="col data-container">
@@ -58,44 +53,49 @@
                         <div class="data-row">
                             <div class="col">
                                 <div class="row">
-                                    <input *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
+                                    <input
+                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || summon.value.isChecked "
                                         (change)="onTickChange($event,detailedData[i])"
                                         [value]="detailedData[i].field_id" formControlName="isChecked" type="checkbox"
                                         class="custom-control-input" id="field-{{detailedData[i].field_id}}">
 
-                                    <label *ngIf="detailedData[i].replies_count == '0' || summon.value.isChecked "
+                                    <label
+                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || summon.value.isChecked "
                                         class="custom-control-label" for="field-{{detailedData[i].field_id}}">
                                         <h2>{{detailedData[i].display_name}}</h2>
                                     </label>
-                                    <h2 *ngIf="detailedData[i].replies_count != '0' && !summon.value.isChecked ">
+                                    <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                         {{detailedData[i].display_name}}</h2>
 
                                     <div *ngIf="detailedData[i].meta_description">
-                                        <i [tooltip]="popTemplate" container="body"
-                                            placement="top" class="icon-pdf" style="height: 2em;"></i>
-                                        <ng-template #popTemplate><div [innerHtml]="detailedData[i].meta_description"></div>
+                                        <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
+                                            style="height: 2em;"></i>
+                                        <ng-template #popTemplate>
+                                            <div [innerHtml]="detailedData[i].meta_description"></div>
                                         </ng-template>
 
                                     </div>
                                 </div>
 
-                                <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' )"
+                                <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
                                     [innerHTML]="detailedData[i].value | markdown">
                                 </div>
                                 <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' )"
                                     [innerHTML]="detailedData[i].value">
                                 </div>
+                                <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'OICR' )"
+                                    [innerHTML]="detailedData[i].value">
+                                </div>
                                 <p *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link' ">
                                     {{detailedData[i].value}}</p>
-                                <!-- <a *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link'"
-                                    href="{{detailedData[i].value}}" target="_blank"> {{detailedData[i].value}} </a> -->
+                                <!-- no data -->
                                 <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p>
 
                             </div>
 
                             <div #commentsElem
                                 *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
-                                (click)="showComments(i, detailedData[i]); comment.updateData(detailedData[i],params)"
+                                (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"
                                 class="activate-messages-container {{detailedData[i].replies_count == '0' ?  '':'active'}}">
 
                                 <i *ngIf="!detailedData[i].loading" class="icon-message"></i>
@@ -155,7 +155,7 @@
             </ngx-spinner>
         </div>
 
-        <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY"
+        <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
             <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
                 (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
