@@ -21,7 +21,7 @@ export class QACrp {
     updatedAt: Date;
 
     @Column()
-    @Length(2, 50)
+    @Length(2, 20)
     name: string;
 
     @Column()

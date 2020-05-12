@@ -63,6 +63,7 @@ export class AuthenticationService {
   }
 
   private parseIndicators(user) {
+    console.log(user)
     if (user.indicators.length > 0) {
       user.indicators.forEach(element => {
         delete element.indicator.meta

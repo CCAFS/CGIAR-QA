@@ -12,14 +12,16 @@ import config from "@config/config";
 const { handleError } = require('./_helpers/ErrorHandler');
 const parentDir = require('path').resolve(process.cwd(), '../');
 
- // Connects to the Database -> then starts the express
+// Connects to the Database -> then starts the express
 createConnection()
     .then(async connection => {
         // Create a new express application instance
         const app = express();
         // Call midlewares
         app.use(cors());
-        app.use(helmet());
+        app.use(helmet(
+            { frameguard: false }
+        ));
         app.use(bodyParser.json());
         app.use(express.static(parentDir + '/CGIAR-QA-front/dist/qa-app'));
 

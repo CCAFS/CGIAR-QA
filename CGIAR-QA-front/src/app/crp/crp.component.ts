@@ -29,7 +29,6 @@ export class CrpComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
-      // this.router.navigate([`/crp/dashboard`])
       this.ngOnInit();
     });
   }
@@ -43,7 +42,6 @@ export class CrpComponent implements OnInit {
       this.indicators = this.authenticationService.userHeaders;
       this.getCRPIndicators();
     }
-    // this.router.navigate([`/crp/dashboard`])
   }
 
   validateToken(params: {}) {
@@ -74,7 +72,6 @@ export class CrpComponent implements OnInit {
             this.indicators = res.data;
             this.authenticationService.userHeaders = res.data;
             this.hideSpinner(this.spinner_name);
-            // console.log(this.indicators)
           },
           error => {
             this.hideSpinner(this.spinner_name);

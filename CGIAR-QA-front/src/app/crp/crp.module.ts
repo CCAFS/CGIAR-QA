@@ -13,6 +13,7 @@ import { CrpComponent } from './crp.component';
 import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
 import { CRPIndicatorsComponent } from './crp-indicators/indicators.component';
 import { DetailIndicatorComponent } from './detail-indicator/detail-indicator.component';
+import { SortByPipe } from '../pipes/sort-by.pipe';
 
 
 
@@ -28,6 +29,6 @@ import { DetailIndicatorComponent } from './detail-indicator/detail-indicator.co
     OrderModule,
     ReactiveFormsModule
   ],
-  declarations: [CrpComponent, CrpDashboardComponent, /*CRPIndicatorsComponent, DetailIndicatorComponent*/]
+  declarations: [CrpComponent, CrpDashboardComponent, SortByPipe /*CRPIndicatorsComponent, DetailIndicatorComponent*/]
 })
 export class CrpModule { }

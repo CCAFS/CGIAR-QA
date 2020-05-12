@@ -44,6 +44,11 @@ export class QAIndicators {
     @OneToOne(type => QACommentsMeta, comments_meta => comments_meta.indicator, { eager: true }) // specify inverse side as a second parameter
     comment_meta: QACommentsMeta;
 
+    @Column({
+        nullable : true,
+        type: 'longtext',
+    })
+    qa_criteria: string;
     
     // @OneToMany(type => QAEvaluations, evaluations => evaluations.indicator)
     // evaluations: QAEvaluations[];

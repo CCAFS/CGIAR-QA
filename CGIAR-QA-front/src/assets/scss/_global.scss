@@ -60,8 +60,6 @@
 .file-button {
   height: 2.3em;
   width: 3em;
-  float: right;
-  margin-right: 5px;
   .icon-download-excel {
     content: url("~/assets/icons/download-excel.svg");
   }
@@ -102,6 +100,21 @@
   color: var(--white);
   background-color: var(--green-secondary);
   border-color: var(--green-secondary);
+}
+.btn-red-secondary,
+.btn-red-secondary:hover,
+.btn-red-secondary:not(:disabled):not(.disabled).active,
+.btn-red-secondary:not(:disabled):not(.disabled):active,
+.show > .btn-red-secondary.dropdown-toggle {
+  background-color: var(--red-secondary);
+  border-color: var(--red-secondary);
+  color: var(--white);
+}
+.btn-red-secondary.disabled,
+.btn-red-secondary:disabled {
+  color: var(--white);
+  background-color: var(--red-secondary);
+  border-color: var(--red-secondary);
 }
 
 /***

@@ -23,13 +23,8 @@ class CommentController {
         let queryRunner = getConnection().createQueryBuilder();
         let rawData;
         try {
-            console.log(!!crp_id && !!id)
-            console.log(crp_id, id)
-            console.log(crp_id !== null, id)
 
             if (crp_id !== 'undefined') {
-                console.log('crp')
-
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
                         evaluations.indicator_view_name,
@@ -59,7 +54,6 @@ class CommentController {
                 // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
             }
             else if (crp_id == 'undefined') {
-                console.log('admin')
 
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
@@ -137,7 +131,7 @@ class CommentController {
 
     // create comment by indicator
     static createComment = async (req: Request, res: Response) => {
-
+        // approved
         //Check if username and password are set
         const { detail, approved, userId, metaId, evaluationId } = req.body;
         // const evaluationId = req.params.id;
@@ -150,7 +144,9 @@ class CommentController {
         try {
 
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
-            let meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
+            let meta;
+            if(metaId!=null)
+                meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
 
             let comment_ = new QAComments();
@@ -159,7 +155,6 @@ class CommentController {
             comment_.meta = meta;
             comment_.evaluation = evaluation;
             comment_.user = user;
-
             let new_comment = await commentsRepository.save(comment_);
 
             res.status(200).send({ data: new_comment, message: 'Comment created' });
@@ -174,7 +169,7 @@ class CommentController {
     static updateComment = async (req: Request, res: Response) => {
 
         //Check if username and password are set
-        const { approved, is_visible, is_deleted, id } = req.body;
+        const { approved, is_visible, is_deleted, id, detail, userId } = req.body;
         const commentsRepository = getRepository(QAComments);
 
         try {
@@ -182,6 +177,10 @@ class CommentController {
             comment_.approved = approved;
             comment_.is_deleted = is_deleted;
             comment_.is_visible = is_visible;
+            if(detail)
+                comment_.detail = detail;
+            if(userId)
+                comment_.user = userId;
 
 
             let updated_comment = await commentsRepository.save(comment_);
@@ -360,9 +359,6 @@ class CommentController {
         // const { name, id } = req.params;
         const { evaluationId } = req.params;
         const { userId, name } = req.query;
-        // let queryRunner = getConnection().createQueryBuilder();
-        // const evaluationRepository = getRepository(QAEvaluations);
-        console.log(evaluationId, userId, name)
         let comments;
         try {
             const commentsRepository = getRepository(QAComments);
@@ -375,8 +371,9 @@ class CommentController {
                 ]
             });
             let currentRole = user.roles.map(role => { return role.description })[0];
-
-            if (currentRole === RolesHandler.admin) {
+            
+            console.log({ is_visible: 1, evaluation: evaluationId })
+            if (currentRole === RolesHandler.admin || currentRole === RolesHandler.assesor) {
                 comments = await commentsRepository.find({
                     where: { is_visible: 1, evaluation: evaluationId },
                     relations: ['user', 'meta'],
@@ -394,7 +391,6 @@ class CommentController {
                 });
             }
 
-            // const name = 'Comments';
             const stream: Buffer = await Util.createCommentsExcel([
                 { header: 'Id', key: 'id' },
                 { header: 'Field', key: 'field' },

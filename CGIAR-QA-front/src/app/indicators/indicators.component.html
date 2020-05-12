@@ -9,7 +9,7 @@
         <div *ngIf="hasTemplate" class="model-link-container" (click)="goToPDF(indicatorType)">
             <i class="icon-pdf"></i>
             <hr>
-            <p>{{indicatorTypeName}} Template</p>
+            <p>Indicator Guidance</p>
         </div>
     </div>
     <div class="col row text-right">
@@ -115,10 +115,10 @@
         </tr>
     </tbody>
 </table>
-<div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
-    <div>
+    <div *ngIf='evaluationList' class="total-items">
         Total items: {{evaluationList.length}}
     </div>
+<div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
     <pagination [rotate]="false" [totalItems]="(evaluationList | filter:searchText ).length" [maxSize]="5"
         (pageChanged)="pageChanged($event)">
     </pagination>

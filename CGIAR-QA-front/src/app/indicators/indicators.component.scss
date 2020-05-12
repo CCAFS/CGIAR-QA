@@ -14,24 +14,26 @@ h2 {
     cursor: pointer;
     background-color: var(--gray-primary);
     border-radius: 0.3em;
-    height: 3em;
+    height: 2em;
     // width: 8em;
     margin-right: 2em;
     display: flex;
     i {
-      height: 2em;
+      height: 1.5em;
+      margin-top: -0.35em;
+      margin-right: 0.4em;
     }
     p {
       margin: 0;
       vertical-align: middle;
-      line-height: 2em;
       padding: 0 0.5em;
+      font-size: 0.7em;
     }
     hr {
       position: relative;
       background: var(--gray-tertiary);
       width: 2px;
-      height: 2.9em;
+      height: 1.9em;
       top: -10px;
       margin: 0 auto;
     }
@@ -92,6 +94,11 @@ h2 {
   .circle {
     margin: auto !important;
   }
+}
+.total-items {
+  font-size: 0.9em;
+  color: var(--gray-secondary);
+  font-style: italic;
 }
 .circle.complete {
   background-color: var(--green-primary);

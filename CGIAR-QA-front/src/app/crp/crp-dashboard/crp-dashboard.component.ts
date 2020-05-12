@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CommentService } from "../../services/comment.service";
@@ -6,6 +6,7 @@ import { AuthenticationService } from "../../services/authentication.service";
 import { DashboardService } from "../../services/dashboard.service";
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertService } from '../../services/alert.service';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
@@ -23,10 +24,15 @@ export class CrpDashboardComponent implements OnInit {
   currentUser: User;
   indicatorsName = GeneralIndicatorName;
 
+  dashboardModalData: any[];
+  modalRef: BsModalRef;
+
   constructor(private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
+    private modalService: BsModalService,
     private commentService: CommentService,
+    private dashService: DashboardService,
     private alertService: AlertService,
     private spinner: NgxSpinnerService, ) {
     this.authenticationService.currentUser.subscribe(x => {
@@ -41,11 +47,12 @@ export class CrpDashboardComponent implements OnInit {
 
   getCommentStats() {
     this.showSpinner();
-    this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
+    // this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
+    this.dashService.getAllDashboardEvaluations(this.currentUser.crp.crp_id)
       .subscribe(
         res => {
           console.log(res)
-          this.dashboardData = res.data;
+          this.dashboardData = this.dashService.groupData(res.data);
           this.hideSpinner();
         },
         error => {
@@ -64,6 +71,13 @@ export class CrpDashboardComponent implements OnInit {
   goToView(indicatorId, primary_column) {
     console.log(indicatorId, primary_column)
     this.router.navigate([`crp/indicator/${indicatorId}/${primary_column}`]);
+  }
+
+
+  openModal(template: TemplateRef<any>) {
+    this.dashboardModalData = []
+    this.getCommentStats()
+    this.modalRef = this.modalService.show(template);
   }
 
 

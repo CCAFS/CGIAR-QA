@@ -10,6 +10,7 @@ import { OrderModule } from 'ngx-order-pipe';
 import { DetailIndicatorRoutingModule } from './detail-indicator-routing.module';
 import { DetailIndicatorComponent } from './detail-indicator.component';
 import { CRPIndicatorsComponent } from '../crp-indicators/indicators.component';
+import { CommentComponentModule } from 'src/app/comment/comment.module';
 // import { CommentComponent } from '../../comment/comment.component';
 
 
@@ -24,7 +25,8 @@ import { CRPIndicatorsComponent } from '../crp-indicators/indicators.component';
       PaginationModule.forRoot(),
       NgxSpinnerModule,
       OrderModule,
-      ReactiveFormsModule
+      ReactiveFormsModule,
+      CommentComponentModule
     ],
     declarations: [DetailIndicatorComponent, CRPIndicatorsComponent]
   })

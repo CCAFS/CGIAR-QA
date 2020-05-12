@@ -225,75 +225,83 @@ class Util {
     }
 
     static createCommentsExcel = async (headers: Partial<excel.Column>[], rows: any[], sheetName: string): Promise<Buffer> => {
-        const workbook: excel.stream.xlsx.WorkbookWriter = new excel.stream.xlsx.WorkbookWriter({});
-        const sheet: excel.Worksheet = workbook.addWorksheet(sheetName);
-        sheet.columns = headers;
-        for (let i = 0; i < rows.length; i++) {
-            if (rows[i]) {
-                let row = {
-                    id: rows[i].id,
-                    createdAt: rows[i].createdAt,
-                    comment: rows[i].detail,
-                    user: rows[i].user.name,
-                    email: rows[i].user.email,
-                    field: rows[i].meta.display_name,
-                };
-                sheet.addRow(row);
 
+        try {
+            const workbook: excel.stream.xlsx.WorkbookWriter = new excel.stream.xlsx.WorkbookWriter({});
+            const sheet: excel.Worksheet = workbook.addWorksheet(sheetName);
+            sheet.columns = headers;
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i]) {
+                    let row = {
+                        id: rows[i].id,
+                        createdAt: rows[i].createdAt,
+                        comment: rows[i].detail,
+                        user: rows[i].user.name,
+                        email: rows[i].user.email,
+                        field: rows[i].meta ? rows[i].meta.display_name : 'General Comment',
+                    };
+                    sheet.addRow(row);
+
+                }
             }
-        }
-        sheet.commit();
-        return new Promise((resolve, reject): void => {
-            workbook.commit().then(() => {
-                const stream: any = (workbook as any).stream;
-                const result: Buffer = stream.read();
-                resolve(result);
-            }).catch((e) => {
-                reject(e);
+            sheet.commit();
+            return new Promise((resolve, reject): void => {
+                workbook.commit().then(() => {
+                    const stream: any = (workbook as any).stream;
+                    const result: Buffer = stream.read();
+                    resolve(result);
+                }).catch((e) => {
+                    reject(e);
+                });
             });
-        });
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
 
     private static formatResponse = (element, type) => {
         let field = element["meta_col_name"];
         var response = {
-            enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
-            col_name: element["meta_col_name"],
             comments_count: element["comments_count"],
-            display_name: element["meta_display_name"],
-            display_type: DisplayTypeHandler.Paragraph,
-            value: element[`${type}_${field}`],
-            field_id: element["meta_id"],
-            evaluation_id: element["evaluations_id"],
-            general_comment: element["evaluations_general_comments"],
-            enable_assessor: element['enable_assessor'],
-            enable_crp: element['enable_crp'],
-            replies_count: element['replies_count'],
-            status: element["evaluations_status"],
-            crp_name: element["crp_name"],
             crp_acronym: element["crp_acronym"],
-            public_link: element[`${type}_public_link`] || null,
-            approved_no_comment: element['approved_no_comment'] || null,
-            meta_description: element['meta_description']
+            evaluation_id: element["evaluation_id"],
+            crp_name: element["crp_name"],
+            status: element["evaluations_status"],
         }
-        switch (type) {
-            // case:
-            case undefined:
-                response = Object.assign(response, {
-                    indicator_view_name: element['evaluations_indicator_view_name'],
-                    type: Util.getType(element['evaluations_status']),
-                    id: element['evaluations_indicator_view_id'],
-                    title: element['title'],
-                    pdf: element['pdf'] ? element['pdf'] : 'pdf_URL',
-                    stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
+        if (!type) {
+            response = Object.assign(response, {
+                indicator_view_name: element['indicator_view_name'],
+                type: Util.getType(element['evaluations_status']),
+                id: element['indicator_view_id'],
+                display_name: element["meta_display_name"],
+                title: element['title'],
+                stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
+            });
+        } else {
+            response = Object.assign(response, {
+                enable_comments: (element["meta_enable_comments"] === 1) ? true : false,
+                col_name: element["meta_col_name"],
+                display_name: element["meta_display_name"],
+                display_type: DisplayTypeHandler.Paragraph,
+                value: element[`${field}`],
+                field_id: element["meta_id"],
+                // evaluation_id: element["evaluation_id"],
+                general_comment: element["general_comment"],
+                general_comment_id: element["general_comment_id"],
+                general_comment_user: element["general_comment_user"],
+                general_comment_updatedAt: element["general_comment_updatedAt"],
+                enable_assessor: element['enable_assessor'],
+                enable_crp: element['enable_crp'],
+                replies_count: element['replies_count'],
+                approved_no_comment: element['approved_no_comment'] || null,
+                public_link: element[`public_link`],
+                meta_description: element['meta_description']
+            });
 
-                    // crp: element['crp_name'],
-                });
-                break;
-            default:
-                break;
         }
+
         return response;
     }
 

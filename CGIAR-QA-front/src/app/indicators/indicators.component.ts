@@ -12,6 +12,7 @@ import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
 import { GeneralIndicatorName } from '../_models/general-status.model';
+import { saveAs } from "file-saver";
 
 @Component({
   selector: 'app-indicators',
@@ -81,13 +82,9 @@ export class IndicatorsComponent implements OnInit {
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
-        // this.returnedArray = this.evaluationList;
-        // // console.log(this.evaluationList.length, this.returnedArray.length)
-        // console.log(this.currentUser.config[0])
         this.hideSpinner();
       },
       error => {
-        // console.log("getEvaluationsList", error);
         this.hideSpinner();
         this.returnedArray = []
         this.alertService.error(error);
@@ -146,15 +143,12 @@ export class IndicatorsComponent implements OnInit {
   exportComments(item) {
     // console.log(item)
     this.showSpinner();
-    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: item.title }).subscribe(
+    let filename = `QA-${ this.indicatorType.charAt(0).toUpperCase() }${ this.indicatorType.charAt(1).toUpperCase() }-${ item.id }`
+    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name:filename }).subscribe(
       res => {
-        // // console.log(res)
+        // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
-        let url = window.URL.createObjectURL(blob);
-        let pwa = window.open(url);
-        if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-          this.alertService.error('Please disable your Pop-up blocker and try again.');
-        }
+        saveAs(blob, filename);
         this.hideSpinner();
       },
       error => {

@@ -144,6 +144,7 @@ export class CommentComponent implements OnInit {
   getItemCommentData() {
 
     let params = { evaluationId: this.dataFromItem.evaluation_id, metaId: this.dataFromItem.field_id }
+    console.log(params)
     this.commentService.getDataComment(params).subscribe(
       res => {
         this.hideSpinner(this.spinner_comment);

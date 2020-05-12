@@ -106,6 +106,9 @@ export class QAOicr {
     
     @ViewColumn()
     climate_relevance: string;
+    
+    @ViewColumn()
+    cgiar_innovation : string;
 
     @ViewColumn()
     editable_link: string;

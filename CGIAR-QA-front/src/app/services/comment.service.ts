@@ -45,6 +45,7 @@ export class CommentService {
 
   // get comments excel
   getCommentsExcel(params) {
+    // return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}`, { responseType: HttpRequest })
     return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}`, { responseType: 'blob' as 'blob' })
   }
 
