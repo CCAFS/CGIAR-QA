@@ -11,6 +11,9 @@
                 {{indicator.name}}
             </a>
         </ng-container>
+        <a class="nav-item nav-link" (click)="logout()">
+            Logout
+        </a>
         <ngx-spinner [name]="spinner_name" [fullScreen]="false"></ngx-spinner>
     </div>
     <div class="col-10 col-progress">

@@ -84,17 +84,17 @@ class IndicatorsController {
                     evaluations.crp_id,
                     (
                         SELECT
-                            NAME
+                            indicators.name
                         FROM
-                            qa_indicators
+                            qa_indicators indicators
                         WHERE
                             view_name = evaluations.indicator_view_name
                     ) as name,
                     (
                         SELECT
-                            order
+                        indicators.order
                         FROM
-                            qa_indicators
+                            qa_indicators indicators
                         WHERE
                             view_name = evaluations.indicator_view_name
                     ) as indicator_order,
@@ -125,7 +125,6 @@ class IndicatorsController {
                     { crp_id: user.crp.crp_id },
                     {}
                 );
-
                 const indicators = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: indicators, message: "CRP indicators" });
                 return;

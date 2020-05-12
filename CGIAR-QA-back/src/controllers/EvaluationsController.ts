@@ -200,7 +200,6 @@ class EvaluationsController {
                     WHERE crp.active = 1
                     AND crp.qa_active = 'open'
                     AND evaluations.crp_id = :crp_id
-                    AND title IS NOT NULL
                     AND evaluations.indicator_view_name = :view_name 
                     GROUP BY
                         crp.crp_id,
@@ -467,7 +466,7 @@ class EvaluationsController {
                 rawData = await queryRunner.connection.query(query, parameters);
 
             }
-            
+
             res.status(200).json({ data: Util.parseEvaluationsData(rawData, view_name_psdo), message: "User evaluation detail" });
         } catch (error) {
             console.log(error);
@@ -512,7 +511,7 @@ class EvaluationsController {
                     evaluations.crp_id AS crp_id,
                     evaluations.indicator_view_name AS indicator_view_name,
                     indicator.primary_field AS primary_field,
-                    indicator.order AS indicator_order, COUNT (DISTINCT evaluations.id) AS count
+                    indicator.order AS indicator_order, COUNT(DISTINCT evaluations.id) AS count
                 FROM
                     qa_indicator_user qa_indicator_user
                 LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
@@ -530,7 +529,8 @@ class EvaluationsController {
                     indicator_order,
                     indicator.primary_field
                 ORDER BY
-                    indicator.order ASC `,
+                    indicator.order ASC,
+                    evaluations.status `,
                     { crp_id: crp_id },
                     {}
                 );
@@ -538,27 +538,28 @@ class EvaluationsController {
             } else {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
-                    evaluations.status AS status,
-                    evaluations.indicator_view_name AS indicator_view_name,
-                    indicator.primary_field AS primary_field,
-                    indicator.order AS indicator_order,
-                    COUNT(DISTINCT evaluations.id) AS count
-                FROM
-                    qa_indicator_user qa_indicator_user
-                
-                LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
-                LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                WHERE
-                    crp.active = 1
-                AND crp.qa_active = 'open'
-                GROUP BY
-                    evaluations. STATUS,
-                    evaluations.indicator_view_name,
-                    indicator_order,
-                    indicator.primary_field
-                ORDER BY
-                    indicator.order ASC `,
+                        evaluations.status AS status,
+                        evaluations.indicator_view_name AS indicator_view_name,
+                        indicator.primary_field AS primary_field,
+                        indicator.order AS indicator_order,
+                        COUNT(DISTINCT evaluations.id) AS count
+                    FROM
+                        qa_indicator_user qa_indicator_user
+                    
+                    LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                    WHERE
+                        crp.active = 1
+                    AND crp.qa_active = 'open'
+                    GROUP BY
+                        evaluations.status,
+                        evaluations.indicator_view_name,
+                        indicator_order,
+                        indicator.primary_field
+                    ORDER BY
+                        indicator.order ASC,
+                        evaluations.status `,
                     {},
                     {}
                 );

@@ -23,13 +23,8 @@ class CommentController {
         let queryRunner = getConnection().createQueryBuilder();
         let rawData;
         try {
-            console.log(!!crp_id && !!id)
-            console.log(crp_id, id)
-            console.log(crp_id !== null, id)
 
             if (crp_id !== 'undefined') {
-                console.log('crp')
-
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
                         evaluations.indicator_view_name,
@@ -59,7 +54,6 @@ class CommentController {
                 // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
             }
             else if (crp_id == 'undefined') {
-                console.log('admin')
 
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
