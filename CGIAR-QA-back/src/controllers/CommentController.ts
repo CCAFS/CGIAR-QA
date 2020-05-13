@@ -26,26 +26,21 @@ class CommentController {
 
             if (crp_id !== 'undefined') {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                    `SELECT
-                        evaluations.indicator_view_name,
-                        (
-                            SELECT
-                                COUNT(DISTINCT id)
-                            FROM
-                                qa_comments
-                            WHERE
-                                qa_comments.evaluationId = evaluations.id
-                        ) AS count,
-                        indicators.id,
-                        indicators.primary_field,
-                        comments_meta.enable_crp,
-                        comments_meta.enable_assessor
+                    `
+                    SELECT
+                        COUNT(comments.crp_approved) AS approved_comment_crp,
+                        COUNT( CASE comments.is_visible WHEN 1 THEN 1 ELSE NULL END) AS comments_done,
+                        COUNT(comments.approved_no_comment) AS approved_no_comment,
+                        evaluations.indicator_view_name
                     FROM
                         qa_evaluations evaluations
+                    LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
-                    LEFT JOIN qa_comments_meta comments_meta ON comments_meta.indicatorId = indicators.id
-                    WHERE
-                        evaluations.crp_id = :crp_id
+                    
+                    WHERE comments.is_deleted = 0
+                    AND comments.approved = 1
+                    AND evaluations.crp_id = :crp_id
+                    GROUP BY evaluations.indicator_view_name
                         `,
                     { crp_id },
                     {}
@@ -56,31 +51,28 @@ class CommentController {
             else if (crp_id == 'undefined') {
 
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                    `SELECT
-                        evaluations.indicator_view_name,
-                        (
-                            SELECT
-                                COUNT(DISTINCT id)
-                            FROM
-                                qa_comments
-                            WHERE
-                                qa_comments.evaluationId = evaluations.id
-                        ) AS count,
-                        indicators.id,
-                        indicators.primary_field,
-                        comments_meta.enable_crp,
-                        comments_meta.enable_assessor
+                    `
+                    SELECT
+                        COUNT(comments.crp_approved) AS approved_comment_crp,
+                        COUNT( CASE comments.is_visible WHEN 1 THEN 1 ELSE NULL END) AS comments_done,
+                        COUNT(comments.approved_no_comment) AS approved_no_comment,
+                        evaluations.indicator_view_name
                     FROM
                         qa_evaluations evaluations
+                    LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
-                    LEFT JOIN qa_comments_meta comments_meta ON comments_meta.indicatorId = indicators.id
+                    
+                    WHERE comments.is_deleted = 0
+                    AND comments.approved = 1
+                    GROUP BY evaluations.indicator_view_name
                         `,
                     {},
                     {}
                 );
                 rawData = await queryRunner.connection.query(query, parameters);
             }
-            res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
+            res.status(200).json({ data: rawData, message: 'Comments statistics' });
+            // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments statistics' });
 
         } catch (error) {
             console.log(error);

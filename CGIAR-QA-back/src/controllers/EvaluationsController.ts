@@ -108,6 +108,7 @@ class EvaluationsController {
     static getListEvaluationsDash = async (req: Request, res: Response) => {
         //Get the ID from the url
         const id = req.params.id;
+        // const view_name = `qa_${req.body.view_name}`;
         const view_name = req.body.view_name;
         const view_primary_field = req.body.view_primary_field;
         const levelQuery = EvaluationsController.getLevelQuery(view_name)
@@ -596,7 +597,7 @@ class EvaluationsController {
     // get all CRPS
     static getCRPS = async (req: Request, res: Response) => {
 
-        const crpRepository = await getRepository(QACrpView);
+        const crpRepository = await getRepository(QACrp);
 
         try {
             let allCRP = await crpRepository.find({ where: { active: true } });
