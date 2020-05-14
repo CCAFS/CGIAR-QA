@@ -1,7 +1,5 @@
 @import "../../../assets/variables.scss";
 .dashboard-container {
- 
-
   .col-programs {
     ul {
       background: var(--gray-primary);
@@ -41,8 +39,8 @@
           opacity: 0.5;
         }
       }
-      .no-available{
-        opacity: .5;
+      .no-available {
+        opacity: 0.5;
       }
       .example-container {
         margin-bottom: 2em;
@@ -88,3 +86,4 @@
     }
   }
 }
+

@@ -19,17 +19,32 @@ class CommentController {
 
 
     static commentsCount = async (req: Request, res: Response) => {
-        const { crp_id, id } = req.query;
-        let queryRunner = getConnection().createQueryBuilder();
+        const { crp_id } = req.query;
+        const userId = res.locals.jwtPayload.userId;
+
+
+
+        const queryRunner = getConnection().createQueryBuilder();
+        const userRepository = getRepository(QAUsers);
         let rawData;
+        let user: QAUsers;
+
+
+
+
+
         try {
 
-            if (crp_id !== 'undefined') {
+            user = await userRepository.findOneOrFail(userId);
+            let role = user.roles[0].description;
+
+
+            if (role === RolesHandler.crp) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
                         COUNT(comments.crp_approved) AS approved_comment_crp,
-                        COUNT( CASE comments.is_visible WHEN 1 THEN 1 ELSE NULL END) AS comments_done,
+                        COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_approved,
                         COUNT(comments.approved_no_comment) AS approved_no_comment,
                         evaluations.indicator_view_name
                     FROM
@@ -38,45 +53,73 @@ class CommentController {
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                     
                     WHERE comments.is_deleted = 0
-                    AND comments.approved = 1
                     AND evaluations.crp_id = :crp_id
+                    AND  comments.approved = 1
                     GROUP BY evaluations.indicator_view_name
                         `,
                     { crp_id },
                     {}
                 );
                 rawData = await queryRunner.connection.query(query, parameters);
-                // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
-            }
-            else if (crp_id == 'undefined') {
+            } else {
 
-                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                    `
-                    SELECT
-                        COUNT(comments.crp_approved) AS approved_comment_crp,
-                        COUNT( CASE comments.is_visible WHEN 1 THEN 1 ELSE NULL END) AS comments_done,
-                        COUNT(comments.approved_no_comment) AS approved_no_comment,
-                        evaluations.indicator_view_name
-                    FROM
-                        qa_evaluations evaluations
-                    LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
-                    LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
-                    
-                    WHERE comments.is_deleted = 0
-                    AND comments.approved = 1
-                    GROUP BY evaluations.indicator_view_name
-                        `,
-                    {},
-                    {}
-                );
-                rawData = await queryRunner.connection.query(query, parameters);
+                if (crp_id !== 'undefined') {
+                    const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                        `
+                        SELECT
+                            COUNT(comments.crp_approved) AS approved_comment_crp,
+                            COUNT( CASE comments.is_visible WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
+                            COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_approved,
+                            COUNT(comments.approved_no_comment) AS approved_no_comment,
+                            evaluations.indicator_view_name
+                        FROM
+                            qa_evaluations evaluations
+                        LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
+                        LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+                        
+                        WHERE comments.is_deleted = 0
+                        AND evaluations.crp_id = :crp_id
+                        GROUP BY evaluations.indicator_view_name
+                            `,
+                        { crp_id },
+                        {}
+                    );
+                    rawData = await queryRunner.connection.query(query, parameters);
+                    // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
+                }
+                else if (crp_id == 'undefined') {
+
+                    const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                        `
+                        SELECT
+                            COUNT(comments.crp_approved) AS approved_comment_crp,
+                            COUNT( CASE comments.is_visible WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
+                            COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_approved,
+                            COUNT(comments.approved_no_comment) AS approved_no_comment,
+                            evaluations.indicator_view_name
+                        FROM
+                            qa_evaluations evaluations
+                        LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
+                        LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+                        
+                        WHERE comments.is_deleted = 0
+                        GROUP BY evaluations.indicator_view_name
+                            `,
+                        {},
+                        {}
+                    );
+                    rawData = await queryRunner.connection.query(query, parameters);
+                }
             }
-            res.status(200).json({ data: rawData, message: 'Comments statistics' });
-            // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments statistics' });
+
+
+
+            res.status(200).json({ data: Util.parseChartData(rawData, (role !== RolesHandler.crp) ? 'admin' : 'crp'), message: 'Comments statistics' });
+            // res.status(200).json({ data: rawData, message: 'Comments statistics' });
 
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "Could not access to evaluations." });
+            res.status(404).json({ message: "Could not access to comments statistics." });
         }
 
         // console.log( crp_id, id)
@@ -137,7 +180,7 @@ class CommentController {
 
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
             let meta;
-            if(metaId!=null)
+            if (metaId != null)
                 meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
 
@@ -169,9 +212,9 @@ class CommentController {
             comment_.approved = approved;
             comment_.is_deleted = is_deleted;
             comment_.is_visible = is_visible;
-            if(detail)
+            if (detail)
                 comment_.detail = detail;
-            if(userId)
+            if (userId)
                 comment_.user = userId;
 
 
@@ -363,7 +406,7 @@ class CommentController {
                 ]
             });
             let currentRole = user.roles.map(role => { return role.description })[0];
-            
+
             console.log({ is_visible: 1, evaluation: evaluationId })
             if (currentRole === RolesHandler.admin || currentRole === RolesHandler.assesor) {
                 comments = await commentsRepository.find({

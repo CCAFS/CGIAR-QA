@@ -8,8 +8,12 @@ import { OrderPipe } from 'ngx-order-pipe';
 import { DashboardService } from "../../services/dashboard.service";
 import { AuthenticationService } from "../../services/authentication.service";
 import { AlertService } from '../../services/alert.service';
+import { CommentService } from 'src/app/services/comment.service';
 
 import { User } from '../../_models/user.model';
+import { GeneralIndicatorName } from 'src/app/_models/general-status.model';
+
+import { saveAs } from "file-saver";
 
 @Component({
   selector: 'app-indicators',
@@ -23,21 +27,37 @@ export class CRPIndicatorsComponent implements OnInit {
   returnedArray: any[];
   currentUser: User;
 
-  currentPage = 1;
+  currentPage = {
+    startItem: 0,
+    endItem: 10
+  }
+  stageHeaderText = {
+    policies: 'Level',
+    oicr: 'Maturity Level',
+    innovations: 'Stage',
+    melia: 'Type',
+  }
+
   maxSize = 5;
   pageSize = 4;
   collectionSize = 0;
-  spinner_name = 'spIndicators';
+  searchText;
 
+  hasTemplate = false;
+
+  notProviedText = '<No provided>'
 
   order: string = 'id';
   configTemplate: string;
   reverse: boolean = false;
 
+  spinner_name = 'spIndicators';
+
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
     private authenticationService: AuthenticationService,
+    private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private orderPipe: OrderPipe,
     private alertService: AlertService) {
@@ -47,41 +67,45 @@ export class CRPIndicatorsComponent implements OnInit {
       });
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
-      this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
+      this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
+      // this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
       this.getEvaluationsList(routeParams);
     })
   }
 
   ngOnInit() {
-    // this.indicatorType = this.route.snapshot.params.type;
-    // this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
-    // this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
-    // this.getEvaluationsList(this.route.snapshot.params);
   }
 
-  pageChanged(event: PageChangedEvent): void {
-    const startItem = (event.page - 1) * event.itemsPerPage;
-    const endItem = event.page * event.itemsPerPage;
-    this.returnedArray = this.evaluationList.slice(startItem, endItem);
-  }
 
   getEvaluationsList(params) {
     this.showSpinner(this.spinner_name);
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
       res => {
-        this.evaluationList = res.data;
+        this.evaluationList = this.orderPipe.transform(res.data, 'id');
         this.collectionSize = this.evaluationList.length;
-        this.returnedArray = this.orderPipe.transform(this.evaluationList.slice(0, 10), 'id');
+        this.returnedArray = this.evaluationList.slice(0, 10);
+        this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
         this.hideSpinner(this.spinner_name);
       },
       error => {
-        console.log("getEvaluationsList", error);
         this.hideSpinner(this.spinner_name);
+        this.returnedArray = []
         this.alertService.error(error);
       }
     )
   }
 
+  pageChanged(event: PageChangedEvent): void {
+    const startItem = (event.page - 1) * event.itemsPerPage;
+    const endItem = event.page * event.itemsPerPage;
+    // // console.log(this.evaluationList.length, this.returnedArray.length)
+    this.currentPage = {
+      startItem,
+      endItem
+    }
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    this.returnedArray = this.evaluationList.slice(startItem, endItem);
+  }
 
 
   setOrder(value: string) {
@@ -91,13 +115,15 @@ export class CRPIndicatorsComponent implements OnInit {
       if (this.order === value) {
         this.reverse = !this.reverse;
       }
-
       this.order = value;
     }
+    // console.log(this.evaluationList, this.order, this.reverse)
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
   goToView(indicatorId) {
-    this.router.navigate(['detail', indicatorId], { relativeTo: this.activeRoute });
+    this.router.navigate(['./detail', indicatorId], { relativeTo: this.activeRoute });
   }
 
   goToPDF(type: string) {
@@ -111,6 +137,25 @@ export class CRPIndicatorsComponent implements OnInit {
         break;
     }
     window.open(pdf_url, "_blank");
+  }
+
+  exportComments(item) {
+    // console.log(item)
+    this.showSpinner(this.spinner_name);
+    let filename = `QA-${ this.indicatorType.charAt(0).toUpperCase() }${ this.indicatorType.charAt(1).toUpperCase() }-${ item.id }`
+    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name:filename }).subscribe(
+      res => {
+        // console.log(res)
+        let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
+        saveAs(blob, filename);
+        this.hideSpinner(this.spinner_name);
+      },
+      error => {
+        // console.log("exportComments", error);
+        this.hideSpinner(this.spinner_name);
+        this.alertService.error(error);
+      }
+    )
   }
 
 

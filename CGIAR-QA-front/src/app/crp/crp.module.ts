@@ -4,16 +4,21 @@ import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { SortByPipe } from '../pipes/sort-by.pipe';
 
 import { CRPRoutingModule } from './crp-routing.module';
 import { CrpComponent } from './crp.component';
 import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
+
+import { CommentComponentModule } from '../comment/comment.module';
 import { CRPIndicatorsComponent } from './crp-indicators/indicators.component';
-import { DetailIndicatorComponent } from './detail-indicator/detail-indicator.component';
-import { SortByPipe } from '../pipes/sort-by.pipe';
+import { SharedModule } from '../shared-module/shared-module.module';
 
 
 
@@ -25,10 +30,16 @@ import { SortByPipe } from '../pipes/sort-by.pipe';
     ButtonsModule.forRoot(),
     CollapseModule.forRoot(),
     PaginationModule.forRoot(),
+    ModalModule.forRoot(),
     NgxSpinnerModule,
     OrderModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    Ng2SearchPipeModule,
+    CommentComponentModule,
+    SharedModule,
+    NgxChartsModule
   ],
-  declarations: [CrpComponent, CrpDashboardComponent, SortByPipe /*CRPIndicatorsComponent, DetailIndicatorComponent*/]
+  declarations: [CrpComponent, CrpDashboardComponent,  /*CRPIndicatorsComponent, SortByPipe,*/ ]
 })
 export class CrpModule { }

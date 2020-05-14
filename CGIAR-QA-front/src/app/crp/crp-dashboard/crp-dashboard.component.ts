@@ -26,6 +26,24 @@ export class CrpDashboardComponent implements OnInit {
 
   dashboardModalData: any[];
   modalRef: BsModalRef;
+  
+  multi = [];
+  has_comments: boolean = false;
+  // view: any[] = [undefined,700];
+  // options
+  showXAxis: boolean = true;
+  showYAxis: boolean = true;
+  gradient: boolean = false;
+  showLegend: boolean = true;
+  showXAxisLabel: boolean = true;
+  xAxisLabel: string = 'Indicators';
+  showYAxisLabel: boolean = true;
+  yAxisLabel: string = 'Comments';
+  legendTitle: string = 'Labels';
+  colorScheme = {
+    domain: ['#ffca30', '#0f8981', '#2e7636']
+  };
+
 
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -38,21 +56,23 @@ export class CrpDashboardComponent implements OnInit {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
+
   }
 
   ngOnInit() {
-    this.getCommentStats();
+    this.getEvaluationsStats();
+    // this.getCommentStats();
     // console.log('crp-dashboard')
   }
 
-  getCommentStats() {
+  getEvaluationsStats() {
     this.showSpinner();
     // this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
     this.dashService.getAllDashboardEvaluations(this.currentUser.crp.crp_id)
       .subscribe(
         res => {
-          console.log(res)
           this.dashboardData = this.dashService.groupData(res.data);
+          console.log(this.dashboardData)
           this.hideSpinner();
         },
         error => {
@@ -71,6 +91,22 @@ export class CrpDashboardComponent implements OnInit {
   goToView(indicatorId, primary_column) {
     console.log(indicatorId, primary_column)
     this.router.navigate([`crp/indicator/${indicatorId}/${primary_column}`]);
+  }
+
+  getCommentStats() {
+    this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
+      .subscribe(
+        res => {
+          this.has_comments = res.data.length > 0 ? true:false
+          Object.assign(this, { multi: res.data });
+          this.hideSpinner();
+        },
+        error => {
+          this.hideSpinner()
+          console.log("getCommentStats", error);
+          this.alertService.error(error);
+        },
+      )
   }
 
 
@@ -92,4 +128,62 @@ export class CrpDashboardComponent implements OnInit {
   hideSpinner() {
     this.spinner.hide();
   }
+
+
+
+
+
+
+  /**
+   * 
+   * Chart controllers
+   */
+
+
+  onSelect(data): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  }
+
+  onActivate(data): void {
+    console.log('Activate', JSON.parse(JSON.stringify(data)));
+  }
+
+  onDeactivate(data): void {
+    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+  }
+
+
+  axisFormat(val) {
+    if (val % 1 === 0) {
+      return val.toLocaleString();
+    } else {
+      return '';
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
