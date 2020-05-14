@@ -55,13 +55,13 @@
                                 <!-- checkbox -->
                                 <div class="row">
                                     <input
-                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || summon.value.isChecked "
+                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
                                         (change)="onTickChange($event,detailedData[i])"
                                         [value]="detailedData[i].field_id" formControlName="isChecked" type="checkbox"
                                         class="custom-control-input" id="field-{{detailedData[i].field_id}}">
 
                                     <label
-                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || summon.value.isChecked "
+                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
                                         class="custom-control-label" for="field-{{detailedData[i].field_id}}">
                                         <h2>{{detailedData[i].display_name}}</h2>
                                     </label>
@@ -159,9 +159,10 @@
             </ngx-spinner>
         </div>
 
+        <!-- <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY" -->
         <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
-            <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
+            <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex]); validateUpdateEvaluation()"
                 (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
         </div>
 

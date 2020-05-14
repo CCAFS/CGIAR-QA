@@ -35,6 +35,7 @@ export class IndicatorsComponent implements OnInit {
     oicr: 'Maturity Level',
     innovations: 'Stage',
     melia: 'Type',
+    publications: 'ISI'
   }
 
   maxSize = 5;
@@ -65,6 +66,7 @@ export class IndicatorsComponent implements OnInit {
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
+      console.log(routeParams)
       this.getEvaluationsList(routeParams);
     });
 

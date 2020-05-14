@@ -36,6 +36,7 @@ export class CRPIndicatorsComponent implements OnInit {
     oicr: 'Maturity Level',
     innovations: 'Stage',
     melia: 'Type',
+    publications: 'ISI'
   }
 
   maxSize = 5;

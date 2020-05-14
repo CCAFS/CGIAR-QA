@@ -25,7 +25,7 @@
     <div class="col col-progress">
         <div class="row" style="padding: 0 15px;">
             <p class="card-title col-9">Progress by Assessors</p>
-            <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More Metrics</button>
+            <!-- <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More Metrics</button> -->
         </div>
         <div class="card">
             <div class="card-body">
@@ -44,8 +44,8 @@
                         <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                             <span>{{item.value.total}}</span>
                         </progressbar>
-                        <a routerLinkActive="active"
-                            (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
+                        <a routerLinkActive="active" [routerLinkActive]="['active']" routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
+                            <!-- (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)"> -->
                             Go to all {{getIndicatorName(item.key)}}
                         </a>
                     </div>
@@ -128,8 +128,8 @@
                     [yAxisLabel]="yAxisLabel" [yAxisTickFormatting]="axisFormat" [legendTitle]="legendTitle"
                     (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
                 </ngx-charts-bar-vertical-2d>
-                <div *ngIf="!has_comments"  class="no-data">
-                        None comments made yet
+                <div *ngIf="!has_comments" class="no-data">
+                    None comments made yet
                 </div>
 
             </div>

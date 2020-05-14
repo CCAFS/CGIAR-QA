@@ -8,11 +8,13 @@
   flex-direction: column;
   min-height: 200px;
   margin-left: 1em;
-  .comment-body.approved {
-    background-color: var(--green-tertiary);
+  .comment-body.approved,
+  .reply-comment.approved {
+    background-color: var(--green-tertiary) !important;
   }
-  .comment-body.declined {
-    background-color: var(--red-tertiary);
+  .comment-body.declined,
+  .reply-comment.declined {
+    background-color: var(--red-tertiary) !important;
   }
   .comment-body {
     padding: 0.75em;

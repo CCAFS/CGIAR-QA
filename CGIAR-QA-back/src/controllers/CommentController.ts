@@ -408,7 +408,7 @@ class CommentController {
             let currentRole = user.roles.map(role => { return role.description })[0];
 
             console.log({ is_visible: 1, evaluation: evaluationId })
-            if (currentRole === RolesHandler.admin || currentRole === RolesHandler.assesor) {
+            if (currentRole === RolesHandler.admin /*|| currentRole === RolesHandler.assesor*/) {
                 comments = await commentsRepository.find({
                     where: { is_visible: 1, evaluation: evaluationId },
                     relations: ['user', 'meta'],
@@ -416,7 +416,18 @@ class CommentController {
                         createdAt: "ASC"
                     }
                 });
-            } else {
+            }
+            else if (currentRole === RolesHandler.assesor) {
+                comments = await commentsRepository.find({
+                    where: { is_visible: 1, is_deleted: 0, evaluation: evaluationId },
+                    relations: ['user', 'meta'],
+                    order: {
+                        createdAt: "ASC"
+                    }
+                });
+
+            }
+            else {
                 comments = await commentsRepository.find({
                     where: { is_visible: 1, approved: 1, evaluation: evaluationId },
                     relations: ['user', 'meta'],
