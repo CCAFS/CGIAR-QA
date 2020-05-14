@@ -8,7 +8,7 @@ import { AlertService } from '../../services/alert.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus } from "../../_models/general-status.model"
+import { DetailedStatus, GeneralIndicatorName } from "../../_models/general-status.model"
 import { Role } from 'src/app/_models/roles.model';
 
 @Component({
@@ -17,24 +17,46 @@ import { Role } from 'src/app/_models/roles.model';
   styleUrls: ['./detail-indicator.component.scss']
 })
 export class DetailIndicatorComponent implements OnInit {
+
+
   currentUser: User;
   detailedData: any[];
   params: any;
-  spinner_name = '';
-  notApplicable = '';
+  spinner1 = 'spinner1';
+  spinner2 = 'spinner2';
+  currentY = 0;
   gnralInfo = {
     status: "",
     evaluation_id: '',
     general_comment: '',
+    general_comment_user: '',
+    general_comment_updatedAt: '',
     crp_id: ''
   };
   statusHandler = DetailedStatus;
   generalCommentGroup: FormGroup;
+  currentType = '';
+
+  approveAllitems;
 
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
+  @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
+
 
   activeCommentArr = [];
   fieldIndex: number;
+  notApplicable = '';
+  tickGroup: FormGroup;
+  tooltips = {
+    public_link: '',
+    download_excel: 'Click here to download all comments in an excel file.',
+    all_approved: 'Setting this option true, will approved all items without comments.'
+  }
+  spinner_name = '';
+
+  criteriaData = [];
+  criteria_loading = false;
+
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -52,11 +74,14 @@ export class DetailIndicatorComponent implements OnInit {
       this.generalCommentGroup = this.formBuilder.group({
         general_comment: ['', Validators.required]
       });
-      this.notApplicable = this.authenticationService.NOT_APPLICABLE;
-      // console.log(routeParams)
       this.params = routeParams;
+      this.tooltips.public_link = `Click here to see more information about this  ${this.params.type}.`;
+      this.notApplicable = this.authenticationService.NOT_APPLICABLE;
+      console.log(routeParams)
+      this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
       this.showSpinner(this.spinner_name)
-      this.getDetailedData()
+      this.getDetailedData();
+      this.getIndicatorCriteria(`qa_${this.params.type}`);
     })
   }
 
@@ -74,7 +99,9 @@ export class DetailIndicatorComponent implements OnInit {
           evaluation_id: this.detailedData[0].evaluation_id,
           general_comment: this.detailedData[0].general_comment,
           crp_id: this.detailedData[0].evaluation_id,
-          status: this.detailedData[0].status
+          status: this.detailedData[0].status,
+          general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
+          general_comment_user: this.detailedData[0].general_comment_user,
         }
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
@@ -89,48 +116,67 @@ export class DetailIndicatorComponent implements OnInit {
     )
   }
 
+  getIndicatorCriteria(id) {
+    this.criteria_loading = true;
+    console.log(id)
+    this.evaluationService.getCriteriaByIndicator(id).subscribe(
+      res => {
+        // console.log(res.data)
+        this.criteriaData = res.data[0];
+        this.criteria_loading = false;
+      },
+      error => {
+        console.log(error)
+        this.criteria_loading = false;
+        this.alertService.error(error);
+      }
+    )
+  }
+
+
   // convenience getter for easy access to form fields
   get formData() { return this.generalCommentGroup.controls; }
 
-  showComments(index: number, field: any) {
+  showComments(index: number, field: any, e) {
+    // console.log(index, this.detailedData[index],this.params)
+    const { x, y } = this.commentsElem.nativeElement.getBoundingClientRect();
+    // console.log(x, y, e.clientY)
+    if (e) {
+      this.currentY = e.clientY - y;
+    }
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
   }
+  updateNumCommnts(event, detailedData) {
+    detailedData.replies_count = event.length;
+  }
 
-  updateEvaluation(type: string, data: any) {
+   updateEvaluation(type: string, data: any) {
     let evaluationData = {
       evaluation_id: data[0].evaluation_id,
-      general_comments: data[0].general_comments,
+      // general_comments: data[0].general_comments,
       status: data[0].status,
     };
 
     switch (type) {
-      case 'general_comment':
-        if (this.generalCommentGroup.invalid) {
-          this.alertService.error('A general comment is required', false)
-          return;
-        }
-        // this.showSpinner('spinner1');
-        evaluationData['general_comments'] = this.formData.general_comment.value
-        break;
       case "status":
-        evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
+        evaluationData['status'] = this.gnralInfo.status;
         break;
 
       default:
         break;
     }
-    // console.log(evaluationData)
 
     this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
       res => {
-        console.log(res)
-        this.alertService.success(res.message)
+        // //console.log(res)
+        this.alertService.success(res.message);
+        this.showSpinner('spinner1')
         this.getDetailedData();
       },
       error => {
-        console.log("updateEvaluation", error);
+        //console.log("updateEvaluation", error);
         this.hideSpinner('spinner1');
         this.alertService.error(error);
       }
@@ -138,6 +184,54 @@ export class DetailIndicatorComponent implements OnInit {
 
   }
 
+  // updateEvaluation(type: string, data: any) {
+  //   let evaluationData = {
+  //     evaluation_id: data[0].evaluation_id,
+  //     general_comments: data[0].general_comments,
+  //     status: data[0].status,
+  //   };
+
+  //   switch (type) {
+  //     case 'general_comment':
+  //       if (this.generalCommentGroup.invalid) {
+  //         this.alertService.error('A general comment is required', false)
+  //         return;
+  //       }
+  //       // this.showSpinner('spinner1');
+  //       evaluationData['general_comments'] = this.formData.general_comment.value
+  //       break;
+  //     case "status":
+  //       evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
+  //       break;
+
+  //     default:
+  //       break;
+  //   }
+  //   // console.log(evaluationData)
+
+  //   this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
+  //     res => {
+  //       console.log(res)
+  //       this.alertService.success(res.message)
+  //       this.getDetailedData();
+  //     },
+  //     error => {
+  //       console.log("updateEvaluation", error);
+  //       this.hideSpinner('spinner1');
+  //       this.alertService.error(error);
+  //     }
+  //   )
+
+  // }
+
+
+  // updateNumCommnts(event, detailedData) {
+  //   detailedData.replies_count = event.length;
+  // }
+
+ 
+
+ 
 
 
   validateCommentAvility(field, is_embed) {

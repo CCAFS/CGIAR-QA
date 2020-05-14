@@ -234,3 +234,23 @@ progressbar {
     background-color: var(--yellow-primary) !important;
   }
 }
+
+/***
+** Comments Modal
+*/
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 80% !important;
+    margin: auto !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .modal-lg {
+    max-width: 100%;
+  }
+}
+
+.comments-dash-container {
+  min-height: 30em;
+}

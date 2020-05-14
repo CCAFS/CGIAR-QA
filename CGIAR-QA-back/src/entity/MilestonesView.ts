@@ -30,11 +30,11 @@ export class QAMilestones {
     @ViewColumn()
     outcome_description: string;
     
-    // @ViewColumn()
-    // sub_idos: string;
+    @ViewColumn()
+    sub_idos: string;
     
-    // @ViewColumn()
-    // progress_outcome: string;
+    @ViewColumn()
+    progress_outcome: string;
     
     @ViewColumn()
     title: string;

@@ -1,7 +1,6 @@
 <div class="row">
     <div class="col-12">
         <div>
-
             <h2>List of {{indicatorTypeName}}</h2>
             <div class="row col sub-header">
                 <div class="col row text-left">
@@ -10,10 +9,10 @@
                         <hr>
                         <p>AR Template</p>
                     </div>
-                    <div class="model-link-container" (click)="goToPDF(indicatorType)">
+                    <div *ngIf="hasTemplate" class="model-link-container" (click)="goToPDF(indicatorType)">
                         <i class="icon-pdf"></i>
                         <hr>
-                        <p>{{indicatorTypeName}} Template</p>
+                        <p>Indicator Guidance</p>
                     </div>
                 </div>
                 <div class="col row text-right">
@@ -23,6 +22,12 @@
                     <p>Pending</p>
                 </div>
             </div>
+
+
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
+            </div>
+
             <table class="table table-bordered">
                 <thead class="table-header">
                     <tr>
@@ -44,16 +49,18 @@
                                 </div>
                             </div>
                         </th>
-                        <th scope="col" [class.active]="order === 'crp'" (click)="setOrder('crp')">
+                        <th *ngIf="returnedArray && returnedArray[0].stage" scope="col"
+                            [class.active]="order === 'stage'" (click)="setOrder('stage')">
                             <div class="header-row">
-                                CRP
-                                <div class="order-icon" *ngIf="order === 'crp'">
+                                {{stageHeaderText[indicatorType]}}
+                                <div class="order-icon" *ngIf="order === 'stage'">
                                     <span [hidden]="reverse">▼</span>
                                     <span [hidden]="!reverse">▲</span>
                                 </div>
                             </div>
                         </th>
-                        <th scope="col" [class.active]="order === 'comments_count'" (click)="setOrder('comments_count')">
+                        <th scope="col" [class.active]="order === 'comments_count'"
+                            (click)="setOrder('comments_count')">
                             <div class="header-row"> Comments
                                 <div class="order-icon" *ngIf="order === 'comments_count'">
                                     <span [hidden]="reverse">▼</span>
@@ -61,7 +68,12 @@
                                 </div>
                             </div>
                         </th>
-                        <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status')">
+                        <th scope="col">
+                            <div class="header-row">
+                                Export comments
+                            </div>
+                        </th>
+                        <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status') ">
                             <div class="header-row"> QA Status
                                 <div class="order-icon" *ngIf="order === 'status'">
                                     <span [hidden]="reverse">▼</span>
@@ -72,28 +84,51 @@
                     </tr>
                 </thead>
                 <tbody class="table-body">
-                    <tr *ngFor="let item of returnedArray | orderBy: order:reverse:'case-insensitive'">
-                        <th scope="row">{{ item.id }}</th>
-                        <td style="cursor: pointer;" (click)="goToView(item.id)">
-                            {{ item.title }}
+                    <tr *ngFor="let item of evaluationList | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
+                        <th scope="row">
+                            QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
+                        </th>
+                        <td >
+                            <a rel="noopener noreferrer" [routerLinkActive]="['active']"
+                                routerLink="./detail/{{item.id}}"> {{ item.title }}</a>
+
                         </td>
-                        <td>{{ item.crp }}</td>
+                        <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
                         <td>{{ item.comments_count }}</td>
+                        <td (click)="exportComments(item)">
+                            <a target="_blank">
+                                <div tooltip="Comment in excel format" container="body" placement="top"
+                                    class="btn btn-primary file-button">
+                                    <i class="icon-download-excel"></i>
+                                </div>
+                            </a>
+                        </td>
                         <td>
                             <div class="circle {{ item.status }}"></div>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="d-flex justify-content-center p-2 pagination-container">
-                <pagination [rotate]="false" [totalItems]="collectionSize" [maxSize]="3"
+
+            <div *ngIf='evaluationList' class="total-items">
+                Total items: {{evaluationList.length}}
+            </div>
+            <div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
+                <pagination [rotate]="false" [totalItems]="(evaluationList | filter:searchText ).length" [maxSize]="5"
                     (pageChanged)="pageChanged($event)">
                 </pagination>
             </div>
 
+            
+            <!-- <div class="d-flex justify-content-center p-2 pagination-container">
+                <pagination [rotate]="false" [totalItems]="collectionSize" [maxSize]="3"
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div> -->
+
 
         </div>
-        
+
         <!-- Loading Spinner -->
         <ngx-spinner [name]="spinner_name" [fullScreen]="false"></ngx-spinner>
     </div>

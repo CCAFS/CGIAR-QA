@@ -38,7 +38,7 @@ export class CrpComponent implements OnInit {
     if (!this.currentUser) {
       this.validateToken(this.params['params']);
     } else {
-      this.router.navigate([`/crp/dashboard`])
+      // this.router.navigate([`/crp/dashboard`])
       this.indicators = this.authenticationService.userHeaders;
       this.getCRPIndicators();
     }

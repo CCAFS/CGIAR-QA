@@ -96,6 +96,52 @@ class Util {
         return grouped_data;
     }
 
+    static parseChartData(rawData, type?) {
+        let response = [];
+        for (let index = 0; index < rawData.length; index++) {
+            const element = rawData[index]
+            const indicator_name = element['indicator_view_name'].split('qa_')[1];
+
+            let a = response.find(data => data.name == indicator_name)
+            console.log(a)
+            if (!a) {
+                let r = {
+                    name: indicator_name,
+                    indicator_name: element['indicator_view_name'],
+                    series: [
+
+                        {
+                            "name": type == 'admin' ? "Comments Approved" : "Comments Received",
+                            "value": element['comments_approved']
+                        },
+                        {
+                            "name": "Comments Approved No Comment",
+                            "value": element['approved_no_comment']
+                        },
+                        {
+                            "name": "Comments CRP Approved",
+                            "value": element['approved_comment_crp']
+                        },
+                        // {
+                        // "name": "Comments CRP Approved",
+                        // "value": element['approved_comment_crp']
+                        // },
+                    ]
+                }
+
+                if (type == 'admin') {
+                    r.series.unshift({
+                        "name": "Total Comments",
+                        "value": element['comments_total']
+                    })
+                }
+
+                response.push(r)
+            }
+        }
+        return response;
+    }
+
 
     static createOrReturnUser = async (authToken: any): Promise<any> => {
         const userRepository = getRepository(QAUsers);
