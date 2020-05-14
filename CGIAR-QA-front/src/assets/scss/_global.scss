@@ -181,8 +181,8 @@
   .custom-control-label::before {
     position: relative;
     left: 0;
-    height: 2em;
-    width: 5em;
+    height: 1.5em;
+    width: 3.5em;
     border-radius: 15px;
   }
   .custom-control-input:checked ~ .custom-control-label::before {
@@ -191,16 +191,16 @@
   }
 
   .custom-control-label::after {
-    top: calc(0.25rem + 2px);
-    left: calc(0rem + 2px);
-    width: calc(2rem - 4px);
-    height: calc(2rem - 4px);
+    top: calc(0.25rem + 1.5px);
+    left: calc(0rem + 2.5px);
+    width: calc(1.5rem - 4px);
+    height: calc(1.5rem - 4px);
     background-color: var(--gray-secondary);
     border-radius: 1.5rem;
   }
   .custom-control-input:checked ~ .custom-control-label::after {
-    -webkit-transform: translateX(2.75rem);
-    transform: translateX(2.75rem);
+    -webkit-transform: translateX(1.9rem);
+    transform: translateX(1.9rem);
   }
 }
 
