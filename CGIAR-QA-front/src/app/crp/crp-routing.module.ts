@@ -19,16 +19,14 @@ const routes: Routes = [
         path: 'dashboard',
         canActivate: [AuthGuard],
         data: { roles: [Role.crp] },
-        component: CrpDashboardComponent
+        component: CrpDashboardComponent,
       },
       {
         path: 'indicator/:type/:primary_column',
-        loadChildren: () => import('./detail-indicator/detail-indicator.module').then(mod => mod.DetailIndicatorModule)
+        loadChildren: () => import('./detail-indicator/detail-indicator.module').then(mod => mod.DetailIndicatorModule),
       },
     ],
   },
-  // otherwise redirect to home
-  { path: '**', redirectTo: '/crp/dashboard' }
 ];
 
 @NgModule({

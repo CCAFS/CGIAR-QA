@@ -52,6 +52,7 @@
                     <ng-container *ngIf="detailedData" [formGroupName]="i">
                         <div class="data-row">
                             <div class="col">
+                                <!-- checkbox -->
                                 <div class="row">
                                     <input
                                         *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || summon.value.isChecked "
@@ -64,6 +65,7 @@
                                         class="custom-control-label" for="field-{{detailedData[i].field_id}}">
                                         <h2>{{detailedData[i].display_name}}</h2>
                                     </label>
+                                    
                                     <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                         {{detailedData[i].display_name}}</h2>
 
@@ -77,6 +79,7 @@
                                     </div>
                                 </div>
 
+                                <!-- data value -->
                                 <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
                                     [innerHTML]="detailedData[i].value | markdown">
                                 </div>
@@ -93,6 +96,7 @@
 
                             </div>
 
+                            <!-- comments -->
                             <div #commentsElem
                                 *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
                                 (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"

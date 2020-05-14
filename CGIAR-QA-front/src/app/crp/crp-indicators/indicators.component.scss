@@ -1,6 +1,5 @@
 @import "../../../assets/variables.scss";
 
-
 h2 {
   text-align: center;
   margin: 1em;
@@ -57,7 +56,7 @@ h2 {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        .order-icon{
+        .order-icon {
           margin-left: 1em;
         }
       }
@@ -98,4 +97,9 @@ h2 {
       background-color: var(--blue-primary);
     }
   }
+}
+.total-items {
+  font-size: 0.9em;
+  color: var(--gray-secondary);
+  font-style: italic;
 }

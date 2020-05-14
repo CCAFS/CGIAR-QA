@@ -38,6 +38,21 @@ export class AdminDashboardComponent implements OnInit {
   enableCommentsTooltip: string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
 
   modalRef: BsModalRef;
+  multi = [];
+  has_comments: boolean = false;
+  // options
+  showXAxis: boolean = true;
+  showYAxis: boolean = true;
+  gradient: boolean = false;
+  showLegend: boolean = true;
+  showXAxisLabel: boolean = true;
+  xAxisLabel: string = 'Indicators';
+  showYAxisLabel: boolean = true;
+  yAxisLabel: string = 'Comments';
+  legendTitle: string = 'Labels';
+  colorScheme = {
+    domain: ['#61b33e', '#ffca30', '#0f8981', '#2e7636']
+  };
 
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,
@@ -215,29 +230,22 @@ export class AdminDashboardComponent implements OnInit {
 
   getCommentStats() {
     this.showSpinner();
-    let params = (this.selectedProg) ? this.selectedProg : { crp_id: 'undefined', id: 0 }
-    console.log(this.selectedProg, params)
+    let params = (this.selectedProg) ? this.selectedProg : { crp_id: 'undefined' }
     this.commentService.getCommentCRPStats(params)
       .subscribe(
         res => {
-          console.log(res)
-          this.dashboardModalData = res.data;
+          this.has_comments = res.data.length > 0 ? true:false
+          Object.assign(this, { multi: res.data });
           this.hideSpinner();
         },
         error => {
           this.hideSpinner()
-          console.log("getAllDashData", error);
+          console.log("getCommentStats", error);
           this.alertService.error(error);
-        },
-      )
+        })
 
   }
 
-  openModal(template: TemplateRef<any>) {
-    this.dashboardModalData = []
-    this.getCommentStats()
-    this.modalRef = this.modalService.show(template);
-  }
 
   /***
    * 
@@ -250,6 +258,65 @@ export class AdminDashboardComponent implements OnInit {
   hideSpinner() {
     this.spinner.hide();
   }
+
+
+  /***
+   * 
+   * 
+   */
+
+  openModal(template: TemplateRef<any>) {
+    // this.dashboardModalData = []
+    this.getCommentStats()
+    this.modalRef = this.modalService.show(template);
+  }
+
+  // getCommentStats() {
+  //   this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
+  //     .subscribe(
+  //       res => {
+  //         console.log(res)
+  //         Object.assign(this, { multi: res.data });
+  //         this.hideSpinner();
+  //       },
+  //       error => {
+  //         this.hideSpinner()
+  //         console.log("getCommentStats", error);
+  //         this.alertService.error(error);
+  //       },
+  //     )
+  // }
+
+
+
+  /**
+   * 
+   * Chart controllers
+   */
+
+
+  onSelect(data): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  }
+
+  onActivate(data): void {
+    console.log('Activate', JSON.parse(JSON.stringify(data)));
+  }
+
+  onDeactivate(data): void {
+    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+  }
+
+
+  axisFormat(val) {
+    if (val % 1 === 0) {
+      return val.toLocaleString();
+    } else {
+      return '';
+    }
+  }
+
+
 
 
 

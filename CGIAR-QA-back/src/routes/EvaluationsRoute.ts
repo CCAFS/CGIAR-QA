@@ -62,5 +62,5 @@ router.get("/:evaluationId([0-9]+)/detail/comment/:metaId([0-9]+)", [checkJwt, c
 router.get("/:evaluationId([0-9]+)/detail/comment/:commentId([0-9]+)/replies", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.getCommentsReplies)
 
 // get replies by comment
-router.get("/indicator/:indicatorName", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], EvaluationsController.getCriteriaByIndicator)
+router.get("/indicator/:indicatorName", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp, RolesHandler.assesor])], EvaluationsController.getCriteriaByIndicator)
 export default router;

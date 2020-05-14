@@ -14,19 +14,24 @@
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending</p>
 
-                    <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More Metrics</button>
+                    <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More
+                        Metrics</button>
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">
                     <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
-                        [ngClass]="{'no-available': !item.value[0].enable_crp}" class="progress-container">
-                        <p>{{getIndicatorName(item.key)}} evaluations: {{item.value[0].total}}</p>
+                        [ngClass]="{'no-available': !item.value[0].indicator_status}" class="progress-container">
+                        <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
                         <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                             <span>{{item.value.total}}</span>
                         </progressbar>
-                        <a routerLinkActive="active"
-                            (click)="goToView(getIndicatorName(item.key).toLowerCase(), item.value[0].primary_field)">
+                        <a *ngIf="item.value[0].indicator_status" routerLinkActive="active"
+                            (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)">
                             Go to all {{getIndicatorName(item.key)}}
+                        </a>
+
+                        <a *ngIf="!item.value[0].indicator_status">
+                            Go to {{getIndicatorName(item.key)}}
                         </a>
                     </div>
 
@@ -45,44 +50,28 @@
 
 
 
-<ng-template #template>
-    <div class="modal-header">
-        <h4 class="modal-title pull-left">Comments for: {{selectedProg.acronym ? selectedProg.acronym : 'All'}}</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <div class="row justify-content-center dashboard-container">
 
-            <div class="col-12 col-progress">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-title comments example-container d-flex"
-                            [ngClass]="{'no-data': (dashboardModalData | json) == ({} | json)}">
-                            <div class="circle complete"></div>
-                            <p>Answer</p>
-                            <div class="circle pending" style="margin-left: 50px;"></div>
-                            <p>Pending</p>
-                        </div>
+<ng-template #template class="modal-dialog">
+    <div class="modal-content  modal-lg">
+        <div class="modal-header">
+            <button type="button" class="close pull-right" (click)="modalRef.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row justify-content-center comments-dash-container">
 
-                        <ng-container *ngIf="(dashboardModalData | json) != ({} | json)">
-                            <div *ngFor="let item of dashboardModalData | keyvalue" class="progress-container">
-                                <p>{{getIndicatorName(item.key)}} evaluations: {{item.value[0].total}}</p>
-                                <progressbar class="progress" [value]="item.value" [max]="item.value[0].total">
-                                    <span>{{item.value[0].total}}</span>
-                                </progressbar>
-                            </div>
-
-                            <!-- <ngx-spinner [fullScreen]="false"></ngx-spinner> -->
-                        </ng-container>
-                        <div class="no-data" *ngIf="(dashboardModalData | json) == ({} | json)">
-                            You don't have any indicator assingned.
-                            Please contact your Administrator.
-                        </div>
-
-                    </div>
+                <ngx-charts-bar-vertical-2d *ngIf="has_comments" [view]="view" [scheme]="colorScheme" [results]="multi"
+                    [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
+                    [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
+                    [yAxisLabel]="yAxisLabel" [yAxisTickFormatting]="axisFormat" [legendTitle]="legendTitle"
+                    (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
+                </ngx-charts-bar-vertical-2d>
+                <div *ngIf="!has_comments" class="no-data">
+                    None comments made yet
                 </div>
+
+
             </div>
         </div>
     </div>
