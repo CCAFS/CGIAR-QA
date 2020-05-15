@@ -7,6 +7,7 @@ import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
 import { Role } from '../_models/roles.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-crp',
@@ -19,6 +20,7 @@ export class CrpComponent implements OnInit {
   params;
   spinner_name = 'sp1';
   allRoles = Role;
+  env = environment;
 
   constructor(private authenticationService: AuthenticationService,
     private route: ActivatedRoute,
@@ -45,7 +47,7 @@ export class CrpComponent implements OnInit {
   }
 
   validateToken(params: {}) {
-    console.log(this.currentUser, params)
+    // console.log(this.currentUser, params)
     this.authenticationService.tokenLogin(params).subscribe(
       res => {
         console.log(res)
