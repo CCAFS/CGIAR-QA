@@ -14,6 +14,7 @@ import { User } from '../../_models/user.model';
 import { GeneralIndicatorName } from 'src/app/_models/general-status.model';
 
 import { saveAs } from "file-saver";
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-indicators',
@@ -61,6 +62,7 @@ export class CRPIndicatorsComponent implements OnInit {
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private orderPipe: OrderPipe,
+    private titleService: Title ,
     private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
@@ -71,6 +73,8 @@ export class CRPIndicatorsComponent implements OnInit {
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
       // this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
       this.getEvaluationsList(routeParams);
+      /** set page title */
+      this.titleService.setTitle(`List of ${this.indicatorTypeName}`);
     })
   }
 

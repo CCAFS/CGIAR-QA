@@ -71,7 +71,7 @@ export class IndicatorsComponent implements OnInit {
       this.getEvaluationsList(routeParams);
 
       /** set page title */
-      this.titleService.setTitle(`List of${this.indicatorTypeName}`);
+      this.titleService.setTitle(`List of ${this.indicatorTypeName}`);
 
     });
 

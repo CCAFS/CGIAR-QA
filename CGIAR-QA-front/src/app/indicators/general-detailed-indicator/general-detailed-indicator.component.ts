@@ -16,6 +16,7 @@ import { CommentService } from 'src/app/services/comment.service';
 
 import { saveAs } from "file-saver";
 import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
+import { Title } from '@angular/platform-browser';
 
 
 
@@ -66,11 +67,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
-    private urlTransfrom : UrlTransformPipe,
+    private urlTransfrom: UrlTransformPipe,
     private alertService: AlertService,
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
+    private titleService: Title,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
     this.activeRoute.params.subscribe(routeParams => {
@@ -95,6 +97,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
       this.getDetailedData();
       this.getIndicatorCriteria(`qa_${this.params.type}`);
+
+      /** set page title */
+      this.titleService.setTitle(`${this.currentType} / QA-${ this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}`);
+
 
     })
   }

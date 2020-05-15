@@ -9,6 +9,7 @@ import { AlertService } from './../services/alert.service';
 import { GeneralStatus } from '../_models/general-status.model';
 
 import { environment } from '../../environments/environment';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-login',
@@ -28,8 +29,11 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
+    private titleService: Title,
     private alertService: AlertService
   ) {
+    /** set page title */
+    this.titleService.setTitle(`Login`);
     // redirect to home if already logged in
     if (this.authenticationService.currentUserValue) {
       this.router.navigate(['/dashboard']);

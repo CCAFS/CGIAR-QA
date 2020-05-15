@@ -10,6 +10,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { User } from '../../_models/user.model';
 import { DetailedStatus, GeneralIndicatorName } from "../../_models/general-status.model"
 import { Role } from 'src/app/_models/roles.model';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-detail-indicator',
@@ -63,6 +64,7 @@ export class DetailIndicatorComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
     private renderer: Renderer2,
+    private titleService: Title,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
 
@@ -81,6 +83,12 @@ export class DetailIndicatorComponent implements OnInit {
       this.showSpinner(this.spinner1)
       this.getDetailedData();
       this.getIndicatorCriteria(`qa_${this.params.type}`);
+
+
+      /** set page title */
+      this.titleService.setTitle(`${this.currentType} / QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}`);
+
+
     })
   }
 
@@ -151,7 +159,7 @@ export class DetailIndicatorComponent implements OnInit {
     detailedData.replies_count = event.length;
   }
 
-   updateEvaluation(type: string, data: any) {
+  updateEvaluation(type: string, data: any) {
     let evaluationData = {
       evaluation_id: data[0].evaluation_id,
       // general_comments: data[0].general_comments,
@@ -191,7 +199,7 @@ export class DetailIndicatorComponent implements OnInit {
         avility = true
         break;
       case Role.crp:
-        avility = field.enable_crp == 1 ? ( field.enable_comments) : field.enable_crp
+        avility = field.enable_crp == 1 ? (field.enable_comments) : field.enable_crp
         // avility = field.enable_crp == 1 ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments) : field.enable_crp
         break;
       default:
