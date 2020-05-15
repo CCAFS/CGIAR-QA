@@ -39,7 +39,7 @@ export class AuthenticationService {
         //delete currentUsr.indicators;
         this.cookiesService.setData(this.usrCookie, currentUsr);
         /** add user to tawk to **/
-        // this.setLoggedUser(currentUsr)
+        this.setLoggedUser(currentUsr)
         this.currentUserSubject.next(currentUsr);
         return currentUsr;
       }));
@@ -52,7 +52,7 @@ export class AuthenticationService {
         //delete currentUsr.indicators;
         this.cookiesService.setData(this.usrCookie, currentUsr);
         /** add user to tawk to **/
-        // this.setLoggedUser(currentUsr)
+        this.setLoggedUser(currentUsr)
         this.currentUserSubject.next(currentUsr);
         return currentUsr;
       }));
