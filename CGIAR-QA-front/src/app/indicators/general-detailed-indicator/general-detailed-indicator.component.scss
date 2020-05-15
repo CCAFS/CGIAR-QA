@@ -36,6 +36,16 @@
   text-transform: capitalize;
 }
 
+.go-back {
+  font-weight: 600;
+  color: #f1b83b;
+  font-size: 1em;
+}
+
+.go-back:hover {
+  color: #d59b1b;
+}
+
 .indicator-item-name {
   font-size: $font-md;
   text-transform: capitalize;

@@ -23,6 +23,8 @@ class AuthController {
             const userRepository = getRepository(QAUsers);
             const grnlConfg = getRepository(QAGeneralConfiguration);
 
+            username = username.trim().toLowerCase();
+
             let marlo_user = await userRepository.findOne({
                 where: [
                     { email: username, is_marlo: 1 },

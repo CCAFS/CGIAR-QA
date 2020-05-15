@@ -16,15 +16,16 @@ export class TawkToComponent implements OnInit {
   currentUser: User;
   config = environment;
 
+
   constructor(private _renderer: Renderer2, @Inject(DOCUMENT) private _document, private authService: AuthenticationService) {
     this.authService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
+
   }
 
   ngOnInit() {
-
-    this.script.text = `var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    this.script.text = `var Tawk_API = Tawk_API || {},  Tawk_LoadStart = new Date();
     (function () {
       var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
       s1.async = true;
@@ -32,7 +33,11 @@ export class TawkToComponent implements OnInit {
       s1.charset = 'UTF-8';
       s1.setAttribute('crossorigin', '*');
       s0.parentNode.insertBefore(s1, s0);
-    })();`;
+    })();
+    Tawk_API.visitor = {
+    name  : '',
+    email : ''
+    };`;
     this._renderer.appendChild(this._document.body, this.script);
     setTimeout(() => {
       this.openChat()

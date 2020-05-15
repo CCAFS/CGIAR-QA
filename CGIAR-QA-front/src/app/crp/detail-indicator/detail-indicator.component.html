@@ -11,7 +11,7 @@
 
 
 
-<a class="nav-item nav-link" [routerLinkActive]="['active']" routerLink="../..">
+<a class="nav-item nav-link go-back" [routerLinkActive]="['active']" routerLink="../..">
     <i class=icon-go-back></i> {{currentType}} List
 </a>
 <div class="row criteria-container">
@@ -31,28 +31,41 @@
             <div [ngClass]="{'approved-no-comment': field.approved_no_comment == 1} " class="data-row"
                 *ngFor="let field of detailedData; let i = index">
                 <div class="col">
-                    <!-- <h2>{{field.display_name}}</h2>
-                    <div *ngIf="field.value" [innerHTML]="field.value">
+                    <div class="row" style="padding: 0;">
+                        <h2>{{field.display_name}}</h2>
+
+                        <div *ngIf="field.meta_description">
+                            <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
+                                style="height: 2em;"></i>
+                            <ng-template #popTemplate>
+                                <div [innerHtml]="field.meta_description"></div>
+                            </ng-template>
+
+                        </div>
                     </div>
-                    <p *ngIf="!field.value" class="empty-value">Empty Value</p> -->
 
-                    <h2>{{field.display_name}}</h2>
 
-                    <div *ngIf="field.meta_description">
-                        <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
-                            style="height: 2em;"></i>
-                        <ng-template #popTemplate>
-                            <div [innerHtml]="field.meta_description"></div>
-                        </ng-template>
-
+                    <!-- data value -->
+                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
+                        [innerHTML]="detailedData[i].value | markdown">
                     </div>
+                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' )"
+                        [innerHTML]="detailedData[i].value">
+                    </div>
+                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'OICR' )"
+                        [innerHTML]="detailedData[i].value">
+                    </div>
+                    <p *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link' ">
+                        {{detailedData[i].value}}</p>
+                    <!-- no data -->
+                    <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p>
+
                 </div>
 
                 <!-- comments -->
-                <div #commentsElem *ngIf="validateCommentAvility(field,true)"
+                <div #commentsElem *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
                     (click)="showComments(i, field, $event); comment.updateData(field,params)"
                     class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
-
                     <i *ngIf="!field.loading" class="icon-message"></i>
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
@@ -61,7 +74,8 @@
                     </div>
                 </div>
 
-                <div *ngIf="!validateCommentAvility(field)" class="activate-messages-container">
+                <div *ngIf="!validateCommentAvility(field) || field.approved_no_comment"
+                    class="activate-messages-container">
                     <i *ngIf="!field.loading" class="icon-message-inactive"></i>
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
@@ -69,18 +83,7 @@
                         {{field.replies_count}}
                     </div>
                 </div>
-
-                <!-- <div #commentsElem *ngIf="validateCommentAvility(field,true)"
-                    (click)="showComments(i, field); comment.updateData(field,params)"
-                    class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
-                    <i class="icon-message"></i>
-                    <div *ngIf="field.replies_count != '0'" class="replies-count">
-                        {{field.replies_count}}
-                    </div>
-                </div>
-                <div *ngIf="!validateCommentAvility(field)" class="activate-messages-container">
-                    <i class="icon-message-inactive"></i>
-                </div> -->
+                
             </div>
 
         </div>
@@ -90,11 +93,11 @@
                 <p> {{detailedData[0].general_comment}} </p>
             </div>
         </div>
-        <ngx-spinner [fullScreen]="false" [name]="spinner_name" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
+        <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
             size="medium"></ngx-spinner>
 
     </div>
-    <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" class="col-sm-4 comments-container">
+    <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY" class="col-sm-4 comments-container">
         <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"></app-comment>
     </div>
 </div>

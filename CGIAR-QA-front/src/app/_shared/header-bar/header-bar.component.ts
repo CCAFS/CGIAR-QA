@@ -60,8 +60,6 @@ export class HeaderBarComponent implements OnInit {
   }
 
   getHeaderLinks() {
-    console.log(this.params, this.router)
-
     if (!this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {

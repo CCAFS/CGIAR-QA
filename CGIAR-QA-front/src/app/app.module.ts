@@ -11,7 +11,6 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TypeaheadModule } from 'ngx-type-ahead';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { MarkdownModule } from 'ngx-markdown';
-import { SortByPipe } from './pipes/sort-by.pipe';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -69,6 +68,5 @@ import { CommentComponentModule } from './comment/comment.module';
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
-  // exports: [SortByPipe,]
 })
 export class AppModule { }

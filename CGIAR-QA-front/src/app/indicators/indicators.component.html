@@ -1,3 +1,8 @@
+<a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
+    routerLink="/dashboard/">
+    <i class=icon-go-back></i> Dashboard
+</a>
+
 <h2>List of {{indicatorTypeName}}</h2>
 <div class="row col sub-header">
     <div class="col row text-left">
@@ -92,7 +97,7 @@
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
             <td>
-                <a target="_blank" rel="noopener noreferrer" [routerLinkActive]="['active']"
+                <a rel="noopener noreferrer" [routerLinkActive]="['active']"
                     routerLink="./detail/{{item.id}}"> {{ item.title }}</a>
                 <!-- <a target="_blank"> {{ item.title }}</a> -->
                 <!-- {{ item.title }} (click)="goToView(item.id)"-->

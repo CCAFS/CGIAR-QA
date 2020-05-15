@@ -52,7 +52,6 @@ export class DetailIndicatorComponent implements OnInit {
     download_excel: 'Click here to download all comments in an excel file.',
     all_approved: 'Setting this option true, will approved all items without comments.'
   }
-  spinner_name = '';
 
   criteriaData = [];
   criteria_loading = false;
@@ -79,7 +78,7 @@ export class DetailIndicatorComponent implements OnInit {
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
       console.log(routeParams)
       this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
-      this.showSpinner(this.spinner_name)
+      this.showSpinner(this.spinner1)
       this.getDetailedData();
       this.getIndicatorCriteria(`qa_${this.params.type}`);
     })
@@ -105,12 +104,12 @@ export class DetailIndicatorComponent implements OnInit {
         }
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
-        this.hideSpinner(this.spinner_name);
+        this.hideSpinner(this.spinner1);
         // console.log(res, this.gnralInfo)
       },
       error => {
         console.log("getEvaluationsList", error);
-        this.hideSpinner(this.spinner_name);
+        this.hideSpinner(this.spinner1);
         this.alertService.error(error);
       }
     )
@@ -184,56 +183,6 @@ export class DetailIndicatorComponent implements OnInit {
 
   }
 
-  // updateEvaluation(type: string, data: any) {
-  //   let evaluationData = {
-  //     evaluation_id: data[0].evaluation_id,
-  //     general_comments: data[0].general_comments,
-  //     status: data[0].status,
-  //   };
-
-  //   switch (type) {
-  //     case 'general_comment':
-  //       if (this.generalCommentGroup.invalid) {
-  //         this.alertService.error('A general comment is required', false)
-  //         return;
-  //       }
-  //       // this.showSpinner('spinner1');
-  //       evaluationData['general_comments'] = this.formData.general_comment.value
-  //       break;
-  //     case "status":
-  //       evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  //   // console.log(evaluationData)
-
-  //   this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
-  //     res => {
-  //       console.log(res)
-  //       this.alertService.success(res.message)
-  //       this.getDetailedData();
-  //     },
-  //     error => {
-  //       console.log("updateEvaluation", error);
-  //       this.hideSpinner('spinner1');
-  //       this.alertService.error(error);
-  //     }
-  //   )
-
-  // }
-
-
-  // updateNumCommnts(event, detailedData) {
-  //   detailedData.replies_count = event.length;
-  // }
-
- 
-
- 
-
-
   validateCommentAvility(field, is_embed) {
 
     let userRole = this.currentUser.roles[0].description, avility = false;
@@ -242,7 +191,8 @@ export class DetailIndicatorComponent implements OnInit {
         avility = true
         break;
       case Role.crp:
-        avility = field.enable_crp ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments) : field.enable_crp
+        avility = field.enable_crp == 1 ? ( field.enable_comments) : field.enable_crp
+        // avility = field.enable_crp == 1 ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments) : field.enable_crp
         break;
       default:
         break;

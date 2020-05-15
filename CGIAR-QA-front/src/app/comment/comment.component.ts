@@ -5,11 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthenticationService } from "../services/authentication.service";
-import { EvaluationsService } from "../services/evaluations.service";
 import { AlertService } from '../services/alert.service';
-
-import { SortByPipe } from '../pipes/sort-by.pipe'
-
 import { User } from '../_models/user.model';
 import { Role } from '../_models/roles.model';
 import { CommentService } from '../services/comment.service';
@@ -91,11 +87,9 @@ export class CommentComponent implements OnInit {
       userId: this.currentUser.id,
       evaluationId: this.dataFromItem.evaluation_id,
       metaId: this.dataFromItem.field_id,
-      approved: null
+      approved: true
     }).subscribe(
       res => {
-        // this.hideSpinner('spinner_Comment');
-        // this.commentsByCol = res.data;
         this.getItemCommentData()
         this.formData.comment.reset()
       },
@@ -104,17 +98,7 @@ export class CommentComponent implements OnInit {
         this.hideSpinner(this.spinner_comment);
         this.alertService.error(error);
       }
-    )
-
-    /*this.commentsByCol.push({
-      comment: this.formData.comment.value,
-      user: this.currentUser,
-      created_at: new Date(),
-    });
-
-    */
-
-    // console.log(this.formData.comment.value)
+    );
 
   }
 
@@ -177,7 +161,8 @@ export class CommentComponent implements OnInit {
         res => {
           this.hideSpinner(this.spinner_comment);
           console.log(res)
-          this.commentsByColReplies = res.data
+          comment.loaded_replies = res.data
+          // this.commentsByColReplies = res.data
         },
         error => {
           console.log("getItemCommentData", error);
@@ -189,9 +174,10 @@ export class CommentComponent implements OnInit {
   }
 
 
-  answerComment(is_approved: boolean) {
-    this.is_approved = is_approved;
-    this.availableComment = true
+  answerComment(is_approved: boolean, comment: any) {
+    comment.crp_response = is_approved;
+    // this.is_approved = is_approved;
+    // this.availableComment = true
   }
 
   replyComment(currentComment) {
@@ -204,7 +190,8 @@ export class CommentComponent implements OnInit {
       detail: this.formData.comment.value,
       userId: this.currentUser.id,
       commentId: currentComment ? currentComment.id : this.currentComment.id,
-      crp_approved: this.is_approved,
+      crp_approved: this.crpComment ? currentComment.crp_response : undefined,
+      // crp_approved: this.is_approved,
       // approved: this.approved,
     }).subscribe(
       res => {
@@ -223,8 +210,9 @@ export class CommentComponent implements OnInit {
   }
 
   validateStartedMssgs() {
-    let isAdmin = this.currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin })
-    return isAdmin;
+    return true;
+    // let isAdmin = this.currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin })
+    // return isAdmin;
   }
 
   /***
@@ -244,7 +232,6 @@ export class CommentComponent implements OnInit {
 
   private validComment(type, data) {
     let response;
-    console.log(type, data)
     switch (type) {
       case 'approved':
         let hasApprovedComments = this.commentsByCol.map(comment => comment.approved).find(approved => true);

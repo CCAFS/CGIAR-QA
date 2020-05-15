@@ -55,6 +55,7 @@ export class AuthenticationService {
   }
 
   logout() {
+
     // remove user from local storage and set current user to null
     localStorage.removeItem('indicators');
     this.cookiesService.delete(this.usrCookie);

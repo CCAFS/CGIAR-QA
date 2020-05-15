@@ -16,6 +16,21 @@
 .icon-go-back {
   height: 0.8em;
 }
+.nav-item {
+  padding-top: 0;
+  margin-bottom: 2em;
+  text-transform: capitalize;
+}
+
+.go-back {
+  font-weight: 600;
+  color: #f1b83b;
+  font-size: 1em;
+}
+
+.go-back:hover {
+  color: #d59b1b;
+}
 
 .criteria-container {
   display: flex;
@@ -36,10 +51,10 @@
     padding: 20px;
     margin: 0 0.5em 2em;
     min-height: 200px;
-    .approved-no-comment{
+    .approved-no-comment {
       background: var(--yellow-primary);
-      border-radius: .7em;
-      padding: 10px;
+      border-radius: 0.7em;
+      padding: 10px 0;
       border: var(--yellow-secondary) 2px solid;
     }
     .gnral-commnts.data-row {

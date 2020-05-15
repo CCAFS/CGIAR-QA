@@ -36,16 +36,16 @@
         }
       }
       .example-container {
-        margin-bottom: 2em;
-        justify-content: center;
+        justify-content: flex-end;
         p {
-          margin: 0 15px;
+          margin: 0 5px;
+          font-size: $font-sm;
           line-height: $size-lg;
           align-self: center;
         }
         .circle {
-          height: $size-md;
-          width: $size-md;
+          height: $size-sm;
+          width: $size-sm;
         }
         .complete {
           background-color: var(--green-primary);
@@ -58,16 +58,18 @@
         display: flex;
         flex-direction: column;
         p {
-          margin: 10px 0px;
+          margin: 10px 0px 0px 0px;
           text-transform: capitalize;
+          font-size: $font-sm;
         }
         a {
           // max-width: 40%;
           margin-left: auto;
           text-align: right;
-          margin-top: 1em;
+          margin-top: 0.2em;
           text-decoration: underline;
           cursor: pointer;
+          font-size: $font-xs;
           // text-transform: capitalize;
         }
         .progress {
@@ -103,7 +105,7 @@
         margin: 0;
         .qa-toggle {
           display: flex;
-          justify-content: flex-end;
+          justify-content: center;
         }
       }
     }
