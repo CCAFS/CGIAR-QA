@@ -99,7 +99,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.getIndicatorCriteria(`qa_${this.params.type}`);
 
       /** set page title */
-      this.titleService.setTitle(`${this.detailedData[0].crp_acronym} / ${this.currentType} / QA-${ this.params.type.charAt(0)}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}`);
+      this.titleService.setTitle(`${this.currentType} / QA-${ this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}`);
 
 
     })

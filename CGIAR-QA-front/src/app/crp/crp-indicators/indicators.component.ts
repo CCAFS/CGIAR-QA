@@ -74,7 +74,7 @@ export class CRPIndicatorsComponent implements OnInit {
       // this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
       this.getEvaluationsList(routeParams);
       /** set page title */
-      this.titleService.setTitle(`List of${this.indicatorTypeName}`);
+      this.titleService.setTitle(`List of ${this.indicatorTypeName}`);
     })
   }
 
