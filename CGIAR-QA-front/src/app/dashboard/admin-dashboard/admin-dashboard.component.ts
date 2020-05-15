@@ -15,6 +15,7 @@ import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-statu
 import { Observable, forkJoin } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CommentService } from 'src/app/services/comment.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -62,10 +63,14 @@ export class AdminDashboardComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private indicatorService: IndicatorsService,
     private commentService: CommentService,
+    private titleService: Title,
     private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
+
+    /** set page title */
+    this.titleService.setTitle(`Admin Dashboard`);
 
     /**
      * initialize forms

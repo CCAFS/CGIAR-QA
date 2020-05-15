@@ -40,16 +40,27 @@ export class TawkToComponent implements OnInit {
     };`;
     this._renderer.appendChild(this._document.body, this.script);
     setTimeout(() => {
-      this.openChat()
+      this.openChat();
+      this.setLoggedUser()
     }, 200);
 
   }
 
   openChat() {
-    if (window['Tawk_API'].hasOwnProperty('maximize')){
+    if (window['Tawk_API'].hasOwnProperty('maximize')) {
       window['Tawk_API'].maximize();
     }
 
+  }
+
+  setLoggedUser() {
+    if (window['Tawk_API'].hasOwnProperty('visitor')) {
+      console.log(window['Tawk_API'])
+      window['Tawk_API'].visitor = {
+        name: this.currentUser.username,
+        email: this.currentUser.email
+      };
+    }
   }
 
 }

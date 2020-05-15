@@ -11,6 +11,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
 import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-status.model'
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-crp-dashboard',
@@ -52,10 +53,14 @@ export class CrpDashboardComponent implements OnInit {
     private commentService: CommentService,
     private dashService: DashboardService,
     private alertService: AlertService,
+    private titleService: Title,
     private spinner: NgxSpinnerService, ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
+
+     /** set page title */
+     this.titleService.setTitle(`CRP Dashboard`);
 
   }
 

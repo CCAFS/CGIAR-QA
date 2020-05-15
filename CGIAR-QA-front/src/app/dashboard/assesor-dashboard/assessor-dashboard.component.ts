@@ -9,6 +9,7 @@ import { AlertService } from '../../services/alert.service';
 
 import { User } from '../../_models/user.model';
 import { GeneralStatus, GeneralIndicatorName } from "../../_models/general-status.model"
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-assessor-dashboard',
@@ -26,10 +27,13 @@ export class AssessorDashboardComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private spinner: NgxSpinnerService,
     private router: Router,
+    private titleService: Title,
     private alertService: AlertService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
+    /** set page title */
+    this.titleService.setTitle(`Assessor Dashboard`);
   }
 
   ngOnInit() {
