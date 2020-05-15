@@ -5,11 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthenticationService } from "../services/authentication.service";
-import { EvaluationsService } from "../services/evaluations.service";
 import { AlertService } from '../services/alert.service';
-
-import { SortByPipe } from '../pipes/sort-by.pipe'
-
 import { User } from '../_models/user.model';
 import { Role } from '../_models/roles.model';
 import { CommentService } from '../services/comment.service';

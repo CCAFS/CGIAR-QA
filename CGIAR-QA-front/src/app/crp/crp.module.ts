@@ -10,14 +10,12 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-import { SortByPipe } from '../pipes/sort-by.pipe';
 
 import { CRPRoutingModule } from './crp-routing.module';
 import { CrpComponent } from './crp.component';
 import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
 
 import { CommentComponentModule } from '../comment/comment.module';
-import { CRPIndicatorsComponent } from './crp-indicators/indicators.component';
 import { SharedModule } from '../shared-module/shared-module.module';
 
 
@@ -40,6 +38,6 @@ import { SharedModule } from '../shared-module/shared-module.module';
     SharedModule,
     NgxChartsModule
   ],
-  declarations: [CrpComponent, CrpDashboardComponent,  /*CRPIndicatorsComponent, SortByPipe,*/ ]
+  declarations: [CrpComponent, CrpDashboardComponent]
 })
 export class CrpModule { }

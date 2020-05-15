@@ -15,13 +15,15 @@ import { Role } from "../../_models/roles.model"
 import { CommentService } from 'src/app/services/comment.service';
 
 import { saveAs } from "file-saver";
+import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
 
 
 
 @Component({
   selector: 'app-general-detailed-indicator',
   templateUrl: './general-detailed-indicator.component.html',
-  styleUrls: ['./general-detailed-indicator.component.scss']
+  styleUrls: ['./general-detailed-indicator.component.scss'],
+  providers: [UrlTransformPipe]
 })
 export class GeneralDetailedIndicatorComponent implements OnInit {
   currentUser: User;
@@ -64,6 +66,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
+    private urlTransfrom : UrlTransformPipe,
     private alertService: AlertService,
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
@@ -200,6 +203,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
         this.detailedData = res.data.filter(field => {
+          field.value = this.urlTransfrom.transform(field.value);
           return field.value !== this.notApplicable;
         });
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
@@ -220,7 +224,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.addCheckboxes();
       },
       error => {
-        //console.log("getEvaluationsList", error);
+        console.log("getEvaluationsList", error);
         this.hideSpinner('spinner1');
         this.alertService.error(error);
       }

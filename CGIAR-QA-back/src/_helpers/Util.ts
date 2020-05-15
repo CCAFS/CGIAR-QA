@@ -283,7 +283,7 @@ class Util {
                         createdAt: rows[i].createdAt,
                         comment: rows[i].detail,
                         user: rows[i].user.name,
-                        email: rows[i].user.email,
+                        // email: rows[i].user.email,
                         field: rows[i].meta ? rows[i].meta.display_name : 'General Comment',
                     };
                     sheet.addRow(row);

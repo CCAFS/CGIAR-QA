@@ -6,6 +6,25 @@ h2 {
   font-size: $font-lg;
 }
 
+.icon-go-back{
+  height:0.8em
+}
+.nav-item{
+  padding-top: 0;
+  margin-bottom: 2em;
+  text-transform: capitalize;
+}
+
+.go-back {
+  font-weight: 600;
+  color: #f1b83b;
+  font-size: 1em;
+}
+
+.go-back:hover {
+  color: #d59b1b;
+}
+
 .sub-header {
   margin: 1em 0;
   padding: 0;

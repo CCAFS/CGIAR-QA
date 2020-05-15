@@ -13,6 +13,7 @@ import { AlertService } from '../services/alert.service';
 import { User } from '../_models/user.model';
 import { GeneralIndicatorName } from '../_models/general-status.model';
 import { saveAs } from "file-saver";
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-indicators',
@@ -58,6 +59,7 @@ export class IndicatorsComponent implements OnInit {
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private orderPipe: OrderPipe,
+    private titleService: Title ,
     private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
@@ -66,8 +68,11 @@ export class IndicatorsComponent implements OnInit {
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
-      console.log(routeParams)
       this.getEvaluationsList(routeParams);
+
+      /** set page title */
+      this.titleService.setTitle(`List of${this.indicatorTypeName}`);
+
     });
 
   }
@@ -89,6 +94,7 @@ export class IndicatorsComponent implements OnInit {
       error => {
         this.hideSpinner();
         this.returnedArray = []
+        console.log(error)
         this.alertService.error(error);
       }
     )
