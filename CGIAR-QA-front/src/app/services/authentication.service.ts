@@ -77,11 +77,11 @@ export class AuthenticationService {
   logout() {
     if (window.hasOwnProperty('Tawk_API')) {
       window['Tawk_API'].onLoad = function () {
+        window['Tawk_API'].endChat();
         window['Tawk_API'].visitor = {
           name: null,
           email: null
         };
-        window['Tawk_API'].endChat();
 
       };
     }
