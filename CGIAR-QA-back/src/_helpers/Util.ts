@@ -323,6 +323,7 @@ class Util {
                 id: element['indicator_view_id'],
                 display_name: element["meta_display_name"],
                 title: element['title'],
+                comment_by: element['comment_by'],
                 stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
             });
         } else {

@@ -62,7 +62,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     all_approved: 'Setting this option true, will approved all items without comments.'
   }
 
-  criteriaData = [];
+  criteriaData;
   criteria_loading = false;
 
   constructor(private activeRoute: ActivatedRoute,
@@ -339,7 +339,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   }
 
-  validateCommentAvility(field, is_embed) {
+  validateCommentAvility(field, is_embed?) {
 
     let userRole = this.currentUser.roles[0].description, avility = false;
     switch (userRole) {

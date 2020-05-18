@@ -49,8 +49,7 @@ export class QAComments {
     })
     is_deleted: boolean;
 
-    @Column({ nullable: true })
-    @Length(3, 250)
+    @Column({ nullable: true, type: 'longtext' })
     // @IsNotEmpty({ message: 'Permission is required' })
     detail: string;
 

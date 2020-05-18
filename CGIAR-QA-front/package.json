@@ -5,7 +5,7 @@
         "ng": "ng",
         "dev": "npx lite-server --baseDir='./dist/qa-app'",
         "start": "ng serve --host=0.0.0.0 --port=4200 --disable-host-check",
-        "start-local": "ng serve --disable-host-check --port=4100",
+        "start-local": "ng serve -c=es5 --disable-host-check --port=4100",
         "build": "ng build",
         "test": "ng test",
         "lint": "ng lint",

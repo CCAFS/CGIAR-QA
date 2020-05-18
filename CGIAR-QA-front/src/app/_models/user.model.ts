@@ -7,7 +7,7 @@ export class User {
     config:any[];
     indicators:any[];
     crp:any;
-    // firstName: string;
+    name: string;
     // lastName: string;
     token: string;
 }
