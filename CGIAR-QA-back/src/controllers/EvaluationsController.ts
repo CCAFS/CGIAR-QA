@@ -153,6 +153,7 @@ class EvaluationsController {
                         LEFT JOIN qa_users users ON users.id = comments.userId
                         WHERE
                             comments.evaluationId = evaluations.id
+                        AND comments.is_deleted = 0
                     ) comment_by
                 FROM
                     qa_evaluations evaluations
@@ -263,6 +264,7 @@ class EvaluationsController {
                             LEFT JOIN qa_users users ON users.id = comments.userId
                             WHERE
                                 comments.evaluationId = evaluations.id
+                            AND comments.is_deleted = 0
                         ) comment_by
                     FROM
                         qa_evaluations evaluations
