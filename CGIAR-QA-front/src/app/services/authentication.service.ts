@@ -62,28 +62,39 @@ export class AuthenticationService {
     if (window.hasOwnProperty('Tawk_API')) {
       if (window['Tawk_API'].isVisitorEngaged()) window['Tawk_API'].endChat();
       // console.log(window['Tawk_API'])
-      window['Tawk_API'].onLoad = function () {
-        window['Tawk_API'].setAttributes({
-          name: user.username,
-          email: user.email
-        }, function (error) {
-          console.log(error)
-        });
-        //place your code here
-      };
+      window['Tawk_API'].setAttributes({
+        name: user.username,
+        email: user.email
+      }, function (error) {
+        console.log(error)
+      });
+      // window['Tawk_API'].onLoad = function () {
+      //   window['Tawk_API'].setAttributes({
+      //     name: user.username,
+      //     email: user.email
+      //   }, function (error) {
+      //     console.log(error)
+      //   });
+      //   //place your code here
+      // };
     }
   }
 
   logout() {
     if (window.hasOwnProperty('Tawk_API')) {
-      window['Tawk_API'].onLoad = function () {
-        window['Tawk_API'].endChat();
-        window['Tawk_API'].visitor = {
-          name: null,
-          email: null
-        };
-
+      window['Tawk_API'].endChat();
+      window['Tawk_API'].visitor = {
+        name: null,
+        email: null
       };
+      // window['Tawk_API'].onLoad = function () {
+      //   window['Tawk_API'].endChat();
+      //   window['Tawk_API'].visitor = {
+      //     name: null,
+      //     email: null
+      //   };
+
+      // };
     }
     // remove user from local storage and set current user to null
     localStorage.removeItem('indicators');
