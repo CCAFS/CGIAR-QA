@@ -1,5 +1,4 @@
-<a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
-    routerLink="/dashboard/">
+<a class="nav-item nav-link go-back" [routerLinkActive]="['active']" routerLink="/dashboard/">
     <i class=icon-go-back></i> Dashboard
 </a>
 
@@ -48,10 +47,10 @@
                     </div>
                 </div>
             </th>
-            <th scope="col" [class.active]="order === 'crp'" (click)="setOrder('crp_acronym')">
+            <th scope="col" [class.active]="order === 'crp_acronym'" (click)="setOrder('crp_acronym')">
                 <div class="header-row">
                     CRP
-                    <div class="order-icon" *ngIf="order === 'crp'">
+                    <div class="order-icon" *ngIf="order === 'crp_acronym'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
                     </div>
@@ -82,7 +81,7 @@
             </th>
             <th scope="col">
                 <div class="header-row">
-                    Commented By
+                    Assessed By
                 </div>
             </th>
             <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status') ">
@@ -102,8 +101,8 @@
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
             <td>
-                <a rel="noopener noreferrer" [routerLinkActive]="['active']"
-                    routerLink="./detail/{{item.id}}"> {{ item.title }}</a>
+                <a rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
+                    {{ item.title }}</a>
                 <!-- <a target="_blank"> {{ item.title }}</a> -->
                 <!-- {{ item.title }} (click)="goToView(item.id)"-->
 
@@ -120,7 +119,9 @@
                 </a>
             </td>
             <td>
-                {{item.comment_by}}
+                <ul *ngFor="let subCategory of item.comment_by?.split(',')" style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
+                    <li>{{ subCategory }}</li>
+                </ul>
             </td>
             <td>
                 <div class="circle {{ item.status }}"></div>

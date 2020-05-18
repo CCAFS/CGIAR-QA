@@ -254,7 +254,16 @@ class EvaluationsController {
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
                         ${levelQuery.view_sql}
-                        indicator_user.indicatorId
+                        indicator_user.indicatorId,
+                        (
+                            SELECT
+                                group_concat(DISTINCT users.username)
+                            FROM
+                                qa_comments comments
+                            LEFT JOIN qa_users users ON users.id = comments.userId
+                            WHERE
+                                comments.evaluationId = evaluations.id
+                        ) comment_by
                     FROM
                         qa_evaluations evaluations
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
