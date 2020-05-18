@@ -54,7 +54,7 @@ export class DetailIndicatorComponent implements OnInit {
     all_approved: 'Setting this option true, will approved all items without comments.'
   }
 
-  criteriaData = [];
+  criteriaData;
   criteria_loading = false;
 
 
@@ -78,7 +78,7 @@ export class DetailIndicatorComponent implements OnInit {
       this.params = routeParams;
       this.tooltips.public_link = `Click here to see more information about this  ${this.params.type}.`;
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
-      console.log(routeParams)
+      
       this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
       this.showSpinner(this.spinner1)
       this.getDetailedData();

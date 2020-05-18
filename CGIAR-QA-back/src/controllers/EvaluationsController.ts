@@ -144,7 +144,16 @@ class EvaluationsController {
                     ${levelQuery.view_sql}
                     (
                         SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
-                    ) AS title
+                    ) AS title,
+                    (
+                        SELECT
+                            group_concat(DISTINCT users.username)
+                        FROM
+                            qa_comments comments
+                        LEFT JOIN qa_users users ON users.id = comments.userId
+                        WHERE
+                            comments.evaluationId = evaluations.id
+                    ) comment_by
                 FROM
                     qa_evaluations evaluations
                 LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
@@ -163,6 +172,7 @@ class EvaluationsController {
                     { view_name },
                     {}
                 );
+                // console.log(query, parameters)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
@@ -244,7 +254,16 @@ class EvaluationsController {
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
                         ${levelQuery.view_sql}
-                        indicator_user.indicatorId
+                        indicator_user.indicatorId,
+                        (
+                            SELECT
+                                group_concat(DISTINCT users.username)
+                            FROM
+                                qa_comments comments
+                            LEFT JOIN qa_users users ON users.id = comments.userId
+                            WHERE
+                                comments.evaluationId = evaluations.id
+                        ) comment_by
                     FROM
                         qa_evaluations evaluations
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name

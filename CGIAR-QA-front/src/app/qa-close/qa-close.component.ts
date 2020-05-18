@@ -11,7 +11,7 @@ import { AuthenticationService } from './../services/authentication.service';
 export class QaCloseComponent implements OnInit {
 
   constructor(private authenticationService: AuthenticationService,
-              private router: Router,) {
+              public router: Router,) {
     this.authenticationService.logout();
    }
 

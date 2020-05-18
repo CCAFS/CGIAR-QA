@@ -134,7 +134,7 @@
                         Please take into consideration that this is going to be shown to the CRP.
                     </p>
                     <form [formGroup]="generalCommentGroup">
-                        <textarea cols="30" rows="5" formControlName="general_comment"></textarea>
+                        <textarea [readonly]="gnralInfo.status === statusHandler.Complete" cols="30" formControlName="general_comment"></textarea>
                     </form>
                     <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                         {{gnralInfo.general_comment_user}} <strong>at:</strong>
@@ -162,7 +162,7 @@
         <!-- <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY" -->
         <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
-            <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex]); validateUpdateEvaluation()"
+            <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null); validateUpdateEvaluation()"
                 (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
         </div>
 

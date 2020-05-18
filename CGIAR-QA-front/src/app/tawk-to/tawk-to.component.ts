@@ -41,7 +41,7 @@ export class TawkToComponent implements OnInit {
     this._renderer.appendChild(this._document.body, this.script);
     setTimeout(() => {
       this.openChat();
-      // this.setLoggedUser()
+      this.setLoggedUser()
     }, 200);
 
   }
@@ -64,12 +64,7 @@ export class TawkToComponent implements OnInit {
           }, function (error) {
             console.log(error)
           });
-          //place your code here
         };
-        // window['Tawk_API'].visitor = {
-        //   name: this.currentUser.username,
-        //   email: this.currentUser.email
-        // };
       }
     }
   }

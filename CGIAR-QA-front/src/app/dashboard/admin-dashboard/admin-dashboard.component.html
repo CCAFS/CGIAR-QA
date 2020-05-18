@@ -7,7 +7,7 @@
         <p class="card-title">Programs/Platforms ({{selectedProgramName}})</p>
         <div class="card">
             <div class="card-body">
-                <form [formGroup]="programsForm" class="programs-form btn-group-vertical" (ngSubmit)="onSubmit()">
+                <form [formGroup]="programsForm" class="programs-form btn-group-vertical" >
                     <div class="" *ngFor="let program of crps | sortBy:'asc':'name'; let i=index ">
                         <input (change)="onProgramChange($event, program)" id="program-{{program.id}}" type="radio"
                             class="custom-control-input" value="{{program.id}}" name="program"
@@ -122,7 +122,7 @@
         <div class="modal-body">
             <div class="row justify-content-center comments-dash-container">
 
-                <ngx-charts-bar-vertical-2d *ngIf="has_comments" [view]="view" [scheme]="colorScheme" [results]="multi"
+                <ngx-charts-bar-vertical-2d *ngIf="has_comments" [scheme]="colorScheme" [results]="multi"
                     [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
                     [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
                     [yAxisLabel]="yAxisLabel" [yAxisTickFormatting]="axisFormat" [legendTitle]="legendTitle"

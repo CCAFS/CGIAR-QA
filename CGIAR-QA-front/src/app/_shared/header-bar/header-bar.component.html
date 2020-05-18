@@ -24,7 +24,7 @@
                     routerLink="/indicator/{{ indicator.indicator.type}}/{{ indicator.indicator.primary_field}}">{{indicator.indicator.name}}</a>
             </li>
         </ul> -->
-        <div class="nav navbar-nav " [class.active]="router.isActive('/dashboard')">
+        <div class="nav navbar-nav " [class.active]="router.isActive('/dashboard', true)">
             <a class=" nav-item nav-link" routerLinkActive="active" routerLink="/dashboard/{{currentRole}}">Home</a>
             <a class="nav-item nav-link" routerLinkActive="active"
                 routerLink="/indicator/{{ indicator.indicator.type}}/{{ indicator.indicator.primary_field}}"

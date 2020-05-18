@@ -74,7 +74,7 @@
                     </div>
                 </div>
 
-                <div *ngIf="!validateCommentAvility(field) || field.approved_no_comment"
+                <div *ngIf="!validateCommentAvility(field,null) || field.approved_no_comment"
                     class="activate-messages-container">
                     <i *ngIf="!field.loading" class="icon-message-inactive"></i>
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
@@ -98,6 +98,6 @@
 
     </div>
     <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY" class="col-sm-4 comments-container">
-        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"></app-comment>
+        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null)"></app-comment>
     </div>
 </div>
