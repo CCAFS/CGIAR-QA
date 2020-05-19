@@ -16,6 +16,7 @@ export class SortByPipe implements PipeTransform {
     if (!value || order === '' || !order) { return value; } 
     if (!column || column === '') { return sortBy(value); } 
     if (value.length <= 1) { return value; } 
-    return orderBy(value, [column], [order]);
+    console.log([column, 'id'])
+    return orderBy(value, [column, 'id'], [order]);
   }
 }

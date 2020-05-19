@@ -95,8 +95,8 @@
                         </th>
                         <td >
                             <a rel="noopener noreferrer" [routerLinkActive]="['active']"
-                            routerLink="./detail/{{item.id}}" [queryParams]="{previous: getNavItems('previous', i), next:  getNavItems('next', i)}"> {{ item.title }}</a>
-                                <!-- routerLink="./detail/{{item.id}}"> {{ item.title }}</a> -->
+                            routerLink="./detail/{{item.id}}"> {{ item.title }}</a>
+                            <!-- routerLink="./detail/{{item.id}}" [queryParams]="{previous: getNavItems('previous', i), next:  getNavItems('next', i)}"> {{ item.title }}</a> -->
 
                         </td>
                         <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
