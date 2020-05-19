@@ -4,16 +4,6 @@
         background: var(--gray-primary);
         border-radius: 1em;
         align-self: baseline;
-        // .list-group-item {
-        //     cursor: pointer;
-        //     border: transparent;
-        //     background-color: transparent;
-        // }
-        // .list-group-item.active {
-        //     background-color: transparent;
-        //     color: var(--green-primary);
-        //     font-weight: $bold;
-        // }
         a {
             font-weight: $bold;
             color: var(--black);
@@ -33,5 +23,10 @@
             background-color: var(--yellow-primary);
             border-radius: 50%;
         }
+    }
+
+    .unavailable{
+        color: var(--gray) !important;
+        cursor: none;
     }
 }

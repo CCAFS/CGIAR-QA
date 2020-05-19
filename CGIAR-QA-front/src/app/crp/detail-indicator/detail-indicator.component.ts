@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -11,6 +11,7 @@ import { User } from '../../_models/user.model';
 import { DetailedStatus, GeneralIndicatorName } from "../../_models/general-status.model"
 import { Role } from 'src/app/_models/roles.model';
 import { Title } from '@angular/platform-browser';
+import { CommentService } from 'src/app/services/comment.service';
 
 @Component({
   selector: 'app-detail-indicator',
@@ -63,7 +64,7 @@ export class DetailIndicatorComponent implements OnInit {
     private alertService: AlertService,
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
-    private renderer: Renderer2,
+    private commentService: CommentService,
     private titleService: Title,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
@@ -135,6 +136,29 @@ export class DetailIndicatorComponent implements OnInit {
       error => {
         console.log(error)
         this.criteria_loading = false;
+        this.alertService.error(error);
+      }
+    )
+  }
+
+  
+  getCommentsExcel(evaluation) {
+    // console.log(evaluation)
+    this.showSpinner('spinner1');
+    let evaluationId = evaluation.evaluation_id;
+    let title = this.detailedData.find(data => data.col_name === 'title');
+    let filename = `QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}`
+
+    this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: title.display_name }).subscribe(
+      res => {
+        // console.log(res)
+        let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
+        saveAs(blob, filename);
+        this.hideSpinner('spinner1');
+      },
+      error => {
+        console.log("getCommentsExcel", error);
+        this.hideSpinner('spinner1');
         this.alertService.error(error);
       }
     )

@@ -35,7 +35,7 @@ export class AuthenticationService {
     return this.http.post<any>(`${environment.apiUrl}/auth/login`, { username, password })
       .pipe(map(user => {
         let currentUsr = this.parseIndicators(user.data)
-        // this.userHeaders = user.data.indicators;
+        this.userHeaders = user.data.indicators;
         //delete currentUsr.indicators;
         this.cookiesService.setData(this.usrCookie, currentUsr);
         /** add user to tawk to **/
@@ -48,11 +48,12 @@ export class AuthenticationService {
   tokenLogin(parmas: {}) {
     return this.http.post<any>(`${environment.apiUrl}/auth/token/login`, parmas)
       .pipe(map(user => {
-        let currentUsr = this.parseIndicators(user.data)
+        let currentUsr = this.parseIndicators(user.data);
+        this.userHeaders = user.data.indicators;
         //delete currentUsr.indicators;
         this.cookiesService.setData(this.usrCookie, currentUsr);
         /** add user to tawk to **/
-        this.setLoggedUser(currentUsr)
+        this.setLoggedUser(currentUsr);
         this.currentUserSubject.next(currentUsr);
         return currentUsr;
       }));
@@ -61,28 +62,21 @@ export class AuthenticationService {
   setLoggedUser(user) {
     if (window.hasOwnProperty('Tawk_API')) {
       if (window['Tawk_API'].isVisitorEngaged()) window['Tawk_API'].endChat();
-      // console.log(window['Tawk_API'])
-      window['Tawk_API'].onLoad = function () {
-        window['Tawk_API'].setAttributes({
-          name: user.username,
-          email: user.email
-        }, function (error) {
-          console.log(error)
-        });
-        //place your code here
-      };
+      window['Tawk_API'].setAttributes({
+        name: user.username,
+        email: user.email
+      }, function (error) {
+        console.log(error)
+      });
     }
   }
 
   logout() {
     if (window.hasOwnProperty('Tawk_API')) {
-      window['Tawk_API'].onLoad = function () {
-        window['Tawk_API'].endChat();
-        window['Tawk_API'].visitor = {
-          name: null,
-          email: null
-        };
-
+      window['Tawk_API'].endChat();
+      window['Tawk_API'].visitor = {
+        name: null,
+        email: null
       };
     }
     // remove user from local storage and set current user to null

@@ -15,11 +15,13 @@ import { GeneralIndicatorName } from 'src/app/_models/general-status.model';
 
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
+import { SortByPipe } from 'src/app/pipes/sort-by.pipe';
 
 @Component({
   selector: 'app-indicators',
   templateUrl: './indicators.component.html',
-  styleUrls: ['./indicators.component.scss']
+  styleUrls: ['./indicators.component.scss'],
+  providers: [SortByPipe]
 })
 export class CRPIndicatorsComponent implements OnInit {
   indicatorType: string;
@@ -61,8 +63,9 @@ export class CRPIndicatorsComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
-    private orderPipe: OrderPipe,
-    private titleService: Title ,
+    private orderPipe: SortByPipe,
+    // private orderPipe: OrderPipe,
+    private titleService: Title,
     private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
@@ -108,7 +111,7 @@ export class CRPIndicatorsComponent implements OnInit {
       startItem,
       endItem
     }
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
 
@@ -123,7 +126,7 @@ export class CRPIndicatorsComponent implements OnInit {
       this.order = value;
     }
     // console.log(this.evaluationList, this.order, this.reverse)
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
@@ -147,8 +150,8 @@ export class CRPIndicatorsComponent implements OnInit {
   exportComments(item) {
     // console.log(item)
     this.showSpinner(this.spinner_name);
-    let filename = `QA-${ this.indicatorType.charAt(0).toUpperCase() }${ this.indicatorType.charAt(1).toUpperCase() }-${ item.id }`
-    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name:filename }).subscribe(
+    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}`
+    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: filename }).subscribe(
       res => {
         // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
@@ -162,6 +165,39 @@ export class CRPIndicatorsComponent implements OnInit {
       }
     )
   }
+
+  // getNavItems(type, i) {
+  //   let r;
+  //   switch (type) {
+  //     case 'previous':
+  //       r = 
+  //       break;
+  //     case 'next':
+        
+  //       break;
+    
+  //     default:
+  //       break;
+  //   }
+
+
+  //   // let r = {
+  //   //   next: 0,
+  //   //   previous: 0
+  //   // }
+  //   // if (i == 0) {
+  //   //   r.next = this.evaluationList[i + 1];
+  //   //   r.previous = undefined
+  //   // } else if (i >= this.evaluationList.length){
+  //   //   r.previous = this.evaluationList[i - 1];
+  //   //   r.next = undefined
+  //   // }else {
+  //   //   r.next = this.evaluationList[i + 1];
+  //   //   r.previous = this.evaluationList[i - 1];
+  //   // }
+
+  //   // return r;
+  // }
 
 
   /***

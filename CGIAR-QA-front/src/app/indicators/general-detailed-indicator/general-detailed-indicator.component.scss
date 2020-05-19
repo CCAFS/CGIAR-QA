@@ -13,6 +13,10 @@
   margin-left: 1em;
 }
 
+.comments-container{
+  position: relative;
+}
+
 .custom-control-input:checked~.custom-control-label::before {
   background-color: #ffc84f;
 }
@@ -112,7 +116,7 @@
       margin: 1em 0;
       flex-direction: row;
       display: flex;
-
+      word-wrap: break-word;
       .empty-value {
         font-style: italic;
       }
@@ -123,6 +127,7 @@
       p {
         font-size: $primary-fs;
         margin: 0.5em 0;
+        word-wrap: break-word;
       }
       .activate-messages-container.active {
         background-color: var(--yellow-secondary);

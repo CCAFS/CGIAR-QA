@@ -56,16 +56,21 @@ export class TawkToComponent implements OnInit {
   setLoggedUser() {
     if (window['Tawk_API'].hasOwnProperty('visitor')) {
       // console.log(window['Tawk_API'])
-      window['Tawk_API'].onLoad = function () {
-        window['Tawk_API'].onLoad = function () {
-          window['Tawk_API'].setAttributes({
-            name: this.currentUser.username,
-            email: this.currentUser.email
-          }, function (error) {
-            console.log(error)
-          });
-        };
-      }
+      // window['Tawk_API'].setAttributes({
+      //   name: this.currentUser.username,
+      //   email: this.currentUser.email
+      // }, function (error) {
+      //   console.log(error)
+      // });
+      // window['Tawk_API'].onLoad = function () {
+      //   window['Tawk_API'].setAttributes({
+      //     name: this.currentUser.username,
+      //     email: this.currentUser.email
+      //   }, function (error) {
+      //     console.log(error)
+      //   });
+      // };
+
     }
   }
 
