@@ -31,26 +31,30 @@ export class CrpComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
-      this.ngOnInit();
+      this.currentUser = this.authenticationService.currentUserValue;
+      // this.indicators = this.authenticationService.userHeaders;
+      console.log(this.params, this.currentUser)
+      // this.validateToken(this.params['params']);
+      if (!this.currentUser) {
+        this.validateToken(this.params['params']);
+      } 
+      else {
+        // this.router.navigate([`/crp/dashboard`])
+        this.indicators = this.authenticationService.userHeaders;
+        this.getCRPIndicators();
+      }
     });
   }
 
   ngOnInit() {
-    this.currentUser = this.authenticationService.currentUserValue;
-    if (!this.currentUser) {
-      this.validateToken(this.params['params']);
-    } else {
-      // this.router.navigate([`/crp/dashboard`])
-      this.indicators = this.authenticationService.userHeaders;
-      this.getCRPIndicators();
-    }
+
   }
 
   validateToken(params: {}) {
-    // console.log(this.currentUser, params)
+    console.log(this.currentUser, params)
     this.authenticationService.tokenLogin(params).subscribe(
       res => {
-        console.log(res)
+        // console.log(res)
         this.authenticationService.currentUser.subscribe(x => {
           this.currentUser = x;
           this.router.navigate([`/crp/dashboard`])
@@ -71,6 +75,7 @@ export class CrpComponent implements OnInit {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id)
         .subscribe(
           res => {
+            console.log(res)
             this.indicators = res.data;
             this.authenticationService.userHeaders = res.data;
             this.hideSpinner(this.spinner_name);

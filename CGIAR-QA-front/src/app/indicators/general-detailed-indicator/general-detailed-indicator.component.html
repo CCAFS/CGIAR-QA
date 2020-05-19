@@ -1,3 +1,7 @@
+<div></div>
+
+
+
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
     routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
     <i class=icon-go-back></i> {{currentType}} List
@@ -40,7 +44,8 @@
 
 <form #containerElement [formGroup]="tickGroup">
     <div class="row detail-container">
-        <div class="col-sm">
+        <!--  class="col-sm" -->
+        <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div class="col data-container">
                 <div class="select-all" *ngIf="detailedData">
                     <button type="button" (click)="onChangeSelectAll(approveAllitems)"
@@ -65,8 +70,9 @@
                                         class="custom-control-label" for="field-{{detailedData[i].field_id}}">
                                         <h2>{{detailedData[i].display_name}}</h2>
                                     </label>
-                                    
-                                    <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
+
+                                    <h2
+                                        *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                         {{detailedData[i].display_name}}</h2>
 
                                     <div *ngIf="detailedData[i].meta_description">
@@ -92,7 +98,8 @@
                                 <!-- <p *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link' ">
                                     {{detailedData[i].value}}</p> -->
                                 <!-- no data -->
-                                <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p>
+                                <p *ngIf="detailedData[i].value === null" class="empty-value">Data not provided.</p>
+                                <!-- <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p> -->
 
                             </div>
 
@@ -134,7 +141,8 @@
                         Please take into consideration that this is going to be shown to the CRP.
                     </p>
                     <form [formGroup]="generalCommentGroup">
-                        <textarea [readonly]="gnralInfo.status === statusHandler.Complete" cols="30" formControlName="general_comment"></textarea>
+                        <textarea [readonly]="gnralInfo.status === statusHandler.Complete" cols="30"
+                            formControlName="general_comment"></textarea>
                     </form>
                     <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                         {{gnralInfo.general_comment_user}} <strong>at:</strong>
@@ -160,12 +168,13 @@
         </div>
 
         <!-- <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.padding-top.px]="currentY" -->
+
         <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
-            <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null); validateUpdateEvaluation()"
+            <app-comment #comment
+                (parentFun)="showComments(fieldIndex, detailedData[fieldIndex]); validateUpdateEvaluation()"
                 (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
         </div>
-
 
     </div>
 

@@ -62,7 +62,7 @@ export class CRPIndicatorsComponent implements OnInit {
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private orderPipe: OrderPipe,
-    private titleService: Title ,
+    private titleService: Title,
     private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
@@ -147,8 +147,8 @@ export class CRPIndicatorsComponent implements OnInit {
   exportComments(item) {
     // console.log(item)
     this.showSpinner(this.spinner_name);
-    let filename = `QA-${ this.indicatorType.charAt(0).toUpperCase() }${ this.indicatorType.charAt(1).toUpperCase() }-${ item.id }`
-    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name:filename }).subscribe(
+    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}`
+    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: filename }).subscribe(
       res => {
         // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
@@ -161,6 +161,25 @@ export class CRPIndicatorsComponent implements OnInit {
         this.alertService.error(error);
       }
     )
+  }
+
+  getNavItems(item, i) {
+    let r = {
+      next: 0,
+      previous: 0
+    }
+    if (i == 0) {
+      r.next = this.evaluationList[i + 1];
+      r.previous = undefined
+    } else if (i >= this.evaluationList.length){
+      r.previous = this.evaluationList[i - 1];
+      r.next = undefined
+    }else {
+      r.next = this.evaluationList[i + 1];
+      r.previous = this.evaluationList[i - 1];
+    }
+
+    return r;
   }
 
 

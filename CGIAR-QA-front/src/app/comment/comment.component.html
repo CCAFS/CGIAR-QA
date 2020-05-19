@@ -62,9 +62,9 @@
                     </div>
 
                     <div *ngIf="crpComment && comment.replies.replies_count == '0'" class="add-comment-container reply-comment"  [ngClass]="{'approved' : comment.crp_response === true, 'declined' : comment.crp_response === false}" >
-                        <h2>{{comment.crp_response ? 'ACCEPT':'REJECT'}} COMMENT</h2>
+                        <h2 *ngIf="comment.hasOwnProperty('crp_response')">{{comment.crp_response ? 'ACCEPT':'REJECT'}} COMMENT</h2>
                         <form [formGroup]="commentGroup">
-                            <textarea cols="30" rows="10" formControlName="comment"></textarea>
+                            <textarea formControlName="comment"></textarea>
                         </form>
                         <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
 
@@ -87,7 +87,7 @@
     <!-- ADD COMMENT -->
     <div *ngIf="!availableComment && !crpComment" class="add-comment-container">
         <form [formGroup]="commentGroup">
-            <textarea cols="30" rows="10" formControlName="comment"></textarea>
+            <textarea formControlName="comment"></textarea>
         </form>
         <button type="button" class="btn btn-primary" (click)="addComment()">ADD</button>
 

@@ -152,7 +152,9 @@ class Util {
         try {
             user = await userRepository.findOne({ where: { email: authToken.email, crp: authToken.qa_crp_id } });
             let crp = await crpRepository.findOneOrFail({ where: { crp_id: authToken.crp_id } });
-            let role = await roleRepository.find({ where: { description: RolesHandler.crp } })
+            let role = await roleRepository.find({ where: { description: RolesHandler.crp } });
+
+            console.log(user)
             if (!user) {
                 user = new QAUsers();
                 user.crp = crp;

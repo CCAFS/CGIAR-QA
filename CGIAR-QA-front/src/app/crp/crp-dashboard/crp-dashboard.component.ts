@@ -27,7 +27,7 @@ export class CrpDashboardComponent implements OnInit {
 
   dashboardModalData: any[];
   modalRef: BsModalRef;
-  
+
   multi = [];
   has_comments: boolean = false;
   // view: any[] = [undefined,700];
@@ -57,15 +57,16 @@ export class CrpDashboardComponent implements OnInit {
     private spinner: NgxSpinnerService, ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
+      this.getEvaluationsStats();
     });
 
-     /** set page title */
-     this.titleService.setTitle(`CRP Dashboard`);
+    /** set page title */
+    this.titleService.setTitle(`CRP Dashboard`);
 
   }
 
   ngOnInit() {
-    this.getEvaluationsStats();
+
     // this.getCommentStats();
     // console.log('crp-dashboard')
   }
@@ -77,7 +78,6 @@ export class CrpDashboardComponent implements OnInit {
       .subscribe(
         res => {
           this.dashboardData = this.dashService.groupData(res.data);
-          console.log(this.dashboardData)
           this.hideSpinner();
         },
         error => {
@@ -89,20 +89,11 @@ export class CrpDashboardComponent implements OnInit {
 
   }
 
-  getIndicatorName(indicator: string) {
-    return this.indicatorsName[indicator]
-  }
-
-  goToView(indicatorId, primary_column) {
-    console.log(indicatorId, primary_column)
-    this.router.navigate([`crp/indicator/${indicatorId}/${primary_column}`]);
-  }
-
   getCommentStats() {
     this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
       .subscribe(
         res => {
-          this.has_comments = res.data.length > 0 ? true:false
+          this.has_comments = res.data.length > 0 ? true : false
           Object.assign(this, { multi: res.data });
           this.hideSpinner();
         },
@@ -114,6 +105,16 @@ export class CrpDashboardComponent implements OnInit {
       )
   }
 
+  getIndicatorName(indicator: string) {
+    return this.indicatorsName[indicator]
+  }
+
+  goToView(indicatorId, primary_column) {
+    console.log(indicatorId, primary_column)
+    this.router.navigate([`crp/indicator/${indicatorId}/${primary_column}`]);
+  }
+
+  
 
   openModal(template: TemplateRef<any>) {
     this.dashboardModalData = []
