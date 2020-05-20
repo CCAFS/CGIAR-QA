@@ -79,9 +79,13 @@
                     Export comments
                 </div>
             </th>
-            <th scope="col">
+            <th scope="col" [class.active]="order === 'comment_by'" (click)="setOrder('comment_by')">
                 <div class="header-row">
                     Assessed By
+                    <div class="order-icon" *ngIf="order === 'comment_by'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
                 </div>
             </th>
             <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status') ">
@@ -119,7 +123,8 @@
                 </a>
             </td>
             <td>
-                <ul *ngFor="let subCategory of item.comment_by?.split(',')" style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
+                <ul *ngFor="let subCategory of item.comment_by?.split(',')"
+                    style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
                     <li>{{ subCategory }}</li>
                 </ul>
             </td>

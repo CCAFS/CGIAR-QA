@@ -24,6 +24,31 @@
     </div>
 </div>
 
+<div *ngIf="detailedData && detailedData[0] " class="row detail-header-container">
+    <p class="indicator-item-name">
+        {{detailedData[0].crp_acronym}} / {{currentType}} /
+        QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
+    </p>
+
+    <p>Status: <span
+            class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+    </p>
+
+    <div *ngIf="detailedData[0]">
+        <a *ngIf="detailedData[0].public_link" [href]="detailedData[0].public_link" target="_blank">
+            <div tooltip="{{tooltips.public_link}}" container="body" placement="top"
+                class="btn btn-primary file-button">
+                <i class="icon-public-link"></i>
+            </div>
+        </a>
+
+        <div tooltip="{{tooltips.download_excel}}" container="body" placement="top" *ngIf="detailedData"
+            (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
+            <i class="icon-download-excel"></i>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-sm">
         <div class="col data-container">
@@ -83,11 +108,11 @@
                         {{field.replies_count}}
                     </div>
                 </div>
-                
+
             </div>
 
         </div>
-        <div *ngIf="detailedData" class="col data-container">
+        <div *ngIf="detailedData && detailedData[0].general_comment" class="col data-container">
             <div class="data-row  gnral-commnts">
                 <h2>General comments:</h2>
                 <p> {{detailedData[0].general_comment}} </p>
@@ -97,7 +122,8 @@
             size="medium"></ngx-spinner>
 
     </div>
-    <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY" class="col-sm-4 comments-container">
+    <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
+        class="col-sm-4 comments-container">
         <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null)"></app-comment>
     </div>
 </div>

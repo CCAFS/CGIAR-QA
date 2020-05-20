@@ -24,6 +24,8 @@ export class HeaderBarComponent implements OnInit {
   currentRole = '';
   params;
 
+  isHome ;
+
   constructor(private activeRoute: ActivatedRoute, private authenticationService: AuthenticationService, public router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.params = routeParams;
@@ -33,11 +35,16 @@ export class HeaderBarComponent implements OnInit {
           this.currentRole = x.roles[0].description.toLowerCase()
           this.ngOnInit();
           this.getHeaderLinks();
-
+          this.isHome =`/dashboard/${this.currentUser}`;
+          // this.isHome = this.router.isActive( `/dashboard/${this.currentUser}` , true)
         }
       });
     })
 
+  }
+
+  getCurrentRoute(){
+    return this.router.isActive( `/dashboard/${this.currentRole}` , true);
   }
 
   ngOnInit() {

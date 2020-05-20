@@ -14,11 +14,13 @@ import { User } from '../_models/user.model';
 import { GeneralIndicatorName } from '../_models/general-status.model';
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
+import { SortByPipe } from '../pipes/sort-by.pipe';
 
 @Component({
   selector: 'app-indicators',
   templateUrl: './indicators.component.html',
-  styleUrls: ['./indicators.component.scss']
+  styleUrls: ['./indicators.component.scss'],
+  providers: [SortByPipe]
 })
 export class IndicatorsComponent implements OnInit {
   indicatorType: string;
@@ -58,7 +60,8 @@ export class IndicatorsComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
-    private orderPipe: OrderPipe,
+    private orderPipe: SortByPipe,
+    // private orderPipe: OrderPipe,
     private titleService: Title ,
     private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
@@ -108,7 +111,7 @@ export class IndicatorsComponent implements OnInit {
       startItem,
       endItem
     }
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
 
@@ -122,8 +125,8 @@ export class IndicatorsComponent implements OnInit {
       }
       this.order = value;
     }
-    // console.log(this.evaluationList, this.order, this.reverse)
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, this.order, this.reverse);
+    // console.log(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order)
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 

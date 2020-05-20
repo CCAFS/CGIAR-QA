@@ -77,50 +77,19 @@ class IndicatorsController {
             else if (isCRP) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
-                    SELECT DISTINCT
-                    (
-                        evaluations.indicator_view_name
-                    ),
-                    evaluations.crp_id,
-                    (
-                        SELECT
-                            indicators.name
-                        FROM
-                            qa_indicators indicators
-                        WHERE
-                            view_name = evaluations.indicator_view_name
-                    ) as name,
-                    (
-                        SELECT
-                        indicators.order
-                        FROM
-                            qa_indicators indicators
-                        WHERE
-                            view_name = evaluations.indicator_view_name
-                    ) as indicator_order,
-                    (
-                        SELECT
-                            primary_field
-                        FROM
-                            qa_indicators
-                        WHERE
-                            view_name = evaluations.indicator_view_name
-                    ) as primary_field,
-                    meta.enable_crp AS enable_crp
+                    SELECT
+                            indicators.name AS name,
+                            indicators.description AS description,
+                            indicators.primary_field AS primary_field,
+                            indicators.order AS indicator_order,
+                            comment_meta.enable_crp AS enable_crp
                     FROM
-                        qa_evaluations evaluations
-                    LEFT JOIN qa_comments_meta meta ON meta.indicatorId = (
-                        SELECT
-                            id
-                        FROM
-                            qa_indicators
-                        WHERE
-                            view_name = evaluations.indicator_view_name
-                    )
+                            qa_indicators indicators
+                    LEFT JOIN qa_comments_meta comment_meta ON comment_meta.indicatorId = indicators.id
                     WHERE
-                        evaluations.crp_id = :crp_id
+                            indicators.view_name IN (SELECT indicator_view_name FROM qa_evaluations WHERE crp_id = :crp_id)
                     ORDER BY 
-                        indicator_order ASC
+                            indicator_order ASC
                     `,
                     { crp_id: user.crp.crp_id },
                     {}

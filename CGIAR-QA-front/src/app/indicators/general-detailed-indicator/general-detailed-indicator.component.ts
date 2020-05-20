@@ -99,7 +99,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.getIndicatorCriteria(`qa_${this.params.type}`);
 
       /** set page title */
-      this.titleService.setTitle(`${this.currentType} / QA-${ this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}`);
+      this.titleService.setTitle(`${this.currentType} / QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}`);
 
 
     })
@@ -292,15 +292,49 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
    * 
    */
 
-  showComments(index: number, field: any, e) {
-    const { x, y } = this.commentsElem.nativeElement.getBoundingClientRect();
+
+
+  showComments(index: number, field: any, e?) {
     if (e) {
-      // console.log(y, e.clientY, this.commentsElem.nativeElement.offsetTop);
-      this.currentY = e.clientY - y;
+      // console.log(this.getPosition(document.body))
+      // let yPosition = e.clientY - parentPos.y - (this.containerElement.nativeElement.clientHeight / 2);
+      // let parentPos = this.getPosition(document.body);
+      // let parentPos = this.getPosition(e.currentTarget);
+      // this.currentY = yPosition - 15;
+      // console.log(e.clientY, parentPos.y, this.getPosition(this.containerElement.nativeElement))
+      let parentPos = this.getPosition(this.containerElement.nativeElement);
+      let yPosition = e.clientY - parentPos.y - (this.commentsElem.nativeElement.clientHeight / 2);
+      this.currentY = yPosition - 20
     }
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
+  }
+
+  getPosition(el) {
+    let xPos = 0;
+    let yPos = 0;
+    while (el) {
+      // console.log(el.tagName, el.offsetTop - el.scrollTop + el.clientTop, el.offsetTop, el.scrollTop, el.clientTop)
+      if (el.tagName == "BODY") {
+        // deal with browser quirks with body/window/document and page scroll
+        let xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+        let yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+        xPos += (el.offsetLeft - xScroll + el.clientLeft);
+        yPos += (el.offsetTop - yScroll + el.clientTop);
+      } else {
+        // for all other non-BODY elements
+        xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+        yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+      }
+
+      el = el.offsetParent;
+    }
+    return {
+      x: xPos,
+      y: yPos
+    };
   }
 
   updateNumCommnts(event, detailedData) {
