@@ -12,6 +12,7 @@ import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
 import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-status.model'
 import { Title } from '@angular/platform-browser';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-crp-dashboard',

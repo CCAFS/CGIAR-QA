@@ -8,6 +8,7 @@ import { AlertService } from '../services/alert.service';
 import { User } from '../_models/user.model';
 import { Role } from '../_models/roles.model';
 import { environment } from 'src/environments/environment';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-crp',
@@ -23,6 +24,7 @@ export class CrpComponent implements OnInit {
   env = environment;
 
   constructor(private authenticationService: AuthenticationService,
+    private cookieService: CookieService,
     private route: ActivatedRoute,
     private indicatorService: IndicatorsService,
     private router: Router,
@@ -31,18 +33,20 @@ export class CrpComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
-      this.currentUser = this.authenticationService.currentUserValue;
-      // this.indicators = this.authenticationService.userHeaders;
-      console.log(this.params, this.currentUser)
-      // this.validateToken(this.params['params']);
-      if (!this.currentUser) {
+      this.indicators = JSON.parse(localStorage.getItem('indicators')) || [];
+      if (params.has('token')) {
         this.validateToken(this.params['params']);
-      } 
-      else {
-        // this.router.navigate([`/crp/dashboard`])
-        this.indicators = this.authenticationService.userHeaders;
-        this.getCRPIndicators();
       }
+      // this.currentUser = this.authenticationService.currentUserValue;
+      // this.indicators = this.authenticationService.userHeaders;
+      // if (!this.currentUser) {
+      //   this.validateToken(this.params['params']);
+      // } 
+      // else {
+      //   // this.router.navigate([`/crp/dashboard`])
+      //   this.indicators = this.authenticationService.userHeaders;
+      //   this.getCRPIndicators();
+      // }
     });
   }
 
@@ -51,11 +55,13 @@ export class CrpComponent implements OnInit {
   }
 
   validateToken(params: {}) {
-    console.log(this.currentUser, params)
+    localStorage.removeItem('currentUser');
+    this.showSpinner(this.spinner_name)
     this.authenticationService.tokenLogin(params).subscribe(
       res => {
         // console.log(res)
         this.authenticationService.currentUser.subscribe(x => {
+          this.hideSpinner(this.spinner_name);
           this.currentUser = x;
           this.router.navigate([`/crp/dashboard`])
           this.getCRPIndicators();
@@ -63,6 +69,7 @@ export class CrpComponent implements OnInit {
       },
       error => {
         console.log("validateToken", error);
+        this.hideSpinner(this.spinner_name);
         this.logout()
         this.alertService.error(error);
       }
@@ -70,14 +77,15 @@ export class CrpComponent implements OnInit {
   }
 
   getCRPIndicators() {
+    
     if (!this.indicators.length && this.currentUser) {
       this.showSpinner(this.spinner_name)
       this.indicatorService.getIndicatorsByUser(this.currentUser.id)
         .subscribe(
           res => {
-            console.log(res)
             this.indicators = res.data;
-            this.authenticationService.userHeaders = res.data;
+            localStorage.setItem('indicators', JSON.stringify(res.data));
+            // this.authenticationService.userHeaders = res.data;
             this.hideSpinner(this.spinner_name);
           },
           error => {

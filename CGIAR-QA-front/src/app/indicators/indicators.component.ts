@@ -62,7 +62,7 @@ export class IndicatorsComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private orderPipe: SortByPipe,
     // private orderPipe: OrderPipe,
-    private titleService: Title ,
+    private titleService: Title,
     private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
@@ -111,7 +111,7 @@ export class IndicatorsComponent implements OnInit {
       startItem,
       endItem
     }
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
 
@@ -126,7 +126,7 @@ export class IndicatorsComponent implements OnInit {
       this.order = value;
     }
     // console.log(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order)
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
@@ -154,8 +154,8 @@ export class IndicatorsComponent implements OnInit {
   exportComments(item) {
     // console.log(item)
     this.showSpinner();
-    let filename = `QA-${ this.indicatorType.charAt(0).toUpperCase() }${ this.indicatorType.charAt(1).toUpperCase() }-${ item.id }`
-    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name:filename }).subscribe(
+    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}`
+    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: filename }).subscribe(
       res => {
         // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
@@ -170,6 +170,37 @@ export class IndicatorsComponent implements OnInit {
     )
   }
 
+
+  returnListName(indicator: string, type: string) {
+    let r;
+    if (type === 'header') {
+      switch (indicator) {
+        case 'slo':
+          r = 'Evidence on Progress towards SRF targets'
+          break;
+
+        default:
+          r = `List of ${this.indicatorTypeName}`
+          break;
+      }
+    } else if (type === 'list') {
+      switch (indicator) {
+        case 'slo':
+          r = 'SLO target'
+          break;
+        case 'milestones':
+          r = 'Milestone statement'
+          break;
+
+        default:
+          r = `Title`
+          break;
+      }
+    }
+    console.log(indicator, r)
+
+    return r;
+  }
 
   /***
    * 

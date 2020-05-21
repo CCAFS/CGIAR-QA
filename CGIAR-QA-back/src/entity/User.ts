@@ -78,6 +78,26 @@ export class QAUsers {
     @ManyToOne(type => QACrp, crp => crp.id, { eager: true })
     crp: QACrp;
 
+
+    @ManyToMany(type => QACrp, {
+        eager: true
+    })
+    @JoinTable({
+        name: "qa_user_crps", // table name for the junction table of this relation
+        joinColumn: {
+            name: "qa_user",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "qa_crp",
+            referencedColumnName: "id"
+        }
+    })
+    crps: QACrp[];
+
+    // @ManyToOne(type => QACrp, crp => crp.id, { eager: true })
+    // crp: QACrp;
+
     // @Column("simple-array", { nullable: true })
     // indicators: string[];
 

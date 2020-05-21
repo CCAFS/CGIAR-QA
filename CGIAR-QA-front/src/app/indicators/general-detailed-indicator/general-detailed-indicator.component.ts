@@ -296,12 +296,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   showComments(index: number, field: any, e?) {
     if (e) {
-      // console.log(this.getPosition(document.body))
-      // let yPosition = e.clientY - parentPos.y - (this.containerElement.nativeElement.clientHeight / 2);
-      // let parentPos = this.getPosition(document.body);
-      // let parentPos = this.getPosition(e.currentTarget);
-      // this.currentY = yPosition - 15;
-      // console.log(e.clientY, parentPos.y, this.getPosition(this.containerElement.nativeElement))
       let parentPos = this.getPosition(this.containerElement.nativeElement);
       let yPosition = e.clientY - parentPos.y - (this.commentsElem.nativeElement.clientHeight / 2);
       this.currentY = yPosition - 20
@@ -311,7 +305,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.activeCommentArr[index] = !this.activeCommentArr[index];
   }
 
-  getPosition(el) {
+  private getPosition(el) {
     let xPos = 0;
     let yPos = 0;
     while (el) {

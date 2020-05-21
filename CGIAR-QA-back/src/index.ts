@@ -40,6 +40,7 @@ createConnection()
 
         //Handle Errors
         app.use((err, req, res, next) => {
+            res.setHeader('Cross-Origin-Resource-Policy', 'same-site')
             handleError(err, res);
         });
         let server = app.listen(config.port, config.host, () => {

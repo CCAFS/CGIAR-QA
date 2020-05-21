@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, OneToMany, ManyToOne} from "typeorm";
 import { Length } from "class-validator";
 
 import { QAUsers } from "../entity/User"
@@ -35,8 +35,10 @@ export class QACrp {
     @Column()
     is_marlo: boolean;
 
-    @OneToMany(type => QAUsers, user => user.crp)
-    user: QAUsers;
+    // @ManyToOne(type => QAUsers, user => user.crp)
+    // user: QAUsers;
+    // @OneToMany(type => QAUsers, user => user.crp)
+    // user: QAUsers;
 
     @Column({
         default : false

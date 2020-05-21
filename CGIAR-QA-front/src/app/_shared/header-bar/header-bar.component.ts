@@ -67,7 +67,7 @@ export class HeaderBarComponent implements OnInit {
   }
 
   getHeaderLinks() {
-    if (!this.indicators.length && this.currentUser && !this.isCRP()) {
+    if (this.indicators && !this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
           this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
@@ -84,11 +84,12 @@ export class HeaderBarComponent implements OnInit {
 
   isCRP() {
     if (this.currentUser) {
-      let mapped_roles = this.currentUser.roles.map(role => { return role.description });
-      let has_roles = mapped_roles.find(role_ => {
-        return this.allRoles.crp.indexOf(role_) > -1
-      });
-      return has_roles
+      // let mapped_roles = this.currentUser.roles.map(role => { return role.description });
+      // let has_roles = mapped_roles.find(role_ => {
+      //   return this.allRoles.crp.indexOf(role_) > -1
+      // });
+      // return has_roles
+      return this.currentUser.crp ? true : false;
     }
     return false;
   }

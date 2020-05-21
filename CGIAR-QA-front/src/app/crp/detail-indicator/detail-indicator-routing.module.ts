@@ -10,7 +10,7 @@ const routes: Routes = [
     {
         path: '',
         canActivate: [AuthGuard],
-        data: { roles: [Role.crp] },
+        data: { roles: [Role.crp, Role.admin] },
         component: CRPIndicatorsComponent,
     },
     {

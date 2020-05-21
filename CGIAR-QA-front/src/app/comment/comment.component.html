@@ -10,10 +10,11 @@
                         <div class="comment-title">
                             <div>
                                 <span>ADDED BY {{comment.user.username}} </span>
-                                <p>On {{comment.createdAt | date: 'long'}}</p>
+                                <p>On {{comment.updatedAt | date: 'long'}}</p>
                             </div>
                             <div>
-                                <i *ngIf="(comment.user.id === currentUser.id || currentUser.roles[0].description === allRoles.admin) && comment.replies.replies_count == '0' "
+                                <!-- <i *ngIf="(comment.user.id === currentUser.id  && comment.replies.replies_count == '0') && !crpComment " class="icon-edit"></i> -->
+                                <i *ngIf="(comment.user.id === currentUser.id || currentUser.roles[0].description === allRoles.admin) && comment.replies.replies_count == '0' && !crpComment "
                                     (click)="updateComment('is_deleted', comment)" class="icon-remove"></i>
                             </div>
                         </div>
@@ -21,20 +22,20 @@
                         <p class="comment">
                             {{comment.detail}}
                         </p>
-                        <a *ngIf="comment.replies.replies_count != '0'"
+                        <a *ngIf="comment.replies.replies_count != '0'" style="cursor: pointer;"
                             (click)="comment.isCollapsed = !comment.isCollapsed; getCommentReplies(comment)">
                             {{comment.replies.replies_count}} replies:
                         </a>
-                        <div [attr.aria-expanded]="!comment.isCollapsed"  id="collapseBasic-{{comment.id}}">
-                            <div [collapse]="!comment.isCollapsed"
-                                [isAnimated]="true">
+                        <div [attr.aria-expanded]="!comment.isCollapsed" id="collapseBasic-{{comment.id}}">
+                            <div [collapse]="!comment.isCollapsed" [isAnimated]="true">
                                 <div class="well well-lg card card-block card-header">
-                                    <ng-container *ngFor="let reply of comment.loaded_replies" class="replies-container">
-                                    <!-- <ng-container *ngFor="let reply of commentsByColReplies" class="replies-container"> -->
+                                    <ng-container *ngFor="let reply of comment.loaded_replies"
+                                        class="replies-container">
+                                        <!-- <ng-container *ngFor="let reply of commentsByColReplies" class="replies-container"> -->
                                         <div class="comment-title">
                                             <div style="flex-direction: column;">
                                                 <span>ADDED BY {{reply.user.username}} </span>
-                                                <p>On {{reply.createdAt}}</p>
+                                                <p>On {{reply.updatedAt  | date: 'long'}}</p>
                                             </div>
                                         </div>
                                         <hr style="margin: 0;">
@@ -61,12 +62,17 @@
                             (click)="answerComment(true, comment)">ACCEPT</button>
                     </div>
 
-                    <div *ngIf="crpComment && comment.replies.replies_count == '0'" class="add-comment-container reply-comment"  [ngClass]="{'approved' : comment.crp_response === true, 'declined' : comment.crp_response === false}" >
-                        <h2 *ngIf="comment.hasOwnProperty('crp_response')">{{comment.crp_response ? 'ACCEPT':'REJECT'}} COMMENT</h2>
-                        <form [formGroup]="commentGroup">
-                            <textarea formControlName="comment"></textarea>
-                        </form>
-                        <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
+                    <div *ngIf="crpComment && comment.replies.replies_count == '0'"
+                        class="add-comment-container reply-comment"
+                        [ngClass]="{'approved' : comment.crp_response === true, 'declined' : comment.crp_response === false}">
+                        <h2 *ngIf="comment.hasOwnProperty('crp_response')">{{comment.crp_response ? 'ACCEPT':'REJECT'}}
+                            COMMENT</h2>
+                        <div *ngIf="comment.hasOwnProperty('crp_response')">
+                            <form [formGroup]="commentGroup">
+                                <textarea formControlName="comment"></textarea>
+                            </form>
+                            <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
+                        </div>
 
                     </div>
 

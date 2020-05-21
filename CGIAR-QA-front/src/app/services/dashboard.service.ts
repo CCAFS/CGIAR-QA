@@ -17,12 +17,12 @@ export class DashboardService {
   }
 
   // get list dash data (evaluations)
-  geListDashboardEvaluations(id, view_name, view_primary_field) {
+  geListDashboardEvaluations(id, view_name, view_primary_field, crp_id?) {
     let params = {
       'view_name': view_name,
       'view_primary_field': view_primary_field,
     }
-    return this.http.post<any>(`${environment.apiUrl}/evaluation/${id}/list`, params);
+    return this.http.post<any>(`${environment.apiUrl}/evaluation/${id}/list?crp_id=${crp_id}`, params);
   }
 
   /**

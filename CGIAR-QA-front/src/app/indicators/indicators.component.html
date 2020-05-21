@@ -2,7 +2,7 @@
     <i class=icon-go-back></i> Dashboard
 </a>
 
-<h2>List of {{indicatorTypeName}}</h2>
+<h2>{{returnListName(indicatorType, 'header')}}</h2>
 <div class="row col sub-header">
     <div class="col row text-left">
         <div class="model-link-container" (click)="goToPDF('AR')">
@@ -40,7 +40,7 @@
             </th>
             <th scope="col" [class.active]="order === 'title'" (click)="setOrder('title')">
                 <div class="header-row">
-                    Title
+                    {{returnListName(indicatorType, 'list')}}
                     <div class="order-icon" *ngIf="order === 'title'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>

@@ -79,7 +79,7 @@ export class DetailIndicatorComponent implements OnInit {
       this.params = routeParams;
       this.tooltips.public_link = `Click here to see more information about this  ${this.params.type}.`;
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
-      
+
       this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
       this.showSpinner(this.spinner1)
       this.getDetailedData();
@@ -141,7 +141,7 @@ export class DetailIndicatorComponent implements OnInit {
     )
   }
 
-  
+
   getCommentsExcel(evaluation) {
     // console.log(evaluation)
     this.showSpinner('spinner1');
@@ -169,11 +169,10 @@ export class DetailIndicatorComponent implements OnInit {
   get formData() { return this.generalCommentGroup.controls; }
 
   showComments(index: number, field: any, e) {
-    // console.log(index, this.detailedData[index],this.params)
-    const { x, y } = this.commentsElem.nativeElement.getBoundingClientRect();
-    // console.log(x, y, e.clientY)
     if (e) {
-      this.currentY = e.clientY - y;
+      let parentPos = this.getPosition(this.containerElement.nativeElement);
+      let yPosition = e.clientY - parentPos.y - (this.commentsElem.nativeElement.clientHeight / 2);
+      this.currentY = yPosition - 20
     }
     this.fieldIndex = index;
     field.clicked = !field.clicked;
@@ -235,6 +234,32 @@ export class DetailIndicatorComponent implements OnInit {
 
 
 
+
+  private getPosition(el) {
+    let xPos = 0;
+    let yPos = 0;
+    while (el) {
+      // console.log(el.tagName, el.offsetTop - el.scrollTop + el.clientTop, el.offsetTop, el.scrollTop, el.clientTop)
+      if (el.tagName == "BODY") {
+        // deal with browser quirks with body/window/document and page scroll
+        let xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+        let yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+        xPos += (el.offsetLeft - xScroll + el.clientLeft);
+        yPos += (el.offsetTop - yScroll + el.clientTop);
+      } else {
+        // for all other non-BODY elements
+        xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+        yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+      }
+
+      el = el.offsetParent;
+    }
+    return {
+      x: xPos,
+      y: yPos
+    };
+  }
 
   /***
   * 
