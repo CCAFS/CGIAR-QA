@@ -104,7 +104,7 @@
                             </div>
 
                             <!-- comments -->
-                            <div #commentsElem
+                            <div #commentsElem style="cursor: pointer;"
                                 *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
                                 (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"
                                 class="activate-messages-container {{detailedData[i].replies_count == '0' ?  '':'active'}}">

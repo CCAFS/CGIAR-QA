@@ -50,8 +50,7 @@ class AuthController {
                     ]
                 });
             }
-
-            if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp)) {
+            if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp) && user.roles.map(role => { return role.description }).find(r => r === RolesHandler.assesor)) {
                 res.status(401).json({ message: 'Unauthorized' })
                 return
             }
@@ -119,12 +118,15 @@ class AuthController {
             );
 
             let r = await queryRunner.connection.query(query, parameters);
-            if (!r.length) {
-                res.status(401).json({ data: [], message: 'Invalid token' });
+            console.log(r)
+            if (r.length == 0) {
+                res.status(400).json({ data: [], message: 'Invalid token' });
+                return;
             }
             let auth_token = r[0];
-            let user = await Util.createOrReturnUser(auth_token);
-            //Send the jwt in the response
+            let  user = await Util.createOrReturnUser(auth_token);
+
+
             res.status(200).json({ data: user, message: 'CRP Logged' })
 
         } catch (error) {
@@ -223,7 +225,7 @@ class AuthController {
                 }
 
                 if (auth) {
-                    console.log('Authenticated!');
+                    console.log('Authenticated AD!');
                     resolve(auth)
                 }
 

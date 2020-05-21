@@ -1,16 +1,3 @@
-<!-- <div class=" detail-header-container">
-    <p *ngIf="detailedData" class="indicator-item-name">
-        {{detailedData[0].crp_name}} / {{params.type}} / QA-{{params.indicatorId}}
-    </p>
-    <div>
-        <div *ngIf="detailedData && detailedData[0].editable_link">
-            <a [href]="detailedData[0].editable_link" target="_blank">Public link</a>
-        </div>
-    </div>
-</div> -->
-
-
-
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']" routerLink="../..">
     <i class=icon-go-back></i> {{currentType}} List
 </a>
@@ -49,7 +36,7 @@
     </div>
 </div>
 
-<div class="row">
+<div #containerElement class="row">
     <div class="col-sm">
         <div class="col data-container">
 
@@ -91,7 +78,7 @@
                 </div>
 
                 <!-- comments -->
-                <div #commentsElem *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
+                <div #commentsElem style="cursor: pointer;" *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
                     (click)="showComments(i, field, $event); comment.updateData(field,params)"
                     class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
                     <i *ngIf="!field.loading" class="icon-message"></i>
@@ -107,9 +94,10 @@
                     <i *ngIf="!field.loading" class="icon-message-inactive"></i>
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
-                    <div *ngIf="field.replies_count != '0'" class="replies-count">
+                    <!-- <div *ngIf="field.replies_count != '0' " class="replies-count"> -->
+                    <!-- <div *ngIf="field.replies_count != '0' && !field.approved_no_comment" class="replies-count">
                         {{field.replies_count}}
-                    </div>
+                    </div> -->
                 </div>
 
             </div>

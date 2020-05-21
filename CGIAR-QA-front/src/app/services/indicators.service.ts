@@ -12,8 +12,8 @@ export class IndicatorsService {
   constructor(private http: HttpClient) { }
 
   // get indicators by user
-  getIndicatorsByUser(id) {
-    return this.http.get<any>(`${environment.apiUrl}/indicator/user/${id}`);
+  getIndicatorsByUser(id, crp_id?) {
+    return this.http.get<any>(`${environment.apiUrl}/indicator/user/${id}?crp_id=${crp_id}`);
   }
   // update indicators by user
   updateIndicatorsByUser(id, params) {

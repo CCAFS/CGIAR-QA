@@ -2,7 +2,7 @@
 import { StatusHandler } from "@helpers/StatusHandler";
 import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
 import { RolesHandler } from "@helpers/RolesHandler";
-import { getRepository, getConnection, createQueryBuilder } from "typeorm";
+import { getRepository, getConnection, createQueryBuilder, In } from "typeorm";
 import { QAUsers } from "@entity/User";
 import { QARoles } from "@entity/Roles";
 import { QACrp } from "@entity/CRP";
@@ -148,24 +148,43 @@ class Util {
         const roleRepository = getRepository(QARoles);
         const crpRepository = getRepository(QACrp);
         const grnlConfg = getRepository(QAGeneralConfiguration);
-        let user;
+        let queryRunner = getConnection().createQueryBuilder();
+        let user: QAUsers;
         try {
-            user = await userRepository.findOne({ where: { email: authToken.email, crp: authToken.qa_crp_id } });
-            let crp = await crpRepository.findOneOrFail({ where: { crp_id: authToken.crp_id } });
-            let role = await roleRepository.find({ where: { description: RolesHandler.crp } });
 
-            console.log(user)
+            user = await userRepository.findOne({ where: { email: authToken.email } });
+            let crp = await crpRepository.findOneOrFail({ where: { crp_id: authToken.crp_id } });
+            let crpRole = await roleRepository.findOneOrFail({ where: { description: RolesHandler.crp } });
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT
+                    *
+                FROM
+                    qa_user_crps
+                WHERE
+                    qa_crp = :crpId
+                AND qa_user = :userId
+                    `,
+                { crpId: authToken.qa_crp_id, userId: user.id },
+                {}
+            );
+            let user_crp = await queryRunner.connection.query(query, parameters);
             if (!user) {
                 user = new QAUsers();
-                user.crp = crp;
                 user.password = '';
                 user.username = authToken.username;
                 user.email = authToken.email;
                 user.name = authToken.name;
-                user.roles = role;
+                user.crps = user.crps.concat(crp);
+                user.roles = user.roles.concat(crpRole);
                 user = await userRepository.save(user);
-                // return user;
             }
+            else if (user && user_crp.length === 0) {
+                user.crps = user.crps.concat(crp);
+                user.roles = user.roles.concat(crpRole);
+                user = await userRepository.save(user);
+            }
+            // console.log(user, user_crp, crpRole);
+
             //  // get general config by user role
             let generalConfig = await grnlConfg
                 .createQueryBuilder("qa_general_config")
@@ -189,7 +208,7 @@ class Util {
             return user
         } catch (error) {
             console.log(error);
-            return error;
+            throw new Error(error);
         }
     }
 

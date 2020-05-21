@@ -1,8 +1,9 @@
 <div class="row justify-content-center dashboard-container">
     <div class="col col-2 col-programs crp-list-group" routerLinkActive="active-link"
         [routerLinkActiveOptions]="{exact: true}">
-        
-        <a class="nav-item nav-link" style="padding-bottom: 0;" [routerLinkActive]="['active']" routerLink="/crp/dashboard">Home</a>
+
+        <a class="nav-item nav-link" style="padding-bottom: 0;" [routerLinkActive]="['active']"
+            routerLink="/crp/dashboard">Home</a>
         <ng-container *ngFor="let indicator of indicators; index as i">
             <a *ngIf="indicator.enable_crp" class="nav-item nav-link" [routerLinkActive]="['active']"
                 routerLink="/crp/indicator/{{ indicator.name.toLowerCase()}}/{{ indicator.primary_field}}">
@@ -20,4 +21,7 @@
     <div class="col-10 col-progress">
         <router-outlet></router-outlet>
     </div>
+    <ngx-spinner [fullScreen]="false" [name]="spinner_name" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
+        size="medium">
+    </ngx-spinner>
 </div>

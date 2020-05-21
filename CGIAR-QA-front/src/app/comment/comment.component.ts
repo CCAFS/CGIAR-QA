@@ -181,7 +181,7 @@ export class CommentComponent implements OnInit {
 
   replyComment(currentComment) {
     if (this.commentGroup.invalid) {
-      this.alertService.error('comment is required', false)
+      this.alertService.error('Comment is required', false)
       return;
     }
     this.showSpinner(this.spinner_comment);
@@ -200,7 +200,7 @@ export class CommentComponent implements OnInit {
         this.formData.comment.reset()
       },
       error => {
-        console.log("getEvaluationsList", error);
+        console.log("replyComment", error);
         this.hideSpinner(this.spinner_comment);
         this.alertService.error(error);
       }

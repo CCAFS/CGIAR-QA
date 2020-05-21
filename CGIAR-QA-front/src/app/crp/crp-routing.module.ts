@@ -18,7 +18,7 @@ const routes: Routes = [
       {
         path: 'dashboard',
         canActivate: [AuthGuard],
-        data: { roles: [Role.crp] },
+        data: { roles: [Role.crp, Role.admin] },
         component: CrpDashboardComponent,
       },
       {
