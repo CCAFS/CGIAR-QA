@@ -3,17 +3,20 @@ import { CommonModule } from '@angular/common';
 
 import { SortByPipe } from '../pipes/sort-by.pipe';
 import { UrlTransformPipe } from '../pipes/url-transform.pipe';
+import { WordCounterPipe } from '../pipes/word-counter.pipe';
 
 @NgModule({
   declarations: [
     SortByPipe,
-    UrlTransformPipe
+    UrlTransformPipe, 
+    WordCounterPipe
   ],
   exports: [
     SortByPipe,
-    UrlTransformPipe
+    UrlTransformPipe, 
+    WordCounterPipe
   ],
-  providers: [SortByPipe, UrlTransformPipe],
+  providers: [SortByPipe, UrlTransformPipe, WordCounterPipe],
   imports: [
     CommonModule
   ],

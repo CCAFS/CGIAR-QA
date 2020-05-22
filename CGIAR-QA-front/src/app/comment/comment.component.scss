@@ -49,13 +49,19 @@
       margin: 0;
     }
   }
-  .replies-container{
+  .replies-container {
     border: 1px solid var(--gray-primary);
   }
   .add-comment-container.reply-comment {
     background-color: var(--gray-primary);
     // flex-direction: column;
     padding: 10px 15px;
+    .update-reminder {
+      margin: 1em 0;
+      font-style: italic;
+      font-size: $font-xs;
+      text-align: center;
+    }
   }
   .add-comment-container {
     display: flex;

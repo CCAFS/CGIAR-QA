@@ -167,6 +167,8 @@ class Util {
                 {}
             );
             let user_crp = await queryRunner.connection.query(query, parameters);
+            console.log('user_crp')
+            console.log(user_crp)
             if (!user) {
                 user = new QAUsers();
                 user.password = '';
@@ -184,7 +186,7 @@ class Util {
                 user.roles = user.roles.concat(crpRole);
                 user = await userRepository.save(user);
             }
-            // console.log(user, user_crp, crpRole);
+            console.log(user, user_crp, crpRole);
 
             //  // get general config by user role
             let generalConfig = await grnlConfg

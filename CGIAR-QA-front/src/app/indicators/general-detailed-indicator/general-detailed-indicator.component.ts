@@ -17,6 +17,7 @@ import { CommentService } from 'src/app/services/comment.service';
 import { saveAs } from "file-saver";
 import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
 import { Title } from '@angular/platform-browser';
+import { WordCounterPipe } from 'src/app/pipes/word-counter.pipe';
 
 
 
@@ -24,7 +25,7 @@ import { Title } from '@angular/platform-browser';
   selector: 'app-general-detailed-indicator',
   templateUrl: './general-detailed-indicator.component.html',
   styleUrls: ['./general-detailed-indicator.component.scss'],
-  providers: [UrlTransformPipe]
+  providers: [UrlTransformPipe, WordCounterPipe]
 })
 export class GeneralDetailedIndicatorComponent implements OnInit {
   currentUser: User;
@@ -39,6 +40,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     general_comment: '',
     general_comment_user: '',
     general_comment_updatedAt: '',
+    general_comment_id: '',
     status_update: null,
     crp_id: ''
   };
@@ -47,10 +49,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   currentType = '';
 
   approveAllitems;
+  general_comment_reply;
 
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
   @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
 
+  totalChar = 6500;
 
   activeCommentArr = [];
   fieldIndex: number;
@@ -72,6 +76,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
+    private wordCount:WordCounterPipe,
     private titleService: Title,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
@@ -219,6 +224,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           general_comment: this.detailedData[0].general_comment,
           crp_id: this.detailedData[0].evaluation_id,
           status: this.detailedData[0].status,
+          general_comment_id: this.detailedData[0].general_comment_id,
           status_update: null,
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
@@ -228,6 +234,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
         this.hideSpinner('spinner1');
         this.tickGroup.reset();
+        this.getCommentReplies();
         this.addCheckboxes();
       },
       error => {
@@ -292,6 +299,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
    * 
    * 
    */
+
+  getWordCount(value:string){
+    return this.wordCount.transform(value);
+  }
 
 
 
@@ -422,6 +433,25 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
 
 
+  }
+
+  getCommentReplies() {
+    // this.showSpinner('spinner1');
+    // let params = { commentId: comment.id, evaluationId: this.gnralInfo.evaluation_id }
+    let params = { commentId: this.gnralInfo.general_comment_id, evaluationId: this.gnralInfo.evaluation_id }
+    this.commentService.getDataCommentReply(params).subscribe(
+      res => {
+        this.hideSpinner('spinner1');
+        console.log(res)
+        // comment.loaded_replies = res.data;
+        this.general_comment_reply = res.data;
+      },
+      error => {
+        console.log("getCommentReplies", error);
+        // this.hideSpinner('spinner1');
+        this.alertService.error(error);
+      }
+    )
   }
 
   /***

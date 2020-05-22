@@ -31,7 +31,7 @@
                                 <div class="well well-lg card card-block card-header">
                                     <ng-container *ngFor="let reply of comment.loaded_replies"
                                         class="replies-container">
-                                        <!-- <ng-container *ngFor="let reply of commentsByColReplies" class="replies-container"> -->
+
                                         <div class="comment-title">
                                             <div style="flex-direction: column;">
                                                 <span>ADDED BY {{reply.user.username}} </span>
@@ -49,10 +49,6 @@
                             </ngx-spinner>
                         </div>
                     </div>
-                    <!-- <i *ngIf="!comment.approved && validateStartedMssgs()"
-                    (click)="updateComment('approved', comment)" class="icon-star-gray"></i>
-                <i *ngIf="comment.approved && validateStartedMssgs()"
-                    (click)="updateComment('approved', comment)" class="icon-star-gold"></i> -->
 
                     <div *ngIf="crpComment && comment.crp_approved === null" style="flex-direction: row;"
                         class="add-comment-container">
@@ -67,10 +63,12 @@
                         [ngClass]="{'approved' : comment.crp_response === true, 'declined' : comment.crp_response === false}">
                         <h2 *ngIf="comment.hasOwnProperty('crp_response')">{{comment.crp_response ? 'ACCEPT':'REJECT'}}
                             COMMENT</h2>
+                        <p class="update-reminder" *ngIf="comment.crp_response">* Before you accept this comment, please make sure you have updated the information in MARLO/MEL.</p>
                         <div *ngIf="comment.hasOwnProperty('crp_response')">
                             <form [formGroup]="commentGroup">
-                                <textarea  maxlength="1000"  formControlName="comment"></textarea>
+                                <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
                             </form>
+                            <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000</span>
                             <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
                         </div>
 
@@ -93,8 +91,9 @@
     <!-- ADD COMMENT -->
     <div *ngIf="!availableComment && !crpComment" class="add-comment-container">
         <form [formGroup]="commentGroup">
-            <textarea AutoExpandTextArea maxlength="1000" formControlName="comment"></textarea>
+            <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>
+        <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000</span>
         <button type="button" class="btn btn-primary" (click)="addComment()">ADD</button>
 
     </div>

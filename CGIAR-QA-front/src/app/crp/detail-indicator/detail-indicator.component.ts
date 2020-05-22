@@ -12,11 +12,14 @@ import { DetailedStatus, GeneralIndicatorName } from "../../_models/general-stat
 import { Role } from 'src/app/_models/roles.model';
 import { Title } from '@angular/platform-browser';
 import { CommentService } from 'src/app/services/comment.service';
+import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
+import { WordCounterPipe } from 'src/app/pipes/word-counter.pipe';
 
 @Component({
   selector: 'app-detail-indicator',
   templateUrl: './detail-indicator.component.html',
-  styleUrls: ['./detail-indicator.component.scss']
+  styleUrls: ['./detail-indicator.component.scss'],
+  providers: [UrlTransformPipe, WordCounterPipe]
 })
 export class DetailIndicatorComponent implements OnInit {
 
@@ -31,6 +34,7 @@ export class DetailIndicatorComponent implements OnInit {
     status: "",
     evaluation_id: '',
     general_comment: '',
+    general_comment_id: '',
     general_comment_user: '',
     general_comment_updatedAt: '',
     crp_id: ''
@@ -38,6 +42,8 @@ export class DetailIndicatorComponent implements OnInit {
   statusHandler = DetailedStatus;
   generalCommentGroup: FormGroup;
   currentType = '';
+
+  general_comment_reply;
 
   approveAllitems;
 
@@ -58,6 +64,8 @@ export class DetailIndicatorComponent implements OnInit {
   criteriaData;
   criteria_loading = false;
 
+  totalChar = 6500;
+
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -66,6 +74,7 @@ export class DetailIndicatorComponent implements OnInit {
     private formBuilder: FormBuilder,
     private commentService: CommentService,
     private titleService: Title,
+    private wordCount: WordCounterPipe,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
 
@@ -102,18 +111,20 @@ export class DetailIndicatorComponent implements OnInit {
         this.detailedData = res.data.filter(field => {
           return field.value && field.value !== this.notApplicable;
         });;
-        this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
+        // this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,
           general_comment: this.detailedData[0].general_comment,
           crp_id: this.detailedData[0].evaluation_id,
           status: this.detailedData[0].status,
+          general_comment_id: this.detailedData[0].general_comment_id,
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
         }
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner(this.spinner1);
+        this.getCommentReplies();
         // console.log(res, this.gnralInfo)
       },
       error => {
@@ -158,6 +169,32 @@ export class DetailIndicatorComponent implements OnInit {
       },
       error => {
         console.log("getCommentsExcel", error);
+        this.hideSpinner('spinner1');
+        this.alertService.error(error);
+      }
+    )
+  }
+
+  addGeneralComment(data) {
+    if (this.formData.general_comment.invalid) {
+      this.alertService.error('Reply to general comment can not be empty', false)
+      return;
+    }
+    console.log(data)
+
+    this.showSpinner('spinner1');
+    this.commentService.createDataCommentReply({
+      detail: this.formData.general_comment.value,
+      userId: this.currentUser.id,
+      commentId: parseInt(data.general_comment_id),
+    }).subscribe(
+      res => {
+        console.log(res)
+        this.formData.general_comment.reset()
+        this.hideSpinner('spinner1');
+      },
+      error => {
+        console.log("replyComment", error);
         this.hideSpinner('spinner1');
         this.alertService.error(error);
       }
@@ -232,8 +269,28 @@ export class DetailIndicatorComponent implements OnInit {
 
   }
 
+  getCommentReplies() {
+    // this.showSpinner('spinner1');
+    // let params = { commentId: comment.id, evaluationId: this.gnralInfo.evaluation_id }
+    let params = { commentId: this.gnralInfo.general_comment_id, evaluationId: this.gnralInfo.evaluation_id }
+    this.commentService.getDataCommentReply(params).subscribe(
+      res => {
+        this.hideSpinner('spinner1');
+        console.log(res)
+        // comment.loaded_replies = res.data;
+        this.general_comment_reply = res.data;
+      },
+      error => {
+        console.log("getCommentReplies", error);
+        // this.hideSpinner('spinner1');
+        this.alertService.error(error);
+      }
+    )
+  }
 
-
+  getWordCount(value: string) {
+    return this.wordCount.transform(value);
+  }
 
   private getPosition(el) {
     let xPos = 0;
@@ -260,6 +317,8 @@ export class DetailIndicatorComponent implements OnInit {
       y: yPos
     };
   }
+
+
 
   /***
   * 
