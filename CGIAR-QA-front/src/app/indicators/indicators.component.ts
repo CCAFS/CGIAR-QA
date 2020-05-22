@@ -197,7 +197,6 @@ export class IndicatorsComponent implements OnInit {
           break;
       }
     }
-    console.log(indicator, r)
 
     return r;
   }

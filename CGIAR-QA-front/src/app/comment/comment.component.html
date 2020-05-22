@@ -69,7 +69,7 @@
                             COMMENT</h2>
                         <div *ngIf="comment.hasOwnProperty('crp_response')">
                             <form [formGroup]="commentGroup">
-                                <textarea formControlName="comment"></textarea>
+                                <textarea  maxlength="1000"  formControlName="comment"></textarea>
                             </form>
                             <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
                         </div>
@@ -93,7 +93,7 @@
     <!-- ADD COMMENT -->
     <div *ngIf="!availableComment && !crpComment" class="add-comment-container">
         <form [formGroup]="commentGroup">
-            <textarea formControlName="comment"></textarea>
+            <textarea AutoExpandTextArea maxlength="1000" formControlName="comment"></textarea>
         </form>
         <button type="button" class="btn btn-primary" (click)="addComment()">ADD</button>
 

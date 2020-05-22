@@ -55,7 +55,7 @@ export class CrpComponent implements OnInit {
   }
 
   validateToken(params: {}) {
-    localStorage.removeItem('currentUser');
+    this.clearSavedData();
     this.showSpinner(this.spinner_name)
     this.authenticationService.tokenLogin(params).subscribe(
       res => {
@@ -77,7 +77,7 @@ export class CrpComponent implements OnInit {
   }
 
   getCRPIndicators() {
-    
+
     if (!this.indicators.length && this.currentUser) {
       this.showSpinner(this.spinner_name)
       this.indicatorService.getIndicatorsByUser(this.currentUser.id)
@@ -100,6 +100,10 @@ export class CrpComponent implements OnInit {
   logout() {
     this.authenticationService.logout();
     this.router.navigate(['/qa-close'], { relativeTo: this.route });
+  }
+
+  clearSavedData() {
+    this.authenticationService.logout();
   }
 
   /***

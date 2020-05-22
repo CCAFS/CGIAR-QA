@@ -209,6 +209,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
         this.detailedData = res.data.filter(field => {
+          if (typeof field.value === 'number') field.value = String(field.value)
           field.value = this.urlTransfrom.transform(field.value);
           return field.value !== this.notApplicable;
         });
