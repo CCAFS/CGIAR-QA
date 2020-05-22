@@ -40,18 +40,21 @@
     <div class="col-sm">
         <div class="col data-container">
 
-            <div [ngClass]="{'approved-no-comment': field.approved_no_comment == 1} " class="data-row"
+            <div class="data-row"
                 *ngFor="let field of detailedData; let i = index">
                 <div class="col">
                     <div class="row" style="padding: 0;">
                         <h2>{{field.display_name}}</h2>
-
                         <div *ngIf="field.meta_description">
                             <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
-                                style="height: 2em;"></i>
+                                style="height: 1.5em;"></i>
                             <ng-template #popTemplate>
                                 <div [innerHtml]="field.meta_description"></div>
                             </ng-template>
+
+                          <div [ngClass]="{'approved-no-comment': field.approved_no_comment == 1} " style="display:none" >
+                            Approved without comments
+                          </div>
 
                         </div>
                     </div>

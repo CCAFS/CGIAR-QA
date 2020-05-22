@@ -2,8 +2,9 @@
 .dashboard-container {
     .crp-list-group {
         background: var(--gray-primary);
-        border-radius: 1em;
+        border-radius: 0.4em;
         align-self: baseline;
+        max-width: 200px;
         a {
             font-weight: $bold;
             color: var(--black);
@@ -11,8 +12,14 @@
             background-color: transparent;
             cursor: pointer;
         }
+        a:hover{
+          color: var(--green-primary);
+        }
         a.active {
             color: var(--green-primary);
+        }
+        a.unavailable{
+          cursor: default;
         }
     }
     .programs-form {
