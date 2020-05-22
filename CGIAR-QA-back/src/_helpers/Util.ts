@@ -162,9 +162,8 @@ class Util {
                     qa_user_crps
                 WHERE
                     qa_crp = :crpId
-                AND qa_user = :userId
                     `,
-                { crpId: authToken.qa_crp_id, userId: user.id },
+                { crpId: authToken.qa_crp_id},
                 {}
             );
             let user_crp = await queryRunner.connection.query(query, parameters);
@@ -174,8 +173,10 @@ class Util {
                 user.username = authToken.username;
                 user.email = authToken.email;
                 user.name = authToken.name;
-                user.crps = user.crps.concat(crp);
-                user.roles = user.roles.concat(crpRole);
+                user.crps = [crp];
+                user.roles = [crpRole];
+                // user.crps = user.crps.concat(crp);
+                // user.roles = user.roles.concat(crpRole);
                 user = await userRepository.save(user);
             }
             else if (user && user_crp.length === 0) {
