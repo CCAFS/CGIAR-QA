@@ -111,7 +111,7 @@ class Util {
                     series: [
 
                         {
-                            "name":'Total',
+                            "name": 'Total',
                             // "name": type == 'admin' ? "Approved" : "Received",
                             "value": element['comments_total']
                         },
@@ -128,12 +128,12 @@ class Util {
                             "value": element['approved_comment_crp']
                         },
                         {
-                        "name": "CRP - Rejected",
-                        "value": element['rejected_comment_crp']
+                            "name": "CRP - Rejected",
+                            "value": element['rejected_comment_crp']
                         },
                         {
-                        "name": "CRP - No Responded",
-                        "value": element['crp_no_commented']
+                            "name": "CRP - No Responded",
+                            "value": element['crp_no_commented']
                         },
                     ]
                 }
@@ -171,8 +171,9 @@ class Util {
                     qa_user_crps
                 WHERE
                     qa_crp = :crpId
+                AND qa_user = :userId
                     `,
-                { crpId: authToken.qa_crp_id},
+                { crpId: authToken.qa_crp_id, userId: user.id },
                 {}
             );
             let user_crp = await queryRunner.connection.query(query, parameters);
@@ -195,7 +196,7 @@ class Util {
                 user.roles = user.roles.concat(crpRole);
                 user = await userRepository.save(user);
             }
-            console.log(user, user_crp, crpRole);
+            // console.log(user, user_crp, crpRole);
 
             //  // get general config by user role
             let generalConfig = await grnlConfg
