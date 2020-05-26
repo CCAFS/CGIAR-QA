@@ -156,7 +156,7 @@ export class CrpDashboardComponent implements OnInit {
         let found = pie.series.find(serie => serie.name === data)
         console.log("Legend clicked", found);
         if (found) {
-          found.value = 0;
+          pie.series.find(serie => serie == found).filter(sr => sr.value = 0);
           return true;
         }
       });
