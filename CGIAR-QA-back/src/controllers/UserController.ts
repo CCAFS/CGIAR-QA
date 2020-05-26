@@ -41,13 +41,14 @@ class UserController {
     static newUser = async (req: Request, res: Response) => {
 
         //Get parameters from the body
-        let { username, password, roles, name, email, crpId, is_marlo } = req.body;
-        const roleRepository = getRepository(QARoles);
-        const crpRepository = getRepository(QACrp);
-        
-        
-        let user = new QAUsers();
         try {
+            let { username, password, roles, name, email, crpId, is_marlo } = req.body;
+            const roleRepository = getRepository(QARoles);
+            const crpRepository = getRepository(QACrp);
+            let user =
+             new QAUsers();
+            
+            
             user.username = username;
             user.password = password;
             user.name = name;

@@ -41,7 +41,8 @@ class IndicatorsController {
 
     static getIndicatorsByUser = async (req: Request, res: Response) => {
         //Get the ID from the url
-        const id = req.params.id;
+        const { id } = req.params;
+        const { crp_id } = req.query;
         let queryRunner = getConnection().createQueryBuilder();
         let response = []
 
@@ -52,7 +53,8 @@ class IndicatorsController {
             let user = await userRepository.findOneOrFail({ where: { id } });
             // console.log(user)
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
-            let isCRP = user.crp; //user.roles.find(x => x.description == RolesHandler.crp);
+            // let isCRP = user.crp ;
+            let isCRP = user.roles.find(x => x.description == RolesHandler.crp);
             if (isAdmin) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
@@ -87,13 +89,14 @@ class IndicatorsController {
                             qa_indicators indicators
                     LEFT JOIN qa_comments_meta comment_meta ON comment_meta.indicatorId = indicators.id
                     WHERE
-                            indicators.view_name IN (SELECT indicator_view_name FROM qa_evaluations WHERE crp_id = :crp_id)
+                            indicators.view_name IN (SELECT DISTINCT indicator_view_name FROM qa_evaluations)
                     ORDER BY 
                             indicator_order ASC
                     `,
-                    { crp_id: user.crp.crp_id },
+                    { crp_id: crp_id },
                     {}
                 );
+                // indicators.view_name IN (SELECT indicator_view_name FROM qa_evaluations WHERE crp_id = :crp_id)
                 const indicators = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: indicators, message: "CRP indicators" });
                 return;

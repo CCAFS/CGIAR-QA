@@ -86,8 +86,9 @@ export class CRPIndicatorsComponent implements OnInit {
 
 
   getEvaluationsList(params) {
+    console.log(this.currentUser)
     this.showSpinner(this.spinner_name);
-    this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
+    this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column, this.currentUser.crp.crp_id).subscribe(
       res => {
         this.evaluationList = this.orderPipe.transform(res.data, 'id');
         this.collectionSize = this.evaluationList.length;
@@ -111,7 +112,7 @@ export class CRPIndicatorsComponent implements OnInit {
       startItem,
       endItem
     }
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
 
@@ -126,7 +127,7 @@ export class CRPIndicatorsComponent implements OnInit {
       this.order = value;
     }
     // console.log(this.evaluationList, this.order, this.reverse)
-    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order);
+    this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
@@ -165,40 +166,6 @@ export class CRPIndicatorsComponent implements OnInit {
       }
     )
   }
-
-  // getNavItems(type, i) {
-  //   let r;
-  //   switch (type) {
-  //     case 'previous':
-  //       r = 
-  //       break;
-  //     case 'next':
-        
-  //       break;
-    
-  //     default:
-  //       break;
-  //   }
-
-
-  //   // let r = {
-  //   //   next: 0,
-  //   //   previous: 0
-  //   // }
-  //   // if (i == 0) {
-  //   //   r.next = this.evaluationList[i + 1];
-  //   //   r.previous = undefined
-  //   // } else if (i >= this.evaluationList.length){
-  //   //   r.previous = this.evaluationList[i - 1];
-  //   //   r.next = undefined
-  //   // }else {
-  //   //   r.next = this.evaluationList[i + 1];
-  //   //   r.previous = this.evaluationList[i - 1];
-  //   // }
-
-  //   // return r;
-  // }
-
 
   /***
    * 

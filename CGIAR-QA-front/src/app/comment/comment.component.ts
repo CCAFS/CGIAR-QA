@@ -10,16 +10,19 @@ import { User } from '../_models/user.model';
 import { Role } from '../_models/roles.model';
 import { CommentService } from '../services/comment.service';
 import { from } from 'rxjs';
+import { WordCounterPipe } from '../pipes/word-counter.pipe';
 
 @Component({
   selector: 'app-comment',
   templateUrl: './comment.component.html',
-  styleUrls: ['./comment.component.scss']
+  styleUrls: ['./comment.component.scss'],
+  providers: [WordCounterPipe]
 })
 export class CommentComponent implements OnInit {
 
   dataFromItem: any = {};
   commentGroup: FormGroup;
+  totalChar = 6500;
   // replyGroup: FormGroup;
   commentsByCol: any = [];
   commentsByColReplies: any = [];
@@ -43,6 +46,7 @@ export class CommentComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
+    private wordCount:WordCounterPipe,
     private spinner: NgxSpinnerService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
@@ -181,7 +185,7 @@ export class CommentComponent implements OnInit {
 
   replyComment(currentComment) {
     if (this.commentGroup.invalid) {
-      this.alertService.error('comment is required', false)
+      this.alertService.error('Comment is required', false)
       return;
     }
     this.showSpinner(this.spinner_comment);
@@ -200,7 +204,7 @@ export class CommentComponent implements OnInit {
         this.formData.comment.reset()
       },
       error => {
-        console.log("getEvaluationsList", error);
+        console.log("replyComment", error);
         this.hideSpinner(this.spinner_comment);
         this.alertService.error(error);
       }
@@ -212,6 +216,10 @@ export class CommentComponent implements OnInit {
     return true;
     // let isAdmin = this.currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin })
     // return isAdmin;
+  }
+
+  getWordCount(value:string){
+    return this.wordCount.transform(value);
   }
 
   /***

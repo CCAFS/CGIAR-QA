@@ -60,7 +60,9 @@ export class QAPublications {
 
     @ViewColumn()
     Handle: string;
-
+    
+    @ViewColumn()
+    shared_publications: string;
 
     @ViewColumn()
     editable_link: string;

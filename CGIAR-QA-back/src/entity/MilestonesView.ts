@@ -3,7 +3,7 @@ import { ViewEntity, ViewColumn } from "typeorm";
 
 @ViewEntity({
     expression: `
-        SELECT * FROM qa_milestones_view
+        SELECT * FROM qa_milestones_data
         WHERE phase_name = 'AR'
         AND phase_year = '2019'
     `

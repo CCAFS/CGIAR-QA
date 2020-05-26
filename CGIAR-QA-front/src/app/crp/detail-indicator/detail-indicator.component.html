@@ -1,16 +1,3 @@
-<!-- <div class=" detail-header-container">
-    <p *ngIf="detailedData" class="indicator-item-name">
-        {{detailedData[0].crp_name}} / {{params.type}} / QA-{{params.indicatorId}}
-    </p>
-    <div>
-        <div *ngIf="detailedData && detailedData[0].editable_link">
-            <a [href]="detailedData[0].editable_link" target="_blank">Public link</a>
-        </div>
-    </div>
-</div> -->
-
-
-
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']" routerLink="../..">
     <i class=icon-go-back></i> {{currentType}} List
 </a>
@@ -49,22 +36,25 @@
     </div>
 </div>
 
-<div class="row">
+<div #containerElement class="row">
     <div class="col-sm">
         <div class="col data-container">
 
-            <div [ngClass]="{'approved-no-comment': field.approved_no_comment == 1} " class="data-row"
-                *ngFor="let field of detailedData; let i = index">
+            <div class="data-row" *ngFor="let field of detailedData; let i = index">
                 <div class="col">
                     <div class="row" style="padding: 0;">
                         <h2>{{field.display_name}}</h2>
-
                         <div *ngIf="field.meta_description">
                             <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
-                                style="height: 2em;"></i>
+                                style="height: 1.5em;"></i>
                             <ng-template #popTemplate>
                                 <div [innerHtml]="field.meta_description"></div>
                             </ng-template>
+
+                            <div [ngClass]="{'approved-no-comment': field.approved_no_comment == 1} "
+                                style="display:none">
+                                Approved without comments
+                            </div>
 
                         </div>
                     </div>
@@ -88,7 +78,8 @@
                 </div>
 
                 <!-- comments -->
-                <div #commentsElem *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
+                <div #commentsElem style="cursor: pointer;"
+                    *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
                     (click)="showComments(i, field, $event); comment.updateData(field,params)"
                     class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
                     <i *ngIf="!field.loading" class="icon-message"></i>
@@ -104,18 +95,42 @@
                     <i *ngIf="!field.loading" class="icon-message-inactive"></i>
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
-                    <div *ngIf="field.replies_count != '0'" class="replies-count">
+                    <!-- <div *ngIf="field.replies_count != '0' " class="replies-count"> -->
+                    <!-- <div *ngIf="field.replies_count != '0' && !field.approved_no_comment" class="replies-count">
                         {{field.replies_count}}
-                    </div>
+                    </div> -->
                 </div>
 
             </div>
 
         </div>
-        <div *ngIf="detailedData && detailedData[0].general_comment" class="col data-container">
-            <div class="data-row  gnral-commnts">
-                <h2>General comments:</h2>
+        <div class="data-row gnral-commnts">
+            <h2>General comments:</h2>
+            <div *ngIf="detailedData && detailedData[0].general_comment" class="col data-container">
                 <p> {{detailedData[0].general_comment}} </p>
+
+                <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
+                    <p>{{reply.detail}}</p>
+                    <p>Replied by: {{reply.user.username}} </p>
+                    <!-- <p>{{getCommentReplies()}}</p> -->
+                </div>
+                <div *ngIf="!general_comment_reply">
+                    <form [formGroup]="generalCommentGroup" style="display: flex; margin-bottom: 2em;">
+                        <textarea class="text-area " maxlength="{{totalChar}}"
+                            formControlName="general_comment"></textarea>
+                    </form>
+                    <span class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000</span>
+                    <div class="bton-container">
+                        <button type="button"
+                            class="btn btn-{{formData.general_comment.value ? 'green':'red'}}-secondary"
+                            [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
+                            (click)="addGeneralComment( gnralInfo)">REPLY</button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="detailedData && ( !detailedData[0].general_comment || detailedData[0].general_comment == '')"
+                class="col data-container" style="    min-height: auto;">
+                No comments were provided.
             </div>
         </div>
         <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"

@@ -104,7 +104,7 @@
                             </div>
 
                             <!-- comments -->
-                            <div #commentsElem
+                            <div #commentsElem style="cursor: pointer;"
                                 *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
                                 (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"
                                 class="activate-messages-container {{detailedData[i].replies_count == '0' ?  '':'active'}}">
@@ -141,23 +141,23 @@
                         Please take into consideration that this is going to be shown to the CRP.
                     </p>
                     <form [formGroup]="generalCommentGroup">
-                        <textarea [readonly]="gnralInfo.status === statusHandler.Complete" cols="30"
+                        <textarea *ngIf="!general_comment_reply" [readonly]="gnralInfo.status === statusHandler.Complete" maxlength="{{totalChar}}"
                             formControlName="general_comment"></textarea>
+                        <p *ngIf="general_comment_reply">{{formData.general_comment.value}}</p>
                     </form>
                     <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                         {{gnralInfo.general_comment_user}} <strong>at:</strong>
                         {{gnralInfo.general_comment_updatedAt}}</p>
-                    <div class="bton-container">
+                    <span class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000</span>
+                    <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
+                        <p>{{reply.detail}}</p>
+                        <p>Replied by: {{reply.user.username}} </p>
+                    </div>
+                    <div *ngIf="!general_comment_reply" class="bton-container">
                         <button type="button"
                             class="btn btn-{{formData.general_comment.value ? 'green':'red'}}-secondary"
                             [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
-                            (click)="addGeneralComment('general_comment', detailedData)">SAVE</button>
-                        <!-- <p class="error" *ngIf="this.tickGroup.controls['tick'].errors?.required">
-                            Checkbox is required, select atleast one value.
-                        </p> -->
-                        <!-- [disabled]="validateComments()" -->
-                        <!-- <button type="button" (click)="updateEvaluation('status', detailedData)"
-                            class="btn btn-{{(gnralInfo.status === statusHandler.Complete) ? 'danger':'primary'}}">{{(gnralInfo.status === statusHandler.Complete) ? "REOPEN":"COMPLETE"}}</button> -->
+                            (click)="addGeneralComment('',detailedData)">SAVE</button>
                     </div>
 
                 </div>
