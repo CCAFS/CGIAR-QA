@@ -326,6 +326,10 @@ class EvaluationsController {
                 response.view_sql = "(SELECT is_ISI FROM qa_publications publications WHERE publications.id = evaluations.indicator_view_id) AS stage,"
                 // response.innovations_stage = "qa_melia.study_type,"
                 break;
+            case 'qa_milestones':
+                response.view_sql = "(SELECT status FROM qa_milestones milestones WHERE milestones.id = evaluations.indicator_view_id) AS stage,"
+                // response.innovations_stage = "qa_melia.study_type,"
+                break;
 
             default:
                 break;

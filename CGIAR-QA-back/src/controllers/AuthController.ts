@@ -118,7 +118,7 @@ class AuthController {
             );
 
             let r = await queryRunner.connection.query(query, parameters);
-            // console.log(r)
+            console.log(r)
             if (r.length == 0) {
                 res.status(400).json({ data: [], message: 'Invalid token' });
                 return;

@@ -38,7 +38,8 @@ export class IndicatorsComponent implements OnInit {
     oicr: 'Maturity Level',
     innovations: 'Stage',
     melia: 'Type',
-    publications: 'ISI'
+    publications: 'ISI',
+    milestones: 'Milestone Status',
   }
 
   maxSize = 5;

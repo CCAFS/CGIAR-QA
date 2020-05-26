@@ -5,6 +5,7 @@ import { QAIndicatorUser } from "../entity/IndicatorByUser";
 import { QAComments } from "../entity/Comments";
 import { StatusHandler } from "../_helpers/StatusHandler";
 import { QAIndicators } from "./Indicators";
+import { EvaluationStatusHandler } from "../_helpers/EvaluationStatusHandler";
 
 
 // import { QAUsers } from "../entity/User";
@@ -32,6 +33,14 @@ export class QAEvaluations {
         default: StatusHandler.Pending
     })
     status: StatusHandler;
+    
+    @Column({
+        type: "enum",
+        enum: EvaluationStatusHandler,
+        nullable: true
+    })
+    evaluation_status: EvaluationStatusHandler;
+
 
     @Column()
     @Length(2, 200)

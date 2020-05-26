@@ -9,10 +9,10 @@ import { AlertService } from '../../services/alert.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 import { User } from '../../_models/user.model';
-import { CRP } from '../../_models/crp.model';
 import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-status.model'
 import { Title } from '@angular/platform-browser';
-import { CookieService } from 'ngx-cookie-service';
+// import { CRP } from '../../_models/crp.model';
+// import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-crp-dashboard',
@@ -38,12 +38,12 @@ export class CrpDashboardComponent implements OnInit {
   gradient: boolean = false;
   showLegend: boolean = true;
   showXAxisLabel: boolean = true;
-  xAxisLabel: string = 'Indicators';
+  xAxisLabel: string = 'Indicator';
   showYAxisLabel: boolean = true;
-  yAxisLabel: string = 'Comments';
-  legendTitle: string = 'Labels';
+  yAxisLabel: string = 'Total';
+  legendTitle: string = 'Type';
   colorScheme = {
-    domain: ['#ffca30', '#0f8981', '#2e7636']
+    domain: ['#ffca30', '#2e7636', '#0f8981', '#61b33e', '#F1B7B7', '#b73428']
   };
 
 
@@ -115,7 +115,7 @@ export class CrpDashboardComponent implements OnInit {
     this.router.navigate([`crp/indicator/${indicatorId}/${primary_column}`]);
   }
 
-  
+
 
   openModal(template: TemplateRef<any>) {
     this.dashboardModalData = []
@@ -148,15 +148,52 @@ export class CrpDashboardComponent implements OnInit {
 
 
   onSelect(data): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    // console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    let temp = JSON.parse(JSON.stringify(this.multi));
+    if (this.isDataShown(data)) {
+      //Hide it
+      temp.some(pie => {
+        let found = pie.series.find(serie => serie.name === data)
+        console.log("Legend clicked", found);
+        if (found) {
+          found.value = 0;
+          return true;
+        }
+      });
+    }
+    console.log(temp)
+    // else {
+    //   console.log("In Else case");
+    //   //Show it back
+    //   const pieToAdd = this.sourceData.filter(pie => {
+    //     return pie.name === event;
+    //   });
+    //   console.log("pieToAdd", pieToAdd[0]);
+    //   temp.some(pie => {
+    //     if (pie.name === event) {
+    //       pie.value = pieToAdd[0].value;
+    //       return true;
+    //     }
+    //   });
+    // }
+    // this.single = temp;
+    // }
+  }
+  isDataShown = (name) => {
+    const selectedPie = this.multi.filter(pie => {
+      // console.log(pie, name)
+      return pie.series.find(serie => serie.name === name && serie.value != 0)
+      // return pie.name === name && pie.value !== 0;
+    });
+    return selectedPie && selectedPie.length > 0;
   }
 
   onActivate(data): void {
-    console.log('Activate', JSON.parse(JSON.stringify(data)));
+    // console.log('Activate', JSON.parse(JSON.stringify(data)));
   }
 
   onDeactivate(data): void {
-    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+    // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
 

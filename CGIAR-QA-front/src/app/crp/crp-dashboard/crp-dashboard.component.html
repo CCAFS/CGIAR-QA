@@ -14,8 +14,8 @@
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending</p>
 
-                    <!-- <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More
-                        Metrics</button> -->
+                    <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More
+                        Metrics</button>
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">
@@ -59,6 +59,7 @@
             </button>
         </div>
         <div class="modal-body">
+            <h2>Comments: </h2>
             <div class="row justify-content-center comments-dash-container">
 
                 <ngx-charts-bar-vertical-2d *ngIf="has_comments" [scheme]="colorScheme" [results]="multi"

@@ -111,27 +111,36 @@ class Util {
                     series: [
 
                         {
-                            "name": type == 'admin' ? "Comments Approved" : "Comments Received",
-                            "value": element['comments_approved']
+                            "name":'Total',
+                            // "name": type == 'admin' ? "Approved" : "Received",
+                            "value": element['comments_total']
                         },
                         {
-                            "name": "Comments Approved No Comment",
+                            "name": "Assessor - Commented",
+                            "value": element['assessor_comments']
+                        },
+                        {
+                            "name": "Assessor - Approved No Comment",
                             "value": element['approved_no_comment']
                         },
                         {
-                            "name": "Comments CRP Approved",
+                            "name": "CRP - Approved",
                             "value": element['approved_comment_crp']
                         },
-                        // {
-                        // "name": "Comments CRP Approved",
-                        // "value": element['approved_comment_crp']
-                        // },
+                        {
+                        "name": "CRP - Rejected",
+                        "value": element['rejected_comment_crp']
+                        },
+                        {
+                        "name": "CRP - No Responded",
+                        "value": element['crp_no_commented']
+                        },
                     ]
                 }
 
                 if (type == 'admin') {
                     r.series.unshift({
-                        "name": "Total Comments",
+                        "name": "Total",
                         "value": element['comments_total']
                     })
                 }

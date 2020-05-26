@@ -283,7 +283,8 @@ export class DetailIndicatorComponent implements OnInit {
       error => {
         console.log("getCommentReplies", error);
         // this.hideSpinner('spinner1');
-        this.alertService.error(error);
+        if(error !== 'OK')
+          this.alertService.error(error);
       }
     )
   }

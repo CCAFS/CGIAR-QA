@@ -43,12 +43,15 @@ class CommentController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                        COUNT(comments.crp_approved) AS approved_comment_crp,
-                        COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_approved,
-                        COUNT(comments.approved_no_comment) AS approved_no_comment,
-                        evaluations.indicator_view_name
+                            COUNT( CASE comments.crp_approved  WHEN 1 THEN 1 ELSE NULL END) AS approved_comment_crp,
+                            COUNT( CASE comments.crp_approved  WHEN 0 THEN 1 ELSE NULL END) AS rejected_comment_crp,
+                            SUM(ISNULL(comments.crp_approved)) AS crp_no_commented,
+                            COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
+                            COUNT( comments.detail) AS assessor_comments,
+                            COUNT(comments.approved_no_comment) AS approved_no_comment,
+                            evaluations.indicator_view_name
                     FROM
-                        qa_evaluations evaluations
+                            qa_evaluations evaluations
                     LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                     
