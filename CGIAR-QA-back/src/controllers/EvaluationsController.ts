@@ -178,7 +178,7 @@ class EvaluationsController {
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
-            } else if (user.crps.length > 0) {
+            } else if ( user.crps.length > 0 ) {
                 let sql = `
                     SELECT
                         evaluations.id AS evaluation_id,
