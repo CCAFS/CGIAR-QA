@@ -27,14 +27,16 @@ class Util {
      * 
      ***/
 
-    static getType(status) {
+    static getType(status, isCrp?) {
         let res = ""
         switch (status) {
             case StatusHandler.Pending:
                 res = 'danger'
+                // res = isCrp ? 'success' : 'danger'
                 break;
             case StatusHandler.Complete:
                 res = 'success'
+                // res = isCrp ? 'danger' : 'success'
                 break;
 
             default:
@@ -95,101 +97,30 @@ class Util {
 
         return grouped_data;
     }
-    
+
     static parseChartData(rawData, type?) {
-        // public barChartLabels: Label[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-        //  public barChartData: ChartDataSets[] = [
-        //     { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-        //     { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
-        //   ];
         let response = {
             label: [],
-            data_set: []
+            data_set: [
+                { data: [], label: 'CRP - Approved', sql_name: 'approved_comment_crp', backgroundColor: '#ffca30' },
+                { data: [], label: 'CRP - Rejected', sql_name: 'rejected_comment_crp', backgroundColor: '#F1B7B7' },
+                { data: [], label: 'CRP - No responded', sql_name: 'crp_no_commented', backgroundColor: '#0f8981' },
+                { data: [], label: 'Assessor - Commented', sql_name: 'assessor_comments', backgroundColor: '#61b33e' },
+                { data: [], label: 'Assessor - Approved without comment', sql_name: 'approved_no_comment', backgroundColor: '#2e7636' },
+                { data: [], label: 'Total', sql_name: 'comments_total', backgroundColor: '#b73428' },
+            ]
         };
-        let tmp = []
-        // console.log(this.groupBy(rawData,'approved_comment_crp'))
-        // for (const iterator in rawData[0]){
-        //     tmp.push(iterator)
-        //     // console.log(tmp)
-        // }
+
         for (let index = 0; index < rawData.length; index++) {
             const element = rawData[index]
             const indicator_name = element['indicator_view_name'].split('qa_')[1];
             response['label'].push(indicator_name);
 
-            response.data_set.push(
-                { label: 'approved crp', data: (element['approved_comment_crp']) }
-            )
+            response.data_set.forEach(set => {
+                set.data.push(element[set.sql_name])
+            });
         }
-        //     const element = rawData[index]
-        //     const indicator_name = element['indicator_view_name'].split('qa_')[1];
-        //     // response['label'].push(indicator_name);
-        //     // console.log(typeof element)
-
-        //     let tmp = []
-        //     // element.forEach(ele => {
-
-        //         //     console.log(ele)
-        //         // });
-        //         // for (const iterator in element) {
-        //         //     console.log(this.groupBy(element,iterator))
-        //         // console.log(iterator)
-        //         // let found = response['data_set'].find(set => set.label == iterator)
-        //         // if (iterator !== 'indicator_view_name' && found) {
-        //         //     found.data.push(element[iterator])
-        //         // }
-        //         // else{
-        //         //     response['data_set'].push({label:iterator})
-        //         // }
-        //         // // ({label: iterator, data: null})
-
-        //     // let a = response.find(data => data.name == indicator_name)
-        //     // console.log(element)
-        //     // if (!a) {
-        //     //     let r = {
-        //     //         name: indicator_name,
-        //     //         indicator_name: element['indicator_view_name'],
-        //     //         series: [
-
-        //     //             {
-        //     //                 "name": 'Total',
-        //     //                 // "name": type == 'admin' ? "Approved" : "Received",
-        //     //                 "value": element['comments_total']
-        //     //             },
-        //     //             {
-        //     //                 "name": "Assessor - Commented",
-        //     //                 "value": element['assessor_comments']
-        //     //             },
-        //     //             {
-        //     //                 "name": "Assessor - Approved No Comment",
-        //     //                 "value": element['approved_no_comment']
-        //     //             },
-        //     //             {
-        //     //                 "name": "CRP - Approved",
-        //     //                 "value": element['approved_comment_crp']
-        //     //             },
-        //     //             {
-        //     //                 "name": "CRP - Rejected",
-        //     //                 "value": element['rejected_comment_crp']
-        //     //             },
-        //     //             {
-        //     //                 "name": "CRP - No Responded",
-        //     //                 "value": element['crp_no_commented']
-        //     //             },
-        //     //         ]
-        //     //     }
-
-        //     //     if (type == 'admin') {
-        //     //         r.series.unshift({
-        //     //             "name": "Total",
-        //     //             "value": element['comments_total']
-        //     //         })
-        //     //     }
-
-        //     //     response.push(r)
-        //     // }
-        // }
-        console.log(response)
+        // console.log(response)
         return response;
     }
 
@@ -353,14 +284,29 @@ class Util {
             const sheet: excel.Worksheet = workbook.addWorksheet(sheetName);
             sheet.columns = headers;
             for (let i = 0; i < rows.length; i++) {
+                // { header: 'Id', key: 'id' },
+                // { header: 'Field', key: 'field' },
+                // { header: 'User', key: 'user' },
+                // { header: 'Comment', key: 'comment' },
+                // { header: 'Created Date', key: 'createdAt' },
+                // // { header: 'Email', key: 'email' },
+                // { header: 'Accepted comment?', key: 'crp_approved' },
+                // { header: 'Comment reply', key: 'reply' },
+                // { header: 'User Replied', key: 'user_replied' },
+                // { header: 'Reply Date', key: 'reply_date' },
                 if (rows[i]) {
                     let row = {
                         id: rows[i].id,
                         createdAt: rows[i].createdAt,
+                        updatedAt: rows[i].updatedAt,
                         comment: rows[i].detail,
-                        user: rows[i].user.name,
-                        // email: rows[i].user.email,
-                        field: rows[i].meta ? rows[i].meta.display_name : 'General Comment',
+                        user: rows[i].username,
+                        field: rows[i].display_name ? rows[i].display_name : 'General Comment',
+                        crp_approved: rows[i].crp_approved,
+                        reply: rows[i].reply,
+                        user_replied: rows[i].reply_user,
+                        reply_createdAt: rows[i].reply_createdAt,
+                        // reply_updatedAt: rows[i].reply_updatedAt,
                     };
                     sheet.addRow(row);
 
@@ -391,6 +337,7 @@ class Util {
             evaluation_id: element["evaluation_id"],
             crp_name: element["crp_name"],
             status: element["evaluations_status"],
+            comments_replies_count: element["comments_replies_count"],
         }
         if (!type) {
             response = Object.assign(response, {

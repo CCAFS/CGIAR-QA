@@ -45,7 +45,7 @@ class CommentController {
                     SELECT
                             COUNT( CASE comments.crp_approved  WHEN 1 THEN 1 ELSE NULL END) AS approved_comment_crp,
                             COUNT( CASE comments.crp_approved  WHEN 0 THEN 1 ELSE NULL END) AS rejected_comment_crp,
-                            SUM(ISNULL(comments.crp_approved)) AS crp_no_commented,
+                            SUM( IF(ISNULL(comments.crp_approved) AND !ISNULL(comments.detail),1,NULL)) AS crp_no_commented,
                             COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
                             COUNT( comments.detail) AS assessor_comments,
                             COUNT(comments.approved_no_comment) AS approved_no_comment,
@@ -396,7 +396,10 @@ class CommentController {
     static getCommentsExcel = async (req: Request, res: Response) => {
         // const { name, id } = req.params;
         const { evaluationId } = req.params;
-        const { userId, name } = req.query;
+        const { userId, name, crp_id, indicatorName } = req.query;
+        let queryRunner = getConnection().createQueryBuilder();
+
+
         let comments;
         try {
             const commentsRepository = getRepository(QAComments);
@@ -409,33 +412,158 @@ class CommentController {
                 ]
             });
             let currentRole = user.roles.map(role => { return role.description })[0];
-            
-            if (currentRole !== RolesHandler.crp) {
-                comments = await commentsRepository.find({
-                    where: { is_visible: 1, is_deleted: 0, evaluation: evaluationId },
-                    relations: ['user', 'meta'],
-                    order: {
-                        createdAt: "ASC"
-                    }
-                });
+            // console.log(evaluationId)
+            if (evaluationId == undefined || evaluationId == 'undefined') {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `
+                    SELECT
+                        comments.detail,
+                        comments.id,
+                        comments.updatedAt,
+                        comments.createdAt,
+                        comments.crp_approved,
+                        evaluations.crp_id,
+                        evaluations.id AS evaluation_id,
+                        users.username,
+                        users.email,
+                        meta.display_name,
+                        replies.createdAt AS reply_createdAt,
+                        replies.updatedAt AS reply_updatedAt,
+                        replies.detail AS reply,
+                        (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user
+                    FROM
+                        qa_comments comments
+                    LEFT JOIN qa_users users ON users.id = comments.userId
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
+                    LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                    LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
+                    WHERE
+                        comments.detail IS NOT NULL
+                    AND evaluations.indicator_view_name = :indicatorName
+                    AND comments.approved = 1
+                    AND comments.is_deleted = 0
+                    AND evaluations.crp_id = :crp_id
+                    ORDER BY createdAt ASC
+                    `,
+                    { crp_id, indicatorName },
+                    {}
+                );
+
+                // console.log(parameters)
+                comments = await queryRunner.connection.query(query, parameters);
+            } else {
+
+                if (currentRole !== RolesHandler.crp) {
+                    // comments = await commentsRepository.find({
+                    //     where: { is_visible: 1, is_deleted: 0, evaluation: evaluationId },
+                    //     relations: ['user', 'meta'],
+                    //     order: {
+                    //         createdAt: "ASC"
+                    //     }
+                    // });
+                    const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                        `
+                        SELECT
+                            comments.detail,
+                            comments.id,
+                            comments.updatedAt,
+                            comments.createdAt,
+                            comments.crp_approved,
+                            evaluations.crp_id,
+                            evaluations.id AS evaluation_id,
+                            users.username,
+                            users.email,
+                            meta.display_name,
+                            replies.createdAt AS reply_createdAt,
+                            replies.updatedAt AS reply_updatedAt,
+                            replies.detail AS reply,
+                            (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user
+                        FROM
+                            qa_comments comments
+                        LEFT JOIN qa_users users ON users.id = comments.userId
+                        LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
+                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                        LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
+                        WHERE
+                            comments.detail IS NOT NULL
+                        AND evaluations.id = :evaluationId
+                        AND comments.approved = 1
+                        AND comments.is_visible = 1
+                        AND comments.is_deleted = 0
+                        ORDER BY createdAt ASC
+                        `,
+                        { evaluationId },
+                        {}
+                    );
+
+                    // console.log(parameters)
+                    comments = await queryRunner.connection.query(query, parameters);
+                }
+                else {
+                    // comments = await commentsRepository.find({
+                    //     where: { is_visible: 1, approved: 1, is_deleted: 0, evaluation: evaluationId },
+                    //     relations: ['user', 'meta'],
+                    //     order: {
+                    //         createdAt: "ASC"
+                    //     }
+                    // });
+                    const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                        `
+                        SELECT
+                            comments.detail,
+                            comments.id,
+                            comments.updatedAt,
+                            comments.createdAt,
+                            comments.crp_approved,
+                            evaluations.crp_id,
+                            evaluations.id AS evaluation_id,
+                            users.username,
+                            users.email,
+                            meta.display_name,
+                            replies.createdAt AS reply_createdAt,
+                            replies.updatedAt AS reply_updatedAt,
+                            replies.detail AS reply,
+                            (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user
+                        FROM
+                            qa_comments comments
+                        LEFT JOIN qa_users users ON users.id = comments.userId
+                        LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
+                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                        LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
+                        WHERE
+                            comments.detail IS NOT NULL
+                        AND evaluations.id = :evaluationId
+                        AND comments.approved = 1
+                        AND comments.is_visible = 1
+                        AND comments.is_deleted = 0
+                        ORDER BY createdAt ASC
+                        `,
+                        { evaluationId },
+                        {}
+                    );
+
+                    // console.log(parameters)
+                    comments = await queryRunner.connection.query(query, parameters);
+                }
             }
-            else {
-                comments = await commentsRepository.find({
-                    where: { is_visible: 1, approved: 1, is_deleted: 0, evaluation: evaluationId },
-                    relations: ['user', 'meta'],
-                    order: {
-                        createdAt: "ASC"
-                    }
-                });
-            }
+
+            // console.log(comments)
+
+                            // evaluations.id AS evaluation_id,
+                            // meta.col_name,
 
             const stream: Buffer = await Util.createCommentsExcel([
                 { header: 'Id', key: 'id' },
                 { header: 'Field', key: 'field' },
                 { header: 'User', key: 'user' },
-                // { header: 'Email', key: 'email' },
                 { header: 'Comment', key: 'comment' },
-                { header: 'Created Date', key: 'createdAt' }
+                { header: 'Created Date', key: 'createdAt' },
+                { header: 'Updated Date', key: 'updatedAt' },
+                // { header: 'Email', key: 'email' },
+                { header: 'Accepted comment?', key: 'crp_approved' },
+                { header: 'Comment reply', key: 'reply' },
+                { header: 'User Replied', key: 'user_replied' },
+                { header: 'Reply Date', key: 'reply_createdAt' },
             ], comments, 'comments');
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             res.setHeader('Content-Disposition', `attachment; filename=${name}.xlsx`);

@@ -142,6 +142,7 @@ class EvaluationsController {
                         AND is_deleted = 0
                         AND is_visible = 1
                     ) AS comments_count,
+                    ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
                     ${levelQuery.view_sql}
                     (
                         SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
@@ -200,6 +201,7 @@ class EvaluationsController {
                             AND is_deleted = 0
                             AND is_visible = 1
                         ) AS comments_count,
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
                         (
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
@@ -225,7 +227,6 @@ class EvaluationsController {
                     { crp_id: crp_id, view_name },
                     {}
                 );
-
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "CRP evaluations list" });
 
@@ -252,6 +253,7 @@ class EvaluationsController {
                             AND is_deleted = 0
                             AND is_visible = 1
                         ) AS comments_count,
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
                         (
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
@@ -596,7 +598,7 @@ class EvaluationsController {
                 response.push({
                     indicator_view_name: element['indicator_view_name'],
                     status: element['status'],
-                    type: Util.getType(element['status']),
+                    type: Util.getType(element['status'], (crp_id !== undefined && crp_id !== "undefined")),
                     value: element['count'],
                     indicator_status: element['indicator_status'],
                     crp_id: (crp_id) ? element['crp_id'] : null,
