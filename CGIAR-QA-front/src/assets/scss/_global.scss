@@ -254,3 +254,62 @@ progressbar {
 .comments-dash-container {
   min-height: 30em;
 }
+
+/***
+** CRP Dashboard modal
+*/
+.modal-content {
+  .no-data {
+    text-align: center;
+    margin-bottom: 2em;
+    // font-weight: bold;
+    .circle {
+      margin-bottom: 0;
+      opacity: 0.5;
+    }
+  }
+  .no-available {
+    opacity: 0.5;
+  }
+  .example-container {
+    margin-bottom: 2em;
+    justify-content: center;
+    p {
+      margin: 0 15px;
+      line-height: $size-lg;
+      align-self: center;
+    }
+    .circle {
+      height: $size-lg;
+      width: $size-lg;
+      margin: 0;
+      border-radius: 50%;
+    }
+    .complete {
+      background-color: var(--green-primary);
+    }
+    .pending {
+      background-color: var(--red-primary);
+    }
+  }
+  .progress-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5em;
+    p {
+      margin: 10px 0px;
+      text-transform: capitalize;
+    }
+    a {
+      margin-left: auto;
+      text-align: right;
+      margin-top: 1em;
+      text-decoration: underline;
+      cursor: pointer;
+      // text-transform: capitalize;
+    }
+    .progress {
+      height: $size-lg;
+    }
+  }
+}

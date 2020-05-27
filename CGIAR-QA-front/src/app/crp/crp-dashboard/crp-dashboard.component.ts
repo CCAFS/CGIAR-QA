@@ -36,6 +36,7 @@ export class CrpDashboardComponent implements OnInit {
   public barChartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
+
     scales: { xAxes: [{}], yAxes: [{}] },
     plugins: {
       datalabels: {
@@ -44,34 +45,16 @@ export class CrpDashboardComponent implements OnInit {
       }
     }
   };
-  public barChartLabels: Label[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-  public barChartType: ChartType = 'bar';
-  public barChartLegend = true;
-  // public barChartPlugins = [pluginDataLabels];
+  barChartLabels: Label[];
+  barChartType: ChartType = 'horizontalBar';
+  barChartLegend = true;
 
-  public barChartData: ChartDataSets[] = [
-    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-    { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
-  ];
+  barChartData: ChartDataSets[];
 
   has_comments: boolean = false;
 
-  // multi = [];
-  // has_comments: boolean = false;
-  // // view: any[] = [undefined,700];
-  // // options
-  // showXAxis: boolean = true;
-  // showYAxis: boolean = true;
-  // gradient: boolean = false;
-  // showLegend: boolean = true;
-  // showXAxisLabel: boolean = true;
-  // xAxisLabel: string = 'Indicator';
-  // showYAxisLabel: boolean = true;
-  // yAxisLabel: string = 'Total';
-  // legendTitle: string = 'Type';
-  // colorScheme = {
-  //   domain: ['#ffca30', '#2e7636', '#0f8981', '#61b33e', '#F1B7B7', '#b73428']
-  // };
+  spinner1 = 'spinner1';
+  spinner2 = 'spinner2';
 
 
   constructor(private route: ActivatedRoute,
@@ -85,7 +68,8 @@ export class CrpDashboardComponent implements OnInit {
     private spinner: NgxSpinnerService, ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
-      this.getEvaluationsStats();
+      this.getCommentStats();
+      // this.getEvaluationsStats();
     });
 
     /** set page title */
@@ -100,16 +84,17 @@ export class CrpDashboardComponent implements OnInit {
   }
 
   getEvaluationsStats() {
-    this.showSpinner();
+    this.showSpinner(this.spinner2);
     // this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
     this.dashService.getAllDashboardEvaluations(this.currentUser.crp.crp_id)
       .subscribe(
         res => {
+          console.log(res)
           this.dashboardData = this.dashService.groupData(res.data);
-          this.hideSpinner();
+          this.hideSpinner(this.spinner2);
         },
         error => {
-          this.hideSpinner()
+          this.hideSpinner(this.spinner2)
           console.log("getAllDashData", error);
           this.alertService.error(error);
         },
@@ -118,15 +103,18 @@ export class CrpDashboardComponent implements OnInit {
   }
 
   getCommentStats() {
+    this.showSpinner(this.spinner1);
     this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
       .subscribe(
         res => {
-          this.has_comments = res.data.length > 0 ? true : false
-          // Object.assign(this, { multi: res.data });
-          this.hideSpinner();
+          this.has_comments = res.data ? true : false
+          // console.log(res, this.has_comments);
+          Object.assign(this, { barChartLabels: res.data.label });
+          Object.assign(this, { barChartData: res.data.data_set });
+          this.hideSpinner(this.spinner1);
         },
         error => {
-          this.hideSpinner()
+          this.hideSpinner(this.spinner1)
           console.log("getCommentStats", error);
           this.alertService.error(error);
         },
@@ -146,7 +134,7 @@ export class CrpDashboardComponent implements OnInit {
 
   openModal(template: TemplateRef<any>) {
     this.dashboardModalData = []
-    this.getCommentStats()
+    this.getEvaluationsStats()
     this.modalRef = this.modalService.show(template);
   }
 
@@ -156,11 +144,11 @@ export class CrpDashboardComponent implements OnInit {
    *  Spinner 
    * 
    ***/
-  showSpinner() {
-    this.spinner.show();
+  showSpinner(name) {
+    this.spinner.show(name);
   }
-  hideSpinner() {
-    this.spinner.hide();
+  hideSpinner(name) {
+    this.spinner.hide(name);
   }
 
 
@@ -172,24 +160,6 @@ export class CrpDashboardComponent implements OnInit {
    * 
    * Chart controllers
    */
-
-
- 
-
-
-  axisFormat(val) {
-    if (val % 1 === 0) {
-      return val.toLocaleString();
-    } else {
-      return '';
-    }
-  }
-
-
-
-
-
-
 
 
 
