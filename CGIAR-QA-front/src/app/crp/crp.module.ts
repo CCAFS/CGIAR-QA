@@ -8,7 +8,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ChartsModule } from 'ng2-charts';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 import { CRPRoutingModule } from './crp-routing.module';
@@ -36,7 +36,7 @@ import { SharedModule } from '../shared-module/shared-module.module';
     Ng2SearchPipeModule,
     CommentComponentModule,
     SharedModule,
-    NgxChartsModule
+    ChartsModule
   ],
   declarations: [CrpComponent, CrpDashboardComponent]
 })

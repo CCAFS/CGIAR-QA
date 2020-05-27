@@ -29,6 +29,7 @@ export class AvailableGuard implements CanActivate {
       })
 
     }
+    console.log(user_indicators)
     if (currentUser) {
       let isAdmin = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin });
       let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });

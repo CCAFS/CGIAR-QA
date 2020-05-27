@@ -14,6 +14,10 @@ import { Title } from '@angular/platform-browser';
 // import { CRP } from '../../_models/crp.model';
 // import { CookieService } from 'ngx-cookie-service';
 
+import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
+// import * as pluginDataLabels from 'chartjs-plugin-datalabels';
+import { Label } from 'ng2-charts';
+
 @Component({
   selector: 'app-crp-dashboard',
   templateUrl: './crp-dashboard.component.html',
@@ -29,22 +33,45 @@ export class CrpDashboardComponent implements OnInit {
   dashboardModalData: any[];
   modalRef: BsModalRef;
 
-  multi = [];
-  has_comments: boolean = false;
-  // view: any[] = [undefined,700];
-  // options
-  showXAxis: boolean = true;
-  showYAxis: boolean = true;
-  gradient: boolean = false;
-  showLegend: boolean = true;
-  showXAxisLabel: boolean = true;
-  xAxisLabel: string = 'Indicator';
-  showYAxisLabel: boolean = true;
-  yAxisLabel: string = 'Total';
-  legendTitle: string = 'Type';
-  colorScheme = {
-    domain: ['#ffca30', '#2e7636', '#0f8981', '#61b33e', '#F1B7B7', '#b73428']
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    // We use these empty structures as placeholders for dynamic theming.
+    scales: { xAxes: [{}], yAxes: [{}] },
+    plugins: {
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+      }
+    }
   };
+  public barChartLabels: Label[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  public barChartType: ChartType = 'bar';
+  public barChartLegend = true;
+  // public barChartPlugins = [pluginDataLabels];
+
+  public barChartData: ChartDataSets[] = [
+    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
+    { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
+  ];
+
+  has_comments: boolean = false;
+
+  // multi = [];
+  // has_comments: boolean = false;
+  // // view: any[] = [undefined,700];
+  // // options
+  // showXAxis: boolean = true;
+  // showYAxis: boolean = true;
+  // gradient: boolean = false;
+  // showLegend: boolean = true;
+  // showXAxisLabel: boolean = true;
+  // xAxisLabel: string = 'Indicator';
+  // showYAxisLabel: boolean = true;
+  // yAxisLabel: string = 'Total';
+  // legendTitle: string = 'Type';
+  // colorScheme = {
+  //   domain: ['#ffca30', '#2e7636', '#0f8981', '#61b33e', '#F1B7B7', '#b73428']
+  // };
 
 
   constructor(private route: ActivatedRoute,
@@ -95,7 +122,7 @@ export class CrpDashboardComponent implements OnInit {
       .subscribe(
         res => {
           this.has_comments = res.data.length > 0 ? true : false
-          Object.assign(this, { multi: res.data });
+          // Object.assign(this, { multi: res.data });
           this.hideSpinner();
         },
         error => {
@@ -147,54 +174,7 @@ export class CrpDashboardComponent implements OnInit {
    */
 
 
-  onSelect(data): void {
-    // console.log('Item clicked', JSON.parse(JSON.stringify(data)));
-    let temp = JSON.parse(JSON.stringify(this.multi));
-    if (this.isDataShown(data)) {
-      //Hide it
-      temp.some(pie => {
-        let found = pie.series.find(serie => serie.name === data)
-        console.log("Legend clicked", found);
-        if (found) {
-          pie.series.find(serie => serie == found).filter(sr => sr.value = 0);
-          return true;
-        }
-      });
-    }
-    console.log(temp)
-    // else {
-    //   console.log("In Else case");
-    //   //Show it back
-    //   const pieToAdd = this.sourceData.filter(pie => {
-    //     return pie.name === event;
-    //   });
-    //   console.log("pieToAdd", pieToAdd[0]);
-    //   temp.some(pie => {
-    //     if (pie.name === event) {
-    //       pie.value = pieToAdd[0].value;
-    //       return true;
-    //     }
-    //   });
-    // }
-    // this.single = temp;
-    // }
-  }
-  isDataShown = (name) => {
-    const selectedPie = this.multi.filter(pie => {
-      // console.log(pie, name)
-      return pie.series.find(serie => serie.name === name && serie.value != 0)
-      // return pie.name === name && pie.value !== 0;
-    });
-    return selectedPie && selectedPie.length > 0;
-  }
-
-  onActivate(data): void {
-    // console.log('Activate', JSON.parse(JSON.stringify(data)));
-  }
-
-  onDeactivate(data): void {
-    // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
-  }
+ 
 
 
   axisFormat(val) {

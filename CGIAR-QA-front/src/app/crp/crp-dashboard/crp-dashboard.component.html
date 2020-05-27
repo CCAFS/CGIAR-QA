@@ -14,8 +14,8 @@
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending</p>
 
-                    <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More
-                        Metrics</button>
+                    <!-- <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More
+                        Metrics</button> -->
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">
@@ -26,8 +26,7 @@
                             <span>{{item.value.total}}</span>
                         </progressbar>
                         <a *ngIf="item.value[0].indicator_status == 1" routerLinkActive="active"
-                            [routerLinkActive]="['active']"
-                            routerLink="../indicator/{{item.key.split('qa_')[1]}}/id">
+                            [routerLinkActive]="['active']" routerLink="../indicator/{{item.key.split('qa_')[1]}}/id">
                             Go to {{getIndicatorName(item.key)}}
                         </a>
                         <a *ngIf="item.value[0].indicator_status == 0">
@@ -61,13 +60,11 @@
         <div class="modal-body">
             <h2>Comments: </h2>
             <div class="row justify-content-center comments-dash-container">
-
-                <ngx-charts-bar-vertical-2d *ngIf="has_comments" [scheme]="colorScheme" [results]="multi"
-                    [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
-                    [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
-                    [yAxisLabel]="yAxisLabel" [yAxisTickFormatting]="axisFormat" [legendTitle]="legendTitle"
-                    (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
-                </ngx-charts-bar-vertical-2d>
+                <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+                     [legend]="barChartLegend" [chartType]="barChartType">
+                </canvas>
+                <div>
+                </div>
                 <div *ngIf="!has_comments" class="no-data">
                     None comments made yet
                 </div>
