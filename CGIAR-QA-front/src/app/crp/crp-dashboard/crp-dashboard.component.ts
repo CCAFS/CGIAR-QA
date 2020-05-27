@@ -11,11 +11,8 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { User } from '../../_models/user.model';
 import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-status.model'
 import { Title } from '@angular/platform-browser';
-// import { CRP } from '../../_models/crp.model';
-// import { CookieService } from 'ngx-cookie-service';
 
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
-// import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { Label } from 'ng2-charts';
 
 @Component({
