@@ -398,7 +398,7 @@ class EvaluationsController {
                 rawData = await queryRunner.connection.query(query, parameters);
 
             }
-            else if (user.crps) {
+            else if (user.crps.length > 0) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                         SELECT
