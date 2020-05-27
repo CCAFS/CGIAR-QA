@@ -110,7 +110,7 @@ export class AuthenticationService {
       user.indicators.forEach(element => {
         delete element.indicator.meta
       });
-      // localStorage.setItem('indicators', JSON.stringify(user.indicators));
+      localStorage.setItem('indicators', JSON.stringify(user.indicators));
       // console.log(JSON.parse(localStorage.getItem('indicators')))
       delete user.indicators;
     }

@@ -23,7 +23,7 @@ class Util {
 
     /***
      * 
-     *  PRIVATE FUNCTIONS
+     *  INTERNAL FUNCTIONS
      * 
      ***/
 
@@ -95,59 +95,101 @@ class Util {
 
         return grouped_data;
     }
-
+    
     static parseChartData(rawData, type?) {
-        let response = [];
+        // public barChartLabels: Label[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+        //  public barChartData: ChartDataSets[] = [
+        //     { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
+        //     { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
+        //   ];
+        let response = {
+            label: [],
+            data_set: []
+        };
+        let tmp = []
+        // console.log(this.groupBy(rawData,'approved_comment_crp'))
+        // for (const iterator in rawData[0]){
+        //     tmp.push(iterator)
+        //     // console.log(tmp)
+        // }
         for (let index = 0; index < rawData.length; index++) {
             const element = rawData[index]
             const indicator_name = element['indicator_view_name'].split('qa_')[1];
+            response['label'].push(indicator_name);
 
-            let a = response.find(data => data.name == indicator_name)
-            console.log(a)
-            if (!a) {
-                let r = {
-                    name: indicator_name,
-                    indicator_name: element['indicator_view_name'],
-                    series: [
-
-                        {
-                            "name":'Total',
-                            // "name": type == 'admin' ? "Approved" : "Received",
-                            "value": element['comments_total']
-                        },
-                        {
-                            "name": "Assessor - Commented",
-                            "value": element['assessor_comments']
-                        },
-                        {
-                            "name": "Assessor - Approved No Comment",
-                            "value": element['approved_no_comment']
-                        },
-                        {
-                            "name": "CRP - Approved",
-                            "value": element['approved_comment_crp']
-                        },
-                        {
-                        "name": "CRP - Rejected",
-                        "value": element['rejected_comment_crp']
-                        },
-                        {
-                        "name": "CRP - No Responded",
-                        "value": element['crp_no_commented']
-                        },
-                    ]
-                }
-
-                if (type == 'admin') {
-                    r.series.unshift({
-                        "name": "Total",
-                        "value": element['comments_total']
-                    })
-                }
-
-                response.push(r)
-            }
+            response.data_set.push(
+                { label: 'approved crp', data: (element['approved_comment_crp']) }
+            )
         }
+        //     const element = rawData[index]
+        //     const indicator_name = element['indicator_view_name'].split('qa_')[1];
+        //     // response['label'].push(indicator_name);
+        //     // console.log(typeof element)
+
+        //     let tmp = []
+        //     // element.forEach(ele => {
+
+        //         //     console.log(ele)
+        //         // });
+        //         // for (const iterator in element) {
+        //         //     console.log(this.groupBy(element,iterator))
+        //         // console.log(iterator)
+        //         // let found = response['data_set'].find(set => set.label == iterator)
+        //         // if (iterator !== 'indicator_view_name' && found) {
+        //         //     found.data.push(element[iterator])
+        //         // }
+        //         // else{
+        //         //     response['data_set'].push({label:iterator})
+        //         // }
+        //         // // ({label: iterator, data: null})
+
+        //     // let a = response.find(data => data.name == indicator_name)
+        //     // console.log(element)
+        //     // if (!a) {
+        //     //     let r = {
+        //     //         name: indicator_name,
+        //     //         indicator_name: element['indicator_view_name'],
+        //     //         series: [
+
+        //     //             {
+        //     //                 "name": 'Total',
+        //     //                 // "name": type == 'admin' ? "Approved" : "Received",
+        //     //                 "value": element['comments_total']
+        //     //             },
+        //     //             {
+        //     //                 "name": "Assessor - Commented",
+        //     //                 "value": element['assessor_comments']
+        //     //             },
+        //     //             {
+        //     //                 "name": "Assessor - Approved No Comment",
+        //     //                 "value": element['approved_no_comment']
+        //     //             },
+        //     //             {
+        //     //                 "name": "CRP - Approved",
+        //     //                 "value": element['approved_comment_crp']
+        //     //             },
+        //     //             {
+        //     //                 "name": "CRP - Rejected",
+        //     //                 "value": element['rejected_comment_crp']
+        //     //             },
+        //     //             {
+        //     //                 "name": "CRP - No Responded",
+        //     //                 "value": element['crp_no_commented']
+        //     //             },
+        //     //         ]
+        //     //     }
+
+        //     //     if (type == 'admin') {
+        //     //         r.series.unshift({
+        //     //             "name": "Total",
+        //     //             "value": element['comments_total']
+        //     //         })
+        //     //     }
+
+        //     //     response.push(r)
+        //     // }
+        // }
+        console.log(response)
         return response;
     }
 
@@ -171,8 +213,9 @@ class Util {
                     qa_user_crps
                 WHERE
                     qa_crp = :crpId
+                AND qa_user = :userId
                     `,
-                { crpId: authToken.qa_crp_id},
+                { crpId: authToken.qa_crp_id, userId: user.id },
                 {}
             );
             let user_crp = await queryRunner.connection.query(query, parameters);
@@ -195,7 +238,7 @@ class Util {
                 user.roles = user.roles.concat(crpRole);
                 user = await userRepository.save(user);
             }
-            console.log(user, user_crp, crpRole);
+            // console.log(user, user_crp, crpRole);
 
             //  // get general config by user role
             let generalConfig = await grnlConfg
