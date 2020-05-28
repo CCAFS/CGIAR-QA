@@ -19,6 +19,14 @@
                         <hr>
                         <p>Indicator Guidance</p>
                     </div>
+                    <div (click)="exportComments(null, true)">
+                        <a target="_blank">
+                            <div tooltip="All {{indicatorTypeName}} related comments in excel format" container="body" placement="top"
+                                class="btn btn-primary file-button">
+                                <i class="icon-download-excel"></i>
+                            </div>
+                        </a>
+                    </div>
                 </div>
                 <div class="col row text-right">
                     <div class="circle complete"></div>
@@ -64,6 +72,15 @@
                                 </div>
                             </div>
                         </th>
+                        <th scope="col" [class.active]="order === 'comments_replies_count'"
+                            (click)="setOrder('comments_replies_count')">
+                            <div class="header-row"> Answered comments
+                                <div class="order-icon" *ngIf="order === 'comments_replies_count'">
+                                    <span [hidden]="reverse">▼</span>
+                                    <span [hidden]="!reverse">▲</span>
+                                </div>
+                            </div>
+                        </th>
                         <th scope="col" [class.active]="order === 'comments_count'"
                             (click)="setOrder('comments_count')">
                             <div class="header-row"> Comments
@@ -100,6 +117,7 @@
 
                         </td>
                         <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
+                        <td>{{ item.comments_replies_count }}</td>
                         <td>{{ item.comments_count }}</td>
                         <td (click)="exportComments(item)">
                             <a target="_blank">

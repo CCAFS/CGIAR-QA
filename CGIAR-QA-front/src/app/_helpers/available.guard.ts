@@ -29,13 +29,15 @@ export class AvailableGuard implements CanActivate {
       })
 
     }
-    console.log(user_indicators)
+    // console.log(user_indicators)
     if (currentUser) {
       let isAdmin = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin });
       let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });
-      let found = isAdmin ? null : meta_indicators.find(meta => { return meta.name.toLocaleLowerCase() == current_indicator });
+      let found = isAdmin ? null : meta_indicators.find(meta => meta.view_name.split('qa_')[1] == current_indicator);
+      // let found = isAdmin ? null : meta_indicators.find(meta => { console.log(meta, current_indicator); return meta.name.toLocaleLowerCase() == current_indicator });
+      // console.log(found)
       if (isAdmin === Role.admin) return true;
-      if (isAssessor === Role.asesor && found.comment_meta.enable_assessor) {
+      if (isAssessor === Role.asesor && (found && found.comment_meta.enable_assessor)) {
         return true
       } else {
         //this._location.back();
@@ -48,14 +50,4 @@ export class AvailableGuard implements CanActivate {
     this.router.navigate(['/login'], { queryParams: { returnUrl: state.url.toString() } });
     return false;
   }
-  // canActivateChild(
-  //   next: ActivatedRouteSnapshot,
-  //   state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-  //   return true;
-  // }
-  // canLoad(
-  //   route: Route,
-  //   segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
-  //   return true;
-  // }
 }

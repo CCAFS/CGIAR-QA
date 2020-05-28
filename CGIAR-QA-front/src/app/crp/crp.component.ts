@@ -34,7 +34,6 @@ export class CrpComponent implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
       if (params.has('token')) {
-        this.indicators = JSON.parse(localStorage.getItem('indicators')) || [];
         this.validateToken(this.params['params']);
       }
       // this.currentUser = this.authenticationService.currentUserValue;
@@ -51,7 +50,7 @@ export class CrpComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.indicators = JSON.parse(localStorage.getItem('indicators')) || [];
   }
 
   validateToken(params: {}) {
