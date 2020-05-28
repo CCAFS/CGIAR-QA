@@ -118,13 +118,13 @@ class AuthController {
             );
 
             let r = await queryRunner.connection.query(query, parameters);
-            // console.log(r)
+            // console.log('token', r, query, parameters)
             if (r.length == 0) {
                 res.status(400).json({ data: [], message: 'Invalid token' });
                 return;
             }
             let auth_token = r[0];
-            let  user = await Util.createOrReturnUser(auth_token);
+            let user = await Util.createOrReturnUser(auth_token);
 
 
             res.status(200).json({ data: user, message: 'CRP Logged' })

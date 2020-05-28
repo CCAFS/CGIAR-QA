@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
-import { validate, validateOrReject } from "class-validator";
-import { getRepository, In, getConnection, QueryRunner, IsNull } from "typeorm";
+import { validate } from "class-validator";
+import { getRepository, In, getConnection, IsNull } from "typeorm";
 
 import { QAUsers } from "@entity/User";
-import { QARoles } from "@entity/Roles";
-import { QACrp } from "@entity/CRP";
 import { QAComments } from "@entity/Comments";
 import { QACommentsMeta } from "@entity/CommentsMeta";
 
@@ -13,7 +11,7 @@ import { QACommentsReplies } from "@entity/CommentsReplies";
 import { RolesHandler } from "@helpers/RolesHandler";
 import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 import { QAEvaluations } from "@entity/Evaluations";
-import { request } from "http";
+
 
 class CommentController {
 
@@ -28,11 +26,6 @@ class CommentController {
         const userRepository = getRepository(QAUsers);
         let rawData;
         let user: QAUsers;
-
-
-
-
-
         try {
 
             user = await userRepository.findOneOrFail(userId);
@@ -49,7 +42,8 @@ class CommentController {
                             COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
                             COUNT( comments.detail) AS assessor_comments,
                             COUNT(comments.approved_no_comment) AS approved_no_comment,
-                            evaluations.indicator_view_name
+                            evaluations.indicator_view_name,
+                            indicators.order AS orderBy
                     FROM
                             qa_evaluations evaluations
                     LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
@@ -58,7 +52,8 @@ class CommentController {
                     WHERE comments.is_deleted = 0
                     AND evaluations.crp_id = :crp_id
                     AND  comments.approved = 1
-                    GROUP BY evaluations.indicator_view_name
+                    GROUP BY evaluations.indicator_view_name, indicators.order
+                    ORDER BY indicators.order
                         `,
                     { crp_id },
                     {}
@@ -70,19 +65,23 @@ class CommentController {
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `
                         SELECT
-                            COUNT(comments.crp_approved) AS approved_comment_crp,
-                            COUNT( CASE comments.is_visible WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
-                            COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_approved,
+                            COUNT( CASE comments.crp_approved  WHEN 1 THEN 1 ELSE NULL END) AS approved_comment_crp,
+                            COUNT( CASE comments.crp_approved  WHEN 0 THEN 1 ELSE NULL END) AS rejected_comment_crp,
+                            SUM( IF(ISNULL(comments.crp_approved) AND !ISNULL(comments.detail),1,NULL)) AS crp_no_commented,
+                            COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
+                            COUNT( comments.detail) AS assessor_comments,
                             COUNT(comments.approved_no_comment) AS approved_no_comment,
-                            evaluations.indicator_view_name
+                            evaluations.indicator_view_name,
+                            indicators.order AS orderBy
                         FROM
-                            qa_evaluations evaluations
+                                qa_evaluations evaluations
                         LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
                         LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                         
                         WHERE comments.is_deleted = 0
                         AND evaluations.crp_id = :crp_id
-                        GROUP BY evaluations.indicator_view_name
+                        GROUP BY evaluations.indicator_view_name, indicators.order
+                        ORDER BY indicators.order
                             `,
                         { crp_id },
                         {}
@@ -95,18 +94,22 @@ class CommentController {
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `
                         SELECT
-                            COUNT(comments.crp_approved) AS approved_comment_crp,
-                            COUNT( CASE comments.is_visible WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
-                            COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_approved,
+                            COUNT( CASE comments.crp_approved  WHEN 1 THEN 1 ELSE NULL END) AS approved_comment_crp,
+                            COUNT( CASE comments.crp_approved  WHEN 0 THEN 1 ELSE NULL END) AS rejected_comment_crp,
+                            SUM( IF(ISNULL(comments.crp_approved) AND !ISNULL(comments.detail),1,NULL)) AS crp_no_commented,
+                            COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
+                            COUNT( comments.detail) AS assessor_comments,
                             COUNT(comments.approved_no_comment) AS approved_no_comment,
-                            evaluations.indicator_view_name
+                            evaluations.indicator_view_name,
+                            indicators.order AS orderBy
                         FROM
-                            qa_evaluations evaluations
+                                qa_evaluations evaluations
                         LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
                         LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                         
                         WHERE comments.is_deleted = 0
-                        GROUP BY evaluations.indicator_view_name
+                        GROUP BY evaluations.indicator_view_name, indicators.order
+                        ORDER BY indicators.order
                             `,
                         {},
                         {}
@@ -279,7 +282,7 @@ class CommentController {
     static getCommentsReplies = async (req: Request, res: Response) => {
         const commentId = req.params.commentId;
 
-        let queryRunner = getConnection().createQueryBuilder();
+        // let queryRunner = getConnection().createQueryBuilder();
         try {
             let replies = await getRepository(QACommentsReplies).find(
                 {
@@ -402,7 +405,6 @@ class CommentController {
 
         let comments;
         try {
-            const commentsRepository = getRepository(QAComments);
             const userRepository = getRepository(QAUsers);
 
 
@@ -454,13 +456,6 @@ class CommentController {
             } else {
 
                 if (currentRole !== RolesHandler.crp) {
-                    // comments = await commentsRepository.find({
-                    //     where: { is_visible: 1, is_deleted: 0, evaluation: evaluationId },
-                    //     relations: ['user', 'meta'],
-                    //     order: {
-                    //         createdAt: "ASC"
-                    //     }
-                    // });
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `
                         SELECT
@@ -500,13 +495,6 @@ class CommentController {
                     comments = await queryRunner.connection.query(query, parameters);
                 }
                 else {
-                    // comments = await commentsRepository.find({
-                    //     where: { is_visible: 1, approved: 1, is_deleted: 0, evaluation: evaluationId },
-                    //     relations: ['user', 'meta'],
-                    //     order: {
-                    //         createdAt: "ASC"
-                    //     }
-                    // });
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `
                         SELECT
@@ -549,8 +537,8 @@ class CommentController {
 
             // console.log(comments)
 
-                            // evaluations.id AS evaluation_id,
-                            // meta.col_name,
+            // evaluations.id AS evaluation_id,
+            // meta.col_name,
 
             const stream: Buffer = await Util.createCommentsExcel([
                 { header: 'Id', key: 'id' },

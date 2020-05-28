@@ -137,6 +137,21 @@ class Util {
             user = await userRepository.findOne({ where: { email: authToken.email } });
             let crp = await crpRepository.findOneOrFail({ where: { crp_id: authToken.crp_id } });
             let crpRole = await roleRepository.findOneOrFail({ where: { description: RolesHandler.crp } });
+
+            if (!user) {
+                user = new QAUsers();
+                user.password = '';
+                user.username = authToken.username;
+                user.email = authToken.email;
+                user.name = authToken.name;
+                user.crp = crp;
+                user.crps = [crp];
+                user.roles = [crpRole];
+                // user.crps = user.crps.concat(crp);
+                // user.roles = user.roles.concat(crpRole);
+                user = await userRepository.save(user);
+            }
+            
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `SELECT
                     *
@@ -150,25 +165,14 @@ class Util {
                 {}
             );
             let user_crp = await queryRunner.connection.query(query, parameters);
-            console.log('user_crp')
-            console.log(user_crp)
-            if (!user) {
-                user = new QAUsers();
-                user.password = '';
-                user.username = authToken.username;
-                user.email = authToken.email;
-                user.name = authToken.name;
-                user.crps = [crp];
-                user.roles = [crpRole];
-                // user.crps = user.crps.concat(crp);
-                // user.roles = user.roles.concat(crpRole);
-                user = await userRepository.save(user);
-            }
-            else if (user && user_crp.length === 0) {
+            // console.log('user_crp')
+            // console.log(user_crp)
+            if (user && user_crp.length === 0) {
                 user.crps = user.crps.concat(crp);
                 user.roles = user.roles.concat(crpRole);
                 user = await userRepository.save(user);
             }
+            
             // console.log(user, user_crp, crpRole);
 
             //  // get general config by user role
@@ -284,16 +288,6 @@ class Util {
             const sheet: excel.Worksheet = workbook.addWorksheet(sheetName);
             sheet.columns = headers;
             for (let i = 0; i < rows.length; i++) {
-                // { header: 'Id', key: 'id' },
-                // { header: 'Field', key: 'field' },
-                // { header: 'User', key: 'user' },
-                // { header: 'Comment', key: 'comment' },
-                // { header: 'Created Date', key: 'createdAt' },
-                // // { header: 'Email', key: 'email' },
-                // { header: 'Accepted comment?', key: 'crp_approved' },
-                // { header: 'Comment reply', key: 'reply' },
-                // { header: 'User Replied', key: 'user_replied' },
-                // { header: 'Reply Date', key: 'reply_date' },
                 if (rows[i]) {
                     let row = {
                         id: rows[i].id,

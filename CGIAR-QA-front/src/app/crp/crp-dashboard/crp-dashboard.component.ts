@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CommentService } from "../../services/comment.service";
@@ -40,7 +40,8 @@ export class CrpDashboardComponent implements OnInit {
         anchor: 'end',
         align: 'end',
       }
-    }
+    },
+    // onClick: this.graphClickEvent
   };
   barChartLabels: Label[];
   barChartType: ChartType = 'horizontalBar';
@@ -52,6 +53,9 @@ export class CrpDashboardComponent implements OnInit {
 
   spinner1 = 'spinner1';
   spinner2 = 'spinner2';
+
+  @ViewChild('canvas', { static: true })
+  canvas: ElementRef<HTMLCanvasElement>;
 
 
   constructor(private route: ActivatedRoute,
@@ -137,6 +141,7 @@ export class CrpDashboardComponent implements OnInit {
   }
 
 
+
   /***
    * 
    *  Spinner 
@@ -162,7 +167,15 @@ export class CrpDashboardComponent implements OnInit {
 
 
 
+  // graphClickEvent(event, array) {
+  //   console.log(event, array)
+  // }
 
+  // this.canvas.onclick = function (evt) {
+  //   let activePoints = this.baseChart.getElementsAtEvent(evt);
+  //   console.log(activePoints)
+  //   // => activePoints is an array of points on the canvas that are at the same position as the click event.
+  // };
 
 
 
