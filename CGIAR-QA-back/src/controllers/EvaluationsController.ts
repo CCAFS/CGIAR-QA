@@ -58,7 +58,8 @@ class EvaluationsController {
                 indicator.order,
                 indicator.primary_field
             ORDER BY
-                indicator_order ASC 
+                indicator_order ASC,
+                evaluations.status
                 `,
                 { user_Id: id },
                 {}
