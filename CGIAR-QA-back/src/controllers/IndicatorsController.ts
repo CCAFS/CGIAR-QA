@@ -59,7 +59,7 @@ class IndicatorsController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                        DISTINCT (name), description, primary_field, qa_indicators.order AS indicator_order
+                        DISTINCT (name), description, primary_field, view_name, qa_indicators.order AS indicator_order
                     FROM
                         qa_indicators
                     ORDER BY 
@@ -84,6 +84,7 @@ class IndicatorsController {
                             indicators.description AS description,
                             indicators.primary_field AS primary_field,
                             indicators.order AS indicator_order,
+                            indicators.view_name AS view_name,
                             comment_meta.enable_crp AS enable_crp
                     FROM
                             qa_indicators indicators
@@ -110,6 +111,7 @@ class IndicatorsController {
                         indicators.description AS description,
                         indicators.primary_field AS primary_field,
                         indicators.order AS indicator_order,
+                        indicators.view_name AS view_name,
                         meta.enable_assessor as enable_assessor
                     FROM
                         qa_indicator_user qa_indicator_user
@@ -132,9 +134,7 @@ class IndicatorsController {
                 res.status(200).json({ data: response, message: "User indicators" });
 
             }
-
-            // console.log(userRole.roles)
-
+            
         } catch (error) {
             console.log(error);
             res.status(200).json({ data: [], message: "User indicators." });

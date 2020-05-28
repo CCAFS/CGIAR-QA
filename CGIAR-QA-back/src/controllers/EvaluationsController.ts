@@ -1,22 +1,12 @@
 import { Request, Response } from "express";
-import { getRepository, In, getConnection, QueryRunner } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 
-import { QAIndicatorUser } from "@entity/IndicatorByUser";
 import { QACrp } from "@entity/CRP";
 import { QAEvaluations } from "@entity/Evaluations";
 import { QAUsers } from "@entity/User";
-import { QAIndicators } from "@entity/Indicators";
-import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
-import { QAComments } from "@entity/Comments";
 
-import { StatusHandler } from "@helpers/StatusHandler";
-import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
 import { RolesHandler } from "@helpers/RolesHandler";
-import Util from "@helpers/Util"
-
-import { format } from "url";
-import { QACommentsReplies } from "@entity/CommentsReplies";
-import { QACrpView } from "@entity/CRPView";
+import Util from "@helpers/Util";
 
 
 // import { validate } from "class-validator";
