@@ -65,8 +65,8 @@ export class CrpDashboardComponent implements OnInit {
     private spinner: NgxSpinnerService, ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
-      this.getCommentStats();
-      // this.getEvaluationsStats();
+      // this.getCommentStats();
+      this.getEvaluationsStats();
     });
 
     /** set page title */
@@ -131,7 +131,8 @@ export class CrpDashboardComponent implements OnInit {
 
   openModal(template: TemplateRef<any>) {
     this.dashboardModalData = []
-    this.getEvaluationsStats()
+    this.getCommentStats()
+    // this.getEvaluationsStats()
     this.modalRef = this.modalService.show(template);
   }
 
