@@ -81,12 +81,12 @@
                 <div #commentsElem style="cursor: pointer;"
                     *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
                     (click)="showComments(i, field, $event); comment.updateData(field,params)"
-                    class="activate-messages-container {{field.crp_accepted == field.replies_count ? 'accepted':'rejected'}} {{field.replies_count == '0' ?  '':'active'}}">
+                    class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
                     <i *ngIf="!field.loading" class="icon-message"></i>
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
                     <div [tooltip]="commentsTooltip" container="body" placement="top" *ngIf="field.replies_count != '0'"
-                        class="replies-count">
+                        class="replies-count {{field.replies_count == field.replies_count ? 'accepted':'rejected'}}">
                         {{field.comments_replies_count}}/{{field.replies_count}}
                     </div>
                     <ng-template #commentsTooltip>
@@ -113,10 +113,13 @@
             <h2>General comments:</h2>
             <div *ngIf="detailedData && detailedData[0].general_comment" class="col data-container">
                 <p> {{detailedData[0].general_comment}} </p>
+                <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
+                    {{gnralInfo.general_comment_user}} <strong>at:</strong>
+                    {{gnralInfo.general_comment_updatedAt}}</p>
 
                 <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
                     <p>{{reply.detail}}</p>
-                    <p>Replied by: {{reply.user.username}} </p>
+                    <p><strong>Replied by</strong>: {{reply.user.username}} </p>
                     <!-- <p>{{getCommentReplies()}}</p> -->
                 </div>
                 <div *ngIf="general_comment_reply && general_comment_reply.length == 0">

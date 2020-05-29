@@ -127,14 +127,16 @@
           margin-left: $size-md;
           margin-top: $size-25;
         }
+        .replies-count.accepted {
+          background-color: var(--green-secondary);
+        }
+        .replies-count.rejected {
+          background-color: var(--red-secondary);
+        }
       }
-      .activate-messages-container.active.accepted {
-        background-color: var(--green-secondary);
-      }
-      .activate-messages-container.active.rejected {
-        background-color: var(--red-secondary);
-      }
+
       .activate-messages-container {
+       
         border-radius: 50%;
         height: 3em;
         width: 3em;

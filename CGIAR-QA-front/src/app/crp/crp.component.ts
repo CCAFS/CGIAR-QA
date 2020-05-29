@@ -69,13 +69,13 @@ export class CrpComponent implements OnInit {
 
     if (!this.indicators.length && this.currentUser) {
       this.showSpinner(this.spinner_name)
-      this.indicatorService.getIndicatorsByUser(this.currentUser.id)
+      this.indicatorService.getIndicatorsByUser(this.currentUser.id, this.currentUser.crp.crp_id )
         .subscribe(
           res => {
             this.indicators = res.data;
             localStorage.setItem('indicators', JSON.stringify(res.data));
             this.authenticationService.userHeaders = res.data;
-            console.log(this.indicators)
+            // console.log(this.indicators)
             this.hideSpinner(this.spinner_name);
           },
           error => {

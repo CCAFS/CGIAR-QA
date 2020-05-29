@@ -125,7 +125,7 @@ export class DetailIndicatorComponent implements OnInit {
 
         this.hideSpinner(this.spinner1);
         this.getCommentReplies();
-        // console.log(res)
+        console.log(this.detailedData)
       },
       error => {
         console.log("getEvaluationsList", error);

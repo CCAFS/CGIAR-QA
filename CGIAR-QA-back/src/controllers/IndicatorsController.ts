@@ -54,7 +54,8 @@ class IndicatorsController {
             // console.log(user)
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
             // let isCRP = user.crp ;
-            let isCRP = user.roles.find(x => x.description == RolesHandler.crp);
+            // let isCRP = user.roles.find(x => x.description == RolesHandler.crp);
+            let isCRP = user.crps.length > 0 ? true:false;
             if (isAdmin) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
@@ -80,6 +81,7 @@ class IndicatorsController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
+                            DISTINCT (evaluations.indicator_view_name),
                             indicators.name AS name,
                             indicators.description AS description,
                             indicators.primary_field AS primary_field,
@@ -89,8 +91,8 @@ class IndicatorsController {
                     FROM
                             qa_indicators indicators
                     LEFT JOIN qa_comments_meta comment_meta ON comment_meta.indicatorId = indicators.id
-                    WHERE
-                            indicators.view_name IN (SELECT DISTINCT indicator_view_name FROM qa_evaluations)
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicators.view_name
+                    WHERE evaluations.crp_id = :crp_id
                     ORDER BY 
                             indicator_order ASC
                     `,
