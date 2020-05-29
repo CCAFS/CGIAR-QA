@@ -68,8 +68,9 @@
 
             </div>
             <div class="row justify-content-center comments-dash-container">
-                <canvas *ngIf="has_comments" #canvas baseChart [datasets]="barChartData" [labels]="barChartLabels"
-                    [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType">
+                <canvas *ngIf="has_comments" baseChart  #crpChart="base-chart"  [datasets]="barChartData"
+                    [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend"
+                    [chartType]="barChartType">
                 </canvas>
                 <div *ngIf="!has_comments" class="no-data">
                     None comments made yet

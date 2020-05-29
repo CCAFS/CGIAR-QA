@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CommentService } from "../../services/comment.service";
@@ -9,11 +9,11 @@ import { AlertService } from '../../services/alert.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 import { User } from '../../_models/user.model';
-import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-status.model'
+import { GeneralIndicatorName } from '../../_models/general-status.model'
 import { Title } from '@angular/platform-browser';
 
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { Label, BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-crp-dashboard',
@@ -41,10 +41,11 @@ export class CrpDashboardComponent implements OnInit {
         align: 'end',
       }
     },
-    // onClick: this.graphClickEvent
+    onClick: this.graphClickEvent
   };
   barChartLabels: Label[];
   barChartType: ChartType = 'horizontalBar';
+  // barChartType: ChartType = 'horizontalBar';
   barChartLegend = true;
 
   barChartData: ChartDataSets[];
@@ -54,8 +55,13 @@ export class CrpDashboardComponent implements OnInit {
   spinner1 = 'spinner1';
   spinner2 = 'spinner2';
 
-  @ViewChild('canvas', { static: true })
-  canvas: ElementRef<HTMLCanvasElement>;
+  @ViewChild('crpChart', { static: false }) crpChart: BaseChartDirective;
+
+  // @ViewChild('crpChart', { static: true })
+  // crpChart: BaseChartDirective;
+  // myChart: any;
+
+
 
 
   constructor(private route: ActivatedRoute,
@@ -110,8 +116,9 @@ export class CrpDashboardComponent implements OnInit {
         res => {
           this.has_comments = res.data ? true : false
           // console.log(res, this.has_comments);
-          Object.assign(this, { barChartLabels: res.data.label });
-          Object.assign(this, { barChartData: res.data.data_set });
+          this._setCharData(res)
+          // Object.assign(this, { barChartLabels: res.data.label });
+          // Object.assign(this, { barChartData: res.data.data_set });
           this.hideSpinner(this.spinner1);
         },
         error => {
@@ -120,6 +127,15 @@ export class CrpDashboardComponent implements OnInit {
           this.alertService.error(error);
         },
       )
+  }
+
+  private _setCharData(response_data) {
+    Object.assign(this, { barChartLabels: response_data.data.label });
+    Object.assign(this, { barChartData: response_data.data.data_set });
+    // this.crpChart.datasets = response_data.data.label;
+    // this.myChart.labels = response_data.data.data_set;
+    // this.barChartLabels = response_data.data.label;
+    // this.barChartData = response_data.data.data_set;
   }
 
   getIndicatorName(indicator: string) {
@@ -167,9 +183,12 @@ export class CrpDashboardComponent implements OnInit {
 
 
 
-  // graphClickEvent(event, array) {
-  //   console.log(event, array)
-  // }
+  graphClickEvent(event, array) {
+    console.log(event, array[0], this.crpChart)
+    console.log('ch<rt', this.crpChart)
+    // .chart.getElementsAtEvent(event))
+    // .getElementsAtEvent(evt))
+  }
 
   // this.canvas.onclick = function (evt) {
   //   let activePoints = this.baseChart.getElementsAtEvent(evt);

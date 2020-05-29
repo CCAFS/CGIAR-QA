@@ -151,7 +151,7 @@ class Util {
                 // user.roles = user.roles.concat(crpRole);
                 user = await userRepository.save(user);
             }
-            
+
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `SELECT
                     *
@@ -172,7 +172,7 @@ class Util {
                 user.roles = user.roles.concat(crpRole);
                 user = await userRepository.save(user);
             }
-            
+
             // console.log(user, user_crp, crpRole);
 
             //  // get general config by user role
@@ -296,7 +296,7 @@ class Util {
                         comment: rows[i].detail,
                         user: rows[i].username,
                         field: rows[i].display_name ? rows[i].display_name : 'General Comment',
-                        crp_approved: rows[i].crp_approved,
+                        crp_approved: (rows[i].crp_approved) == 1 ? 'Yes' : 'No',
                         reply: rows[i].reply,
                         user_replied: rows[i].reply_user,
                         reply_createdAt: rows[i].reply_createdAt,

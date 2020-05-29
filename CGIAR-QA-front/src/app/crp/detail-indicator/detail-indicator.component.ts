@@ -125,7 +125,7 @@ export class DetailIndicatorComponent implements OnInit {
 
         this.hideSpinner(this.spinner1);
         this.getCommentReplies();
-        // console.log(res, this.gnralInfo)
+        // console.log(res)
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -280,7 +280,7 @@ export class DetailIndicatorComponent implements OnInit {
     this.commentService.getDataCommentReply(params).subscribe(
       res => {
         this.hideSpinner('spinner1');
-        console.log(res)
+        // console.log(res)
         // comment.loaded_replies = res.data;
         this.general_comment_reply = res.data;
       },
