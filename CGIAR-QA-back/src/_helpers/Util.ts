@@ -296,7 +296,7 @@ class Util {
                         comment: rows[i].detail,
                         user: rows[i].username,
                         field: rows[i].display_name ? rows[i].display_name : 'General Comment',
-                        crp_approved: (rows[i].crp_approved) == 1 ? 'Yes' : 'No',
+                        crp_approved: (rows[i].crp_approved != null) ? ((rows[i].crp_approved == 1) ? 'Yes' : 'No') : '',
                         reply: rows[i].reply,
                         user_replied: rows[i].reply_user,
                         reply_createdAt: rows[i].reply_createdAt,
@@ -332,6 +332,8 @@ class Util {
             crp_name: element["crp_name"],
             status: element["evaluations_status"],
             comments_replies_count: element["comments_replies_count"],
+            crp_accepted: element["crp_accepted"],
+            crp_rejected: element["crp_rejected"],
         }
         if (!type) {
             response = Object.assign(response, {

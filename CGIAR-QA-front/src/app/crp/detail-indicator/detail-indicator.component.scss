@@ -128,6 +128,12 @@
           margin-top: $size-25;
         }
       }
+      .activate-messages-container.active.accepted {
+        background-color: var(--green-secondary);
+      }
+      .activate-messages-container.active.rejected {
+        background-color: var(--red-secondary);
+      }
       .activate-messages-container {
         border-radius: 50%;
         height: 3em;

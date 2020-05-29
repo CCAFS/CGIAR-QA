@@ -1,11 +1,15 @@
 import { ViewEntity, ViewColumn } from "typeorm";
 
+/**
+ * included_AR = 'Yes'
+        AND included_AR = 'No' 
+        AND 
+ */
 
 @ViewEntity({
     expression: `
         SELECT * FROM qa_publications_data 
-        WHERE included_AR = 'Yes' 
-        AND phase_name = 'AR'
+        WHERE phase_name = 'AR'
         AND phase_year = '2019'
     `
 })

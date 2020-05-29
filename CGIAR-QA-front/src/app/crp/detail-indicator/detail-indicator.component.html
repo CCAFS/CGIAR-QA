@@ -81,13 +81,21 @@
                 <div #commentsElem style="cursor: pointer;"
                     *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
                     (click)="showComments(i, field, $event); comment.updateData(field,params)"
-                    class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
+                    class="activate-messages-container {{field.crp_accepted == field.replies_count ? 'accepted':'rejected'}} {{field.replies_count == '0' ?  '':'active'}}">
                     <i *ngIf="!field.loading" class="icon-message"></i>
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
-                    <div *ngIf="field.replies_count != '0'" class="replies-count">
-                        {{field.replies_count}}/{{field.comments_replies_count}}
+                    <div [tooltip]="commentsTooltip" container="body" placement="top" *ngIf="field.replies_count != '0'"
+                        class="replies-count">
+                        {{field.comments_replies_count}}/{{field.replies_count}}
                     </div>
+                    <ng-template #commentsTooltip>
+                        <div>
+                            <p>Accepted comments: <strong>{{field.crp_accepted}}</strong> </p>
+                            <p>Rejected comments: <strong>{{field.crp_rejected}}</strong> </p>
+                            <p>Total: <strong>{{field.replies_count}}</strong> </p>
+                        </div>
+                    </ng-template>
                 </div>
 
                 <div *ngIf="!validateCommentAvility(field,null) || field.approved_no_comment"
@@ -95,10 +103,7 @@
                     <i *ngIf="!field.loading" class="icon-message-inactive"></i>
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
-                    <!-- <div *ngIf="field.replies_count != '0' " class="replies-count"> -->
-                    <!-- <div *ngIf="field.replies_count != '0' && !field.approved_no_comment" class="replies-count">
-                        {{field.replies_count}}
-                    </div> -->
+
                 </div>
 
             </div>
@@ -114,7 +119,7 @@
                     <p>Replied by: {{reply.user.username}} </p>
                     <!-- <p>{{getCommentReplies()}}</p> -->
                 </div>
-                <div *ngIf="general_comment_reply">
+                <div *ngIf="general_comment_reply && general_comment_reply.length == 0">
                     <form [formGroup]="generalCommentGroup" style="display: flex; margin-bottom: 2em;">
                         <textarea class="text-area " maxlength="{{totalChar}}"
                             formControlName="general_comment"></textarea>
