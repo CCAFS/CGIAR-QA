@@ -152,11 +152,13 @@ class EvaluationsController {
                     qa_evaluations evaluations
                 LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                 LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                WHERE
-                    indicator_view_name = :view_name
+                
+                WHERE evaluations.evaluation_status <> 'Deleted'
+                OR evaluations.evaluation_status IS NULL
+                AND evaluations.indicator_view_name = :view_name
                 AND crp.active = 1
                 AND crp.qa_active = 'open'
-                AND evaluations.evaluation_status <> 'Deleted'
+                
                 GROUP BY
                     crp.crp_id,
                     ${levelQuery.innovations_stage}
@@ -167,7 +169,7 @@ class EvaluationsController {
                     { view_name },
                     {}
                 );
-                // console.log(query, parameters)
+                // console.log(sql)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
@@ -204,11 +206,12 @@ class EvaluationsController {
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                     LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
-                    WHERE crp.active = 1
+                    WHERE evaluations.evaluation_status <> 'Deleted'
+                    OR evaluations.evaluation_status IS NULL
+                    AND evaluations.indicator_view_name = :view_name
+                    AND crp.active = 1
                     AND crp.qa_active = 'open'
                     AND evaluations.crp_id = :crp_id
-                    AND evaluations.indicator_view_name = :view_name 
-                    AND evaluations.evaluation_status <> 'Deleted'
                     GROUP BY
                         crp.crp_id,
                         evaluations.id,
@@ -267,12 +270,14 @@ class EvaluationsController {
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                     LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
-                    WHERE
-                        indicator_view_name = :view_name
+                    
+                    WHERE evaluations.evaluation_status <> 'Deleted'
+                    OR evaluations.evaluation_status IS NULL
+                    AND evaluations.indicator_view_name = :view_name
                     AND indicator_user.userId = :user_Id
                     AND crp.active = 1
                     AND crp.qa_active = 'open'
-                    AND evaluations.evaluation_status <> 'Deleted'
+                    
                     GROUP BY
                         crp.crp_id,
                         evaluations.id,
