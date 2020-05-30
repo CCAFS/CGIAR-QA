@@ -1,27 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, ManyToOne, OneToMany } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
-import { QAIndicatorUser } from "../entity/IndicatorByUser";
 import { QAComments } from "../entity/Comments";
 import { StatusHandler } from "../_helpers/StatusHandler";
-import { QAIndicators } from "./Indicators";
 import { EvaluationStatusHandler } from "../_helpers/EvaluationStatusHandler";
-
-
-// import { QAUsers } from "../entity/User";
-// import { QAIndicatorUser } from "@entity/IndicatorByUser";clear
-// import { StatusHandler } from "@helpers/StatusHandler"
-
 
 @Entity()
 export class QAEvaluations {
 
     @PrimaryGeneratedColumn()
     id: number;
-
-    // @IsNotEmpty({ message: 'Indicator by User is required' })
-    // @ManyToOne(type => QAIndicators, indicatorByUser => indicatorByUser.evaluations)
-    // indicator: QAIndicators[];
 
     @Column({ nullable: true })
     @IsNotEmpty({ message: 'Id by view is required' })

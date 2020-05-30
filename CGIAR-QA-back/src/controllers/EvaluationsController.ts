@@ -156,6 +156,7 @@ class EvaluationsController {
                     indicator_view_name = :view_name
                 AND crp.active = 1
                 AND crp.qa_active = 'open'
+                AND evaluations.evaluation_status <> 'Deleted'
                 GROUP BY
                     crp.crp_id,
                     ${levelQuery.innovations_stage}
@@ -207,6 +208,7 @@ class EvaluationsController {
                     AND crp.qa_active = 'open'
                     AND evaluations.crp_id = :crp_id
                     AND evaluations.indicator_view_name = :view_name 
+                    AND evaluations.evaluation_status <> 'Deleted'
                     GROUP BY
                         crp.crp_id,
                         evaluations.id,
@@ -270,6 +272,7 @@ class EvaluationsController {
                     AND indicator_user.userId = :user_Id
                     AND crp.active = 1
                     AND crp.qa_active = 'open'
+                    AND evaluations.evaluation_status <> 'Deleted'
                     GROUP BY
                         crp.crp_id,
                         evaluations.id,
