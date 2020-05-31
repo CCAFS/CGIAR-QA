@@ -278,7 +278,7 @@ class EvaluationsController {
                     WHERE evaluations.indicator_view_name = :view_name
                     AND indicator_user.userId = :user_Id
                     AND crp.active = 1
-                    AND crp.qa_active = 'open
+                    AND crp.qa_active = 'open'
                     AND indicator_user.userId = :user_Id
                     
                     GROUP BY
