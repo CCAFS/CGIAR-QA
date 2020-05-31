@@ -274,9 +274,9 @@ class EvaluationsController {
                     WHERE evaluations.evaluation_status <> 'Deleted'
                     OR evaluations.evaluation_status IS NULL
                     AND evaluations.indicator_view_name = :view_name
-                    AND indicator_user.userId = :user_Id
                     AND crp.active = 1
-                    AND crp.qa_active = 'open'
+                    AND crp.qa_active = 'open
+                    AND indicator_user.userId = :user_Id
                     
                     GROUP BY
                         crp.crp_id,
