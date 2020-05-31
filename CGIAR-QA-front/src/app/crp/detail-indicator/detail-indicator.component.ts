@@ -8,7 +8,7 @@ import { AlertService } from '../../services/alert.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName } from "../../_models/general-status.model"
+import { DetailedStatus, GeneralIndicatorName, GeneralStatus } from "../../_models/general-status.model"
 import { Role } from 'src/app/_models/roles.model';
 import { Title } from '@angular/platform-browser';
 import { CommentService } from 'src/app/services/comment.service';
@@ -32,6 +32,7 @@ export class DetailIndicatorComponent implements OnInit {
   currentY = 0;
   gnralInfo = {
     status: "",
+    response_status: "",
     evaluation_id: '',
     general_comment: '',
     general_comment_id: '',
@@ -117,6 +118,7 @@ export class DetailIndicatorComponent implements OnInit {
           general_comment: this.detailedData[0].general_comment,
           crp_id: this.detailedData[0].evaluation_id,
           status: this.detailedData[0].status,
+          response_status: this.detailedData[0].response_status,
           general_comment_id: this.detailedData[0].general_comment_id,
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
@@ -162,7 +164,7 @@ export class DetailIndicatorComponent implements OnInit {
 
     // let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}${(item) ? '-' + item.id : ''}`
     // this.commentService.getCommentsExcel({ evaluationId: (item) ? item.evaluation_id : undefined, id: this.currentUser.id, name: filename, indicatorName: all ? `qa_${this.indicatorType}` : undefined, crp_id: all ? this.currentUser.crp.crp_id : undefined }).subscribe(
-    
+
 
     this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: filename }).subscribe(
       res => {
@@ -193,9 +195,10 @@ export class DetailIndicatorComponent implements OnInit {
       commentId: parseInt(data.general_comment_id),
     }).subscribe(
       res => {
-        console.log(res)
+        // console.log(res)
         this.formData.general_comment.reset()
         this.hideSpinner('spinner1');
+        this.getDetailedData();
       },
       error => {
         console.log("replyComment", error);
@@ -258,6 +261,8 @@ export class DetailIndicatorComponent implements OnInit {
   }
 
   validateCommentAvility(field, is_embed) {
+    // console.log(this.gnralInfo)
+    if (this.gnralInfo.status === DetailedStatus.Pending) return false;
 
     let userRole = this.currentUser.roles[0].description, avility = false;
     switch (userRole) {
@@ -289,7 +294,7 @@ export class DetailIndicatorComponent implements OnInit {
       error => {
         console.log("getCommentReplies", error);
         // this.hideSpinner('spinner1');
-        if(error !== 'OK')
+        if (error !== 'OK')
           this.alertService.error(error);
       }
     )

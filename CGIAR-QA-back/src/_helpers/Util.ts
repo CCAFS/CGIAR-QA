@@ -334,6 +334,7 @@ class Util {
             comments_replies_count: element["comments_replies_count"],
             crp_accepted: element["crp_accepted"],
             crp_rejected: element["crp_rejected"],
+            response_status: element["response_status"],
         }
         if (!type) {
             response = Object.assign(response, {

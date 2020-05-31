@@ -16,10 +16,15 @@
         {{detailedData[0].crp_acronym}} / {{currentType}} /
         QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
     </p>
+    <div class="col">
+        <p>Assessment Status: <span
+                class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+        </p>
+        <p>Response Status: <span
+                class="text-{{(gnralInfo.response_status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.response_status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+        </p>
 
-    <p>Status: <span
-            class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
-    </p>
+    </div>
 
     <div *ngIf="detailedData[0]">
         <a *ngIf="detailedData[0].public_link" [href]="detailedData[0].public_link" target="_blank">
@@ -115,7 +120,7 @@
                 <p> {{detailedData[0].general_comment}} </p>
                 <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                     {{gnralInfo.general_comment_user}} <strong>at:</strong>
-                    {{gnralInfo.general_comment_updatedAt}}</p>
+                    {{gnralInfo.general_comment_updatedAt | date: 'long'}}</p>
 
                 <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
                     <p>{{reply.detail}}</p>
@@ -131,7 +136,7 @@
                     <div class="bton-container">
                         <button type="button"
                             class="btn btn-{{formData.general_comment.value ? 'green':'red'}}-secondary"
-                            [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
+                            [disabled]="!generalCommentGroup.valid || gnralInfo.response_status === statusHandler.Complete"
                             (click)="addGeneralComment( gnralInfo)">REPLY</button>
                     </div>
                 </div>
