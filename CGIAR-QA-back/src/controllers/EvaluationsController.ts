@@ -106,6 +106,14 @@ class EvaluationsController {
         const levelQuery = EvaluationsController.getLevelQuery(view_name)
 
 
+        /***
+         * 
+         *  evaluations.evaluation_status <> 'Deleted'
+                OR evaluations.evaluation_status IS NULL
+                AND 
+         * 
+         */
+
         let queryRunner = getConnection().createQueryBuilder();
         try {
             const userRepository = getRepository(QAUsers);
@@ -153,9 +161,7 @@ class EvaluationsController {
                 LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                 LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                 
-                WHERE evaluations.evaluation_status <> 'Deleted'
-                OR evaluations.evaluation_status IS NULL
-                AND evaluations.indicator_view_name = :view_name
+                WHERE evaluations.indicator_view_name = :view_name
                 AND crp.active = 1
                 AND crp.qa_active = 'open'
                 
@@ -206,9 +212,7 @@ class EvaluationsController {
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                     LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
-                    WHERE evaluations.evaluation_status <> 'Deleted'
-                    OR evaluations.evaluation_status IS NULL
-                    AND evaluations.indicator_view_name = :view_name
+                    WHERE evaluations.indicator_view_name = :view_name
                     AND crp.active = 1
                     AND crp.qa_active = 'open'
                     AND evaluations.crp_id = :crp_id
@@ -271,9 +275,8 @@ class EvaluationsController {
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                     LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
                     
-                    WHERE evaluations.evaluation_status <> 'Deleted'
-                    OR evaluations.evaluation_status IS NULL
-                    AND evaluations.indicator_view_name = :view_name
+                    WHERE evaluations.indicator_view_name = :view_name
+                    AND indicator_user.userId = :user_Id
                     AND crp.active = 1
                     AND crp.qa_active = 'open
                     AND indicator_user.userId = :user_Id
