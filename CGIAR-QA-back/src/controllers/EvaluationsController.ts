@@ -490,8 +490,8 @@ class EvaluationsController {
                     { user_Id: id, indicatorId },
                     {}
                 );
-                console.log('assessor')
-                console.log(query, parameters)
+                // console.log('assessor')
+                // console.log(query, parameters)
                 rawData = await queryRunner.connection.query(query, parameters);
 
             }
