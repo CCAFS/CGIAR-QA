@@ -125,7 +125,7 @@ export class DetailIndicatorComponent implements OnInit {
 
         this.hideSpinner(this.spinner1);
         this.getCommentReplies();
-        console.log(this.detailedData)
+        // console.log(this.detailedData)
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -137,7 +137,7 @@ export class DetailIndicatorComponent implements OnInit {
 
   getIndicatorCriteria(id) {
     this.criteria_loading = true;
-    console.log(id)
+    // console.log(id)
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
       res => {
         // console.log(res.data)
@@ -220,7 +220,9 @@ export class DetailIndicatorComponent implements OnInit {
     this.activeCommentArr[index] = !this.activeCommentArr[index];
   }
   updateNumCommnts(event, detailedData) {
+    // console.log('updateNumCommnts',typeof event, event[0].replies.replies_count)
     detailedData.replies_count = event.length;
+    detailedData.comments_replies_count = event[0].replies.replies_count;
   }
 
   updateEvaluation(type: string, data: any) {

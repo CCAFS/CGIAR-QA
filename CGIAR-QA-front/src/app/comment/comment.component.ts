@@ -113,6 +113,7 @@ export class CommentComponent implements OnInit {
       return;
     }
     data[type] = !data[type];
+    // console.log(data)
     this.showSpinner(this.spinner_comment);
 
     this.commentService.updateDataComment(data).subscribe(
@@ -128,6 +129,31 @@ export class CommentComponent implements OnInit {
     )
 
   }
+  
+  updateCommentReply(type, data) {
+    let canUpdate = this.validComment(type, data)
+    if (!canUpdate.is_valid) {
+      this.alertService.error(canUpdate.message);
+      return;
+    }
+    data[type] = !data[type];
+    this.showSpinner(this.spinner_comment);
+    
+    this.commentService.updateCommentReply(data).subscribe(
+      res => {
+        // console.log(res)
+        this.getItemCommentData();
+      },
+      error => {
+        console.log("updateComment", error);
+        this.hideSpinner(this.spinner_comment);
+
+        this.alertService.error(error);
+      }
+    )
+
+  }
+
 
   getItemCommentData() {
 
@@ -135,7 +161,7 @@ export class CommentComponent implements OnInit {
     this.commentService.getDataComment(params).subscribe(
       res => {
         this.hideSpinner(this.spinner_comment);
-        console.log(res)
+        // console.log(res)
         this.updateNumCommnts.emit(res.data.filter(field => field.is_deleted == false));
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:
@@ -163,7 +189,7 @@ export class CommentComponent implements OnInit {
       this.commentService.getDataCommentReply(params).subscribe(
         res => {
           this.hideSpinner(this.spinner_comment);
-          console.log(res)
+          // console.log(res)
           comment.loaded_replies = res.data
           // this.commentsByColReplies = res.data
         },

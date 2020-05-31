@@ -55,6 +55,9 @@ router.post("/detail/comment/reply", [checkJwt, checkRole([RolesHandler.admin, R
 // update comment in indicator item
 router.patch("/detail/comment", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.updateComment)
 
+// update comment in indicator item
+router.patch("/detail/comment/reply", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], CommentController.updateCommentReply)
+
 // get comment from indicator item
 router.get("/:evaluationId([0-9]+)/detail/comment/:metaId([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.getComments)
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { validate } from "class-validator";
-import { getRepository, In, getConnection, IsNull } from "typeorm";
+import { getRepository, In, getConnection, IsNull, Not } from "typeorm";
 
 import { QAUsers } from "@entity/User";
 import { QAComments } from "@entity/Comments";
@@ -226,11 +226,46 @@ class CommentController {
 
             let updated_comment = await commentsRepository.save(comment_);
 
-            res.status(200).send({ data: updated_comment, message: 'Comment created' });
+            res.status(200).send({ data: updated_comment, message: 'Comment updated' });
 
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "Comment can not be created.", data: error });
+            res.status(404).json({ message: "Comment can not be updated.", data: error });
+        }
+    }
+
+    // update reply to comment
+    static updateCommentReply = async (req: Request, res: Response) => {
+
+        //Check if username and password are set
+        const { is_deleted, id, detail, userId } = req.body;
+        const repliesRepository = getRepository(QACommentsReplies);
+
+        try {
+            let reply_ = await repliesRepository.findOneOrFail(id, {relations:['comment']});
+
+            reply_.is_deleted = is_deleted;
+            if (detail)
+                reply_.detail = detail;
+            if (userId)
+                reply_.user = userId;
+            if(reply_.is_deleted){
+                const commentsRepository = await getRepository(QAComments);
+                console.log(reply_)
+                let comment = await commentsRepository.findOneOrFail(reply_.comment.id);
+                comment.crp_approved = null;
+
+                commentsRepository.save(comment);
+            }
+
+
+            let updated_comment = await repliesRepository.save(reply_);
+
+            res.status(200).send({ data: updated_comment, message: 'Reply updated' });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Reply can not be updated.", data: error });
         }
     }
 
@@ -251,6 +286,7 @@ class CommentController {
                         qa_comments_replies
                     WHERE
                         commentId = qa_comments.id
+                    AND is_deleted = 0
                 ) AS replies_count
                 FROM
                     qa_comments
@@ -287,7 +323,8 @@ class CommentController {
             let replies = await getRepository(QACommentsReplies).find(
                 {
                     where: [{
-                        comment: commentId
+                        comment: commentId,
+                        is_deleted: Not(1)
                     }],
                     relations: ['user'],
                     order: {

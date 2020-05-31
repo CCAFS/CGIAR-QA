@@ -9,9 +9,6 @@ import { RolesHandler } from "@helpers/RolesHandler";
 import Util from "@helpers/Util";
 
 
-// import { validate } from "class-validator";
-// import { runInNewContext } from "vm";
-
 class EvaluationsController {
 
     /**
@@ -43,13 +40,12 @@ class EvaluationsController {
                 qa_indicator_user qa_indicator_user
             LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
             LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-            LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+            LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
             LEFT JOIN qa_comments_meta meta ON meta.indicatorId = indicator.id
-            WHERE
-                crp.active = 1
-            AND crp.qa_active = 'open'
-            AND
-                qa_indicator_user.userId = :user_Id
+
+            WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+            AND qa_indicator_user.userId = :user_Id
+
             GROUP BY
                 evaluations.status,
                 evaluations.indicator_view_name,
@@ -159,13 +155,10 @@ class EvaluationsController {
                 FROM
                     qa_evaluations evaluations
                 LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
-                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
                 
-                WHERE evaluations.evaluation_status <> 'Deleted'
-                OR evaluations.evaluation_status IS NULL
+                WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                 AND evaluations.indicator_view_name = :view_name
-                AND crp.active = 1
-                AND crp.qa_active = 'open'
                 
                 GROUP BY
                     crp.crp_id,
@@ -185,7 +178,6 @@ class EvaluationsController {
                 let sql = `
                     SELECT
                         evaluations.id AS evaluation_id,
-                        evaluations.status AS evaluations_status,
                         evaluations.indicator_view_name,
                         evaluations.indicator_view_id,
                         evaluations.crp_id,
@@ -203,22 +195,26 @@ class EvaluationsController {
                             AND is_deleted = 0
                             AND is_visible = 1
                         ) AS comments_count,
-                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
                         (
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
                         ${levelQuery.view_sql}
+                        IF(
+                            (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
+                                = 
+                            ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL  AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
+                        AS evaluations_status,
                         indicator_user.indicatorId
                     FROM
                         qa_evaluations evaluations
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
-                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
                     LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
-                    WHERE evaluations.evaluation_status <> 'Deleted'
-                    OR evaluations.evaluation_status IS NULL
+                    
+                    
+                    WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                     AND evaluations.indicator_view_name = :view_name
-                    AND crp.active = 1
-                    AND crp.qa_active = 'open'
                     AND evaluations.crp_id = :crp_id
                     GROUP BY
                         crp.crp_id,
@@ -231,6 +227,7 @@ class EvaluationsController {
                     { crp_id: crp_id, view_name },
                     {}
                 );
+                // console.log(sql)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "CRP evaluations list" });
 
@@ -276,15 +273,12 @@ class EvaluationsController {
                     FROM
                         qa_evaluations evaluations
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
-                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
                     LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
                     
-                    WHERE evaluations.evaluation_status <> 'Deleted'
-                    OR evaluations.evaluation_status IS NULL
+                    WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                     AND evaluations.indicator_view_name = :view_name
                     AND indicator_user.userId = :user_Id
-                    AND crp.active = 1
-                    AND crp.qa_active = 'open'
                     
                     GROUP BY
                         crp.crp_id,
@@ -292,6 +286,7 @@ class EvaluationsController {
                         ${levelQuery.innovations_stage}
                         indicator_user.indicatorId
                 `;
+                // console.log(sql)
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sql,
                     { user_Id: id, view_name },
@@ -388,7 +383,7 @@ class EvaluationsController {
                         ( SELECT user_.username FROM qa_comments comments LEFT JOIN qa_users user_ ON user_.id = comments.userId WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_user,
                         ( SELECT user_.updatedAt FROM qa_comments comments LEFT JOIN qa_users user_ ON user_.id = comments.userId WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_updatedAt,
                         ( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 AND approved_no_comment IS NOT NULL LIMIT 1) AS approved_no_comment,
-                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
                         ( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id  AND evaluationId = evaluations.id  AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NULL ) AS replies_count
                         FROM
                             ${view_name} ${view_name_psdo}
@@ -431,7 +426,7 @@ class EvaluationsController {
                         ( SELECT user_.username FROM qa_comments comments LEFT JOIN qa_users user_ ON user_.id = comments.userId WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_user,
                         ( SELECT user_.updatedAt FROM qa_comments comments LEFT JOIN qa_users user_ ON user_.id = comments.userId WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_updatedAt,
                         ( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 AND approved_no_comment IS NOT NULL LIMIT 1) AS approved_no_comment,
-                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
 
 
                         ( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id  AND evaluationId = evaluations.id  AND is_visible = 1 AND is_deleted = 0 AND approved_no_comment IS NULL AND crp_approved = 1 ) AS crp_accepted,
@@ -479,7 +474,7 @@ class EvaluationsController {
                     ( SELECT user_.username FROM qa_comments comments LEFT JOIN qa_users user_ ON user_.id = comments.userId WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_user,
                     ( SELECT user_.updatedAt FROM qa_comments comments LEFT JOIN qa_users user_ ON user_.id = comments.userId WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_updatedAt,
                     ( SELECT approved_no_comment FROM qa_comments WHERE metaId = meta.id AND evaluationId = evaluations.id 	AND is_deleted = 0 AND approved_no_comment IS NOT NULL LIMIT 1) AS approved_no_comment,
-                    ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
+                    ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id 	AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
                     ( SELECT COUNT(DISTINCT id) FROM qa_comments WHERE metaId = meta.id  AND evaluationId = evaluations.id  AND is_visible = 1 AND is_deleted = 0 AND evaluationId = evaluations.id AND approved_no_comment IS NULL ) AS replies_count
                     FROM
                         ${view_name} ${view_name_psdo}
@@ -552,12 +547,13 @@ class EvaluationsController {
                     qa_indicator_user qa_indicator_user
                 LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
                 LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                WHERE
-                    crp.active = 1
-                AND crp.qa_active = 'open'
-                AND
-                    evaluations.crp_id = :crp_id
+                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
+
+
+                WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+                AND evaluations.crp_id = :crp_id
+
+
                 GROUP BY
                     evaluations.status,
                     evaluations.indicator_view_name,
@@ -586,10 +582,12 @@ class EvaluationsController {
                     
                     LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
                     LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                    WHERE
-                        crp.active = 1
-                    AND crp.qa_active = 'open'
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
+
+
+                    WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+
+
                     GROUP BY
                         evaluations.status,
                         evaluations.indicator_view_name,

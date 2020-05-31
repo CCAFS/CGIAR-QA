@@ -86,7 +86,7 @@
                     <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
                     <div [tooltip]="commentsTooltip" container="body" placement="top" *ngIf="field.replies_count != '0'"
-                        class="replies-count {{field.replies_count == field.replies_count ? 'accepted':'rejected'}}">
+                        class="replies-count {{field.replies_count == field.comments_replies_count ? 'accepted':'rejected'}}">
                         {{field.comments_replies_count}}/{{field.replies_count}}
                     </div>
                     <ng-template #commentsTooltip>
@@ -147,6 +147,7 @@
     </div>
     <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
         class="col-sm-4 comments-container">
-        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null)"></app-comment>
+        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null)"
+            (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
     </div>
 </div>
