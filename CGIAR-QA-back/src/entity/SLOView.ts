@@ -38,4 +38,10 @@ export class QASlo {
     @ViewColumn()
     additional_contribution: string;
 
+    @ViewColumn()
+    editable_link: string;
+
+    @ViewColumn()
+    public_link: string;
+
 }
