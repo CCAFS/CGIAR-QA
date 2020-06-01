@@ -581,7 +581,7 @@ class CommentController {
             // meta.col_name,
 
             const stream: Buffer = await Util.createCommentsExcel([
-                { header: 'Id CLARISA', key: 'id' },
+                { header: 'Id', key: 'id' },
                 { header: 'Indicator Title', key: 'indicator_title' },
                 { header: 'Field', key: 'field' },
                 { header: 'User', key: 'user' },
