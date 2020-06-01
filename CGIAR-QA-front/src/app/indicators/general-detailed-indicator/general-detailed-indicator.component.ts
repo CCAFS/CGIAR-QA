@@ -19,7 +19,7 @@ import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
 import { Title } from '@angular/platform-browser';
 import { WordCounterPipe } from 'src/app/pipes/word-counter.pipe';
 
-
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-general-detailed-indicator',
@@ -250,7 +250,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.showSpinner('spinner1');
     let evaluationId = evaluation.evaluation_id;
     let title = this.detailedData.find(data => data.col_name === 'title');
-    let filename = `QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}(${new Date()})`
+    let filename = `QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}(${moment().format('YYYYMMDD_hhmmA')})`
 
     this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: title.display_name,indicatorName: `qa_${this.params.type}` }).subscribe(
       res => {
