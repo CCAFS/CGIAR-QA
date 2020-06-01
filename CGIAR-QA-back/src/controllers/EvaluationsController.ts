@@ -174,7 +174,7 @@ class EvaluationsController {
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
-            } else if ( user.crps.length > 0 ) {
+            } else if (user.crps.length > 0) {
                 let sql = `
                     SELECT
                         evaluations.id AS evaluation_id,
@@ -541,8 +541,9 @@ class EvaluationsController {
         try {
             let rawData;
             if (crp_id !== undefined && crp_id !== "undefined") {
-                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                    `SELECT
+                /***
+                 * 
+                 SELECT
                     evaluations.status AS status,
                     evaluations.crp_id AS crp_id,
                     evaluations.indicator_view_name AS indicator_view_name,
@@ -569,7 +570,46 @@ class EvaluationsController {
                     indicator.primary_field
                 ORDER BY
                     indicator.order ASC,
-                    evaluations.status `,
+                    evaluations.status
+
+
+                 * 
+                 */
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `
+                    SELECT
+                            evaluations.crp_id AS crp_id,
+                            evaluations.indicator_view_name AS indicator_view_name,
+                            indicator.primary_field AS primary_field,
+                            (SELECT enable_crp FROM qa_comments_meta comments_meta WHERE comments_meta.indicatorId = indicator.id) AS indicator_status,
+                            indicator.order AS indicator_order, 
+                            COUNT(DISTINCT evaluations.id) AS count,
+                        IF(
+                            (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
+                                    = 
+                            ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL  AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
+                        AS evaluations_status
+                    FROM
+                        qa_evaluations evaluations
+                    LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
+                    
+                    WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+                    AND evaluations.crp_id =:crp_id
+                    AND evaluations.indicator_view_name <> 'qa_outcomes'
+                    
+
+                    GROUP BY
+                            evaluations_status,
+                            evaluations.indicator_view_name,
+                            evaluations.crp_id,
+                            indicator_order,
+                            indicator.id,
+                            indicator.primary_field
+                    ORDER BY
+                            indicator.order ASC,
+                            evaluations_status 
+                    `,
                     { crp_id: crp_id },
                     {}
                 );
@@ -614,8 +654,8 @@ class EvaluationsController {
                 const element = rawData[index];
                 response.push({
                     indicator_view_name: element['indicator_view_name'],
-                    status: element['status'],
-                    type: Util.getType(element['status'], (crp_id !== undefined && crp_id !== "undefined")),
+                    status: element['status'] ? element['status'] : element['evaluations_status'],
+                    type: Util.getType(element['status'] ? element['status'] : element['evaluations_status'], (crp_id !== undefined && crp_id !== "undefined")),
                     value: element['count'],
                     indicator_status: element['indicator_status'],
                     crp_id: (crp_id) ? element['crp_id'] : null,

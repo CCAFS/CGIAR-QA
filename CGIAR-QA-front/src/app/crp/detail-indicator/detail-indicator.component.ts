@@ -222,10 +222,16 @@ export class DetailIndicatorComponent implements OnInit {
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
   }
+  
   updateNumCommnts(event, detailedData) {
-    // console.log('updateNumCommnts',typeof event, event[0].replies.replies_count)
+    // console.log('updateNumCommnts', event, event[0].replies.replies_count)
+    //  event[0].replies.replies_count;
     detailedData.replies_count = event.length;
-    detailedData.comments_replies_count = event[0].replies.replies_count;
+    let repls_count = 0
+    event.forEach(element => {
+      repls_count += parseInt(element.replies.replies_count)
+    });
+    detailedData.comments_replies_count = repls_count
   }
 
   updateEvaluation(type: string, data: any) {

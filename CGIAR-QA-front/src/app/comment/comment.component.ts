@@ -161,7 +161,7 @@ export class CommentComponent implements OnInit {
     this.commentService.getDataComment(params).subscribe(
       res => {
         this.hideSpinner(this.spinner_comment);
-        // console.log(res)
+        console.log(res)
         this.updateNumCommnts.emit(res.data.filter(field => field.is_deleted == false));
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:

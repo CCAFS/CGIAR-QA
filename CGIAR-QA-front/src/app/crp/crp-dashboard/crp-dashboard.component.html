@@ -11,12 +11,12 @@
                 <div class="card-title example-container d-flex"
                     [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
                     <div class="circle complete"></div>
-                    <p>Assessed</p>
+                    <p>Answered</p>
                     <div class="circle pending" style="margin-left: 50px;"></div>
-                    <p>Pending assessment</p>
-                    <button type="button" class="btn btn-success col-3" (click)="openModal(template)">
+                    <p>Pending replies</p>
+                    <!-- <button type="button" class="btn btn-success col-3" (click)="openModal(template)">
                         More Metrics
-                    </button>
+                    </button> -->
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">
