@@ -42,7 +42,7 @@
 </div>
 
 <div #containerElement class="row">
-    <div class="col-sm">
+    <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
         <div class="col data-container">
 
             <div class="data-row" *ngFor="let field of detailedData; let i = index">
