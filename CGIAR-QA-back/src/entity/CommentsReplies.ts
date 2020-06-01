@@ -16,6 +16,11 @@ export class QACommentsReplies {
     @ManyToOne(type => QAUsers, user => user.replies)
     user: QAUsers;
 
+    @Column({
+        default: false,
+    })
+    is_deleted: boolean;
+
     @Column()
     @Length(3, 250)
     @IsNotEmpty({ message: 'Permission is required' })

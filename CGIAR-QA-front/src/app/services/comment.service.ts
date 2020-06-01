@@ -32,9 +32,16 @@ export class CommentService {
   updateDataComment(params) {
     return this.http.patch<any>(`${environment.apiUrl}/evaluation/detail/comment`, params)
   }
+
+
   // create comment data for evaluation
   createDataCommentReply(params) {
     return this.http.post<any>(`${environment.apiUrl}/evaluation/detail/comment/reply`, params)
+  }
+
+   // update  reply for comment
+   updateCommentReply(params) {
+    return this.http.patch<any>(`${environment.apiUrl}/evaluation/detail/comment/reply`, params)
   }
 
   // get comment data for evaluation

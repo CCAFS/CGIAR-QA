@@ -147,7 +147,7 @@
                     </form>
                     <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                         {{gnralInfo.general_comment_user}} <strong>at:</strong>
-                        {{gnralInfo.general_comment_updatedAt}}</p>
+                        {{gnralInfo.general_comment_updatedAt | date: 'long'}}</p>
                     <span class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000</span>
                     <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
                         <p>{{reply.detail}}</p>
