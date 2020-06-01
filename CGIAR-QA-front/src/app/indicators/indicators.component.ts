@@ -158,7 +158,7 @@ export class IndicatorsComponent implements OnInit {
   exportComments(item) {
     // console.log(item)
     this.showSpinner();
-    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}_${moment().format('YYYYMMDD_hhmmA')}`
+    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}_${moment().format('YYYYMMDD_HHmm')}`
     this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: filename, indicatorName: `qa_${this.indicatorType}` }).subscribe(
       res => {
         // console.log(res)

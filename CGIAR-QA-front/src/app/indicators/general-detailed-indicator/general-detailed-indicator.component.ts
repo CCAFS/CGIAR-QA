@@ -250,7 +250,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.showSpinner('spinner1');
     let evaluationId = evaluation.evaluation_id;
     let title = this.detailedData.find(data => data.col_name === 'title');
-    let filename = `QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}_${moment().format('YYYYMMDD_hhmmA')}`
+    let filename = `QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}_${moment().format('YYYYMMDD_HHmm')}`
 
     this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: title.display_name,indicatorName: `qa_${this.params.type}` }).subscribe(
       res => {
