@@ -130,7 +130,7 @@ export class DetailIndicatorComponent implements OnInit {
 
         this.hideSpinner(this.spinner1);
         this.getCommentReplies();
-        console.log(this.detailedData)
+        // console.log(this.detailedData)
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -211,6 +211,30 @@ export class DetailIndicatorComponent implements OnInit {
     )
   }
 
+  updateGeneralCommentReply(type, data) {
+    // let canUpdate = this.validComment(type, data)
+    // if (!canUpdate.is_valid) {
+    //   this.alertService.error(canUpdate.message);
+    //   return;
+    // }
+    data[type] = !data[type];
+    this.showSpinner(this.spinner1);
+
+    this.commentService.updateCommentReply(data).subscribe(
+      res => {
+        // console.log(res)
+        this.getDetailedData();
+      },
+      error => {
+        console.log("updateComment", error);
+        this.hideSpinner(this.spinner1);
+
+        this.alertService.error(error);
+      }
+    )
+
+  }
+
 
   // convenience getter for easy access to form fields
   get formData() { return this.generalCommentGroup.controls; }
@@ -224,8 +248,9 @@ export class DetailIndicatorComponent implements OnInit {
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
+    // this.getDetailedData();
   }
-  
+
   updateNumCommnts(event, detailedData) {
     // console.log('updateNumCommnts', event, event[0].replies.replies_count)
     //  event[0].replies.replies_count;
