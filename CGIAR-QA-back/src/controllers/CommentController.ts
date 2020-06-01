@@ -58,6 +58,7 @@ class CommentController {
                     { crp_id },
                     {}
                 );
+                console.log('role === RolesHandler.crp',query)
                 rawData = await queryRunner.connection.query(query, parameters);
             } else {
 
@@ -86,6 +87,7 @@ class CommentController {
                         { crp_id },
                         {}
                     );
+                    console.log('!== undefined',query)
                     rawData = await queryRunner.connection.query(query, parameters);
                     // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
                 }
@@ -114,6 +116,7 @@ class CommentController {
                         {},
                         {}
                     );
+                    console.log('=== undefined',query)
                     rawData = await queryRunner.connection.query(query, parameters);
                 }
             }
@@ -584,8 +587,8 @@ class CommentController {
             // meta.col_name,
 
             const stream: Buffer = await Util.createCommentsExcel([
-                { header: 'Id', key: 'id' },
                 { header: 'Comment id', key: 'comment_id' },
+                { header: 'Indicator id', key: 'id' },
                 { header: 'Indicator Title', key: 'indicator_title' },
                 { header: 'Field', key: 'field' },
                 { header: 'User', key: 'user' },
