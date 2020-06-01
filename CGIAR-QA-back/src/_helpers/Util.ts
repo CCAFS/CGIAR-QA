@@ -366,6 +366,7 @@ class Util {
                 replies_count: element['replies_count'],
                 approved_no_comment: element['approved_no_comment'] || null,
                 public_link: element[`public_link`],
+                editable_link: element[`editable_link`],
                 meta_description: element['meta_description']
             });
 
