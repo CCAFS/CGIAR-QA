@@ -541,40 +541,7 @@ class EvaluationsController {
         try {
             let rawData;
             if (crp_id !== undefined && crp_id !== "undefined") {
-                /***
-                 * 
-                 SELECT
-                    evaluations.status AS status,
-                    evaluations.crp_id AS crp_id,
-                    evaluations.indicator_view_name AS indicator_view_name,
-                    indicator.primary_field AS primary_field,
-                    (SELECT enable_crp FROM qa_comments_meta comments_meta WHERE comments_meta.indicatorId = indicator.id) AS indicator_status,
-                    indicator.order AS indicator_order, COUNT(DISTINCT evaluations.id) AS count
-                FROM
-                    qa_indicator_user qa_indicator_user
-                LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
-                LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
-
-
-                WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
-                AND evaluations.crp_id = :crp_id
-
-
-                GROUP BY
-                    evaluations.status,
-                    evaluations.indicator_view_name,
-                    evaluations.crp_id,
-                    indicator_order,
-                    indicator.id,
-                    indicator.primary_field
-                ORDER BY
-                    indicator.order ASC,
-                    evaluations.status
-
-
-                 * 
-                 */
+                
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT

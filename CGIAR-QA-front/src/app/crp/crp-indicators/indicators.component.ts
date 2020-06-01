@@ -17,6 +17,8 @@ import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
 import { SortByPipe } from 'src/app/pipes/sort-by.pipe';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-indicators',
   templateUrl: './indicators.component.html',
@@ -151,8 +153,8 @@ export class CRPIndicatorsComponent implements OnInit {
   exportComments(item, all?) {
     // console.log(item)
     this.showSpinner(this.spinner_name);
-    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}${(item) ? '-' + item.id : ''}`
-    this.commentService.getCommentsExcel({ evaluationId: (item) ? item.evaluation_id : undefined, id: this.currentUser.id, name: filename, indicatorName: all ? `qa_${this.indicatorType}` : undefined, crp_id: all ? this.currentUser.crp.crp_id : undefined }).subscribe(
+    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}${(item) ? '-' + item.id : ''}_${moment().format('YYYYMMDD_HHmm')}`
+    this.commentService.getCommentsExcel({ evaluationId: (item) ? item.evaluation_id : undefined, id: this.currentUser.id, name: filename, indicatorName: `qa_${this.indicatorType}`, crp_id: all ? this.currentUser.crp.crp_id : undefined }).subscribe(
       res => {
         // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });

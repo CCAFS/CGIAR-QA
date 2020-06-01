@@ -96,7 +96,7 @@ export class CrpDashboardComponent implements OnInit {
     this.dashService.getAllDashboardEvaluations(this.currentUser.crp.crp_id)
       .subscribe(
         res => {
-          console.log(res)
+          // console.log(res)
           this.dashboardData = this.dashService.groupData(res.data);
           this.hideSpinner(this.spinner2);
         },
@@ -115,7 +115,7 @@ export class CrpDashboardComponent implements OnInit {
       .subscribe(
         res => {
           this.has_comments = res.data ? true : false
-          // console.log(res, this.has_comments);
+          console.log(res, this.has_comments);
           this._setCharData(res)
           // Object.assign(this, { barChartLabels: res.data.label });
           // Object.assign(this, { barChartData: res.data.data_set });

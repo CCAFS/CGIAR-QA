@@ -16,6 +16,9 @@ import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
 import { SortByPipe } from '../pipes/sort-by.pipe';
 
+import * as moment from 'moment';
+
+
 @Component({
   selector: 'app-indicators',
   templateUrl: './indicators.component.html',
@@ -155,8 +158,8 @@ export class IndicatorsComponent implements OnInit {
   exportComments(item) {
     // console.log(item)
     this.showSpinner();
-    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}`
-    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: filename }).subscribe(
+    let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}_${moment().format('YYYYMMDD_HHmm')}`
+    this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: filename, indicatorName: `qa_${this.indicatorType}` }).subscribe(
       res => {
         // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
