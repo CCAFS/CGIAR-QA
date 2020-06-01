@@ -421,9 +421,9 @@ class EvaluationsController {
                             crp.acronym AS crp_acronym,
                             evaluations.status AS evaluations_status,
                             IF(
-                                (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
+                                (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND qa_comments.metaId = meta.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
                                     = 
-                                ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND qa_comments.metaId = meta.id  AND approved_no_comment IS NULL  AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
+                                ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND qa_comments.metaId = meta.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
                             AS response_status,
 
                         ( SELECT enable_crp FROM qa_comments_meta WHERE indicatorId = indicators.id ) AS enable_crp,
@@ -453,8 +453,8 @@ class EvaluationsController {
                     { indicatorId },
                     {}
                 );
-                console.log('crp')
-                console.log(query, parameters)
+                // console.log('crp')
+                // console.log(query, parameters)
                 rawData = await queryRunner.connection.query(query, parameters);
             }
             else {
