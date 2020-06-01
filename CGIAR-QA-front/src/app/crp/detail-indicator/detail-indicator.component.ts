@@ -169,7 +169,7 @@ export class DetailIndicatorComponent implements OnInit {
     // this.commentService.getCommentsExcel({ evaluationId: (item) ? item.evaluation_id : undefined, id: this.currentUser.id, name: filename, indicatorName: all ? `qa_${this.indicatorType}` : undefined, crp_id: all ? this.currentUser.crp.crp_id : undefined }).subscribe(
 
 
-    this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: filename }).subscribe(
+    this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: filename,indicatorName: `qa_${this.params.type}` }).subscribe(
       res => {
         // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });

@@ -291,6 +291,7 @@ class Util {
                 if (rows[i]) {
                     let row = {
                         id: rows[i].id,
+                        indicator_title: rows[i].indicator_title,
                         createdAt: rows[i].createdAt,
                         updatedAt: rows[i].updatedAt,
                         comment: rows[i].detail,
@@ -300,7 +301,7 @@ class Util {
                         reply: rows[i].reply,
                         user_replied: rows[i].reply_user,
                         reply_createdAt: rows[i].reply_createdAt,
-                        // reply_updatedAt: rows[i].reply_updatedAt,
+                        // public_link: rows[i].public_link,
                     };
                     sheet.addRow(row);
 

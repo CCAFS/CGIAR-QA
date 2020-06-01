@@ -39,8 +39,8 @@ export class CommentService {
     return this.http.post<any>(`${environment.apiUrl}/evaluation/detail/comment/reply`, params)
   }
 
-   // update  reply for comment
-   updateCommentReply(params) {
+  // update  reply for comment
+  updateCommentReply(params) {
     return this.http.patch<any>(`${environment.apiUrl}/evaluation/detail/comment/reply`, params)
   }
 

@@ -451,13 +451,13 @@ class CommentController {
                 ]
             });
             let currentRole = user.roles.map(role => { return role.description })[0];
-            // console.log(evaluationId)
+            // console.log(evaluationId,indicatorName)
             if (evaluationId == undefined || evaluationId == 'undefined') {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
                         comments.detail,
-                        comments.id,
+                        evaluations.indicator_view_id AS id,
                         comments.updatedAt,
                         comments.createdAt,
                         comments.crp_approved,
@@ -469,6 +469,7 @@ class CommentController {
                         replies.createdAt AS reply_createdAt,
                         replies.updatedAt AS reply_updatedAt,
                         replies.detail AS reply,
+                        (SELECT title FROM ${indicatorName} WHERE id = evaluations.indicator_view_id) AS indicator_title,
                         (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user
                     FROM
                         qa_comments comments
@@ -497,7 +498,7 @@ class CommentController {
                         `
                         SELECT
                             comments.detail,
-                            comments.id,
+                            evaluations.indicator_view_id AS id,
                             comments.updatedAt,
                             comments.createdAt,
                             comments.crp_approved,
@@ -509,6 +510,7 @@ class CommentController {
                             replies.createdAt AS reply_createdAt,
                             replies.updatedAt AS reply_updatedAt,
                             replies.detail AS reply,
+                            (SELECT title FROM ${indicatorName} WHERE id = evaluations.indicator_view_id) AS indicator_title,
                             (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user
                         FROM
                             qa_comments comments
@@ -536,7 +538,7 @@ class CommentController {
                         `
                         SELECT
                             comments.detail,
-                            comments.id,
+                            evaluations.indicator_view_id AS id,
                             comments.updatedAt,
                             comments.createdAt,
                             comments.crp_approved,
@@ -548,6 +550,7 @@ class CommentController {
                             replies.createdAt AS reply_createdAt,
                             replies.updatedAt AS reply_updatedAt,
                             replies.detail AS reply,
+                            (SELECT title FROM ${indicatorName} WHERE id = evaluations.indicator_view_id) AS indicator_title,
                             (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user
                         FROM
                             qa_comments comments
@@ -578,17 +581,18 @@ class CommentController {
             // meta.col_name,
 
             const stream: Buffer = await Util.createCommentsExcel([
-                { header: 'Id', key: 'id' },
+                { header: 'Id CLARISA', key: 'id' },
+                { header: 'Indicator Title', key: 'indicator_title' },
                 { header: 'Field', key: 'field' },
                 { header: 'User', key: 'user' },
                 { header: 'Comment', key: 'comment' },
                 { header: 'Created Date', key: 'createdAt' },
                 { header: 'Updated Date', key: 'updatedAt' },
-                // { header: 'Email', key: 'email' },
                 { header: 'Accepted comment?', key: 'crp_approved' },
                 { header: 'Comment reply', key: 'reply' },
                 { header: 'User Replied', key: 'user_replied' },
                 { header: 'Reply Date', key: 'reply_createdAt' },
+                // { header: 'Public Link', key: 'public_link' },
             ], comments, 'comments');
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             res.setHeader('Content-Disposition', `attachment; filename=${name}.xlsx`);
