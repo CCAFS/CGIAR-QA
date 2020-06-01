@@ -457,6 +457,7 @@ class CommentController {
                     `
                     SELECT
                         comments.detail,
+                        comment.id AS comment_id,
                         evaluations.indicator_view_id AS id,
                         comments.updatedAt,
                         comments.createdAt,
@@ -498,6 +499,7 @@ class CommentController {
                         `
                         SELECT
                             comments.detail,
+                            comment.id AS comment_id,
                             evaluations.indicator_view_id AS id,
                             comments.updatedAt,
                             comments.createdAt,
@@ -538,6 +540,7 @@ class CommentController {
                         `
                         SELECT
                             comments.detail,
+                            comment.id AS comment_id,
                             evaluations.indicator_view_id AS id,
                             comments.updatedAt,
                             comments.createdAt,
@@ -582,6 +585,7 @@ class CommentController {
 
             const stream: Buffer = await Util.createCommentsExcel([
                 { header: 'Id', key: 'id' },
+                { header: 'Comment id', key: 'comment_id' },
                 { header: 'Indicator Title', key: 'indicator_title' },
                 { header: 'Field', key: 'field' },
                 { header: 'User', key: 'user' },
