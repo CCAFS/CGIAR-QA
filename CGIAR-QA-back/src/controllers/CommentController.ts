@@ -457,7 +457,7 @@ class CommentController {
                     `
                     SELECT
                         comments.detail,
-                        comment.id AS comment_id,
+                        comments.id AS comment_id,
                         evaluations.indicator_view_id AS id,
                         comments.updatedAt,
                         comments.createdAt,
@@ -499,7 +499,7 @@ class CommentController {
                         `
                         SELECT
                             comments.detail,
-                            comment.id AS comment_id,
+                            comments.id AS comment_id,
                             evaluations.indicator_view_id AS id,
                             comments.updatedAt,
                             comments.createdAt,
@@ -540,7 +540,7 @@ class CommentController {
                         `
                         SELECT
                             comments.detail,
-                            comment.id AS comment_id,
+                            comments.id AS comment_id,
                             evaluations.indicator_view_id AS id,
                             comments.updatedAt,
                             comments.createdAt,
