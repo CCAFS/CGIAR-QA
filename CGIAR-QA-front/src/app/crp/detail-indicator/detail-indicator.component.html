@@ -48,7 +48,7 @@
             <div class="data-row" *ngFor="let field of detailedData; let i = index">
                 <div class="col">
                     <div class="row" style="padding: 0;">
-                        <h2>{{field.display_name}}</h2>
+                        <h2>{{detailedData[i].display_name}}</h2>
                         <div *ngIf="field.meta_description">
                             <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
                                 style="height: 1.5em;"></i>
@@ -66,7 +66,7 @@
 
 
                     <!-- data value -->
-                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
+                    <!-- <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
                         [innerHTML]="detailedData[i].value | markdown">
                     </div>
                     <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' )"
@@ -76,9 +76,17 @@
                         [innerHTML]="detailedData[i].value">
                     </div>
                     <p *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link' ">
-                        {{detailedData[i].value}}</p>
+                        {{detailedData[i].value}}</p> -->
+
+                    <!-- data value -->
+                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
+                        [innerHTML]="detailedData[i].value | markdown">
+                    </div>
+                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  )"
+                        [innerHTML]="detailedData[i].value">
+                    </div>
                     <!-- no data -->
-                    <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p>
+                    <p *ngIf="detailedData[i].value === null" class="empty-value">Data not provided.</p>
 
                 </div>
 

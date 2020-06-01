@@ -72,6 +72,7 @@ export class DetailIndicatorComponent implements OnInit {
     private router: Router,
     private alertService: AlertService,
     private spinner: NgxSpinnerService,
+    private urlTransfrom: UrlTransformPipe,
     private formBuilder: FormBuilder,
     private commentService: CommentService,
     private titleService: Title,
@@ -110,7 +111,9 @@ export class DetailIndicatorComponent implements OnInit {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
       res => {
         this.detailedData = res.data.filter(field => {
-          return field.value && field.value !== this.notApplicable;
+          if (typeof field.value === 'number') field.value = String(field.value)
+          field.value = this.urlTransfrom.transform(field.value);
+          return field.value !== this.notApplicable;
         });;
         // this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
@@ -127,7 +130,7 @@ export class DetailIndicatorComponent implements OnInit {
 
         this.hideSpinner(this.spinner1);
         this.getCommentReplies();
-        // console.log(this.detailedData)
+        console.log(this.detailedData)
       },
       error => {
         console.log("getEvaluationsList", error);
