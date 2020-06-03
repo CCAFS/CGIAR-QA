@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { environment } from '../environments/environment';
 import { Router, NavigationEnd } from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 declare let gtag: Function;
 
@@ -12,9 +13,15 @@ declare let gtag: Function;
 export class AppComponent {
   title = 'qa-app';
   env = environment;
+  isModalShown = false;
 
+  @ViewChild('autoShownModal', { static: false }) autoShownModal: ModalDirective;
 
   constructor(public router: Router) {
+    const isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
+    if (isIEOrEdge) {
+      this.showModal()
+    }
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         gtag('config', environment.ga,
@@ -25,4 +32,20 @@ export class AppComponent {
       }
     })
   }
+
+
+
+  showModal(): void {
+    this.isModalShown = true;
+
+  }
+
+  hideModal(): void {
+    this.autoShownModal.hide();
+  }
+
+  onHidden(): void {
+    this.isModalShown = false;
+  }
+
 }

@@ -73,7 +73,7 @@
                             <form [formGroup]="commentGroup">
                                 <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
                             </form>
-                            <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000</span>
+                            <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>
                             <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
                         </div>
 
@@ -98,7 +98,7 @@
         <form [formGroup]="commentGroup">
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>
-        <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000</span>
+        <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>
         <button type="button" class="btn btn-primary" (click)="addComment()">ADD</button>
 
     </div>

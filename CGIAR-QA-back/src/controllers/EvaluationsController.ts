@@ -122,6 +122,7 @@ class EvaluationsController {
                     evaluations.status AS evaluations_status,
                     evaluations.indicator_view_name,
                     evaluations.indicator_view_id,
+                    evaluations.evaluation_status,
                     evaluations.crp_id,
                     crp.acronym AS crp_acronym,
                     crp.name AS crp_name,
@@ -180,6 +181,7 @@ class EvaluationsController {
                         evaluations.id AS evaluation_id,
                         evaluations.indicator_view_name,
                         evaluations.indicator_view_id,
+                        evaluations.evaluation_status,
                         evaluations.crp_id,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
@@ -239,6 +241,7 @@ class EvaluationsController {
                         evaluations.status AS evaluations_status,
                         evaluations.indicator_view_name,
                         evaluations.indicator_view_id,
+                        evaluations.evaluation_status,
                         evaluations.crp_id,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
@@ -453,8 +456,8 @@ class EvaluationsController {
                     { indicatorId },
                     {}
                 );
-                // console.log('crp')
-                // console.log(query, parameters)
+                console.log('crp')
+                console.log(query, parameters)
                 rawData = await queryRunner.connection.query(query, parameters);
             }
             else {

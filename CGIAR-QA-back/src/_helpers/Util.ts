@@ -333,6 +333,7 @@ class Util {
             evaluation_id: element["evaluation_id"],
             crp_name: element["crp_name"],
             status: element["evaluations_status"],
+            evaluation_status: element["evaluation_status"],
             comments_replies_count: element["comments_replies_count"],
             crp_accepted: element["crp_accepted"],
             crp_rejected: element["crp_rejected"],

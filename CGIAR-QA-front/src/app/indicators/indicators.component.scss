@@ -6,25 +6,44 @@ h2 {
   font-size: $font-lg;
 }
 
-.icon-go-back{
-  height:0.8em
+.icon-go-back {
+  height: 0.8em;
 }
-.nav-item{
+.nav-item {
   padding-top: 0;
   margin-bottom: 2em;
   text-transform: capitalize;
 }
 
+.evaluation-status {
+  border-radius: 0.3em;
+  font-size: 0.5em;
+  padding: 2px 5px;
+  display: block !important;
+  float: right;
+}
+.added {
+  border: var(--yellow-secondary) 2px solid;
+  background: var(--yellow-primary);
+}
+.new {
+  border: var(--green-primary) 2px solid;
+  background: var(--green-secondary);
+}
+.removed {
+  border: var(--red-primary) 2px solid;
+  background: var(--red-tertiary);
+}
+
 .go-back {
   font-weight: 600;
-  color: #f1b83b;
+  color: var(--yellow-primary);
   font-size: 1em;
 }
 
 .go-back:hover {
   color: #d59b1b;
 }
-
 
 .sub-header {
   margin: 1em 0;
@@ -78,7 +97,7 @@ h2 {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        .order-icon{
+        .order-icon {
           margin-left: 1em;
         }
       }
@@ -95,11 +114,11 @@ h2 {
     text-align: center;
     vertical-align: middle;
     padding: 0.75em;
-    .excel-download{
+    .excel-download {
       cursor: pointer;
       color: #007bff;
       text-decoration: underline;
-      a{
+      a {
       }
       i {
         height: 0.5em;

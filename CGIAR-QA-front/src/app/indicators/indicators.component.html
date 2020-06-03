@@ -105,6 +105,9 @@
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
             <td>
+                <div *ngIf="item.evaluation_status" class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}" style="display:none">
+                    {{item.evaluation_status}}
+                </div>
                 <a rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
                     {{ item.title }}</a>
                 <!-- <a target="_blank"> {{ item.title }}</a> -->
