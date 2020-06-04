@@ -48,7 +48,7 @@
             <div class="data-row" *ngFor="let field of detailedData; let i = index">
                 <div class="col">
                     <div class="row" style="padding: 0;">
-                        <h2>{{detailedData[i].display_name}}</h2>
+                        <h2 [innerHTML]="detailedData[i].display_name | markdown"></h2>
                         <div *ngIf="field.meta_description">
                             <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
                                 style="height: 1.5em;"></i>
