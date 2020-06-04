@@ -484,6 +484,7 @@ class CommentController {
                     WHERE
                         comments.detail IS NOT NULL
                     AND evaluations.indicator_view_name = :indicatorName
+                    AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                     AND comments.approved = 1
                     AND comments.is_deleted = 0
                     AND evaluations.crp_id = :crp_id
@@ -526,6 +527,7 @@ class CommentController {
                         WHERE
                             comments.detail IS NOT NULL
                         AND evaluations.id = :evaluationId
+                        AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                         AND comments.approved = 1
                         AND comments.is_visible = 1
                         AND comments.is_deleted = 0
@@ -567,6 +569,7 @@ class CommentController {
                         WHERE
                             comments.detail IS NOT NULL
                         AND evaluations.id = :evaluationId
+                        AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                         AND comments.approved = 1
                         AND comments.is_visible = 1
                         AND comments.is_deleted = 0

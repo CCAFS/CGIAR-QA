@@ -148,12 +148,15 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id);
     let availableData = this.detailedData.filter(data => data.enable_comments)
     // console.log('update Eval',  commented_row, checked_row,  availableData.length)
-    if ((checked_row.length + commented_row.length) == availableData.length) {
-      this.gnralInfo.status_update = this.statusHandler.Complete;
-      this.updateEvaluation('status', this.detailedData)
-    } else if (this.gnralInfo.status == this.statusHandler.Complete) {
-      this.gnralInfo.status_update = this.statusHandler.Pending;
-      this.updateEvaluation('status', this.detailedData)
+    if(this.gnralInfo.status !== this.statusHandler.Complete){
+      if ((checked_row.length + commented_row.length) == availableData.length) {
+        this.gnralInfo.status_update = this.statusHandler.Complete;
+        this.updateEvaluation('status', this.detailedData)
+      } else if (this.gnralInfo.status == this.statusHandler.Complete) {
+        this.gnralInfo.status_update = this.statusHandler.Pending;
+        this.updateEvaluation('status', this.detailedData)
+      }
+
     }
   }
 
