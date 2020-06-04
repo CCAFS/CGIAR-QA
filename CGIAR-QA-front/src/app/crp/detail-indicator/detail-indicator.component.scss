@@ -99,6 +99,7 @@
       margin: 1em 0;
       flex-direction: row;
       display: flex;
+      word-wrap: break-word;
       .empty-value {
         font-style: italic;
       }
@@ -136,7 +137,7 @@
       }
 
       .activate-messages-container {
-       
+
         border-radius: 50%;
         height: 3em;
         width: 3em;
