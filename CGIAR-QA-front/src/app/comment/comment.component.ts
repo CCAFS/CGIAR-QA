@@ -46,7 +46,7 @@ export class CommentComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
-    private wordCount:WordCounterPipe,
+    private wordCount: WordCounterPipe,
     private spinner: NgxSpinnerService) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
@@ -129,7 +129,7 @@ export class CommentComponent implements OnInit {
     )
 
   }
-  
+
   updateCommentReply(type, data) {
     let canUpdate = this.validComment(type, data)
     if (!canUpdate.is_valid) {
@@ -138,7 +138,7 @@ export class CommentComponent implements OnInit {
     }
     data[type] = !data[type];
     this.showSpinner(this.spinner_comment);
-    
+
     this.commentService.updateCommentReply(data).subscribe(
       res => {
         // console.log(res)
@@ -161,12 +161,19 @@ export class CommentComponent implements OnInit {
     this.commentService.getDataComment(params).subscribe(
       res => {
         this.hideSpinner(this.spinner_comment);
-        console.log(res)
+        // console.log(res)
         this.updateNumCommnts.emit(res.data.filter(field => field.is_deleted == false));
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:
             this.commentsByCol = res.data.filter(data => data.approved);
-            this.currentComment = this.commentsByCol.find(comment => comment.approved)
+            this.currentComment = this.commentsByCol.find(comment => comment.approved);
+            this.commentsByCol.forEach(comment => {
+              if (comment.replies.replies_count != '0') {
+                comment.isCollapsed = true;
+                this.getCommentReplies(comment)
+                console.log(comment)
+              }
+            });
             this.crpComment = true;
             break;
           default:
@@ -184,12 +191,12 @@ export class CommentComponent implements OnInit {
 
   getCommentReplies(comment) {
     if (comment.isCollapsed) {
-      this.showSpinner(this.spinner_comment);
+      // this.showSpinner(this.spinner_comment);
       let params = { commentId: comment.id, evaluationId: this.dataFromItem.evaluation_id, }
       this.commentService.getDataCommentReply(params).subscribe(
         res => {
-          this.hideSpinner(this.spinner_comment);
-          // console.log(res)
+          // this.hideSpinner(this.spinner_comment);
+          // console.log('getCommentReplies', res)
           comment.loaded_replies = res.data
           // this.commentsByColReplies = res.data
         },
@@ -210,22 +217,20 @@ export class CommentComponent implements OnInit {
   }
 
   replyComment(currentComment) {
-    if (this.commentGroup.invalid) {
+    if (this.commentGroup.invalid || this.formData.comment.value !== "") {
       this.alertService.error('Comment is required', false)
       return;
     }
+    
     this.showSpinner(this.spinner_comment);
     this.commentService.createDataCommentReply({
       detail: this.formData.comment.value,
       userId: this.currentUser.id,
       commentId: currentComment ? currentComment.id : this.currentComment.id,
       crp_approved: this.crpComment ? currentComment.crp_response : undefined,
-      // crp_approved: this.is_approved,
-      // approved: this.approved,
     }).subscribe(
       res => {
         this.availableComment = false;
-        // this.commentsByCol = res.data;
         this.getItemCommentData()
         this.formData.comment.reset()
       },
@@ -244,7 +249,7 @@ export class CommentComponent implements OnInit {
     // return isAdmin;
   }
 
-  getWordCount(value:string){
+  getWordCount(value: string) {
     return this.wordCount.transform(value);
   }
 

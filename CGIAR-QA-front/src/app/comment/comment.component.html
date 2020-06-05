@@ -22,8 +22,9 @@
                         <p class="comment">
                             {{comment.detail}}
                         </p>
+                        <!--  getCommentReplies(comment) -->
                         <a *ngIf="comment.replies.replies_count != '0'" style="cursor: pointer;"
-                            (click)="comment.isCollapsed = !comment.isCollapsed; getCommentReplies(comment)">
+                            (click)="comment.isCollapsed = !comment.isCollapsed;">
                             {{comment.replies.replies_count}} replies:
                         </a>
                         <div [attr.aria-expanded]="!comment.isCollapsed" id="collapseBasic-{{comment.id}}">

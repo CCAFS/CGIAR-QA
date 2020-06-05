@@ -300,9 +300,9 @@ export class DetailIndicatorComponent implements OnInit {
 
   validateCommentAvility(field, is_embed) {
     // console.log(this.gnralInfo)
-    if (this.gnralInfo.status === DetailedStatus.Pending) return false;
-
+    
     let userRole = this.currentUser.roles[0].description, avility = false;
+    // if (this.gnralInfo.status === DetailedStatus.Pending) return false;
     switch (userRole) {
       case Role.admin:
         avility = true

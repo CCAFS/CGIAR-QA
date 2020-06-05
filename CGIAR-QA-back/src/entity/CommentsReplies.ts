@@ -21,9 +21,8 @@ export class QACommentsReplies {
     })
     is_deleted: boolean;
 
-    @Column()
-    @Length(3, 250)
-    @IsNotEmpty({ message: 'Permission is required' })
+    @Column({ type: 'longtext' })
+    // @IsNotEmpty({ message: 'Permission is required' })
     detail: string;
 
     @Column()
