@@ -217,7 +217,7 @@ export class CommentComponent implements OnInit {
   }
 
   replyComment(currentComment) {
-    if (this.commentGroup.invalid || this.formData.comment.value !== "") {
+    if (this.commentGroup.invalid || this.formData.comment.value === "") {
       this.alertService.error('Comment is required', false)
       return;
     }
