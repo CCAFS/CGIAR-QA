@@ -86,13 +86,13 @@ export class AuthenticationService {
 
   logout() {
     if (window.hasOwnProperty('Tawk_API')) {
-      if (window['Tawk_API'].isChatMaximized()) {
-        try {
-          window['Tawk_API'].endChat();
-        } catch (error) {
-          console.log(error)
-        }
+      try {
+        window['Tawk_API'].endChat();
+      } catch (error) {
+        console.log(error)
       }
+      // if (window['Tawk_API'].isChatMaximized()) {
+      // }
       window['Tawk_API'].visitor = {
         name: null,
         email: null
