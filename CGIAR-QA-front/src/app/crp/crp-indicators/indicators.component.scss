@@ -25,6 +25,26 @@ h2 {
   color: #d59b1b;
 }
 
+.evaluation-status {
+  border-radius: 0.3em;
+  font-size: 0.5em;
+  padding: 2px 5px;
+  display: block !important;
+  float: right;
+}
+.added {
+  border: var(--yellow-secondary) 2px solid;
+  background: var(--yellow-primary);
+}
+.new {
+  border: var(--green-primary) 2px solid;
+  background: var(--green-secondary);
+}
+.removed {
+  border: var(--red-primary) 2px solid;
+  background: var(--red-tertiary);
+}
+
 .sub-header {
   margin: 1em 0;
   padding: 0;

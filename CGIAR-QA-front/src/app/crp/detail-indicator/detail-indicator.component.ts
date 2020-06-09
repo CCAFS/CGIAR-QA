@@ -134,7 +134,7 @@ export class DetailIndicatorComponent implements OnInit {
 
         this.hideSpinner(this.spinner1);
         this.getCommentReplies();
-        // console.log(this.detailedData)
+        // console.log(res)
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -173,7 +173,7 @@ export class DetailIndicatorComponent implements OnInit {
     // this.commentService.getCommentsExcel({ evaluationId: (item) ? item.evaluation_id : undefined, id: this.currentUser.id, name: filename, indicatorName: all ? `qa_${this.indicatorType}` : undefined, crp_id: all ? this.currentUser.crp.crp_id : undefined }).subscribe(
 
 
-    this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: filename,indicatorName: `qa_${this.params.type}` }).subscribe(
+    this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: filename, indicatorName: `qa_${this.params.type}` }).subscribe(
       res => {
         // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
@@ -300,7 +300,7 @@ export class DetailIndicatorComponent implements OnInit {
 
   validateCommentAvility(field, is_embed) {
     // console.log(this.gnralInfo)
-    
+
     let userRole = this.currentUser.roles[0].description, avility = false;
     // if (this.gnralInfo.status === DetailedStatus.Pending) return false;
     switch (userRole) {

@@ -99,16 +99,7 @@ class EvaluationsController {
         // const view_name = `qa_${req.body.view_name}`;
         const view_name = req.body.view_name;
         const view_primary_field = req.body.view_primary_field;
-        const levelQuery = EvaluationsController.getLevelQuery(view_name)
-
-
-        /***
-         * 
-         *  evaluations.evaluation_status <> 'Deleted'
-                OR evaluations.evaluation_status IS NULL
-                AND 
-         * 
-         */
+        const levelQuery = EvaluationsController.getLevelQuery(view_name);
 
         let queryRunner = getConnection().createQueryBuilder();
         try {
@@ -138,7 +129,12 @@ class EvaluationsController {
                         AND is_deleted = 0
                         AND is_visible = 1
                     ) AS comments_count,
-                    ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
+
+                    (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                    NOT NULL AND is_deleted = 0 AND is_visible = 1 AND crp_approved = 1) AS comments_accepted_count,
+
+
+                    ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) AND is_deleted = 0 ) AS comments_replies_count,
                     ${levelQuery.view_sql}
                     (
                         SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
@@ -171,6 +167,7 @@ class EvaluationsController {
                     { view_name },
                     {}
                 );
+                // console.log('isadmin')
                 // console.log(sql)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
@@ -197,7 +194,12 @@ class EvaluationsController {
                             AND is_deleted = 0
                             AND is_visible = 1
                         ) AS comments_count,
-                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
+
+
+                        (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                        NOT NULL AND is_deleted = 0 AND is_visible = 1 AND crp_approved = 1) AS comments_accepted_count,
+
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) AND is_deleted = 0 ) AS comments_replies_count,
                         (
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
@@ -257,7 +259,13 @@ class EvaluationsController {
                             AND is_deleted = 0
                             AND is_visible = 1
                         ) AS comments_count,
-                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ) AS comments_replies_count,
+
+
+                        (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                        NOT NULL AND is_deleted = 0 AND is_visible = 1 AND crp_approved = 1) AS comments_accepted_count,
+
+
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) AND is_deleted = 0 ) AS comments_replies_count,
                         (
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
@@ -289,6 +297,7 @@ class EvaluationsController {
                         ${levelQuery.innovations_stage}
                         indicator_user.indicatorId
                 `;
+                // console.log('isasessor')
                 // console.log(sql)
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sql,
@@ -334,7 +343,7 @@ class EvaluationsController {
                 // response.innovations_stage = "qa_melia.study_type,"
                 break;
             case 'qa_milestones':
-                response.view_sql = "(SELECT status FROM qa_milestones milestones WHERE milestones.id = evaluations.indicator_view_id) AS stage,"
+                response.view_sql = "(SELECT status FROM qa_milestones milestones WHERE milestones.id = evaluations.indicator_view_id) AS stage, (SELECT fp FROM qa_milestones milestones WHERE milestones.id = evaluations.indicator_view_id) AS fp,"
                 // response.innovations_stage = "qa_melia.study_type,"
                 break;
 
@@ -377,6 +386,7 @@ class EvaluationsController {
                             meta.include_detail AS meta_include_detail,
                             meta.is_primay AS meta_is_primay,
                             evaluations.id AS evaluation_id,
+                            evaluations.evaluation_status AS evaluation_status,
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
                             evaluations.status AS evaluations_status,
@@ -420,6 +430,7 @@ class EvaluationsController {
                             meta.include_detail AS meta_include_detail,
                             meta.is_primay AS meta_is_primay,
                             evaluations.id AS evaluation_id,
+                            evaluations.evaluation_status AS evaluation_status,
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
                             evaluations.status AS evaluations_status,
@@ -456,8 +467,8 @@ class EvaluationsController {
                     { indicatorId },
                     {}
                 );
-                console.log('crp')
-                console.log(query, parameters)
+                // console.log('crp')
+                // console.log(query, parameters)
                 rawData = await queryRunner.connection.query(query, parameters);
             }
             else {
@@ -474,6 +485,7 @@ class EvaluationsController {
                         meta.include_detail AS meta_include_detail,
                         meta.is_primay AS meta_is_primay,
                         evaluations.id AS evaluation_id,
+                        evaluations.evaluation_status AS evaluation_status,
                         crp.name AS crp_name,
                         crp.acronym AS crp_acronym,
                         evaluations.status AS evaluations_status,
@@ -544,7 +556,7 @@ class EvaluationsController {
         try {
             let rawData;
             if (crp_id !== undefined && crp_id !== "undefined") {
-                
+
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT

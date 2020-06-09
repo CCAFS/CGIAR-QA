@@ -17,10 +17,15 @@
 </div>
 
 <div *ngIf="detailedData && detailedData[0] " class="row detail-header-container">
-    <p class="indicator-item-name">
-        {{detailedData[0].crp_acronym}} / {{currentType}} /
-        QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
-    </p>
+    <div>
+        <p class="indicator-item-name">
+            {{detailedData[0].crp_acronym}} / {{currentType}} /
+            QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
+        </p>
+        <div *ngIf="gnralInfo.evaluation_status  && gnralInfo.evaluation_status !== 'New'" class="evaluation-status {{ gnralInfo.evaluation_status ? gnralInfo.evaluation_status.toLowerCase():'' }}" >
+            {{gnralInfo.evaluation_status}}
+        </div>
+    </div>
 
     <p>Status: <span
             class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>

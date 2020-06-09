@@ -1,5 +1,4 @@
-<a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
-    routerLink="/crp/dashboard/">
+<a class="nav-item nav-link go-back" [routerLinkActive]="['active']" routerLink="/crp/dashboard/">
     <i class=icon-go-back></i> Dashboard
 </a>
 
@@ -21,8 +20,8 @@
                     </div>
                     <div (click)="exportComments(null, true)">
                         <a target="_blank">
-                            <div tooltip="All {{indicatorTypeName}} related comments in excel format" container="body" placement="top"
-                                class="btn btn-primary file-button">
+                            <div tooltip="All {{indicatorTypeName}} related comments in excel format" container="body"
+                                placement="top" class="btn btn-primary file-button">
                                 <i class="icon-download-excel"></i>
                             </div>
                         </a>
@@ -106,15 +105,17 @@
                     </tr>
                 </thead>
                 <tbody class="table-body">
-                    <tr *ngFor="let item of evaluationList | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
+                    <tr
+                        *ngFor="let item of evaluationList | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
                         <th scope="row">
                             QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
                         </th>
-                        <td >
+                        <td>
+                            <div *ngIf="item.evaluation_status" class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}">
+                                {{item.evaluation_status}}
+                            </div>
                             <a rel="noopener noreferrer" [routerLinkActive]="['active']"
-                            routerLink="./detail/{{item.id}}"> {{ item.title }}</a>
-                            <!-- routerLink="./detail/{{item.id}}" [queryParams]="{previous: getNavItems('previous', i), next:  getNavItems('next', i)}"> {{ item.title }}</a> -->
-
+                                routerLink="./detail/{{item.id}}"> {{ item.title }}</a>
                         </td>
                         <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
                         <td>{{ item.comments_replies_count }}</td>
@@ -143,7 +144,7 @@
                 </pagination>
             </div>
 
-            
+
             <!-- <div class="d-flex justify-content-center p-2 pagination-container">
                 <pagination [rotate]="false" [totalItems]="collectionSize" [maxSize]="3"
                     (pageChanged)="pageChanged($event)">

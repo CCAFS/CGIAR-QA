@@ -37,6 +37,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   gnralInfo = {
     status: "",
     evaluation_id: '',
+    evaluation_status: '',
     general_comment: '',
     general_comment_user: '',
     general_comment_updatedAt: '',
@@ -76,7 +77,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
-    private wordCount:WordCounterPipe,
+    private wordCount: WordCounterPipe,
     private titleService: Title,
     private authenticationService: AuthenticationService,
     private evaluationService: EvaluationsService) {
@@ -148,7 +149,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id);
     let availableData = this.detailedData.filter(data => data.enable_comments)
     // console.log('update Eval',  commented_row, checked_row,  availableData.length)
-    if(this.gnralInfo.status !== this.statusHandler.Complete){
+    if (this.gnralInfo.status !== this.statusHandler.Complete) {
       if ((checked_row.length + commented_row.length) == availableData.length) {
         this.gnralInfo.status_update = this.statusHandler.Complete;
         this.updateEvaluation('status', this.detailedData)
@@ -216,6 +217,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
+        // console.log(res)
         this.detailedData = res.data.filter(field => {
           if (typeof field.value === 'number') field.value = String(field.value)
           field.value = this.urlTransfrom.transform(field.value);
@@ -226,6 +228,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           evaluation_id: this.detailedData[0].evaluation_id,
           general_comment: this.detailedData[0].general_comment,
           crp_id: this.detailedData[0].evaluation_id,
+          evaluation_status: this.detailedData[0].evaluation_status,
           status: this.detailedData[0].status,
           general_comment_id: this.detailedData[0].general_comment_id,
           status_update: null,
@@ -255,7 +258,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let title = this.detailedData.find(data => data.col_name === 'title');
     let filename = `QA-${this.params.type.charAt(0).toUpperCase()}${this.params.type.charAt(1).toUpperCase()}-${this.params.indicatorId}_${moment().format('YYYYMMDD_HHmm')}`
 
-    this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: title.display_name,indicatorName: `qa_${this.params.type}` }).subscribe(
+    this.commentService.getCommentsExcel({ evaluationId, id: this.currentUser.id, name: title.display_name, indicatorName: `qa_${this.params.type}` }).subscribe(
       res => {
         // console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
@@ -303,7 +306,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
    * 
    */
 
-  getWordCount(value:string){
+  getWordCount(value: string) {
     return this.wordCount.transform(value);
   }
 
@@ -453,7 +456,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       error => {
         console.log("getCommentReplies", error);
         // this.hideSpinner('spinner1');
-        if(error !== 'OK')
+        if (error !== 'OK')
           this.alertService.error(error);
       }
     )

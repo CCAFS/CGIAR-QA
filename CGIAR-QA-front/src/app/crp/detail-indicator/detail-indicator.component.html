@@ -100,7 +100,9 @@
 
                     <div [tooltip]="commentsTooltip" container="body" placement="top" *ngIf="field.replies_count != '0'"
                         class="replies-count {{field.replies_count == field.comments_replies_count ? 'accepted':'rejected'}}">
-                        {{field.comments_replies_count}}/{{field.replies_count}}
+                        <p style="padding: 0.2em; margin: 0.2em; font-size: 14px">
+                            {{field.comments_replies_count}}/{{field.replies_count}}
+                        </p>
                     </div>
                     <ng-template #commentsTooltip>
                         <div>

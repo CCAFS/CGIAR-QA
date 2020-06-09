@@ -328,16 +328,17 @@ class Util {
     private static formatResponse = (element, type) => {
         let field = element["meta_col_name"];
         var response = {
-            comments_count: element["comments_count"],
-            crp_acronym: element["crp_acronym"],
-            evaluation_id: element["evaluation_id"],
-            crp_name: element["crp_name"],
-            status: element["evaluations_status"],
-            evaluation_status: element["evaluation_status"],
             comments_replies_count: element["comments_replies_count"],
+            comments_accepted_count: element["comments_accepted_count"],
+            comments_count: element["comments_count"],
+            evaluation_id: element["evaluation_id"],
+            status: element["evaluations_status"],
+            response_status: element["response_status"],
+            evaluation_status: element["evaluation_status"],
+            crp_name: element["crp_name"],
+            crp_acronym: element["crp_acronym"],
             crp_accepted: element["crp_accepted"],
             crp_rejected: element["crp_rejected"],
-            response_status: element["response_status"],
         }
         if (!type) {
             response = Object.assign(response, {
@@ -348,6 +349,7 @@ class Util {
                 title: element['title'],
                 comment_by: element['comment_by'],
                 stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
+                fp: element.hasOwnProperty('fp') ? element['fp'] : undefined,
             });
         } else {
             response = Object.assign(response, {

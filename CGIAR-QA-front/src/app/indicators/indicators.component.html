@@ -66,6 +66,18 @@
                     </div>
                 </div>
             </th>
+            <th *ngIf="returnedArray && returnedArray[0].fp" scope="col" [class.active]="order === 'fp'"
+                (click)="setOrder('fp')">
+                <div class="header-row">
+                    Flagship
+                    <div class="order-icon" *ngIf="order === 'fp'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
+
+
             <th scope="col" [class.active]="order === 'comments_count'" (click)="setOrder('comments_count')">
                 <div class="header-row"> Comments
                     <div class="order-icon" *ngIf="order === 'comments_count'">
@@ -74,6 +86,31 @@
                     </div>
                 </div>
             </th>
+            <th *ngIf="returnedArray && returnedArray[0].comments_replies_count" scope="col" [class.active]="order === 'comments_replies_count'"
+                (click)="setOrder('comments_replies_count')">
+                <div class="header-row">
+                    Replies count
+                    <!-- {{returnedArray[0].comments_replies_count}} -->
+                    <div class="order-icon" *ngIf="order === 'comments_replies_count'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
+            <th *ngIf="returnedArray && returnedArray[0].comments_accepted_count" scope="col" [class.active]="order === 'comments_accepted_count'"
+                (click)="setOrder('comments_accepted_count')">
+                <div class="header-row">
+                    Accepted comments
+                    <!-- {{returnedArray[0].comments_accepted_count}} -->
+                    <div class="order-icon" *ngIf="order === 'comments_accepted_count'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
+
+
+            
             <th scope="col">
                 <div class="header-row">
                     Export comments
@@ -105,18 +142,20 @@
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
             <td>
-                <div *ngIf="item.evaluation_status" class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}" style="display:none">
+                <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
+                    class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}"
+                    style="display:none">
                     {{item.evaluation_status}}
                 </div>
                 <a rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
                     {{ item.title }}</a>
-                <!-- <a target="_blank"> {{ item.title }}</a> -->
-                <!-- {{ item.title }} (click)="goToView(item.id)"-->
-
             </td>
             <td>{{ item.crp_acronym }}</td>
             <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
+            <td *ngIf="item.hasOwnProperty('fp')">{{ (item.fp) ? item.fp: notProviedText}}</td>
             <td>{{ item.comments_count }}</td>
+            <td *ngIf="item.hasOwnProperty('comments_replies_count')">{{ (item.comments_replies_count) ? item.comments_replies_count: 0}}</td>
+            <td *ngIf="item.hasOwnProperty('comments_accepted_count')">{{ (item.comments_accepted_count) ? item.comments_accepted_count: 0}}</td>
             <td (click)="exportComments(item)">
                 <a target="_blank">
                     <div tooltip="Comment in excel format" container="body" placement="top"
