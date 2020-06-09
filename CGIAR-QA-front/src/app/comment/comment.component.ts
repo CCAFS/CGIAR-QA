@@ -167,19 +167,26 @@ export class CommentComponent implements OnInit {
           case this.allRoles.crp:
             this.commentsByCol = res.data.filter(data => data.approved);
             this.currentComment = this.commentsByCol.find(comment => comment.approved);
-            this.commentsByCol.forEach(comment => {
-              if (comment.replies.replies_count != '0') {
-                comment.isCollapsed = true;
-                this.getCommentReplies(comment)
-                console.log(comment)
-              }
-            });
             this.crpComment = true;
+            // this.commentsByCol.forEach(comment => {
+            //   console.log(comment)
+            //   if (comment.replies.replies_count != '0') {
+            //     comment.isCollapsed = true;
+            //     this.getCommentReplies(comment)
+            //   }
+            // });
             break;
           default:
             this.commentsByCol = res.data
             break;
         }
+        this.commentsByCol.forEach(comment => {
+          console.log(comment)
+          if (comment.replies.replies_count != '0') {
+            comment.isCollapsed = true;
+            this.getCommentReplies(comment)
+          }
+        });
       },
       error => {
         console.log("getItemCommentData", error);
@@ -221,7 +228,7 @@ export class CommentComponent implements OnInit {
       this.alertService.error('Comment is required', false)
       return;
     }
-    
+
     this.showSpinner(this.spinner_comment);
     this.commentService.createDataCommentReply({
       detail: this.formData.comment.value,
