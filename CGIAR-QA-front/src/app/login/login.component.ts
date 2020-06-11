@@ -69,6 +69,7 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
+          // console.log(data)
           if (data.config.length) {
             if (data.config[0].status === GeneralStatus.Open) {
               this.router.navigate([`dashboard/${data.roles[0].description.toLowerCase()}`]);

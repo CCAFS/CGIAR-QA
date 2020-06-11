@@ -9,6 +9,7 @@ import { QAUsers } from "@entity/User";
 import { QAGeneralConfiguration } from "@entity/GeneralConfig";
 import { RolesHandler } from "@helpers/RolesHandler";
 import Util from "@helpers/Util";
+import { QACycle } from "@entity/Cycles";
 let ActiveDirectory = require('activedirectory');
 
 const { ErrorHandler } = require("@helpers/ErrorHandler")
@@ -22,6 +23,7 @@ class AuthController {
             //Get user from database
             const userRepository = getRepository(QAUsers);
             const grnlConfg = getRepository(QAGeneralConfiguration);
+            const cycleRepo = getRepository(QACycle);
 
             username = username.trim().toLowerCase();
 
@@ -63,9 +65,14 @@ class AuthController {
                 .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
                 .getRawMany();
 
+            // let current_cycle = await cycleRepo
+            //     .createQueryBuilder("qa_cycle")
+            //     .select('*')
+            //     .where("DATE(qa_cycle.start_date) <= CURDATE()")
+            //     .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+            //     .getRawOne();
+                
             //Check if encrypted password match
-
-            // console.log('user',marlo_user)
             if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
                 res.status(401).json({ message: 'Password does not match.' });
             }
@@ -79,6 +86,7 @@ class AuthController {
 
             user["token"] = token;
             user["config"] = generalConfig;
+            // user['cycle'] = current_cycle;
             delete user.password;
             //Send the jwt in the response
             res.status(200).json({ data: user })

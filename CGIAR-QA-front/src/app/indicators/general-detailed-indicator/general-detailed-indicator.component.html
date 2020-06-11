@@ -147,6 +147,7 @@
                     <p class="informative-text">
                         Please take into consideration that this is going to be shown to the CRP.
                     </p>
+                    <hr style="margin: 0;" class="ng-star-inserted">
                     <form [formGroup]="generalCommentGroup">
                         <textarea *ngIf="!general_comment_reply"
                             [readonly]="gnralInfo.status === statusHandler.Complete" maxlength="{{totalChar}}"
@@ -156,7 +157,7 @@
                     <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                         {{gnralInfo.general_comment_user}} <strong>at:</strong>
                         {{gnralInfo.general_comment_updatedAt | date: 'long'}}</p>
-                    <span class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000 words</span>
+                    <span *ngIf="!general_comment_reply" class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000 words</span>
                     <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
                         <p>{{reply.detail}}</p>
                         <p>Replied by: {{reply.user.username}} </p>

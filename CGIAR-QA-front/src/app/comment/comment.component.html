@@ -10,7 +10,10 @@
                         <div class="comment-title">
                             <div>
                                 <span>ADDED BY {{comment.user.username}} </span>
-                                <p>On {{comment.updatedAt | date: 'long'}}</p>
+                                <div>
+                                    <p>On {{comment.updatedAt | date: 'long'}}</p>
+                                    <!-- <p><strong> {{comment.cycle.cycle_name: commen}} </strong></p> -->
+                                </div>
                             </div>
                             <div>
                                 <!-- <i *ngIf="(comment.user.id === currentUser.id  && comment.replies.replies_count == '0') && !crpComment " class="icon-edit"></i> -->

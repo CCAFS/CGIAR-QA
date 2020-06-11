@@ -11,6 +11,7 @@ import { QACommentsReplies } from "@entity/CommentsReplies";
 import { RolesHandler } from "@helpers/RolesHandler";
 import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 import { QAEvaluations } from "@entity/Evaluations";
+import { QACycle } from "@entity/Cycles";
 
 
 class CommentController {
@@ -58,7 +59,7 @@ class CommentController {
                     { crp_id },
                     {}
                 );
-                console.log('role === RolesHandler.crp',query)
+                console.log('role === RolesHandler.crp', query)
                 rawData = await queryRunner.connection.query(query, parameters);
             } else {
 
@@ -87,7 +88,7 @@ class CommentController {
                         { crp_id },
                         {}
                     );
-                    console.log('!== undefined',query)
+                    console.log('!== undefined', query)
                     rawData = await queryRunner.connection.query(query, parameters);
                     // res.status(200).json({ data: Util.parseCommentData(rawData, 'indicator_view_name'), message: 'Comments by crp' });
                 }
@@ -116,7 +117,7 @@ class CommentController {
                         {},
                         {}
                     );
-                    console.log('=== undefined',query)
+                    console.log('=== undefined', query)
                     rawData = await queryRunner.connection.query(query, parameters);
                 }
             }
@@ -184,6 +185,7 @@ class CommentController {
         const metaRepository = getRepository(QAIndicatorsMeta);
         const evaluationsRepository = getRepository(QAEvaluations);
         const commentsRepository = getRepository(QAComments);
+        const cycleRepo = getRepository(QACycle);
 
         try {
 
@@ -193,12 +195,23 @@ class CommentController {
                 meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
 
+
+
+            let current_cycle = await cycleRepo
+                .createQueryBuilder("qa_cycle")
+                .select('*')
+                .where("DATE(qa_cycle.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+                .getRawOne();
+
+
             let comment_ = new QAComments();
             comment_.detail = detail;
             comment_.approved = approved;
             comment_.meta = meta;
             comment_.evaluation = evaluation;
             comment_.user = user;
+            comment_.cycle = current_cycle;
             let new_comment = await commentsRepository.save(comment_);
 
             res.status(200).send({ data: new_comment, message: 'Comment created' });
@@ -245,14 +258,14 @@ class CommentController {
         const repliesRepository = getRepository(QACommentsReplies);
 
         try {
-            let reply_ = await repliesRepository.findOneOrFail(id, {relations:['comment']});
+            let reply_ = await repliesRepository.findOneOrFail(id, { relations: ['comment'] });
 
             reply_.is_deleted = is_deleted;
             if (detail)
                 reply_.detail = detail;
             if (userId)
                 reply_.user = userId;
-            if(reply_.is_deleted){
+            if (reply_.is_deleted) {
                 const commentsRepository = await getRepository(QAComments);
                 console.log(reply_)
                 let comment = await commentsRepository.findOneOrFail(reply_.comment.id);
@@ -312,7 +325,7 @@ class CommentController {
 
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "Comment can not be retrived.", data: error });
+            res.status(404).json({ message: "Comments can not be retrived.", data: error });
         }
 
     }
@@ -701,6 +714,7 @@ class CommentController {
         let comments = await commentsRepository.find({
             where: whereClause,
             relations: ['user'],
+            // relations: ['user', 'cycle'],
             order: {
                 createdAt: "ASC"
             }
