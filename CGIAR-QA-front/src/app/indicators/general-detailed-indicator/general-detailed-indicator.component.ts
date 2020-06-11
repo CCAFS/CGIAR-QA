@@ -364,6 +364,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         evaluationData['status'] = this.gnralInfo.status_update;
         // evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
         break;
+      case "complete_eval":
+        // evaluationData['status'] = this.gnralInfo.status_update;
+        evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
+        break;
 
       default:
         break;

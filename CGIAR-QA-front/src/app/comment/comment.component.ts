@@ -181,7 +181,6 @@ export class CommentComponent implements OnInit {
             break;
         }
         this.commentsByCol.forEach(comment => {
-          console.log(comment)
           if (comment.replies.replies_count != '0') {
             comment.isCollapsed = true;
             this.getCommentReplies(comment)

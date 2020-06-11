@@ -22,7 +22,8 @@
             {{detailedData[0].crp_acronym}} / {{currentType}} /
             QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
         </p>
-        <div *ngIf="gnralInfo.evaluation_status  && gnralInfo.evaluation_status !== 'New'" class="evaluation-status {{ gnralInfo.evaluation_status ? gnralInfo.evaluation_status.toLowerCase():'' }}" >
+        <div *ngIf="gnralInfo.evaluation_status  && gnralInfo.evaluation_status !== 'New'"
+            class="evaluation-status {{ gnralInfo.evaluation_status ? gnralInfo.evaluation_status.toLowerCase():'' }}">
             {{gnralInfo.evaluation_status}}
         </div>
     </div>
@@ -52,7 +53,7 @@
         <!--  class="col-sm" -->
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div class="col data-container">
-                <div class="select-all" *ngIf="detailedData">
+                <div class="select-all" *ngIf="detailedData && currentUser.cycle.cycle_stage == '1'">
                     <button type="button" (click)="onChangeSelectAll(approveAllitems)"
                         class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">Approve/Dissaprove all items to be
                         assessed.</button>
@@ -157,7 +158,8 @@
                     <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                         {{gnralInfo.general_comment_user}} <strong>at:</strong>
                         {{gnralInfo.general_comment_updatedAt | date: 'long'}}</p>
-                    <span *ngIf="!general_comment_reply" class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000 words</span>
+                    <span *ngIf="!general_comment_reply"
+                        class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000 words</span>
                     <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
                         <p>{{reply.detail}}</p>
                         <p>Replied by: {{reply.user.username}} </p>
@@ -170,6 +172,10 @@
                     </div>
 
                 </div>
+            </div>
+            <div *ngIf="currentUser.cycle.cycle_stage != '1' && gnralInfo.status !== statusHandler.Complete" class="bton-container">
+                <button type="button" class="btn btn-green-secondary"
+                    (click)="updateEvaluation('complete_eval',detailedData)">COMPLETE ASSESSMENT</button>
             </div>
             <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
                 size="medium">
