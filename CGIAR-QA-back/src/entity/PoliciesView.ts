@@ -94,7 +94,9 @@ export class QAPolicies {
     
     @ViewColumn()
     innovations: string;
-
+    
+    @ViewColumn()
+    shared_policy: string;
 
 
 

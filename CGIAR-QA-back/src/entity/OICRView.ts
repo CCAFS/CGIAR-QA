@@ -51,6 +51,9 @@ export class QAOicr {
     maturity_level: string;
     
     @ViewColumn()
+    shared_oicr: string;
+
+    @ViewColumn()
     sub_idos: string;
     
     @ViewColumn()
