@@ -81,6 +81,9 @@ export class QAInnovations {
 
     @ViewColumn()
     evidence_link: string;
+    
+    @ViewColumn()
+    additional_evidence: string;
 
     @ViewColumn()
     public_link: string;
