@@ -211,7 +211,7 @@ class CommentController {
             comment_.meta = meta;
             comment_.evaluation = evaluation;
             comment_.user = user;
-            comment_.cycle = current_cycle;
+            // comment_.cycle = current_cycle;
             let new_comment = await commentsRepository.save(comment_);
 
             res.status(200).send({ data: new_comment, message: 'Comment created' });
