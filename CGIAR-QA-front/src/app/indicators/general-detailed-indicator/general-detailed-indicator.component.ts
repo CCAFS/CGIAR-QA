@@ -217,7 +217,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
-        // console.log(res)
+        console.log(res)
         this.detailedData = res.data.filter(field => {
           if (typeof field.value === 'number') field.value = String(field.value)
           field.value = this.urlTransfrom.transform(field.value);
@@ -364,9 +364,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         evaluationData['status'] = this.gnralInfo.status_update;
         // evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
         break;
-      case "complete_eval":
+      case "finalized_eval":
         // evaluationData['status'] = this.gnralInfo.status_update;
-        evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
+        evaluationData['status'] = this.statusHandler.Finalized;
         break;
 
       default:
@@ -375,7 +375,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
     this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
       res => {
-        // //console.log(res)
+        //console.log(res)
         this.alertService.success(res.message);
         this.showSpinner('spinner1')
         this.getDetailedData();

@@ -65,12 +65,12 @@ class AuthController {
                 .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
                 .getRawMany();
 
-            // let current_cycle = await cycleRepo
-            //     .createQueryBuilder("qa_cycle")
-            //     .select('*')
-            //     .where("DATE(qa_cycle.start_date) <= CURDATE()")
-            //     .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
-            //     .getRawOne();
+            let current_cycle = await cycleRepo
+                .createQueryBuilder("qa_cycle")
+                .select('*')
+                .where("DATE(qa_cycle.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+                .getRawOne();
                 
             //Check if encrypted password match
             if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
@@ -86,7 +86,7 @@ class AuthController {
 
             user["token"] = token;
             user["config"] = generalConfig;
-            // user['cycle'] = current_cycle;
+            user['cycle'] = current_cycle;
             delete user.password;
             //Send the jwt in the response
             res.status(200).json({ data: user })
@@ -133,7 +133,7 @@ class AuthController {
             }
             let auth_token = r[0];
             let user = await Util.createOrReturnUser(auth_token);
-
+           
 
             res.status(200).json({ data: user, message: 'CRP Logged' })
 

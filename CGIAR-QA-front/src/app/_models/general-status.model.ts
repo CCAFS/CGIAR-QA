@@ -1,6 +1,7 @@
 export enum DetailedStatus {
     Complete = 'complete',
-    Pending = 'pending'
+    Pending = 'pending',
+    Finalized = 'finalized',
 }
 export enum GeneralStatus {
     Open = 'open',

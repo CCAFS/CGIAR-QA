@@ -127,8 +127,6 @@
         <div class="data-row gnral-commnts">
             <h2>General comments:</h2>
             <div *ngIf="detailedData && detailedData[0].general_comment" class="col data-container">
-                <!-- <i style="height: 2em;" *ngIf="gnralInfo.user.id === currentUser.id "
-                    (click)="updateCommentReply('is_deleted', reply)" class="icon-remove"></i> -->
                 <p> {{detailedData[0].general_comment}} </p>
                 <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                     {{gnralInfo.general_comment_user}} <strong>at:</strong>

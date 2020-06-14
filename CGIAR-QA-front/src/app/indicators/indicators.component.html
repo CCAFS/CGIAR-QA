@@ -2,7 +2,10 @@
     <i class=icon-go-back></i> Dashboard
 </a>
 
-<h2>{{returnListName(indicatorType, 'header')}}</h2>
+<h2>{{returnListName(indicatorType, 'header')}} </h2>
+<h4 style="text-align: center;">
+    {{(currentUser.cycle.cycle_stage > 1 ) ? currentUser.cycle.cycle_name+ ':'+ currentUser.cycle.cycle_stage: ''}}
+</h4>
 <div class="row col sub-header">
     <div class="col row text-left">
         <div class="model-link-container" (click)="goToPDF('AR')">
@@ -26,6 +29,17 @@
 <div class="form-group">
     <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
 </div>
+<div class="row" style="margin: 1em 0;">
+
+    <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
+        <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
+            uncheckable tabindex="0" role="button">Added</label>
+        <label class="btn btn-outline-danger" [class.active]="evalStatusFilter === 'Removed'" btnRadio="Removed"
+            uncheckable tabindex="0" role="button">Removed</label>
+    </div>
+</div>
+
+
 <table class="table table-bordered">
     <thead class="table-header">
         <tr>
@@ -86,8 +100,8 @@
                     </div>
                 </div>
             </th>
-            <th *ngIf="returnedArray && returnedArray[0].comments_replies_count" scope="col" [class.active]="order === 'comments_replies_count'"
-                (click)="setOrder('comments_replies_count')">
+            <th *ngIf="returnedArray && returnedArray[0].comments_replies_count" scope="col"
+                [class.active]="order === 'comments_replies_count'" (click)="setOrder('comments_replies_count')">
                 <div class="header-row">
                     Replies count
                     <!-- {{returnedArray[0].comments_replies_count}} -->
@@ -97,8 +111,8 @@
                     </div>
                 </div>
             </th>
-            <th *ngIf="returnedArray && returnedArray[0].comments_accepted_count" scope="col" [class.active]="order === 'comments_accepted_count'"
-                (click)="setOrder('comments_accepted_count')">
+            <th *ngIf="returnedArray && returnedArray[0].comments_accepted_count" scope="col"
+                [class.active]="order === 'comments_accepted_count'" (click)="setOrder('comments_accepted_count')">
                 <div class="header-row">
                     Accepted comments
                     <!-- {{returnedArray[0].comments_accepted_count}} -->
@@ -110,7 +124,7 @@
             </th>
 
 
-            
+
             <th scope="col">
                 <div class="header-row">
                     Export comments
@@ -137,7 +151,7 @@
     </thead>
     <tbody class="table-body">
         <tr
-            *ngFor="let item of evaluationList | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
+            *ngFor="let item of evaluationList | filter:evalStatusFilter | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
             <th scope="row">
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
@@ -154,9 +168,11 @@
             <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
             <td *ngIf="item.hasOwnProperty('fp')">{{ (item.fp) ? item.fp: notProviedText}}</td>
             <td>{{ item.comments_count }}</td>
-            <td *ngIf="item.hasOwnProperty('comments_replies_count')">{{ (item.comments_replies_count) ? item.comments_replies_count: 0}}</td>
-            <td *ngIf="item.hasOwnProperty('comments_accepted_count')">{{ (item.comments_accepted_count) ? item.comments_accepted_count: 0}}</td>
-            <td (click)="exportComments(item)">
+            <td *ngIf="item.hasOwnProperty('comments_replies_count')">
+                {{ (item.comments_replies_count) ? item.comments_replies_count: 0}}</td>
+            <td *ngIf="item.hasOwnProperty('comments_accepted_count')">
+                {{ (item.comments_accepted_count) ? item.comments_accepted_count: 0}}</td>
+            <td *ngIf="item" (click)="exportComments(item)">
                 <a target="_blank">
                     <div tooltip="Comment in excel format" container="body" placement="top"
                         class="btn btn-primary file-button">

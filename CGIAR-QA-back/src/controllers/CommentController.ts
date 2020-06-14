@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import { validate } from "class-validator";
 import { getRepository, In, getConnection, IsNull, Not } from "typeorm";
 
@@ -179,41 +179,9 @@ class CommentController {
         // approved
         //Check if username and password are set
         const { detail, approved, userId, metaId, evaluationId } = req.body;
-        // const evaluationId = req.params.id;
-
-        const userRepository = getRepository(QAUsers);
-        const metaRepository = getRepository(QAIndicatorsMeta);
-        const evaluationsRepository = getRepository(QAEvaluations);
-        const commentsRepository = getRepository(QAComments);
-        const cycleRepo = getRepository(QACycle);
 
         try {
-
-            let user = await userRepository.findOneOrFail({ where: { id: userId } });
-            let meta;
-            if (metaId != null)
-                meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
-
-
-
-            let current_cycle = await cycleRepo
-                .createQueryBuilder("qa_cycle")
-                .select('*')
-                .where("DATE(qa_cycle.start_date) <= CURDATE()")
-                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
-                .getRawOne();
-
-
-            let comment_ = new QAComments();
-            comment_.detail = detail;
-            comment_.approved = approved;
-            comment_.meta = meta;
-            comment_.evaluation = evaluation;
-            comment_.user = user;
-            comment_.cycle = current_cycle;
-            let new_comment = await commentsRepository.save(comment_);
-
+            let new_comment = await Util.createComment(detail, approved, userId, metaId, evaluationId);
             res.status(200).send({ data: new_comment, message: 'Comment created' });
 
         } catch (error) {

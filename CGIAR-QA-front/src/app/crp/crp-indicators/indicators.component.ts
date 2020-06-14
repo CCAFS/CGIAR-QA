@@ -18,6 +18,7 @@ import { Title } from '@angular/platform-browser';
 import { SortByPipe } from 'src/app/pipes/sort-by.pipe';
 
 import * as moment from 'moment';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-indicators',
@@ -49,6 +50,7 @@ export class CRPIndicatorsComponent implements OnInit {
   pageSize = 4;
   collectionSize = 0;
   searchText;
+  evalStatusFilter = '';
 
   hasTemplate = false;
 
@@ -59,10 +61,12 @@ export class CRPIndicatorsComponent implements OnInit {
   reverse: boolean = false;
 
   spinner_name = 'spIndicators';
+  btonFilterForm: any;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
+    private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
@@ -73,6 +77,9 @@ export class CRPIndicatorsComponent implements OnInit {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
+      });
+      this.btonFilterForm = this.formBuilder.group({
+        radio: 'A'
       });
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
@@ -169,6 +176,37 @@ export class CRPIndicatorsComponent implements OnInit {
       }
     )
   }
+
+  returnListName(indicator: string, type: string) {
+    let r;
+    if (type === 'header') {
+      switch (indicator) {
+        case 'slo':
+          r = 'Evidence on Progress towards SRF targets'
+          break;
+
+        default:
+          r = `List of ${this.indicatorTypeName}`
+          break;
+      }
+    } else if (type === 'list') {
+      switch (indicator) {
+        case 'slo':
+          r = 'SLO target'
+          break;
+        case 'milestones':
+          r = 'Milestone statement'
+          break;
+
+        default:
+          r = `Title`
+          break;
+      }
+    }
+
+    return r;
+  }
+
 
   /***
    * 

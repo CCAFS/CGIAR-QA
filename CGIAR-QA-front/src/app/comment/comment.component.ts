@@ -61,6 +61,7 @@ export class CommentComponent implements OnInit {
   }
 
   updateData(data: any, params: any) {
+    console.log(data)
     Object.assign(this.dataFromItem, data, params)
     this.availableComment = false;
     this.showSpinner(this.spinner_comment);
@@ -137,8 +138,11 @@ export class CommentComponent implements OnInit {
       return;
     }
     data[type] = !data[type];
+    delete data.user.replies;
+    delete data.user.crps;
+    delete data.user.indicators;
     this.showSpinner(this.spinner_comment);
-
+    // console.log(data)
     this.commentService.updateCommentReply(data).subscribe(
       res => {
         // console.log(res)
