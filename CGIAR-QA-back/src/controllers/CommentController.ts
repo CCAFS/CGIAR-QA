@@ -189,7 +189,7 @@ class CommentController {
             res.status(404).json({ message: "Comment can not be created.", data: error });
         }
     }
-
+    
     // update comment by indicator
     static updateComment = async (req: Request, res: Response) => {
 
