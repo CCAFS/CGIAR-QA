@@ -413,7 +413,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       default:
         break;
     }
-    console.log(field,avility)
+    // console.log(field,avility)
     return avility;
   }
 

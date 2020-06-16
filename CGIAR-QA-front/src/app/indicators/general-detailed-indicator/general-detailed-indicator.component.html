@@ -78,7 +78,7 @@
                                         class="custom-control-input" id="field-{{detailedData[i].field_id}}">
 
                                     <label
-                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
+                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete"
                                         class="custom-control-label" for="field-{{detailedData[i].field_id}}">
                                         <h2 [innerHTML]="detailedData[i].display_name | markdown"></h2>
                                     </label>
