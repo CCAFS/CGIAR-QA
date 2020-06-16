@@ -305,8 +305,8 @@ class EvaluationsController {
                         ${levelQuery.innovations_stage}
                         indicator_user.indicatorId
                 `;
-                console.log('isasessor')
-                console.log(sql)
+                // console.log('isasessor')
+                // console.log(sql)
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sql,
                     { user_Id: id, view_name },
