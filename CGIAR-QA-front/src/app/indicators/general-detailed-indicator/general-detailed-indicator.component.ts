@@ -404,11 +404,14 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       case Role.asesor:
         if(this.gnralInfo.status === this.statusHandler.Pending){
           avility = field.enable_assessor ?  field.enable_comments : field.enable_assessor
-        }else if (this.gnralInfo.status === this.statusHandler.Finalized){
-          avility = true;
-        }else{
-          avility = false;
         }
+        else{
+          avility = true;
+        }
+        
+        // else if (this.gnralInfo.status === this.statusHandler.Finalized){
+        //   avility = true;
+        // }
         // avility = field.enable_assessor ? (this.gnralInfo.status !== this.statusHandler.Finalized && field.enable_comments) : field.enable_assessor
         break;
       default:
