@@ -134,7 +134,7 @@
                             QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
                         </th>
                         <td>
-                            <div *ngIf="item.evaluation_status"
+                            <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
                                 class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}">
                                 {{item.evaluation_status}}
                             </div>
