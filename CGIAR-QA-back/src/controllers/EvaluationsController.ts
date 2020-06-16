@@ -151,6 +151,7 @@ class EvaluationsController {
                         WHERE
                             comments.evaluationId = evaluations.id
                         AND comments.is_deleted = 0
+                        AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                     ) comment_by
                 FROM
                     qa_evaluations evaluations
