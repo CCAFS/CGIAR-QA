@@ -15,6 +15,9 @@
                 <p>Complete</p>
                 <div class="circle pending" style="margin-left: 50px;"></div>
                 <p>Pending</p>
+                <div class="circle finalized" style="margin-left: 50px;" *ngIf="currentUser.cycle.cyle_stage != '1' ">
+                </div>
+                <p>Finalized</p>
             </div>
 
             <ng-container *ngIf="(dashboardData | json) != ({} | json)">
@@ -24,7 +27,8 @@
                     <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                         <span>{{item.value.total}}</span>
                     </progressbar>
-                    <a *ngIf="item.value[0].indicator_status == 1" routerLinkActive="active" [routerLinkActive]="['active']" routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
+                    <a *ngIf="item.value[0].indicator_status == 1" routerLinkActive="active"
+                        [routerLinkActive]="['active']" routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
                         Go to {{getIndicatorName(item.key)}}
                     </a>
                     <a *ngIf="item.value[0].indicator_status == 0">

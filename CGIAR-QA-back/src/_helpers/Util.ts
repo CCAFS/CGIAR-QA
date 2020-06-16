@@ -40,6 +40,10 @@ class Util {
                 res = 'success'
                 // res = isCrp ? 'danger' : 'success'
                 break;
+            case StatusHandler.Finalized:
+                res = 'info'
+                // res = isCrp ? 'danger' : 'success'
+                break;
 
             default:
                 break;

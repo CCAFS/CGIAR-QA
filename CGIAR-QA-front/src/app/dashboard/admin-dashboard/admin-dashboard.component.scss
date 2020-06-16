@@ -53,6 +53,9 @@
         .pending {
           background-color: var(--red-primary);
         }
+        .finalized {
+          background-color: var(--blue-secondary);
+        }
       }
       .progress-container {
         display: flex;
