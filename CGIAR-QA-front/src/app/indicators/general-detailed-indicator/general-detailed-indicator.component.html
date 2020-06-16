@@ -73,10 +73,10 @@
                                     <input
                                         *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
                                         (change)="onTickChange($event,detailedData[i])"
-                                        disabled="gnralInfo.status === statusHandler.Finalized"
                                         [value]="detailedData[i].field_id" formControlName="isChecked" type="checkbox"
                                         class="custom-control-input" id="field-{{detailedData[i].field_id}}">
-
+                                        
+                                        <!-- [disabled]="gnralInfo.status === statusHandler.Finalized" -->
                                     <label
                                         *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete"
                                         class="custom-control-label" for="field-{{detailedData[i].field_id}}">
@@ -181,14 +181,14 @@
                 </div>
             </div>
             <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em;">
-                <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container">
+                <div *ngIf="gnralInfo.status !== statusHandler.Finalized && gnralInfo.evaluation_status !== 'Added'" class="bton-container">
                     <button type="button" class="btn btn-green-secondary"
                         [disabled]="gnralInfo.status === statusHandler.Complete"
                         (click)="updateEvaluation('complete_eval',detailedData)">COMPLETE ASSESSMENT</button>
                 </div>
                 <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
                     style="margin-left: 1em;">
-                    <button type="button" class="btn btn-info" [disabled]="gnralInfo.status === statusHandler.Pending"
+                    <button type="button" class="btn btn-info" [disabled]="gnralInfo.status === statusHandler.Finalized"
                         (click)="updateEvaluation('finalized_eval',detailedData)">FINISH ASSESSMENT</button>
                 </div>
 
