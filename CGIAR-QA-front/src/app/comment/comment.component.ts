@@ -1,6 +1,8 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { DetailedStatus } from "../_models/general-status.model"
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -23,7 +25,7 @@ export class CommentComponent implements OnInit {
   dataFromItem: any = {};
   commentGroup: FormGroup;
   totalChar = 6500;
-  // replyGroup: FormGroup;
+  statusHandler = DetailedStatus;
   commentsByCol: any = [];
   commentsByColReplies: any = [];
   currentUser: User;
@@ -61,6 +63,7 @@ export class CommentComponent implements OnInit {
   }
 
   updateData(data: any, params: any) {
+    console.log(data)
     Object.assign(this.dataFromItem, data, params)
     this.availableComment = false;
     this.showSpinner(this.spinner_comment);
@@ -137,8 +140,11 @@ export class CommentComponent implements OnInit {
       return;
     }
     data[type] = !data[type];
+    delete data.user.replies;
+    delete data.user.crps;
+    delete data.user.indicators;
     this.showSpinner(this.spinner_comment);
-
+    // console.log(data)
     this.commentService.updateCommentReply(data).subscribe(
       res => {
         // console.log(res)
@@ -181,7 +187,6 @@ export class CommentComponent implements OnInit {
             break;
         }
         this.commentsByCol.forEach(comment => {
-          console.log(comment)
           if (comment.replies.replies_count != '0') {
             comment.isCollapsed = true;
             this.getCommentReplies(comment)

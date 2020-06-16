@@ -12,7 +12,7 @@
                                 <span>ADDED BY {{comment.user.username}} </span>
                                 <div>
                                     <p>On {{comment.updatedAt | date: 'long'}}</p>
-                                    <!-- <p><strong> {{comment.cycle.cycle_name: commen}} </strong></p> -->
+                                    <p> {{comment.cycle.cycle_name}}: <strong>{{comment.cycle.cycle_stage}} </strong></p>
                                 </div>
                             </div>
                             <div>
@@ -98,7 +98,7 @@
         <p>No comments made</p>
     </div>
     <!-- ADD COMMENT -->
-    <div *ngIf="!availableComment && !crpComment" class="add-comment-container">
+    <div *ngIf="!availableComment && !crpComment && dataFromItem.status !== statusHandler.Finalized" class="add-comment-container">
         <form [formGroup]="commentGroup">
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>

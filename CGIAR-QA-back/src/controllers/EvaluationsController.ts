@@ -7,6 +7,7 @@ import { QAUsers } from "@entity/User";
 
 import { RolesHandler } from "@helpers/RolesHandler";
 import Util from "@helpers/Util";
+import { StatusHandler } from "@helpers/StatusHandler";
 
 
 class EvaluationsController {
@@ -128,6 +129,8 @@ class EvaluationsController {
                         AND metaId IS NOT NULL
                         AND is_deleted = 0
                         AND is_visible = 1
+                        AND detail IS NOT NULL
+                        AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                     ) AS comments_count,
 
                     (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
@@ -193,6 +196,8 @@ class EvaluationsController {
                             AND metaId IS NOT NULL
                             AND is_deleted = 0
                             AND is_visible = 1
+                            AND detail IS NOT NULL
+                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                         ) AS comments_count,
 
 
@@ -258,6 +263,8 @@ class EvaluationsController {
                             AND metaId IS NOT NULL
                             AND is_deleted = 0
                             AND is_visible = 1
+                            AND detail IS NOT NULL
+                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                         ) AS comments_count,
 
 
@@ -280,6 +287,7 @@ class EvaluationsController {
                             WHERE
                                 comments.evaluationId = evaluations.id
                             AND comments.is_deleted = 0
+                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                         ) comment_by
                     FROM
                         qa_evaluations evaluations
@@ -297,8 +305,8 @@ class EvaluationsController {
                         ${levelQuery.innovations_stage}
                         indicator_user.indicatorId
                 `;
-                // console.log('isasessor')
-                // console.log(sql)
+                console.log('isasessor')
+                console.log(sql)
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sql,
                     { user_Id: id, view_name },
@@ -527,14 +535,28 @@ class EvaluationsController {
 
     static updateDetailedEvaluation = async (req: Request, res: Response) => {
         const id = req.params.id;
+        const userId = res.locals.jwtPayload.userId;
         const { general_comments, status } = req.body;
         const evaluationsRepository = getRepository(QAEvaluations);
-
+        let queryRunner = getConnection().createQueryBuilder();
         // console.log({ general_comments, status }, id)
         try {
             let evaluation = await evaluationsRepository.findOneOrFail(id);
             // evaluation.general_comments = general_comments;
             evaluation.status = status;
+            if (status === StatusHandler.Finalized) {
+
+                let sql = `
+                    SELECT id from qa_indicators_meta WHERE indicatorId IN (SELECT id FROM qa_indicators WHERE view_name = :view_name) AND col_name = 'id';
+                `;
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    sql,
+                    { view_name: evaluation.indicator_view_name },
+                    {}
+                );
+                let metaId = await queryRunner.connection.query(query, parameters);
+                let comment = await Util.createComment(null, true, userId, metaId[0].id, evaluation.id);
+            }
 
             let updatedEva = await evaluationsRepository.save(evaluation);
             res.status(200).json({ data: updatedEva, message: "Evaluation updated." });

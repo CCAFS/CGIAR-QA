@@ -22,13 +22,18 @@
             {{detailedData[0].crp_acronym}} / {{currentType}} /
             QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
         </p>
-        <div *ngIf="gnralInfo.evaluation_status  && gnralInfo.evaluation_status !== 'New'" class="evaluation-status {{ gnralInfo.evaluation_status ? gnralInfo.evaluation_status.toLowerCase():'' }}" >
+        <div *ngIf="gnralInfo.evaluation_status  && gnralInfo.evaluation_status !== 'New'"
+            class="evaluation-status {{ gnralInfo.evaluation_status ? gnralInfo.evaluation_status.toLowerCase():'' }}">
             {{gnralInfo.evaluation_status}}
         </div>
     </div>
 
-    <p>Status: <span
-            class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+    <p>Status:
+        <span
+            [ngClass]=" {'text-success': gnralInfo.status === statusHandler.Complete, 'text-danger':gnralInfo.status === statusHandler.Pending, 'text-info': gnralInfo.status === statusHandler.Finalized} ">
+            {{gnralInfo.status}}
+            <!-- {{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}} -->
+        </span>
     </p>
 
     <div *ngIf="detailedData[0]">
@@ -52,7 +57,8 @@
         <!--  class="col-sm" -->
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div class="col data-container">
-                <div class="select-all" *ngIf="detailedData">
+                <div class="select-all"
+                    *ngIf="detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                     <button type="button" (click)="onChangeSelectAll(approveAllitems)"
                         class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">Approve/Dissaprove all items to be
                         assessed.</button>
@@ -67,6 +73,7 @@
                                     <input
                                         *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
                                         (change)="onTickChange($event,detailedData[i])"
+                                        disabled="gnralInfo.status === statusHandler.Finalized"
                                         [value]="detailedData[i].field_id" formControlName="isChecked" type="checkbox"
                                         class="custom-control-input" id="field-{{detailedData[i].field_id}}">
 
@@ -149,7 +156,7 @@
                     </p>
                     <hr style="margin: 0;" class="ng-star-inserted">
                     <form [formGroup]="generalCommentGroup">
-                        <textarea *ngIf="!general_comment_reply"
+                        <textarea *ngIf="!general_comment_reply && gnralInfo.status !== statusHandler.Finalized"
                             [readonly]="gnralInfo.status === statusHandler.Complete" maxlength="{{totalChar}}"
                             formControlName="general_comment"></textarea>
                         <p *ngIf="general_comment_reply">{{formData.general_comment.value}}</p>
@@ -157,12 +164,14 @@
                     <p *ngIf="gnralInfo.general_comment"> <strong>Comment by:</strong>
                         {{gnralInfo.general_comment_user}} <strong>at:</strong>
                         {{gnralInfo.general_comment_updatedAt | date: 'long'}}</p>
-                    <span *ngIf="!general_comment_reply" class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000 words</span>
+                    <span *ngIf="!general_comment_reply && gnralInfo.status !== statusHandler.Finalized"
+                        class="wordCount">{{ getWordCount(formData.general_comment.value) }} / 1000 words</span>
                     <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
                         <p>{{reply.detail}}</p>
                         <p>Replied by: {{reply.user.username}} </p>
                     </div>
-                    <div *ngIf="!general_comment_reply" class="bton-container">
+                    <div *ngIf="!general_comment_reply && gnralInfo.status !== statusHandler.Finalized"
+                        class="bton-container">
                         <button type="button"
                             class="btn btn-{{formData.general_comment.value ? 'green':'red'}}-secondary"
                             [disabled]="!generalCommentGroup.valid || gnralInfo.status === statusHandler.Complete"
@@ -170,6 +179,19 @@
                     </div>
 
                 </div>
+            </div>
+            <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em;">
+                <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container">
+                    <button type="button" class="btn btn-green-secondary"
+                        [disabled]="gnralInfo.status === statusHandler.Complete"
+                        (click)="updateEvaluation('complete_eval',detailedData)">COMPLETE ASSESSMENT</button>
+                </div>
+                <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
+                    style="margin-left: 1em;">
+                    <button type="button" class="btn btn-info" [disabled]="gnralInfo.status === statusHandler.Pending"
+                        (click)="updateEvaluation('finalized_eval',detailedData)">FINISH ASSESSMENT</button>
+                </div>
+
             </div>
             <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
                 size="medium">

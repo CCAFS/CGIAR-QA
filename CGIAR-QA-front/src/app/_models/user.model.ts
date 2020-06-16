@@ -5,6 +5,7 @@ export class User {
     password: string;
     roles:any[];
     config:any[];
+    cycle:any;
     indicators:any[];
     crp:any;
     name: string;

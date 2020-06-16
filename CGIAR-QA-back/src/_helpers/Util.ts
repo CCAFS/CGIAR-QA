@@ -16,6 +16,8 @@ import { QAIndicatorUser } from "@entity/IndicatorByUser";
 
 import * as jwt from "jsonwebtoken";
 import * as excel from 'exceljs';
+import { QAComments } from "@entity/Comments";
+import { QACycle } from "@entity/Cycles";
 // const excel = require('exceljs');
 
 
@@ -130,6 +132,7 @@ class Util {
         const roleRepository = getRepository(QARoles);
         const crpRepository = getRepository(QACrp);
         const grnlConfg = getRepository(QAGeneralConfiguration);
+        const cycleRepo = getRepository(QACycle);
         let queryRunner = getConnection().createQueryBuilder();
         let user: QAUsers;
         try {
@@ -184,6 +187,13 @@ class Util {
                 .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
                 .getRawMany();
 
+            let current_cycle = await cycleRepo
+                .createQueryBuilder("qa_cycle")
+                .select('*')
+                .where("DATE(qa_cycle.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+                .getRawOne();
+
             // //Sing JWT, valid for ``config.jwtTime`` 
             const token = jwt.sign(
                 { userId: user.id, username: user.username },
@@ -194,7 +204,8 @@ class Util {
 
             user["token"] = token;
             user["config"] = generalConfig;
-
+            user['cycle'] = current_cycle;
+            delete user.password;
             return user
         } catch (error) {
             console.log(error);
@@ -322,6 +333,46 @@ class Util {
             console.log(error)
         }
 
+    }
+
+    static createComment = async (detail, approved, userId, metaId, evaluationId) => {
+        const userRepository = getRepository(QAUsers);
+        const metaRepository = getRepository(QAIndicatorsMeta);
+        const evaluationsRepository = getRepository(QAEvaluations);
+        const commentsRepository = getRepository(QAComments);
+        const cycleRepo = getRepository(QACycle);
+        try {
+
+            let user = await userRepository.findOneOrFail({ where: { id: userId } });
+            let meta;
+            if (metaId != null)
+                meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
+
+
+
+            let current_cycle = await cycleRepo
+                .createQueryBuilder("qa_cycle")
+                .select('*')
+                .where("DATE(qa_cycle.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+                .getRawOne();
+
+
+            let comment_ = new QAComments();
+            comment_.detail = detail;
+            comment_.approved = approved;
+            comment_.meta = meta;
+            comment_.evaluation = evaluation;
+            comment_.user = user;
+            comment_.cycle = current_cycle;
+            let new_comment = await commentsRepository.save(comment_);
+
+            return new_comment;
+        } catch (error) {
+            console.log(error)
+            return null;
+        }
     }
 
 

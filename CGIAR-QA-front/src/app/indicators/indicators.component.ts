@@ -17,6 +17,7 @@ import { Title } from '@angular/platform-browser';
 import { SortByPipe } from '../pipes/sort-by.pipe';
 
 import * as moment from 'moment';
+import { FormBuilder } from '@angular/forms';
 
 
 @Component({
@@ -49,6 +50,8 @@ export class IndicatorsComponent implements OnInit {
   pageSize = 4;
   collectionSize = 0;
   searchText;
+  evalStatusFilter = '';
+  // uncheckableRadioModel = '';
 
   hasTemplate = false;
 
@@ -57,12 +60,14 @@ export class IndicatorsComponent implements OnInit {
   order: string = 'id';
   configTemplate: string;
   reverse: boolean = false;
+  btonFilterForm: any;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
+    private formBuilder: FormBuilder,
     private spinner: NgxSpinnerService,
     private orderPipe: SortByPipe,
     // private orderPipe: OrderPipe,
@@ -77,6 +82,9 @@ export class IndicatorsComponent implements OnInit {
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
       this.getEvaluationsList(routeParams);
 
+      this.btonFilterForm = this.formBuilder.group({
+        radio: 'A'
+      });
       /** set page title */
       this.titleService.setTitle(`List of ${this.indicatorTypeName}`);
 
@@ -133,6 +141,10 @@ export class IndicatorsComponent implements OnInit {
     // console.log(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order)
     this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
+  }
+
+  filterByEvalStatus() {
+    this.evalStatusFilter = 'Removed'
   }
 
 
