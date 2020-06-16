@@ -44,7 +44,7 @@ class EvaluationsController {
             LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
             LEFT JOIN qa_comments_meta meta ON meta.indicatorId = indicator.id
 
-            WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+            WHERE (evaluations.evaluation_status <> 'Deleted' AND evaluations.evaluation_status <> 'Removed' OR evaluations.evaluation_status IS NULL)
             AND qa_indicator_user.userId = :user_Id
 
             GROUP BY
@@ -61,7 +61,7 @@ class EvaluationsController {
                 { user_Id: id },
                 {}
             );
-            // console.log(query, parameters)
+            // console.log( query, parameters)
             let rawData = await queryRunner.connection.query(query, parameters);
 
             let response = []
