@@ -1,6 +1,8 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { DetailedStatus } from "../_models/general-status.model"
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -23,7 +25,7 @@ export class CommentComponent implements OnInit {
   dataFromItem: any = {};
   commentGroup: FormGroup;
   totalChar = 6500;
-  // replyGroup: FormGroup;
+  statusHandler = DetailedStatus;
   commentsByCol: any = [];
   commentsByColReplies: any = [];
   currentUser: User;

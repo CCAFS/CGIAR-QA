@@ -358,7 +358,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       evaluation_id: data[0].evaluation_id,
       status: data[0].status,
     };
-
+    this.showSpinner('spinner1')
     switch (type) {
       case "status":
         evaluationData['status'] = this.gnralInfo.status_update;
@@ -367,6 +367,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       case "finalized_eval":
         // evaluationData['status'] = this.gnralInfo.status_update;
         evaluationData['status'] = this.statusHandler.Finalized;
+        break;
+      case "complete_eval":
+        // evaluationData['status'] = this.gnralInfo.status_update;
+        evaluationData['status'] = this.statusHandler.Complete;
         break;
 
       default:
@@ -377,7 +381,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       res => {
         //console.log(res)
         this.alertService.success(res.message);
-        this.showSpinner('spinner1')
+        
         this.getDetailedData();
       },
       error => {
@@ -397,12 +401,19 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         avility = field.enable_comments ? true : false;
         break;
       case Role.asesor:
-        avility = field.enable_assessor ? (this.gnralInfo.status !== this.statusHandler.Complete && field.enable_comments) : field.enable_assessor
+        if(this.gnralInfo.status === this.statusHandler.Pending){
+          avility = field.enable_assessor ?  field.enable_comments : field.enable_assessor
+        }else if (this.gnralInfo.status === this.statusHandler.Finalized){
+          avility = true;
+        }else{
+          avility = false;
+        }
+        // avility = field.enable_assessor ? (this.gnralInfo.status !== this.statusHandler.Finalized && field.enable_comments) : field.enable_assessor
         break;
       default:
         break;
     }
-    // console.log(field,avility)
+    console.log(field,avility)
     return avility;
   }
 

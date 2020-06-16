@@ -129,6 +129,7 @@ class EvaluationsController {
                         AND metaId IS NOT NULL
                         AND is_deleted = 0
                         AND is_visible = 1
+                        AND detail IS NOT NULL
                         AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                     ) AS comments_count,
 
@@ -195,6 +196,7 @@ class EvaluationsController {
                             AND metaId IS NOT NULL
                             AND is_deleted = 0
                             AND is_visible = 1
+                            AND detail IS NOT NULL
                             AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                         ) AS comments_count,
 
@@ -261,6 +263,7 @@ class EvaluationsController {
                             AND metaId IS NOT NULL
                             AND is_deleted = 0
                             AND is_visible = 1
+                            AND detail IS NOT NULL
                             AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                         ) AS comments_count,
 
@@ -284,6 +287,7 @@ class EvaluationsController {
                             WHERE
                                 comments.evaluationId = evaluations.id
                             AND comments.is_deleted = 0
+                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                         ) comment_by
                     FROM
                         qa_evaluations evaluations
@@ -301,8 +305,8 @@ class EvaluationsController {
                         ${levelQuery.innovations_stage}
                         indicator_user.indicatorId
                 `;
-                // console.log('isasessor')
-                // console.log(sql)
+                console.log('isasessor')
+                console.log(sql)
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sql,
                     { user_Id: id, view_name },

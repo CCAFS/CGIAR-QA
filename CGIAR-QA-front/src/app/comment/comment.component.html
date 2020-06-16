@@ -98,7 +98,7 @@
         <p>No comments made</p>
     </div>
     <!-- ADD COMMENT -->
-    <div *ngIf="!availableComment && !crpComment" class="add-comment-container">
+    <div *ngIf="!availableComment && !crpComment && dataFromItem.status !== statusHandler.Finalized" class="add-comment-container">
         <form [formGroup]="commentGroup">
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>
