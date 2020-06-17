@@ -13,6 +13,8 @@ import { IndicatorsComponent } from './indicators.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
 import { CommentComponentModule } from '../comment/comment.module';
+import { SharedModule } from '../shared-module/shared-module.module';
+// import { CustomFilterPipe } from '../pipes/custom-filter.pipe';
 // import { CommentComponent } from '../comment/comment.component';
 // import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator/general-detailed-indicator.component';
 
@@ -30,6 +32,7 @@ import { CommentComponentModule } from '../comment/comment.module';
         OrderModule,
         ReactiveFormsModule,
         FormsModule,
+        SharedModule,
         Ng2SearchPipeModule,
         CommentComponentModule
     ],

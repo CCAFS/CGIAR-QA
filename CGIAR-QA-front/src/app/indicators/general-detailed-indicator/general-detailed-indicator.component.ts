@@ -10,7 +10,7 @@ import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName } from "../../_models/general-status.model"
+import { DetailedStatus, GeneralIndicatorName, GeneralStatus } from "../../_models/general-status.model"
 import { Role } from "../../_models/roles.model"
 import { CommentService } from 'src/app/services/comment.service';
 
@@ -373,6 +373,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         // evaluationData['status'] = this.gnralInfo.status_update;
         evaluationData['status'] = this.statusHandler.Complete;
         break;
+      case "pending_eval":
+        // evaluationData['status'] = this.gnralInfo.status_update;
+        evaluationData['status'] = this.statusHandler.Pending;
+        break;
 
       default:
         break;
@@ -420,7 +424,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     // console.log(field,avility)
     return avility;
   }
-
 
   addGeneralComment(name, array) {
     let data = array[0]
@@ -479,6 +482,14 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           this.alertService.error(error);
       }
     )
+  }
+
+  parseGeneralStatus(status){
+    if(status === this.statusHandler.Finalized){
+      return 'closed'
+    }
+
+    return status;
   }
 
   /***

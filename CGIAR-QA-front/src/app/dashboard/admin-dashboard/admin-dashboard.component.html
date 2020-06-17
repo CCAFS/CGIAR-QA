@@ -36,7 +36,7 @@
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending</p>
                     <div class="circle finalized" style="margin-left: 50px;" *ngIf="currentUser.cycle.cyle_stage != '1' "></div>
-                    <p>Finalized</p>
+                    <p>Closed</p>
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">

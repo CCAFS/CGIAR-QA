@@ -31,7 +31,7 @@
     <p>Status:
         <span
             [ngClass]=" {'text-success': gnralInfo.status === statusHandler.Complete, 'text-danger':gnralInfo.status === statusHandler.Pending, 'text-info': gnralInfo.status === statusHandler.Finalized} ">
-            {{gnralInfo.status}}
+            {{parseGeneralStatus(gnralInfo.status)}}
             <!-- {{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}} -->
         </span>
     </p>
@@ -189,7 +189,12 @@
                 <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
                     style="margin-left: 1em;">
                     <button type="button" class="btn btn-info" [disabled]="gnralInfo.status === statusHandler.Finalized"
-                        (click)="updateEvaluation('finalized_eval',detailedData)">FINISH ASSESSMENT</button>
+                        (click)="updateEvaluation('finalized_eval',detailedData)">CLOSE ASSESSMENT</button>
+                </div>
+                <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container"
+                    style="margin-left: 1em;">
+                    <button type="button" class="btn btn-outline-info"
+                        (click)="updateEvaluation('pending_eval',detailedData)">OPEN ASSESSMENT</button>
                 </div>
 
             </div>

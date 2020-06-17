@@ -33,6 +33,7 @@ import { FilterByRolePipe } from './pipes/filter-by-role.pipe';
 import { QaCloseComponent } from './qa-close/qa-close.component';
 import { TawkToComponent } from './tawk-to/tawk-to.component';
 import { CommentComponentModule } from './comment/comment.module';
+import { CustomFilterPipe } from './pipes/custom-filter.pipe';
 // import { CrpComponent } from './crp/crp.component';
 
 @NgModule({
@@ -46,6 +47,7 @@ import { CommentComponentModule } from './comment/comment.module';
     HeaderBarComponent,
     QaCloseComponent,
     TawkToComponent,
+    // CustomFilterPipe,
   ],
   imports: [
     BrowserModule,
