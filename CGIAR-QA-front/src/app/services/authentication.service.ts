@@ -15,7 +15,7 @@ export class AuthenticationService {
 
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
-  public userHeaders =[];
+  public userHeaders = [];
   public NOT_APPLICABLE = '<Not applicable>';
 
   private usrCookie = 'currentUser';
@@ -70,8 +70,6 @@ export class AuthenticationService {
       }));
   }
 
-
-
   setLoggedUser(user) {
     if (window.hasOwnProperty('Tawk_API')) {
       if (window['Tawk_API'].isVisitorEngaged()) window['Tawk_API'].endChat();
@@ -105,6 +103,41 @@ export class AuthenticationService {
     this.currentUserSubject.next(null);
   }
 
+
+
+  getBrowser() {
+
+    if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) {
+
+      return 'Opera';
+
+    } else if (navigator.userAgent.indexOf("Chrome") != -1) {
+
+      return 'Chrome';
+
+    } else if (navigator.userAgent.indexOf("Safari") != -1) {
+
+      return 'Safari';
+
+    } else if (navigator.userAgent.indexOf("Firefox") != -1) {
+
+      return 'Firefox';
+
+    } else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document['documentMode'] == true)) {
+
+      return 'IE';
+
+    } else {
+
+      return 'unknown';
+
+    }
+
+  }
+
+
+
+
   private parseIndicators(user) {
     if (user.hasOwnProperty('indicators') && user.indicators.length > 0) {
       user.indicators.forEach(element => {
@@ -117,11 +150,14 @@ export class AuthenticationService {
     return user
   }
 
-
   private parseMultipleCRP(user, crp_id?) {
     if (user.crps.length > 0) {
       // console.log(user.crps, user.crps.find(crp => crp.crp_id == crp_id))
       user.crp = user.crps.find(crp => crp.crp_id == crp_id)
     }
   }
+
+
+
+
 }
