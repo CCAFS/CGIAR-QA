@@ -237,8 +237,8 @@ class EvaluationsController {
                     { crp_id: crp_id, view_name },
                     {}
                 );
-                // console.log('crp')
-                // console.log(sql)
+                console.log('crp')
+                console.log(sql)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "CRP evaluations list" });
 

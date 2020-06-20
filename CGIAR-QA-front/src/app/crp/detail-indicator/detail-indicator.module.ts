@@ -14,6 +14,7 @@ import { CommentComponentModule } from 'src/app/comment/comment.module';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { MarkdownModule } from 'ngx-markdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { SharedModule } from 'src/app/shared-module/shared-module.module';
 // import { CommentComponent } from '../../comment/comment.component';
 
 
@@ -29,6 +30,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     TooltipModule.forRoot(),
     MarkdownModule.forRoot(),
     NgxSpinnerModule,
+    SharedModule,
     OrderModule,
     ReactiveFormsModule,
     FormsModule,

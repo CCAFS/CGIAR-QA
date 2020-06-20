@@ -35,6 +35,9 @@
                     <p>Complete</p>
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending</p>
+                    <div class="circle finalized" style="margin-left: 50px;"
+                        *ngIf="currentUser.cycle.cyle_stage != '1' "></div>
+                    <p>Closed</p>
                 </div>
             </div>
 
@@ -129,7 +132,7 @@
                 </thead>
                 <tbody class="table-body">
                     <tr
-                        *ngFor="let item of evaluationList | filter:evalStatusFilter | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
+                        *ngFor="let item of evaluationList  | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
                         <th scope="row">
                             QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
                         </th>
@@ -161,22 +164,15 @@
             </table>
 
             <div *ngIf='evaluationList' class="total-items">
-                Total items: {{evaluationList.length}}
+                Total items:
+                {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length}}
             </div>
             <div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
-                <pagination [rotate]="false" [totalItems]="(evaluationList | filter:searchText ).length" [maxSize]="5"
-                    (pageChanged)="pageChanged($event)">
+                <pagination [rotate]="false"
+                    [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length"
+                    [maxSize]="5" (pageChanged)="pageChanged($event)">
                 </pagination>
             </div>
-
-
-            <!-- <div class="d-flex justify-content-center p-2 pagination-container">
-                <pagination [rotate]="false" [totalItems]="collectionSize" [maxSize]="3"
-                    (pageChanged)="pageChanged($event)">
-                </pagination>
-            </div> -->
-
-
         </div>
 
         <!-- Loading Spinner -->
