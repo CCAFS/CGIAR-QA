@@ -171,6 +171,8 @@ export class IndicatorsComponent implements OnInit {
   exportComments(item) {
     this.showSpinner();
     let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}_${moment().format('YYYYMMDD_HHmm')}`
+    if(this.authenticationService.getBrowser() === 'Safari')
+      filename += `.xlsx`
     // console.log('filename',filename)
     this.commentService.getCommentsExcel({ evaluationId: item.evaluation_id, id: this.currentUser.id, name: filename, indicatorName: `qa_${this.indicatorType}` }).subscribe(
       res => {
