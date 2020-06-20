@@ -99,7 +99,7 @@ export class CRPIndicatorsComponent implements OnInit {
     this.showSpinner(this.spinner_name);
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column, this.currentUser.crp.crp_id).subscribe(
       res => {
-        console.log(res)
+        // console.log(res)
         this.evaluationList = this.orderPipe.transform(res.data, 'id');
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
@@ -159,12 +159,15 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
   exportComments(item, all?) {
-    // console.log(item)
     this.showSpinner(this.spinner_name);
     let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}${(item) ? '-' + item.id : ''}_${moment().format('YYYYMMDD_HHmm')}`
+    console.log('filename',filename);
+    if(this.authenticationService.getBrowser() === 'Safari')
+      filename += `.xlsx`
+      
     this.commentService.getCommentsExcel({ evaluationId: (item) ? item.evaluation_id : undefined, id: this.currentUser.id, name: filename, indicatorName: `qa_${this.indicatorType}`, crp_id: all ? this.currentUser.crp.crp_id : undefined }).subscribe(
       res => {
-        // console.log(res)
+        console.log(res)
         let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
         saveAs(blob, filename);
         this.hideSpinner(this.spinner_name);
@@ -206,6 +209,8 @@ export class CRPIndicatorsComponent implements OnInit {
 
     return r;
   }
+
+  
 
 
   /***
