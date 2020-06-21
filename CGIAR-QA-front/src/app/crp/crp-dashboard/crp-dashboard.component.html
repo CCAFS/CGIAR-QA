@@ -35,7 +35,7 @@
                         <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                             <span>{{item.value.total}}</span>
                         </progressbar>
-                        <p *ngIf="item && dashboardCommentsData[item.key]">Total comments: {{dashboardCommentsData[item.key].total}}</p>
+                        <p *ngIf="item && dashboardCommentsData[item.key]"># of comments {{dashboardCommentsData[item.key].total}} ({{getPendingResponseComments(dashboardCommentsData[item.key])}}) </p>
                         <progressbar id="comments-progessbar" *ngIf="item && dashboardCommentsData[item.key]" class="progress" [value]="dashboardCommentsData[item.key]" [max]="dashboardCommentsData[item.key].total">
                             <span>{{dashboardCommentsData[item.key].value}}</span>
                         </progressbar>

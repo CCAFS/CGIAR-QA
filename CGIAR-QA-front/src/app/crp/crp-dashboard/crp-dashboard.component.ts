@@ -119,7 +119,7 @@ export class CrpDashboardComponent implements OnInit {
         res => {
           // this.has_comments = res.data ? true : false
           this.dashboardCommentsData = this.dashService.groupData(res.data);
-          // console.log(this.dashboardCommentsData);
+          console.log(this.dashboardCommentsData);
           // this.dashboardCommentsData = res.data;
           // this._setCharData(res)
           // Object.assign(this, { barChartLabels: res.data.label });
@@ -132,6 +132,24 @@ export class CrpDashboardComponent implements OnInit {
           this.alertService.error(error);
         },
       )
+  }
+
+
+  getPendingResponseComments(data) {
+    // console.log(data, ))
+    let f = this.findObjectByKey(data, 'type', 'secondary')
+    let resText = f ? `${f.comments_without_answer} not responde yet` : 'all responded';
+    return resText
+  }
+
+  private findObjectByKey(array, key, value?) {
+    for (var i = 0; i < array.length; i++) {
+      // if (array[i].hasOwnProperty(key)) {
+      if (array[i][key] === value) {
+        return array[i];
+      }
+    }
+    return null;
   }
 
   private _setCharData(response_data) {
