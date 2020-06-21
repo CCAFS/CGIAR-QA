@@ -10,21 +10,21 @@
             <div class="card-body">
                 <div class="card-title example-container d-flex"
                     [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
-                    <p><strong>By indicator: </strong></p>
+                    <p><strong>Indicator bar: </strong></p>
                     <div class="circle complete"></div>
                     <p>Answered</p>
                     <div class="circle pending" style="margin-left: 50px;"></div>
-                    <p>Pending replies</p>
+                    <p>Pending</p>
                 </div>
                 <div class="card-title example-container d-flex"
                     [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
-                    <p><strong>By field: </strong></p>
+                    <p><strong>Comments bar: </strong></p>
                     <div class="circle complete"></div>
-                    <p>Approved comments</p>
+                    <p>Total approved</p>
                     <div class="circle pending" style="margin-left: 50px;"></div>
-                    <p>Rejected replies</p>
+                    <p>Total rejected</p>
                     <div class="circle unanswered" style="margin-left: 50px;"></div>
-                    <p>Pending response</p>
+                    <p>Not responded yet</p>
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">

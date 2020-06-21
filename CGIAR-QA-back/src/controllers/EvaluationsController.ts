@@ -157,7 +157,7 @@ class EvaluationsController {
 
                             IF(
                                 evaluations.status = 'finalized',
-                                'finalized',
+                                'complete',
                                 IF(
                                         (
                                                 SELECT COUNT(id)
@@ -167,8 +167,9 @@ class EvaluationsController {
                                                         AND metaId IS NOT NULL
                                                         AND is_deleted = 0
                                                         AND is_visible = 1
-                                                        AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
-                                        ) >= (
+                                                        AND detail IS NOT NULL
+                                                       -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                        ) <= (
                                                 SELECT COUNT(id)
                                                 FROM qa_comments_replies
                                                 WHERE is_deleted = 0
@@ -180,12 +181,13 @@ class EvaluationsController {
                                                                         AND metaId IS NOT NULL
                                                                         AND is_deleted = 0
                                                                         AND is_visible = 1
-                                                                        AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                                                        AND detail IS NOT NULL
+                                                                       -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                                                         )
                                             
                                         ),
-                                    "pending",
-                                    "complete"
+                                        "complete",
+                                        "pending"   
                                 )
                         ) AS evaluations_status
 
@@ -216,10 +218,10 @@ class EvaluationsController {
                         {}
                     );
 
+                    console.log(query, parameters);
                     rawData = await queryRunner.connection.query(query, parameters);
                 }
 
-                // console.log(query, parameters);
             } else {
 
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
@@ -369,12 +371,6 @@ class EvaluationsController {
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
             } else if (user.crps.length > 0) {
-
-                // IF(
-                //     (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
-                //         <= 
-                //     ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL  AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
-                // AS evaluations_status,
                 let sql = `
                     SELECT
                         evaluations.id AS evaluation_id,
@@ -396,14 +392,15 @@ class EvaluationsController {
                             AND is_deleted = 0
                             AND is_visible = 1
                             AND detail IS NOT NULL
-                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                            -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                         ) AS comments_count,
 
 
                         (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
                         NOT NULL AND is_deleted = 0 AND is_visible = 1 AND crp_approved = 1) AS comments_accepted_count,
 
-                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1 AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())) AND is_deleted = 0 ) AS comments_replies_count,
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1 -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())) 
+                        AND is_deleted = 0 ) AS comments_replies_count,
                         (
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
@@ -422,8 +419,9 @@ class EvaluationsController {
                                                     AND metaId IS NOT NULL
                                                     AND is_deleted = 0
                                                     AND is_visible = 1
-                                                    AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
-                                    ) >= (
+                                                    AND detail IS NOT NULL
+                                                   -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                    ) <= (
                                             SELECT COUNT(id)
                                             FROM qa_comments_replies
                                             WHERE is_deleted = 0
@@ -435,12 +433,13 @@ class EvaluationsController {
                                                                     AND metaId IS NOT NULL
                                                                     AND is_deleted = 0
                                                                     AND is_visible = 1
-                                                                    AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                                                    AND detail IS NOT NULL
+                                                                    -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                                                     )
                                         
                                     ),
-                                "pending",
-                                "complete"
+                                    "complete",
+                                    "pending"
                             )
                     ) AS evaluations_status
     
@@ -469,8 +468,8 @@ class EvaluationsController {
                     { crp_id: crp_id, view_name },
                     {}
                 );
-                console.log('crp')
-                console.log(sql)
+                // console.log('crp')
+                // console.log(sql)
                 let rawData = await queryRunner.connection.query(query, parameters);
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "CRP evaluations list" });
 

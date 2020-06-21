@@ -32,7 +32,7 @@ class CommentController {
             user = await userRepository.findOneOrFail(userId);
             let role = user.roles[0].description;
 
-            console.log(crp_id)
+            // console.log(crp_id)
             if (crp_id !== undefined && crp_id !== 'undefined') {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                      `
@@ -64,7 +64,7 @@ class CommentController {
                             AND comments.detail IS NOT NULL
                             AND metaId IS NOT NULL
                             AND evaluation_status <> 'Deleted'
-                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                            -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                     GROUP BY evaluations.indicator_view_name, comments.crp_approved
                     ORDER BY type DESC;
                     `,
@@ -105,7 +105,7 @@ class CommentController {
                             AND comments.detail IS NOT NULL
                             AND metaId IS NOT NULL
                             AND evaluation_status <> 'Deleted'
-                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                            -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                     GROUP BY evaluations.indicator_view_name, comments.crp_approved
                     ORDER BY type DESC;
 
