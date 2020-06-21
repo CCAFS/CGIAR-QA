@@ -12,7 +12,7 @@ const router = Router();
 
 
 //Get answering/pending comments
-router.get("/", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], CommentController.commentsCount);
+router.get("/", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.commentsCount);
 
 //Get answering/pending comments
 router.get("/meta", [checkJwt, checkRole([RolesHandler.admin])], CommentController.createcommentsMeta);

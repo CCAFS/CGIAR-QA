@@ -63,6 +63,9 @@
         .pending {
           background-color: var(--red-primary);
         }
+        .unanswered {
+          background-color: var(--gray-secondary);
+        }
       }
       .progress-container {
         display: flex;

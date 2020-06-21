@@ -27,6 +27,7 @@ export class AdminDashboardComponent implements OnInit {
   crps: CRP[];
   dashboardData: any[];
   dashboardModalData: any[];
+  dashboardCommentsData: any[];
   configurationData: any[];
   selectedProgramName: string;
   selectedProg = {}
@@ -129,7 +130,7 @@ export class AdminDashboardComponent implements OnInit {
       },
       error => {
         this.hideSpinner()
-        console.log("getAllDashData", error);
+        console.log("updateConfig", error);
         this.alertService.error(error);
       },
     );
@@ -170,6 +171,17 @@ export class AdminDashboardComponent implements OnInit {
         this.alertService.error(error);
       }
     )
+    this.getCommentStats(value.crp_id).subscribe(
+      res => {
+        this.dashboardCommentsData = this.dashService.groupData(res.data);
+      },
+      error => {
+        this.hideSpinner()
+        console.log("getCommentStats", error);
+        this.alertService.error(error);
+      },
+    )
+
   }
 
   goToView(view: string, primary_column: string) {
@@ -185,11 +197,11 @@ export class AdminDashboardComponent implements OnInit {
     let responses = forkJoin([
       this.getAllDashData(),
       this.getAllCRP(),
-      this.getIndicatorsByCRP()
+      this.getIndicatorsByCRP(),
+      this.getCommentStats()
     ]);
-
     responses.subscribe(res => {
-      const [dashData, crps, indicatorsByCrps] = res;
+      const [dashData, crps, indicatorsByCrps, commentsStats] = res;
 
       this.dashboardData = this.dashService.groupData(dashData.data);
       // console.log(res)
@@ -200,6 +212,10 @@ export class AdminDashboardComponent implements OnInit {
 
       this.configurationData = indicatorsByCrps.data;
       // console.log(this.configurationData)
+
+      console.log(commentsStats)
+      this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+      console.log(this.dashboardCommentsData)
 
       this.hideSpinner();
     }, error => {
@@ -232,24 +248,28 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // comments by crp
-
-  getCommentStats() {
-    this.showSpinner();
-    let params = (this.selectedProg) ? this.selectedProg : { crp_id: 'undefined' }
-    this.commentService.getCommentCRPStats(params)
-      .subscribe(
-        res => {
-          this.has_comments = res.data.length > 0 ? true:false
-          Object.assign(this, { multi: res.data });
-          this.hideSpinner();
-        },
-        error => {
-          this.hideSpinner()
-          console.log("getCommentStats", error);
-          this.alertService.error(error);
-        })
-
+  getCommentStats(crp_id?) {
+    // this.showSpinner();
+    return this.commentService.getCommentCRPStats({ crp_id, id: null }).pipe()
+    // .subscribe(
+    //   res => {
+    //     // this.has_comments = res.data ? true : false
+    //     this.dashboardCommentsData = this.dashService.groupData(res.data);
+    //     // console.log(this.dashboardCommentsData);
+    //     // this.dashboardCommentsData = res.data;
+    //     // this._setCharData(res)
+    //     // Object.assign(this, { barChartLabels: res.data.label });
+    //     // Object.assign(this, { barChartData: res.data.data_set });
+    //     this.hideSpinner();
+    //   },
+    //   error => {
+    //     this.hideSpinner()
+    //     console.log("getCommentStats", error);
+    //     this.alertService.error(error);
+    //   },
+    // )
   }
+
 
 
   /***

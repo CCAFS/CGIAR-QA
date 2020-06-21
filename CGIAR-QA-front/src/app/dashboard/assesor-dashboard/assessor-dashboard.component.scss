@@ -39,6 +39,9 @@
         .finalized {
           background-color: var(--blue-secondary);
         }
+        .unanswered {
+          background-color: var(--gray-secondary);
+        }
       }
       .progress-container {
         display: flex;

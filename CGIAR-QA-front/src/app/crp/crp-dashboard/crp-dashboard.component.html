@@ -10,22 +10,36 @@
             <div class="card-body">
                 <div class="card-title example-container d-flex"
                     [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
+                    <p><strong>By indicator: </strong></p>
                     <div class="circle complete"></div>
                     <p>Answered</p>
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending replies</p>
-                    <!-- <button type="button" class="btn btn-success col-3" (click)="openModal(template)">
-                        More Metrics
-                    </button> -->
+                </div>
+                <div class="card-title example-container d-flex"
+                    [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
+                    <p><strong>By field: </strong></p>
+                    <div class="circle complete"></div>
+                    <p>Approved comments</p>
+                    <div class="circle pending" style="margin-left: 50px;"></div>
+                    <p>Rejected replies</p>
+                    <div class="circle unanswered" style="margin-left: 50px;"></div>
+                    <p>Pending response</p>
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">
                     <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
                         [ngClass]="{'no-available': !item.value[0].indicator_status}" class="progress-container">
                         <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
+                        <!-- {{item.value.total}} -->
                         <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                             <span>{{item.value.total}}</span>
                         </progressbar>
+                        <p *ngIf="item && dashboardCommentsData[item.key]">Total comments: {{dashboardCommentsData[item.key].total}}</p>
+                        <progressbar id="comments-progessbar" *ngIf="item && dashboardCommentsData[item.key]" class="progress" [value]="dashboardCommentsData[item.key]" [max]="dashboardCommentsData[item.key].total">
+                            <span>{{dashboardCommentsData[item.key].value}}</span>
+                        </progressbar>
+
                         <a *ngIf="item.value[0].indicator_status == 1" routerLinkActive="active"
                             [routerLinkActive]="['active']" (click)="modalRef.hide()"
                             routerLink="../indicator/{{item.key.split('qa_')[1]}}/id">

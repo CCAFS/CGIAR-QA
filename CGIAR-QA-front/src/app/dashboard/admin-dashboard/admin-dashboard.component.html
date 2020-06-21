@@ -31,12 +31,23 @@
             <div class="card-body">
                 <div class="card-title example-container d-flex"
                     [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
+                    <p><strong>By indicator: </strong></p>
                     <div class="circle complete"></div>
                     <p>Complete</p>
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending</p>
                     <div class="circle finalized" style="margin-left: 50px;" *ngIf="currentUser.cycle.cyle_stage != '1' "></div>
                     <p>Closed</p>
+                </div>
+                <div class="card-title example-container d-flex"
+                    [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
+                    <p><strong>By field: </strong></p>
+                    <div class="circle complete"></div>
+                    <p>Approved comments</p>
+                    <div class="circle pending" style="margin-left: 50px;"></div>
+                    <p>Rejected replies</p>
+                    <div class="circle unanswered" style="margin-left: 50px;"></div>
+                    <p>Pending response</p>
                 </div>
 
                 <ng-container *ngIf="(dashboardData | json) != ({} | json)">
@@ -45,6 +56,11 @@
                         <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
                         <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                             <span>{{item.value.total}}</span>
+                        </progressbar>
+                        <hr>
+                        <p *ngIf=" item && dashboardCommentsData[item.key]">Total comments: {{dashboardCommentsData[item.key].total}}</p>
+                        <progressbar id="comments-progessbar" *ngIf=" item && dashboardCommentsData[item.key]" class="progress" [value]="dashboardCommentsData[item.key]" [max]="dashboardCommentsData[item.key].total">
+                            <span>{{dashboardCommentsData[item.key].value}}</span>
                         </progressbar>
                         <a routerLinkActive="active" [routerLinkActive]="['active']" routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
                             <!-- (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)"> -->

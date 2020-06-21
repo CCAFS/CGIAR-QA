@@ -32,38 +32,92 @@ class CommentController {
             user = await userRepository.findOneOrFail(userId);
             let role = user.roles[0].description;
 
-
-            if (role === RolesHandler.crp) {
+            console.log(crp_id)
+            if (crp_id !== undefined && crp_id !== 'undefined') {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                    `
-                    SELECT
-                            COUNT( CASE comments.crp_approved  WHEN 1 THEN 1 ELSE NULL END) AS approved_comment_crp,
-                            COUNT( CASE comments.crp_approved  WHEN 0 THEN 1 ELSE NULL END) AS rejected_comment_crp,
-                            SUM( IF(ISNULL(comments.crp_approved) AND !ISNULL(comments.detail),1,NULL)) AS crp_no_commented,
-                            COUNT( CASE comments.approved WHEN 1 THEN 1 ELSE NULL END) AS comments_total,
-                            COUNT( comments.detail) AS assessor_comments,
-                            COUNT(comments.approved_no_comment) AS approved_no_comment,
-                            evaluations.indicator_view_name,
-                            indicators.order AS orderBy
-                    FROM
-                            qa_evaluations evaluations
-                    LEFT JOIN qa_comments comments ON comments.evaluationId = evaluations.id
-                    LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+                     `
+                     SELECT
+                            SUM(
+                                IF (comments.crp_approved = 1, 1, 0)
+                            ) AS comments_approved,
+                            SUM(
+                                IF (comments.crp_approved = 0, 1, 0)
+                            ) AS comments_rejected,
+                            SUM(
+                                IF (
+                                    comments.crp_approved IS NULL,
+                                    1,
+                                    0
+                                )
+                            ) AS comments_without_answer,
+                            SUM(IF(replies.userId = 47, 1, 0)) AS auto_replies_total,
                     
+                            IF(comments.crp_approved IS NULL, 'secondary', IF(comments.crp_approved = 1, 'success','danger')) AS type,
+                            
+                            COUNT(DISTINCT comments.id) AS 'label',
+                            COUNT(DISTINCT comments.id) AS 'value',
+                            evaluations.indicator_view_name
+                    FROM qa_comments comments
+                            LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId AND evaluations.crp_id = :crp_id
+                            LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
                     WHERE comments.is_deleted = 0
-                    AND evaluations.crp_id = :crp_id
-                    AND  comments.approved = 1
-                    GROUP BY evaluations.indicator_view_name, indicators.order
-                    ORDER BY indicators.order
-                        `,
+                            AND comments.detail IS NOT NULL
+                            AND metaId IS NOT NULL
+                            AND evaluation_status <> 'Deleted'
+                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                    GROUP BY evaluations.indicator_view_name, comments.crp_approved
+                    ORDER BY type DESC;
+                    `,
                     { crp_id },
                     {}
                 );
-                console.log('role === RolesHandler.crp', query)
+                // console.log('role === RolesHandler.crp', query, parameters)
                 rawData = await queryRunner.connection.query(query, parameters);
             } else {
 
-                if (crp_id !== 'undefined') {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `
+                    SELECT
+                            SUM(
+                                IF (comments.crp_approved = 1, 1, 0)
+                            ) AS comments_approved,
+                            SUM(
+                                IF (comments.crp_approved = 0, 1, 0)
+                            ) AS comments_rejected,
+                            SUM(
+                                IF (
+                                    comments.crp_approved IS NULL,
+                                    1,
+                                    0
+                                )
+                            ) AS comments_without_answer,
+                            SUM(IF(replies.userId = 47, 1, 0)) AS auto_replies_total,
+                    
+                            IF(comments.crp_approved IS NULL, 'secondary', IF(comments.crp_approved = 1, 'success','danger')) AS type,
+                            
+                            COUNT(DISTINCT comments.id) AS 'label',
+                            COUNT(DISTINCT comments.id) AS 'value',
+                            evaluations.indicator_view_name
+                    FROM qa_comments comments
+                            LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
+                            LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
+                    WHERE comments.is_deleted = 0
+                            AND comments.detail IS NOT NULL
+                            AND metaId IS NOT NULL
+                            AND evaluation_status <> 'Deleted'
+                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                    GROUP BY evaluations.indicator_view_name, comments.crp_approved
+                    ORDER BY type DESC;
+
+                        `,
+                    {},
+                    {}
+                );
+                // console.log('=== undefined', query)
+                rawData = await queryRunner.connection.query(query, parameters);
+
+               /* 
+               if (crp_id !== 'undefined') {
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `
                         SELECT
@@ -120,11 +174,13 @@ class CommentController {
                     console.log('=== undefined', query)
                     rawData = await queryRunner.connection.query(query, parameters);
                 }
+                */
             }
 
 
 
-            res.status(200).json({ data: Util.parseChartData(rawData, (role !== RolesHandler.crp) ? 'admin' : 'crp'), message: 'Comments statistics' });
+            res.status(200).json({ data: Util.groupBy(rawData, 'indicator_view_name') , message: 'Comments statistics' });
+            // res.status(200).json({ data: Util.parseChartData(rawData, (role !== RolesHandler.crp) ? 'admin' : 'crp'), message: 'Comments statistics' });
             // res.status(200).json({ data: rawData, message: 'Comments statistics' });
 
         } catch (error) {

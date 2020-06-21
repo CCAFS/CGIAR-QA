@@ -91,6 +91,198 @@ class EvaluationsController {
             res.status(404).json({ message: "User evaluations Could not access to evaluations." });
         }
     }
+    // get all evaluations dashboard
+    static getAllEvaluationsDash = async (req: Request, res: Response) => {
+
+        let { crp_id } = req.query;
+        const userId = res.locals.jwtPayload.userId;
+        let queryRunner = getConnection().createQueryBuilder();
+        const userRepository = getRepository(QAUsers);
+
+        try {
+
+            let user = await userRepository.findOneOrFail(userId);
+
+
+            let rawData;
+            if (crp_id !== undefined && crp_id !== "undefined") {
+                if (user.roles[0].description === RolesHandler.admin) {
+
+                    const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                        `SELECT
+                        evaluations.status AS status,
+                        evaluations.indicator_view_name AS indicator_view_name,
+                        indicator.primary_field AS primary_field,
+                        indicator.order AS indicator_order,
+                        COUNT(DISTINCT evaluations.id) AS count
+                    FROM
+                        qa_indicator_user qa_indicator_user
+                    
+                    LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
+
+
+                    WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+                    AND crp.crp_id = :crp_id
+
+
+                    GROUP BY
+                        evaluations.status,
+                        evaluations.indicator_view_name,
+                        indicator_order,
+                        indicator.primary_field
+                    ORDER BY
+                        indicator.order ASC,
+                        evaluations.status `,
+                        { crp_id },
+                        {}
+                    );
+                    // console.log(query, parameters);
+
+                    rawData = await queryRunner.connection.query(query, parameters);
+
+                } else {
+                    const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                        `
+                    SELECT
+                            evaluations.crp_id AS crp_id,
+                            evaluations.indicator_view_name AS indicator_view_name,
+                            indicator.primary_field AS primary_field,
+                            (SELECT enable_crp FROM qa_comments_meta comments_meta WHERE comments_meta.indicatorId = indicator.id) AS indicator_status,
+                            indicator.order AS indicator_order, 
+                            COUNT(DISTINCT evaluations.id) AS count,
+                       
+                            
+
+                            IF(
+                                evaluations.status = 'finalized',
+                                'finalized',
+                                IF(
+                                        (
+                                                SELECT COUNT(id)
+                                                FROM qa_comments
+                                                WHERE qa_comments.evaluationId = evaluations.id
+                                                        AND approved_no_comment IS NULL
+                                                        AND metaId IS NOT NULL
+                                                        AND is_deleted = 0
+                                                        AND is_visible = 1
+                                                        AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                        ) >= (
+                                                SELECT COUNT(id)
+                                                FROM qa_comments_replies
+                                                WHERE is_deleted = 0
+                                                        AND commentId IN (
+                                                                SELECT id
+                                                                FROM qa_comments
+                                                                WHERE qa_comments.evaluationId = evaluations.id
+                                                                        AND approved_no_comment IS NULL
+                                                                        AND metaId IS NOT NULL
+                                                                        AND is_deleted = 0
+                                                                        AND is_visible = 1
+                                                                        AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                                        )
+                                            
+                                        ),
+                                    "pending",
+                                    "complete"
+                                )
+                        ) AS evaluations_status
+
+
+
+                    FROM
+                        qa_evaluations evaluations
+                    LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
+                    
+                    WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+                    AND evaluations.crp_id =:crp_id
+                    AND evaluations.indicator_view_name <> 'qa_outcomes'
+                    
+
+                    GROUP BY
+                            evaluations_status,
+                            evaluations.indicator_view_name,
+                            evaluations.crp_id,
+                            indicator_order,
+                            indicator.id,
+                            indicator.primary_field
+                    ORDER BY
+                            indicator.order ASC,
+                            evaluations_status DESC
+                    `,
+                        { crp_id: crp_id },
+                        {}
+                    );
+
+                    rawData = await queryRunner.connection.query(query, parameters);
+                }
+
+                // console.log(query, parameters);
+            } else {
+
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT
+                    evaluations.status AS status,
+                    evaluations.indicator_view_name AS indicator_view_name,
+                    indicator.primary_field AS primary_field,
+                    indicator.order AS indicator_order,
+                    COUNT(DISTINCT evaluations.id) AS count
+                FROM
+                    qa_indicator_user qa_indicator_user
+                
+                LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
+                LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
+                LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
+
+
+                WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+
+
+                GROUP BY
+                    evaluations.status,
+                    evaluations.indicator_view_name,
+                    indicator_order,
+                    indicator.primary_field
+                ORDER BY
+                    indicator.order ASC,
+                    evaluations.status `,
+                    {},
+                    {}
+                );
+                // console.log(query, parameters);
+
+                rawData = await queryRunner.connection.query(query, parameters);
+            }
+
+            let response = []
+
+            for (let index = 0; index < rawData.length; index++) {
+                const element = rawData[index];
+                response.push({
+                    indicator_view_name: element['indicator_view_name'],
+                    status: element['status'] ? element['status'] : element['evaluations_status'],
+                    type: Util.getType(element['status'] ? element['status'] : element['evaluations_status'], (crp_id !== undefined && crp_id !== "undefined")),
+                    value: element['count'],
+                    indicator_status: element['indicator_status'],
+                    crp_id: (crp_id) ? element['crp_id'] : null,
+                    label: `${element['count']}`,
+                    primary_field: element["primary_field"],
+                    order: element['indicator_order']
+                })
+
+            }
+            // console.log(response)
+            let result = Util.groupBy(response, 'indicator_view_name');
+            // res.status(200).json({ data: rawData, message: "All evaluations" });
+            res.status(200).json({ data: result, message: "All evaluations" });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "All evaluations could not access to evaluations." });
+        }
+
+    }
 
     // get evaluations LIST by user
     static getListEvaluationsDash = async (req: Request, res: Response) => {
@@ -177,6 +369,12 @@ class EvaluationsController {
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
             } else if (user.crps.length > 0) {
+
+                // IF(
+                //     (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
+                //         <= 
+                //     ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL  AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
+                // AS evaluations_status,
                 let sql = `
                     SELECT
                         evaluations.id AS evaluation_id,
@@ -205,17 +403,51 @@ class EvaluationsController {
                         (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
                         NOT NULL AND is_deleted = 0 AND is_visible = 1 AND crp_approved = 1) AS comments_accepted_count,
 
-                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) AND is_deleted = 0 ) AS comments_replies_count,
+                        ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1 AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())) AND is_deleted = 0 ) AS comments_replies_count,
                         (
                             SELECT title FROM ${view_name} ${view_name} WHERE ${view_name}.id = evaluations.indicator_view_id
                         ) AS title,
                         ${levelQuery.view_sql}
+                        indicator_user.indicatorId,
+
                         IF(
-                            (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
-                                <= 
-                            ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL  AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
-                        AS evaluations_status,
-                        indicator_user.indicatorId
+                            evaluations.status = 'finalized',
+                            'finalized',
+                            IF(
+                                    (
+                                            SELECT COUNT(id)
+                                            FROM qa_comments
+                                            WHERE qa_comments.evaluationId = evaluations.id
+                                                    AND approved_no_comment IS NULL
+                                                    AND metaId IS NOT NULL
+                                                    AND is_deleted = 0
+                                                    AND is_visible = 1
+                                                    AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                    ) >= (
+                                            SELECT COUNT(id)
+                                            FROM qa_comments_replies
+                                            WHERE is_deleted = 0
+                                                    AND commentId IN (
+                                                            SELECT id
+                                                            FROM qa_comments
+                                                            WHERE qa_comments.evaluationId = evaluations.id
+                                                                    AND approved_no_comment IS NULL
+                                                                    AND metaId IS NOT NULL
+                                                                    AND is_deleted = 0
+                                                                    AND is_visible = 1
+                                                                    AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                                    )
+                                        
+                                    ),
+                                "pending",
+                                "complete"
+                            )
+                    ) AS evaluations_status
+    
+
+
+                        
+                        
                     FROM
                         qa_evaluations evaluations
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
@@ -570,164 +802,6 @@ class EvaluationsController {
     }
 
 
-    // get all evaluations dashboard
-    static getAllEvaluationsDash = async (req: Request, res: Response) => {
-
-        let { crp_id } = req.query;
-        const userId = res.locals.jwtPayload.userId;
-        let queryRunner = getConnection().createQueryBuilder();
-        const userRepository = getRepository(QAUsers);
-
-        try {
-
-            let user = await userRepository.findOneOrFail(userId);
-
-
-            let rawData;
-            if (crp_id !== undefined && crp_id !== "undefined") {
-                if (user.roles[0].description === RolesHandler.admin) {
-
-                    const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                        `SELECT
-                            evaluations.status AS status,
-                            evaluations.indicator_view_name AS indicator_view_name,
-                            indicator.primary_field AS primary_field,
-                            indicator.order AS indicator_order,
-                            COUNT(DISTINCT evaluations.id) AS count
-                        FROM
-                            qa_indicator_user qa_indicator_user
-                        
-                        LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
-                        LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-                        LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
-    
-    
-                        WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
-                        AND crp.crp_id = :crp_id
-    
-    
-                        GROUP BY
-                            evaluations.status,
-                            evaluations.indicator_view_name,
-                            indicator_order,
-                            indicator.primary_field
-                        ORDER BY
-                            indicator.order ASC,
-                            evaluations.status `,
-                        { crp_id },
-                        {}
-                    );
-                    // console.log(query, parameters);
-
-                    rawData = await queryRunner.connection.query(query, parameters);
-
-                } else {
-                    const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                        `
-                        SELECT
-                                evaluations.crp_id AS crp_id,
-                                evaluations.indicator_view_name AS indicator_view_name,
-                                indicator.primary_field AS primary_field,
-                                (SELECT enable_crp FROM qa_comments_meta comments_meta WHERE comments_meta.indicatorId = indicator.id) AS indicator_status,
-                                indicator.order AS indicator_order, 
-                                COUNT(DISTINCT evaluations.id) AS count,
-                            IF(
-                                (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
-                                        <= 
-                                ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL  AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
-                            AS evaluations_status
-                        FROM
-                            qa_evaluations evaluations
-                        LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
-                        LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
-                        
-                        WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
-                        AND evaluations.crp_id =:crp_id
-                        AND evaluations.indicator_view_name <> 'qa_outcomes'
-                        
-    
-                        GROUP BY
-                                evaluations_status,
-                                evaluations.indicator_view_name,
-                                evaluations.crp_id,
-                                indicator_order,
-                                indicator.id,
-                                indicator.primary_field
-                        ORDER BY
-                                indicator.order ASC,
-                                evaluations_status 
-                        `,
-                        { crp_id: crp_id },
-                        {}
-                    );
-
-                    rawData = await queryRunner.connection.query(query, parameters);
-                }
-
-                // console.log(query, parameters);
-            } else {
-
-                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                    `SELECT
-                        evaluations.status AS status,
-                        evaluations.indicator_view_name AS indicator_view_name,
-                        indicator.primary_field AS primary_field,
-                        indicator.order AS indicator_order,
-                        COUNT(DISTINCT evaluations.id) AS count
-                    FROM
-                        qa_indicator_user qa_indicator_user
-                    
-                    LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
-                    LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
-                    LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
-
-
-                    WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
-
-
-                    GROUP BY
-                        evaluations.status,
-                        evaluations.indicator_view_name,
-                        indicator_order,
-                        indicator.primary_field
-                    ORDER BY
-                        indicator.order ASC,
-                        evaluations.status `,
-                    {},
-                    {}
-                );
-                // console.log(query, parameters);
-
-                rawData = await queryRunner.connection.query(query, parameters);
-            }
-
-            let response = []
-
-            for (let index = 0; index < rawData.length; index++) {
-                const element = rawData[index];
-                response.push({
-                    indicator_view_name: element['indicator_view_name'],
-                    status: element['status'] ? element['status'] : element['evaluations_status'],
-                    type: Util.getType(element['status'] ? element['status'] : element['evaluations_status'], (crp_id !== undefined && crp_id !== "undefined")),
-                    value: element['count'],
-                    indicator_status: element['indicator_status'],
-                    crp_id: (crp_id) ? element['crp_id'] : null,
-                    label: `${element['count']}`,
-                    primary_field: element["primary_field"],
-                    order: element['indicator_order']
-                })
-
-            }
-            // console.log(response)
-            let result = Util.groupBy(response, 'indicator_view_name');
-            // res.status(200).json({ data: rawData, message: "All evaluations" });
-            res.status(200).json({ data: result, message: "All evaluations" });
-        } catch (error) {
-            console.log(error);
-            res.status(404).json({ message: "All evaluations could not access to evaluations." });
-        }
-
-    }
 
     // get all CRPS
     static getCRPS = async (req: Request, res: Response) => {

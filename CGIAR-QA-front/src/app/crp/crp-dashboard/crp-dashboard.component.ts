@@ -24,6 +24,9 @@ import { Label, BaseChartDirective } from 'ng2-charts';
 
 export class CrpDashboardComponent implements OnInit {
   dashboardData: any[];
+  dashboardCommentsData: any[];
+
+
   currentUser: User;
   indicatorsName = GeneralIndicatorName;
 
@@ -72,11 +75,11 @@ export class CrpDashboardComponent implements OnInit {
     private dashService: DashboardService,
     private alertService: AlertService,
     private titleService: Title,
-    private spinner: NgxSpinnerService, ) {
+    private spinner: NgxSpinnerService,) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
-      // this.getCommentStats();
       this.getEvaluationsStats();
+      this.getCommentStats();
     });
 
     /** set page title */
@@ -96,8 +99,8 @@ export class CrpDashboardComponent implements OnInit {
     this.dashService.getAllDashboardEvaluations(this.currentUser.crp.crp_id)
       .subscribe(
         res => {
-          // console.log(res)
           this.dashboardData = this.dashService.groupData(res.data);
+          // console.log(this.dashboardData)
           this.hideSpinner(this.spinner2);
         },
         error => {
@@ -114,9 +117,11 @@ export class CrpDashboardComponent implements OnInit {
     this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
       .subscribe(
         res => {
-          this.has_comments = res.data ? true : false
-          console.log(res, this.has_comments);
-          this._setCharData(res)
+          // this.has_comments = res.data ? true : false
+          this.dashboardCommentsData = this.dashService.groupData(res.data);
+          // console.log(this.dashboardCommentsData);
+          // this.dashboardCommentsData = res.data;
+          // this._setCharData(res)
           // Object.assign(this, { barChartLabels: res.data.label });
           // Object.assign(this, { barChartData: res.data.data_set });
           this.hideSpinner(this.spinner1);
