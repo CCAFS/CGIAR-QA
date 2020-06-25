@@ -70,6 +70,7 @@ class AuthController {
                 .select('*')
                 .where("DATE(qa_cycle.start_date) <= CURDATE()")
                 .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+                //.getSql();
                 .getRawOne();
                 
             //Check if encrypted password match
@@ -87,6 +88,7 @@ class AuthController {
             user["token"] = token;
             user["config"] = generalConfig;
             user['cycle'] = current_cycle;
+            console.log(current_cycle)
             delete user.password;
             //Send the jwt in the response
             res.status(200).json({ data: user })

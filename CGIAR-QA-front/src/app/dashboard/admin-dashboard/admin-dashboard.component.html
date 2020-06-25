@@ -7,7 +7,7 @@
         <p class="card-title">Programs/Platforms ({{selectedProgramName}})</p>
         <div class="card">
             <div class="card-body">
-                <form [formGroup]="programsForm" class="programs-form btn-group-vertical" >
+                <form [formGroup]="programsForm" class="programs-form btn-group-vertical">
                     <div class="" *ngFor="let program of crps | sortBy:'asc':'name'; let i=index ">
                         <input (change)="onProgramChange($event, program)" id="program-{{program.id}}" type="radio"
                             class="custom-control-input" value="{{program.id}}" name="program"
@@ -25,7 +25,7 @@
     <div class="col col-progress">
         <div class="row" style="padding: 0 15px;">
             <p class="card-title col-9">Progress by Assessors</p>
-            <!-- <button type="button" class="btn btn-success col-3" (click)="openModal(template)">More Metrics</button> -->
+            <button type="button" class="btn btn-success col-3" (click)="openModal(template)">Comments statics</button>
         </div>
         <div class="card">
             <div class="card-body">
@@ -36,7 +36,7 @@
                     <p>Complete</p>
                     <div class="circle pending" style="margin-left: 50px;"></div>
                     <p>Pending</p>
-                    <div class="circle finalized" style="margin-left: 50px;" *ngIf="currentUser.cycle.cyle_stage != '1' "></div>
+                    <div class="circle finalized" style="margin-left: 50px;"></div>
                     <p>Closed</p>
                 </div>
                 <div class="card-title example-container d-flex"
@@ -58,11 +58,15 @@
                             <span>{{item.value.total}}</span>
                         </progressbar>
                         <hr>
-                        <p *ngIf=" item && dashboardCommentsData[item.key]">Total comments: {{dashboardCommentsData[item.key].total}}</p>
-                        <progressbar id="comments-progessbar" *ngIf=" item && dashboardCommentsData[item.key]" class="progress" [value]="dashboardCommentsData[item.key]" [max]="dashboardCommentsData[item.key].total">
+                        <p *ngIf=" item && dashboardCommentsData[item.key]">Total comments:
+                            {{dashboardCommentsData[item.key].total}}</p>
+                        <progressbar id="comments-progessbar" *ngIf=" item && dashboardCommentsData[item.key]"
+                            class="progress" [value]="dashboardCommentsData[item.key]"
+                            [max]="dashboardCommentsData[item.key].total">
                             <span>{{dashboardCommentsData[item.key].value}}</span>
                         </progressbar>
-                        <a routerLinkActive="active" [routerLinkActive]="['active']" routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
+                        <a routerLinkActive="active" [routerLinkActive]="['active']"
+                            routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
                             <!-- (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)"> -->
                             Go to all {{getIndicatorName(item.key)}}
                         </a>
@@ -123,6 +127,63 @@
 
             </form>
 
+        </div>
+        <!-- cycle date picker -->
+        <div class="card">
+            <div class="row row-padding qa-settings">
+                <form class="form-inline">
+                    <div *ngFor="let cycle of dashboardCyclesData">
+                        <div class="row">
+                            <p style="margin: 0 1em; padding: 0.5em">Stage: <strong>{{cycle.cycle_stage}}</strong></p>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input #dpFromDate class="form-control" [disabled]="!cycle.is_active"
+                                        placeholder="yyyy-mm-dd" name="dpFromDate"
+                                        [value]="formatter.format(cycle.start_date)"
+                                        (input)="fromDate = validateInput(cycle.start_date, dpFromDate.value)">
+                                    <!-- (input)="validateInput(cycle.start_date, dpFromDate.value)"> -->
+                                    <div class="input-group-append">
+                                        <button [disabled]="!cycle.is_active" class="btn btn-outline-secondary calendar"
+                                            (click)="datepicker.toggle()" type="button"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ml-2">
+                                <div class="input-group">
+                                    <input #dpToDate class="form-control" [disabled]="!cycle.is_active"
+                                        placeholder="yyyy-mm-dd" name="dpToDate"
+                                        [value]="formatter.format(cycle.end_date)"
+                                        (input)="toDate = validateInput(cycle.end_date, dpToDate.value)">
+                                    <!-- (input)="validateInput(cycle.end_date, dpToDate.value)"> -->
+                                    <div class="input-group-append">
+                                        <button [disabled]="!cycle.is_active" class="btn btn-outline-secondary calendar"
+                                            (click)="datepicker.toggle()" type="button"></button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group hidden">
+                        <div class="input-group">
+                            <input name="datepicker" style="opacity: 0;" class="form-control" ngbDatepicker
+                                #datepicker="ngbDatepicker" [autoClose]="'outside'"
+                                (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
+                                outsideDays="hidden" [startDate]="fromDate!">
+                            <ng-template #t let-date let-focused="focused">
+                                <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+                                    [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
+                                    (mouseleave)="hoveredDate = null">
+                                    {{ date.day }}
+                                </span>
+                            </ng-template>
+                        </div>
+                    </div>
+                </form>
+
+                <button style="margin: 2em auto;" type="button" class="btn btn-outline-warning" (click)="updateCycle()" [disabled]="!validateNewDate()">Update cycle</button>
+            </div>
         </div>
     </div>
 </div>

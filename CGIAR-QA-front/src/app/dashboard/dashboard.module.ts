@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 
 import { AssessorDashboardComponent } from './assesor-dashboard/assessor-dashboard.component';
@@ -14,6 +14,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 // import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SharedModule } from '../shared-module/shared-module.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -26,8 +27,9 @@ import { SharedModule } from '../shared-module/shared-module.module';
         TooltipModule.forRoot(),
         NgxSpinnerModule,
         ReactiveFormsModule,
+        FormsModule,
         SharedModule,
-        // NgxChartsModule
+        NgbModule
     ],
     declarations: [AssessorDashboardComponent,  AdminDashboardComponent, DashBoardComponent],
     

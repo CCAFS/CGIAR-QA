@@ -17,6 +17,10 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CommentService } from 'src/app/services/comment.service';
 import { Title } from '@angular/platform-browser';
 
+import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
@@ -28,6 +32,7 @@ export class AdminDashboardComponent implements OnInit {
   dashboardData: any[];
   dashboardModalData: any[];
   dashboardCommentsData: any[];
+  dashboardCyclesData: any[];
   configurationData: any[];
   selectedProgramName: string;
   selectedProg = {}
@@ -43,23 +48,31 @@ export class AdminDashboardComponent implements OnInit {
   multi = [];
   has_comments: boolean = false;
   // options
-  showXAxis: boolean = true;
-  showYAxis: boolean = true;
-  gradient: boolean = false;
-  showLegend: boolean = true;
-  showXAxisLabel: boolean = true;
-  xAxisLabel: string = 'Indicators';
-  showYAxisLabel: boolean = true;
-  yAxisLabel: string = 'Comments';
-  legendTitle: string = 'Labels';
-  colorScheme = {
-    domain: ['#61b33e', '#ffca30', '#0f8981', '#2e7636']
-  };
+  // showXAxis: boolean = true;
+  // showYAxis: boolean = true;
+  // gradient: boolean = false;
+  // showLegend: boolean = true;
+  // showXAxisLabel: boolean = true;
+  // xAxisLabel: string = 'Indicators';
+  // showYAxisLabel: boolean = true;
+  // yAxisLabel: string = 'Comments';
+  // legendTitle: string = 'Labels';
+  // colorScheme = {
+  //   domain: ['#61b33e', '#ffca30', '#0f8981', '#2e7636']
+  // };
+
+  hoveredDate: NgbDate | null = null;
+
+  fromDate: NgbDate | null;
+  toDate: NgbDate | null;
+  currenTcycle;
 
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,
     private modalService: BsModalService,
     private router: Router,
+    private calendar: NgbCalendar,
+    public formatter: NgbDateParserFormatter,
     private spinner: NgxSpinnerService,
     private authenticationService: AuthenticationService,
     private indicatorService: IndicatorsService,
@@ -89,6 +102,11 @@ export class AdminDashboardComponent implements OnInit {
     this.showSpinner()
     this.loadDashData();
 
+
+    //*****/ */
+
+    this.fromDate = this.calendar.getToday();
+    this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 10);
   }
 
 
@@ -174,6 +192,7 @@ export class AdminDashboardComponent implements OnInit {
     this.getCommentStats(value.crp_id).subscribe(
       res => {
         this.dashboardCommentsData = this.dashService.groupData(res.data);
+        this.getRawComments(value.crp_id)
       },
       error => {
         this.hideSpinner()
@@ -198,10 +217,11 @@ export class AdminDashboardComponent implements OnInit {
       this.getAllDashData(),
       this.getAllCRP(),
       this.getIndicatorsByCRP(),
-      this.getCommentStats()
+      this.getCommentStats(),
+      this.getCycles()
     ]);
     responses.subscribe(res => {
-      const [dashData, crps, indicatorsByCrps, commentsStats] = res;
+      const [dashData, crps, indicatorsByCrps, commentsStats, cycleData] = res;
 
       this.dashboardData = this.dashService.groupData(dashData.data);
       // console.log(res)
@@ -212,10 +232,13 @@ export class AdminDashboardComponent implements OnInit {
 
       this.configurationData = indicatorsByCrps.data;
       // console.log(this.configurationData)
-
-      console.log(commentsStats)
+      this.getRawComments();
+      // console.log(commentsStats)
       this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
-      console.log(this.dashboardCommentsData)
+      // console.log(this.dashboardCommentsData)
+
+      this.dashboardCyclesData = this.parseCycleDates(cycleData.data);
+      // console.log(this.currenTcycle, this.fromDate, this.toDate)
 
       this.hideSpinner();
     }, error => {
@@ -270,6 +293,32 @@ export class AdminDashboardComponent implements OnInit {
     // )
   }
 
+  // comments raw data
+  getRawComments(crp_id?) {
+    // console.log('asd', crp_id)
+    this.commentService.getRawComments({ crp_id })
+      .subscribe(
+        res => {
+          // console.log('getRawComments', res)
+          // Object.assign(this, { multi: res.data });
+          this.hideSpinner();
+        },
+        error => {
+          this.hideSpinner()
+          console.log("getRawComments", error);
+          this.alertService.error(error);
+        },
+      )
+  }
+
+  // cycles data
+  getCycles() {
+    return this.commentService.getCycles().pipe();
+  }
+
+  setCycle(params) {
+    return this.commentService.updateCycle(params).pipe();
+  }
 
 
   /***
@@ -296,21 +345,129 @@ export class AdminDashboardComponent implements OnInit {
     this.modalRef = this.modalService.show(template);
   }
 
-  // getCommentStats() {
-  //   this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
-  //     .subscribe(
-  //       res => {
-  //         console.log(res)
-  //         Object.assign(this, { multi: res.data });
-  //         this.hideSpinner();
-  //       },
-  //       error => {
-  //         this.hideSpinner()
-  //         console.log("getCommentStats", error);
-  //         this.alertService.error(error);
-  //       },
-  //     )
-  // }
+  updateCycle() {
+    let copyCurrenCycle = Object.assign({}, this.currenTcycle);
+    copyCurrenCycle.start_date = this.formatDate(this.currenTcycle.start_date)['format']("YYYY-MM-DDT00:00:00.000Z");
+    copyCurrenCycle.end_date = this.formatDate(this.currenTcycle.end_date)['format']("YYYY-MM-DDT23:59:00.000Z");
+    // console.log(this.currenTcycle, copyCurrenCycle)
+    this.showSpinner()
+    this.setCycle(copyCurrenCycle).subscribe(
+      res => {
+        console.log(res);
+        this.getCycles().subscribe(res => {
+          this.dashboardCyclesData = this.parseCycleDates(res.data);
+          this.hideSpinner()
+        }, error => {
+          this.hideSpinner()
+          console.log("updateCycle getCycles", error);
+          this.alertService.error(error);
+        })
+        this.hideSpinner()
+      }, error => {
+        this.hideSpinner()
+        console.log("updateCycle", error);
+        this.alertService.error(error);
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+  /**
+   * 
+   * date picker 
+   * 
+   */
+
+  private parseCycleDates(data) {
+
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      let strDt = moment(element.start_date);
+      let endDt = moment(element.end_date);
+      element.start_date = { year: strDt.format('YYYY'), month: strDt.format('MM'), day: strDt.format('DD') };
+      element.end_date = { year: endDt.format('YYYY'), month: endDt.format('MM'), day: endDt.format('DD') };
+
+      element.is_active = (moment().isAfter(strDt, 'day') && moment().isBefore(endDt, 'day'));
+      if (element.is_active) {
+        this.fromDate = element.start_date;
+        this.toDate = element.end_date;
+        this.currenTcycle = element;
+        // this.currenTcycle = Object.assign({}, element);
+      }
+    }
+
+    return data;
+  }
+  private formatDate(date: NgbDate) {
+
+    // NgbDates use 1 for Jan, Moement uses 0, must substract 1 month for proper date conversion
+    var ngbObj = JSON.parse(JSON.stringify(date));
+    var newMoment = moment();
+
+    if (ngbObj) {
+      ngbObj.month--;
+      newMoment.month(ngbObj.month);
+      newMoment.dates(ngbObj.day);
+      newMoment.year(ngbObj.year);
+    }
+
+    // Convert date to "Mon Feb 01" format
+    if (newMoment.isValid()) {
+      return newMoment;
+      // return newMoment.format('ddd MMM DD');
+    } else {
+      return '';
+    }
+  }
+
+
+  onDateSelection(date: NgbDate) {
+    // console.log(date)
+    if (!this.fromDate && !this.toDate) {
+      this.fromDate = date;
+    } else if (this.fromDate && !this.toDate && date && date.after(this.fromDate)) {
+      this.toDate = date;
+    } else {
+      this.toDate = null;
+      this.fromDate = date;
+    }
+
+    this.currenTcycle.start_date = this.fromDate ? this.fromDate : this.currenTcycle.start_date;
+    this.currenTcycle.end_date = this.toDate ? this.toDate : this.currenTcycle.end_date;
+  }
+
+  isHovered(date: NgbDate) {
+    return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+  }
+
+  isInside(date: NgbDate) {
+    return this.toDate && date.after(this.fromDate) && date.before(this.toDate);
+  }
+
+  isRange(date: NgbDate) {
+    return date.equals(this.fromDate) || (this.toDate && date.equals(this.toDate)) || this.isInside(date) || this.isHovered(date);
+  }
+
+  validateInput(currentValue: NgbDate | null, input: string): NgbDate | null {
+    const parsed = this.formatter.parse(input);
+    return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
+  }
+
+  validateNewDate() {
+    let endDate = this.formatDate(this.toDate);
+    // let currDb = this.dashboardCyclesData.find(cycle => cycle.id == this.currenTcycle.id);
+    // let isDiff = currDb.start_date !== this.fromDate && currDb.end_date !== this.toDate;
+    // console.log(isDiff, this.currenTcycle, currDb)
+    return this.fromDate && moment().isBefore(endDate, 'day');
+    // return false;
+  }
 
 
 
@@ -320,26 +477,26 @@ export class AdminDashboardComponent implements OnInit {
    */
 
 
-  onSelect(data): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
-  }
+  // onSelect(data): void {
+  //   console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  // }
 
-  onActivate(data): void {
-    console.log('Activate', JSON.parse(JSON.stringify(data)));
-  }
+  // onActivate(data): void {
+  //   console.log('Activate', JSON.parse(JSON.stringify(data)));
+  // }
 
-  onDeactivate(data): void {
-    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
-  }
+  // onDeactivate(data): void {
+  //   console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+  // }
 
 
-  axisFormat(val) {
-    if (val % 1 === 0) {
-      return val.toLocaleString();
-    } else {
-      return '';
-    }
-  }
+  // axisFormat(val) {
+  //   if (val % 1 === 0) {
+  //     return val.toLocaleString();
+  //   } else {
+  //     return '';
+  //   }
+  // }
 
 
 

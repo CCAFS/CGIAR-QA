@@ -408,7 +408,7 @@ class EvaluationsController {
 
                         IF(
                             evaluations.status = 'finalized',
-                            'finalized',
+                            'complete',
                             IF(
                                     (
                                             SELECT COUNT(id)

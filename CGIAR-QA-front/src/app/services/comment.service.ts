@@ -49,13 +49,26 @@ export class CommentService {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/${params.evaluationId}/detail/comment/${params.commentId}/replies`)
   }
 
-
   // get comments excel
   getCommentsExcel(params) {
     // return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}`, { responseType: HttpRequest })
     return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}&crp_id=${params.crp_id}&indicatorName=${params.indicatorName}`, { responseType: 'blob' as 'blob' })
   }
 
+  // get comments raw data
+  getRawComments(params) {
+    return this.http.get<any>(`${environment.apiUrl}/comment/raw/${params.crp_id}`)
+  }
+
+  // get comments raw data
+  getCycles() {
+    return this.http.get<any>(`${environment.apiUrl}/comment/cycles`)
+  }
+
+  // update comments raw data
+  updateCycle(params) {
+    return this.http.patch<any>(`${environment.apiUrl}/comment/cycles/update`, params)
+  }
   // get comments excel
   toggleApprovedNoComments(params, evaluationId) {
     return this.http.post(`${environment.apiUrl}/comment/approved/${evaluationId}`, params)

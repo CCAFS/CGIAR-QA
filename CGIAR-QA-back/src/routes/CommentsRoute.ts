@@ -1,6 +1,6 @@
 import { Router } from "express";
-import  * as checkJwt_ from "../middlewares/CheckJwt";
-import  * as checkRole_  from "../middlewares/CheckRole";
+import * as checkJwt_ from "../middlewares/CheckJwt";
+import * as checkRole_ from "../middlewares/CheckRole";
 
 import { RolesHandler } from "@helpers/RolesHandler";
 import CommentController from "@controllers/CommentController";
@@ -23,6 +23,14 @@ router.get("/excel/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, Rol
 // set comments as approved
 router.post("/approved/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.toggleApprovedNoComments);
 
+// get comments raw data
+router.get("/raw/:crp_id", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], CommentController.getRawCommentsData);
+
+// get cycles data
+router.get("/cycles", [checkJwt, checkRole([RolesHandler.admin])], CommentController.getCycles);
+
+// get cycles data
+router.patch("/cycles/update", [checkJwt, checkRole([RolesHandler.admin])], CommentController.updateCycle);
 
 
 export default router;

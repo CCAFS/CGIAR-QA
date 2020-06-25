@@ -317,7 +317,7 @@ class Util {
                         user_replied: rows[i].reply_user,
                         reply_createdAt: rows[i].reply_createdAt,
                         comment_id: rows[i].comment_id,
-                        // public_link: rows[i].public_link,
+                        cycle_stage: rows[i].cycle_stage,
                     };
                     sheet.addRow(row);
 

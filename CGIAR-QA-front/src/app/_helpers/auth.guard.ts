@@ -6,6 +6,7 @@ import { intersectionWith } from 'lodash';
 
 import { AuthenticationService } from './../services/authentication.service'
 import { GeneralStatus } from "../_models/general-status.model"
+import { Role } from '../_models/roles.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,11 @@ export class AuthGuard implements CanActivate {
         this.router.navigate(['/qa-close']);
         return false;
       }
-      
+      if (this.validateCycle(currentUser)) {
+        this.router.navigate(['/qa-close']);
+        return false;
+      }
+
       if (route.data.roles && route.data.roles.indexOf(userRoles[0]) === -1) {
         // role not authorised so redirect to home page
         this.router.navigate(['/']);
@@ -51,5 +56,10 @@ export class AuthGuard implements CanActivate {
     if (!currentUser.config.length) return true;
     if (currentUser.config[0].status !== GeneralStatus.Close) return false;
     return false;
+  }
+  private validateCycle(currentUser) {
+    let isAdmin = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin });
+    console.log('validateCycle',  isAdmin ? false : !currentUser.hasOwnProperty('cycle'));
+    return isAdmin ? false : !currentUser.hasOwnProperty('cycle');
   }
 }
