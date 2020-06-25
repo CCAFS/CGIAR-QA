@@ -407,39 +407,35 @@ class EvaluationsController {
                         indicator_user.indicatorId,
 
                         IF(
-                            evaluations.status = 'finalized',
-                            'complete',
-                            IF(
-                                    (
-                                            SELECT COUNT(id)
-                                            FROM qa_comments
-                                            WHERE qa_comments.evaluationId = evaluations.id
-                                                    AND approved_no_comment IS NULL
-                                                    AND metaId IS NOT NULL
-                                                    AND is_deleted = 0
-                                                    AND is_visible = 1
-                                                    AND detail IS NOT NULL
-                                                   -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
-                                    ) <= (
-                                            SELECT COUNT(id)
-                                            FROM qa_comments_replies
-                                            WHERE is_deleted = 0
-                                                    AND commentId IN (
-                                                            SELECT id
-                                                            FROM qa_comments
-                                                            WHERE qa_comments.evaluationId = evaluations.id
-                                                                    AND approved_no_comment IS NULL
-                                                                    AND metaId IS NOT NULL
-                                                                    AND is_deleted = 0
-                                                                    AND is_visible = 1
-                                                                    AND detail IS NOT NULL
-                                                                    -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
-                                                    )
-                                        
-                                    ),
-                                    "complete",
-                                    "pending"
-                            )
+                            (
+                                    SELECT COUNT(id)
+                                    FROM qa_comments
+                                    WHERE qa_comments.evaluationId = evaluations.id
+                                            AND approved_no_comment IS NULL
+                                            AND metaId IS NOT NULL
+                                            AND is_deleted = 0
+                                            AND is_visible = 1
+                                            AND detail IS NOT NULL
+                                           -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                            ) <= (
+                                    SELECT COUNT(id)
+                                    FROM qa_comments_replies
+                                    WHERE is_deleted = 0
+                                            AND commentId IN (
+                                                    SELECT id
+                                                    FROM qa_comments
+                                                    WHERE qa_comments.evaluationId = evaluations.id
+                                                            AND approved_no_comment IS NULL
+                                                            AND metaId IS NOT NULL
+                                                            AND is_deleted = 0
+                                                            AND is_visible = 1
+                                                            AND detail IS NOT NULL
+                                                            -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                            )
+                                
+                            ),
+                            "complete",
+                            "pending"
                     ) AS evaluations_status
     
 
