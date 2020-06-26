@@ -46,20 +46,23 @@ export class AdminDashboardComponent implements OnInit {
 
   modalRef: BsModalRef;
   multi = [];
+  rawCommentsData = [];
   has_comments: boolean = false;
+  has_comments_detailed: boolean = false;
   // options
-  // showXAxis: boolean = true;
-  // showYAxis: boolean = true;
-  // gradient: boolean = false;
-  // showLegend: boolean = true;
-  // showXAxisLabel: boolean = true;
-  // xAxisLabel: string = 'Indicators';
-  // showYAxisLabel: boolean = true;
-  // yAxisLabel: string = 'Comments';
-  // legendTitle: string = 'Labels';
-  // colorScheme = {
-  //   domain: ['#61b33e', '#ffca30', '#0f8981', '#2e7636']
-  // };
+  showXAxis: boolean = true;
+  showYAxis: boolean = true;
+  gradient: boolean = false;
+  showLegend: boolean = true;
+  showXAxisLabel: boolean = true;
+  xAxisLabel: string = 'Indicator';
+  showYAxisLabel: boolean = true;
+  yAxisLabel: string = '# of comments';
+  animations: boolean = true;
+
+  colorScheme = {
+    domain: ['#67be71', '#F1B7B7']
+  };
 
   hoveredDate: NgbDate | null = null;
 
@@ -105,8 +108,8 @@ export class AdminDashboardComponent implements OnInit {
 
     //*****/ */
 
-    this.fromDate = this.calendar.getToday();
-    this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 10);
+    // this.fromDate = this.calendar.getToday();
+    // this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 10);
   }
 
 
@@ -192,7 +195,7 @@ export class AdminDashboardComponent implements OnInit {
     this.getCommentStats(value.crp_id).subscribe(
       res => {
         this.dashboardCommentsData = this.dashService.groupData(res.data);
-        this.getRawComments(value.crp_id)
+        // this.getRawComments(value.crp_id)
       },
       error => {
         this.hideSpinner()
@@ -232,7 +235,7 @@ export class AdminDashboardComponent implements OnInit {
 
       this.configurationData = indicatorsByCrps.data;
       // console.log(this.configurationData)
-      this.getRawComments();
+
       // console.log(commentsStats)
       this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
       // console.log(this.dashboardCommentsData)
@@ -299,8 +302,10 @@ export class AdminDashboardComponent implements OnInit {
     this.commentService.getRawComments({ crp_id })
       .subscribe(
         res => {
-          // console.log('getRawComments', res)
-          // Object.assign(this, { multi: res.data });
+          // console.log('getRawComments', this.groupCommentsChart(res.data))
+          this.rawCommentsData = res.data;
+          Object.assign(this, { multi: this.groupCommentsChart(res.data) });
+          this.has_comments = (res.data.length > 0);
           this.hideSpinner();
         },
         error => {
@@ -341,7 +346,8 @@ export class AdminDashboardComponent implements OnInit {
 
   openModal(template: TemplateRef<any>) {
     // this.dashboardModalData = []
-    this.getCommentStats()
+    // this.getCommentStats()
+    this.getRawComments(this.selectedProg['crp_id']);
     this.modalRef = this.modalService.show(template);
   }
 
@@ -406,25 +412,54 @@ export class AdminDashboardComponent implements OnInit {
     return data;
   }
   private formatDate(date: NgbDate) {
+    if (date) {
+      // NgbDates use 1 for Jan, Moement uses 0, must substract 1 month for proper date conversion
+      var ngbObj = JSON.parse(JSON.stringify(date));
+      var newMoment = moment();
+      if (ngbObj) {
+        ngbObj.month--;
+        newMoment.month(ngbObj.month);
+        newMoment.dates(ngbObj.day);
+        newMoment.year(ngbObj.year);
+      }
 
-    // NgbDates use 1 for Jan, Moement uses 0, must substract 1 month for proper date conversion
-    var ngbObj = JSON.parse(JSON.stringify(date));
-    var newMoment = moment();
+      // Convert date to "Mon Feb 01" format
+      if (newMoment.isValid()) {
+        return newMoment;
+        // return newMoment.format('ddd MMM DD');
+      } else {
+        return '';
+      }
 
-    if (ngbObj) {
-      ngbObj.month--;
-      newMoment.month(ngbObj.month);
-      newMoment.dates(ngbObj.day);
-      newMoment.year(ngbObj.year);
     }
 
-    // Convert date to "Mon Feb 01" format
-    if (newMoment.isValid()) {
-      return newMoment;
-      // return newMoment.format('ddd MMM DD');
-    } else {
-      return '';
+  }
+
+  private groupCommentsChart(data) {
+    let cp = Object.assign([], data), key = 'indicator_view_name', res = [];
+    let groupedData = Object.assign([], this.dashService.groupByProp(cp, key));
+
+    for (const iterator in groupedData) {
+      // console.log(groupedData[iterator], iterator)
+      let d = {
+        name: iterator,
+        series: []
+      }
+      d.series.push(
+        {
+          name: 'Approved',
+          value: groupedData[iterator].reduce((sum, current) => sum + parseInt(current.comment_approved), 0)
+        },
+        {
+          name: 'Rejected',
+          value: groupedData[iterator].reduce((sum, current) => sum + parseInt(current.comment_rejected), 0)
+        }
+      );
+
+
+      res.push(d)
     }
+    return res;
   }
 
 
@@ -477,17 +512,22 @@ export class AdminDashboardComponent implements OnInit {
    */
 
 
-  // onSelect(data): void {
-  //   console.log('Item clicked', JSON.parse(JSON.stringify(data)));
-  // }
+  onSelect(data): void {
+    let parsedData = JSON.parse(JSON.stringify(data))
+    if (typeof parsedData === 'object') {
+      console.log('Item clicked', parsedData);
+      // this.has_comments_detailed = true;
+      // this.has_comments = false;
+    }
+  }
 
-  // onActivate(data): void {
-  //   console.log('Activate', JSON.parse(JSON.stringify(data)));
-  // }
+  onActivate(data): void {
+    // console.log('Activate', JSON.parse(JSON.stringify(data)));
+  }
 
-  // onDeactivate(data): void {
-  //   console.log('Deactivate', JSON.parse(JSON.stringify(data)));
-  // }
+  onDeactivate(data): void {
+    // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+  }
 
 
   // axisFormat(val) {

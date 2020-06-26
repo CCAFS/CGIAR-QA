@@ -12,7 +12,7 @@ import { DashBoardComponent } from './dashboard.component';
 
 import { NgxSpinnerModule } from "ngx-spinner";
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-// import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SharedModule } from '../shared-module/shared-module.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -29,6 +29,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         ReactiveFormsModule,
         FormsModule,
         SharedModule,
+        NgxChartsModule,
         NgbModule
     ],
     declarations: [AssessorDashboardComponent,  AdminDashboardComponent, DashBoardComponent],

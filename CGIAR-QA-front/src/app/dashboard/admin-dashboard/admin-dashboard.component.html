@@ -25,7 +25,7 @@
     <div class="col col-progress">
         <div class="row" style="padding: 0 15px;">
             <p class="card-title col-9">Progress by Assessors</p>
-            <!-- <button type="button" class="btn btn-success col-3" (click)="openModal(template)">Comments statics</button> -->
+            <button type="button" class="btn btn-success col-3" (click)="openModal(template)">Comments statics</button>
         </div>
         <div class="card">
             <div class="card-body">
@@ -201,15 +201,39 @@
         </div>
         <div class="modal-body">
             <div class="row justify-content-center comments-dash-container">
+                <a  *ngIf="has_comments_detailed" class="nav-item nav-link go-back" (click)="has_comments = true; has_comments_detailed=false;">
+                    <i class=icon-go-back></i> Dashboard
+                </a>
 
-                <!-- <ngx-charts-bar-vertical-2d *ngIf="has_comments" [scheme]="colorScheme" [results]="multi"
+                <!-- <ngx-charts-bar-vertical-2d  [scheme]="colorScheme" [results]="multi"
                     [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
                     [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
                     [yAxisLabel]="yAxisLabel" [yAxisTickFormatting]="axisFormat" [legendTitle]="legendTitle"
                     (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
                 </ngx-charts-bar-vertical-2d> -->
-                <div *ngIf="!has_comments" class="no-data">
-                    None comments made yet
+                <ngx-charts-bar-vertical-stacked 
+                    *ngIf="has_comments"
+                    [scheme]="colorScheme"
+                    [results]="multi"
+                    [gradient]="gradient"
+                    [xAxis]="showXAxis"
+                    [yAxis]="showYAxis"
+                    [legend]="showLegend"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxisLabel]="xAxisLabel"
+                    [yAxisLabel]="yAxisLabel"
+                    [animations]="animations"
+                    (activate)="onActivate($event)" 
+                    (deactivate)="onDeactivate($event)"
+                    (select)="onSelect($event)">
+                </ngx-charts-bar-vertical-stacked>
+                <div *ngIf="has_comments_detailed">
+                    has_comments_detailed
+                </div>
+                <div *ngIf="!has_comments && !has_comments_detailed" class="no-data">
+                    Sorry, we couldn't get comments. 
+                    Please contact support.
                 </div>
 
             </div>
