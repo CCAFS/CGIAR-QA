@@ -209,6 +209,7 @@ class Util {
             user["token"] = token;
             user["config"] = generalConfig;
             user['cycle'] = current_cycle;
+            delete user.replies;
             delete user.password;
             return user
         } catch (error) {

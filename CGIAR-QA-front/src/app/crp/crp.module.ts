@@ -17,6 +17,7 @@ import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
 
 import { CommentComponentModule } from '../comment/comment.module';
 import { SharedModule } from '../shared-module/shared-module.module';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 
@@ -36,6 +37,7 @@ import { SharedModule } from '../shared-module/shared-module.module';
     Ng2SearchPipeModule,
     CommentComponentModule,
     SharedModule,
+    NgxChartsModule,
     ChartsModule
   ],
   declarations: [CrpComponent, CrpDashboardComponent]

@@ -27,10 +27,10 @@ export class AuthGuard implements CanActivate {
         this.router.navigate(['/qa-close']);
         return false;
       }
-      if (this.validateCycle(currentUser)) {
-        this.router.navigate(['/qa-close']);
-        return false;
-      }
+      // if (this.validateCycle(currentUser)) {
+      //   this.router.navigate(['/qa-close']);
+      //   return false;
+      // }
 
       if (route.data.roles && route.data.roles.indexOf(userRoles[0]) === -1) {
         // role not authorised so redirect to home page

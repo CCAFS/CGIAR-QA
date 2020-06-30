@@ -15,6 +15,10 @@ import { Title } from '@angular/platform-browser';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { Label, BaseChartDirective } from 'ng2-charts';
 
+import { saveAs } from "file-saver";
+
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-crp-dashboard',
   templateUrl: './crp-dashboard.component.html',
@@ -63,6 +67,23 @@ export class CrpDashboardComponent implements OnInit {
   // @ViewChild('crpChart', { static: true })
   // crpChart: BaseChartDirective;
   // myChart: any;
+
+  multi = [];
+  rawCommentsData = [];
+   // options
+   showXAxis: boolean = true;
+   showYAxis: boolean = true;
+   gradient: boolean = false;
+   showLegend: boolean = true;
+   showXAxisLabel: boolean = true;
+   xAxisLabel: string = 'Indicator';
+   showYAxisLabel: boolean = true;
+   yAxisLabel: string = '# of comments';
+   animations: boolean = true;
+ 
+   colorScheme = {
+     domain: ['#67be71', '#F1B7B7']
+   };
 
 
 
@@ -134,6 +155,49 @@ export class CrpDashboardComponent implements OnInit {
       )
   }
 
+  getRawComments(crp_id?) {
+    // console.log('asd', crp_id)
+    this.commentService.getRawComments({ crp_id})
+      .subscribe(
+        res => {
+          // console.log('getRawComments', this.groupCommentsChart(res.data))
+          this.rawCommentsData = res.data;
+          Object.assign(this, { multi: this.groupCommentsChart(res.data) });
+          this.has_comments = (res.data.length > 0);
+          this.hideSpinner(this.spinner1);;
+        },
+        error => {
+          this.hideSpinner(this.spinner1);
+          console.log("getRawComments", error);
+          this.alertService.error(error);
+        },
+      )
+  }
+
+  downloadRawComments() {
+    this.showSpinner(this.spinner1);
+    // console.log(this.selectedProg)
+    let crp_id = this.currentUser.crp['crp_id'];
+    let filename = `QA-COMMENTS-${this.currentUser.crp.hasOwnProperty('acronym') && this.currentUser.crp['acronym'] !== 'All'  ? '(' + this.currentUser.crp['acronym'] + ')' : ''}${moment().format('YYYYMMDD:HHmm')}`
+    if (this.authenticationService.getBrowser() === 'Safari')
+      filename += `.xlsx`;
+
+    this.commentService.getCommentsRawExcel(crp_id).subscribe(
+      res => {
+        // console.log(res)
+        let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
+        saveAs(blob, filename);
+        this.hideSpinner(this.spinner1);
+      },
+      error => {
+        console.log("downloadRawComments", error);
+        this.hideSpinner(this.spinner1);
+        this.alertService.error(error);
+      }
+    )
+  }
+
+
 
   getPendingResponseComments(data) {
     // console.log(data, ))
@@ -161,6 +225,33 @@ export class CrpDashboardComponent implements OnInit {
     // this.barChartData = response_data.data.data_set;
   }
 
+  private  groupCommentsChart(data) {
+    let cp = Object.assign([], data), key = 'indicator_view_name', res = [];
+    let groupedData = Object.assign([], this.dashService.groupByProp(cp, key));
+
+    for (const iterator in groupedData) {
+      // console.log(groupedData[iterator], iterator)
+      let d = {
+        name: groupedData[iterator][0].indicator_view_display,
+        series: []
+      }
+      d.series.push(
+        {
+          name: 'Approved',
+          value: groupedData[iterator].reduce((sum, current) => sum + parseInt(current.comment_approved), 0)
+        },
+        {
+          name: 'Rejected',
+          value: groupedData[iterator].reduce((sum, current) => sum + parseInt(current.comment_rejected), 0)
+        }
+      );
+
+
+      res.push(d)
+    }
+    return res;
+  }
+
   getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
@@ -175,6 +266,7 @@ export class CrpDashboardComponent implements OnInit {
   openModal(template: TemplateRef<any>) {
     this.dashboardModalData = []
     this.getCommentStats()
+    this.getRawComments( this.currentUser.crp.crp_id )
     // this.getEvaluationsStats()
     this.modalRef = this.modalService.show(template);
   }
@@ -213,14 +305,22 @@ export class CrpDashboardComponent implements OnInit {
     // .getElementsAtEvent(evt))
   }
 
-  // this.canvas.onclick = function (evt) {
-  //   let activePoints = this.baseChart.getElementsAtEvent(evt);
-  //   console.log(activePoints)
-  //   // => activePoints is an array of points on the canvas that are at the same position as the click event.
-  // };
+  onSelect(data): void {
+    let parsedData = JSON.parse(JSON.stringify(data))
+    if (typeof parsedData === 'object') {
+      // console.log('Item clicked', parsedData);
+      // this.has_comments_detailed = true;
+      // this.has_comments = false;
+    }
+  }
 
+  onActivate(data): void {
+    // console.log('Activate', JSON.parse(JSON.stringify(data)));
+  }
 
-
+  onDeactivate(data): void {
+    // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+  }
 
 
 

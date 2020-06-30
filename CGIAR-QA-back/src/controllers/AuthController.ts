@@ -90,6 +90,7 @@ class AuthController {
             user['cycle'] = current_cycle;
             console.log(current_cycle)
             delete user.password;
+            delete user.replies;
             //Send the jwt in the response
             res.status(200).json({ data: user })
 
