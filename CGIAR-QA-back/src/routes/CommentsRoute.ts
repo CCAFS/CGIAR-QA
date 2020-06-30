@@ -24,6 +24,9 @@ router.get("/excel/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, Rol
 router.post("/approved/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.toggleApprovedNoComments);
 
 // get comments raw data
+router.get("/excel-raw/:crp_id", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], CommentController.getRawCommentsExcel);
+
+// get comments raw data
 router.get("/raw/:crp_id", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], CommentController.getRawCommentsData);
 
 // get cycles data

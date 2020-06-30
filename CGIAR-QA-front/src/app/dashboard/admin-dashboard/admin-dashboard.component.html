@@ -195,22 +195,16 @@
 <ng-template #template class="modal-dialog">
     <div class="modal-content  modal-lg">
         <div class="modal-header">
+            <button class="btn btn-warning" (click)="downloadRawComments()">
+                Download comments
+            </button>
+            <h2 style="margin-left: 1em;">All comments</h2>
             <button type="button" class="close pull-right" (click)="modalRef.hide()" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
         <div class="modal-body">
             <div class="row justify-content-center comments-dash-container">
-                <a  *ngIf="has_comments_detailed" class="nav-item nav-link go-back" (click)="has_comments = true; has_comments_detailed=false;">
-                    <i class=icon-go-back></i> Dashboard
-                </a>
-
-                <!-- <ngx-charts-bar-vertical-2d  [scheme]="colorScheme" [results]="multi"
-                    [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
-                    [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
-                    [yAxisLabel]="yAxisLabel" [yAxisTickFormatting]="axisFormat" [legendTitle]="legendTitle"
-                    (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
-                </ngx-charts-bar-vertical-2d> -->
                 <ngx-charts-bar-vertical-stacked 
                     *ngIf="has_comments"
                     [scheme]="colorScheme"
@@ -228,9 +222,7 @@
                     (deactivate)="onDeactivate($event)"
                     (select)="onSelect($event)">
                 </ngx-charts-bar-vertical-stacked>
-                <div *ngIf="has_comments_detailed">
-                    has_comments_detailed
-                </div>
+                
                 <div *ngIf="!has_comments && !has_comments_detailed" class="no-data">
                     Sorry, we couldn't get comments. 
                     Please contact support.

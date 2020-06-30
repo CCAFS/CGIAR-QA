@@ -17,6 +17,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CommentService } from 'src/app/services/comment.service';
 import { Title } from '@angular/platform-browser';
 
+import { saveAs } from "file-saver";
+
 import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 import * as moment from 'moment';
@@ -377,6 +379,31 @@ export class AdminDashboardComponent implements OnInit {
     )
   }
 
+  downloadRawComments() {
+    this.showSpinner();
+    // console.log(this.selectedProg)
+    let crp_id = this.selectedProg['crp_id'];
+    let filename = `QA-COMMENTS-${this.selectedProg.hasOwnProperty('acronym') && this.selectedProg['acronym'] !== 'All'  ? '(' + this.selectedProg['acronym'] + ')' : ''}${moment().format('YYYYMMDD:HHmm')}`
+    if (this.authenticationService.getBrowser() === 'Safari')
+      filename += `.xlsx`;
+
+    this.commentService.getCommentsRawExcel(crp_id).subscribe(
+      res => {
+        // console.log(res)
+        let blob = new Blob([res], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8" });
+        saveAs(blob, filename);
+        this.hideSpinner();
+      },
+      error => {
+        console.log("downloadRawComments", error);
+        this.hideSpinner();
+        this.alertService.error(error);
+      }
+    )
+  }
+
+
+
 
 
 
@@ -442,7 +469,7 @@ export class AdminDashboardComponent implements OnInit {
     for (const iterator in groupedData) {
       // console.log(groupedData[iterator], iterator)
       let d = {
-        name: iterator,
+        name: groupedData[iterator][0].indicator_view_display,
         series: []
       }
       d.series.push(
@@ -515,7 +542,7 @@ export class AdminDashboardComponent implements OnInit {
   onSelect(data): void {
     let parsedData = JSON.parse(JSON.stringify(data))
     if (typeof parsedData === 'object') {
-      console.log('Item clicked', parsedData);
+      // console.log('Item clicked', parsedData);
       // this.has_comments_detailed = true;
       // this.has_comments = false;
     }

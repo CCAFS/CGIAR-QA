@@ -54,6 +54,13 @@ export class CommentService {
     // return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}`, { responseType: HttpRequest })
     return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}&crp_id=${params.crp_id}&indicatorName=${params.indicatorName}`, { responseType: 'blob' as 'blob' })
   }
+  
+  // get comments excel
+  getCommentsRawExcel(crp_id?) {
+    // return this.http.get(`${environment.apiUrl}/comment/excel/${params.evaluationId}?userId=${params.id}&name=${params.name}`, { responseType: HttpRequest })
+    return this.http.get(`${environment.apiUrl}/comment/excel-raw/${crp_id}`, { responseType: 'blob' as 'blob' })
+  }
+
 
   // get comments raw data
   getRawComments(params) {
