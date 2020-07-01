@@ -38,6 +38,7 @@ export class AuthenticationService {
         let currentUsr = this.parseIndicators(user.data)
         delete currentUsr.password
         this.userHeaders = user.data.indicators;
+        this.markCyclesEnd(currentUsr);
 
 
         localStorage.setItem(this.usrCookie, JSON.stringify(currentUsr))
@@ -58,6 +59,7 @@ export class AuthenticationService {
         let currentUsr = this.parseIndicators(user.data);
         delete currentUsr.password
         this.userHeaders = user.data.indicators;
+        this.markCyclesEnd(currentUsr);
 
         localStorage.setItem(this.usrCookie, JSON.stringify(currentUsr))
 
@@ -135,6 +137,12 @@ export class AuthenticationService {
 
   }
 
+  // validateCycles(item:{}, user:{}, type:string){
+  //   let val;
+  //   //if(!user.)
+
+  // }
+
 
 
 
@@ -154,6 +162,12 @@ export class AuthenticationService {
     if (user.crps.length > 0) {
       // console.log(user.crps, user.crps.find(crp => crp.crp_id == crp_id))
       user.crp = user.crps.find(crp => crp.crp_id == crp_id)
+    }
+  }
+
+  private markCyclesEnd(user){
+    if(!user.hasOwnProperty('cycle')){
+      user.cycle_ended = true;
     }
   }
 

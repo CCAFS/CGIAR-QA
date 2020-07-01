@@ -27,10 +27,10 @@ export class AuthGuard implements CanActivate {
         this.router.navigate(['/qa-close']);
         return false;
       }
-      // if (this.validateCycle(currentUser)) {
-      //   this.router.navigate(['/qa-close']);
-      //   return false;
-      // }
+      if (this.validateCycle(currentUser)) {
+        this.router.navigate(['/qa-close']);
+        return false;
+      }
 
       if (route.data.roles && route.data.roles.indexOf(userRoles[0]) === -1) {
         // role not authorised so redirect to home page
@@ -58,8 +58,8 @@ export class AuthGuard implements CanActivate {
     return false;
   }
   private validateCycle(currentUser) {
-    let isAdmin = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin });
-    console.log('validateCycle',  isAdmin ? false : !currentUser.hasOwnProperty('cycle'));
-    return isAdmin ? false : !currentUser.hasOwnProperty('cycle');
+    let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });
+    // console.log('validateCycle',  isAdmin ? false : !currentUser.hasOwnProperty('cycle'));
+    return isAssessor && !currentUser.hasOwnProperty('cycle') ? true : false;
   }
 }

@@ -70,25 +70,25 @@ export class CrpDashboardComponent implements OnInit {
 
   multi = [];
   rawCommentsData = [];
-   // options
-   showXAxis: boolean = true;
-   showYAxis: boolean = true;
-   gradient: boolean = false;
-   showLegend: boolean = true;
-   showXAxisLabel: boolean = true;
-   xAxisLabel: string = 'Indicator';
-   showYAxisLabel: boolean = true;
-   yAxisLabel: string = '# of comments';
-   animations: boolean = true;
- 
-   colorScheme = {
-     domain: ['#67be71', '#F1B7B7']
-   };
+  // options
+  showXAxis: boolean = true;
+  showYAxis: boolean = true;
+  gradient: boolean = false;
+  showLegend: boolean = true;
+  showXAxisLabel: boolean = true;
+  xAxisLabel: string = 'Indicator';
+  showYAxisLabel: boolean = true;
+  yAxisLabel: string = '# of comments';
+  animations: boolean = true;
+
+  colorScheme = {
+    domain: ['#67be71', '#F1B7B7']
+  };
 
 
 
 
-  constructor(private route: ActivatedRoute,
+  constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
     private modalService: BsModalService,
@@ -97,11 +97,14 @@ export class CrpDashboardComponent implements OnInit {
     private alertService: AlertService,
     private titleService: Title,
     private spinner: NgxSpinnerService,) {
-    this.authenticationService.currentUser.subscribe(x => {
-      this.currentUser = x;
-      this.getEvaluationsStats();
-      this.getCommentStats();
-    });
+    this.activeRoute.params.subscribe(routeParams => {
+      this.authenticationService.currentUser.subscribe(x => {
+        console.log(routeParams, x)
+        this.currentUser = x;
+        this.getEvaluationsStats();
+        this.getCommentStats();
+      });
+    })
 
     /** set page title */
     this.titleService.setTitle(`CRP Dashboard`);
@@ -157,7 +160,7 @@ export class CrpDashboardComponent implements OnInit {
 
   getRawComments(crp_id?) {
     // console.log('asd', crp_id)
-    this.commentService.getRawComments({ crp_id})
+    this.commentService.getRawComments({ crp_id })
       .subscribe(
         res => {
           // console.log('getRawComments', this.groupCommentsChart(res.data))
@@ -178,7 +181,7 @@ export class CrpDashboardComponent implements OnInit {
     this.showSpinner(this.spinner1);
     // console.log(this.selectedProg)
     let crp_id = this.currentUser.crp['crp_id'];
-    let filename = `QA-COMMENTS-${this.currentUser.crp.hasOwnProperty('acronym') && this.currentUser.crp['acronym'] !== 'All'  ? '(' + this.currentUser.crp['acronym'] + ')' : ''}${moment().format('YYYYMMDD:HHmm')}`
+    let filename = `QA-COMMENTS-${this.currentUser.crp.hasOwnProperty('acronym') && this.currentUser.crp['acronym'] !== 'All' ? '(' + this.currentUser.crp['acronym'] + ')' : ''}${moment().format('YYYYMMDD:HHmm')}`
     if (this.authenticationService.getBrowser() === 'Safari')
       filename += `.xlsx`;
 
@@ -225,7 +228,7 @@ export class CrpDashboardComponent implements OnInit {
     // this.barChartData = response_data.data.data_set;
   }
 
-  private  groupCommentsChart(data) {
+  private groupCommentsChart(data) {
     let cp = Object.assign([], data), key = 'indicator_view_name', res = [];
     let groupedData = Object.assign([], this.dashService.groupByProp(cp, key));
 
@@ -266,7 +269,7 @@ export class CrpDashboardComponent implements OnInit {
   openModal(template: TemplateRef<any>) {
     this.dashboardModalData = []
     this.getCommentStats()
-    this.getRawComments( this.currentUser.crp.crp_id )
+    this.getRawComments(this.currentUser.crp.crp_id)
     // this.getEvaluationsStats()
     this.modalRef = this.modalService.show(template);
   }

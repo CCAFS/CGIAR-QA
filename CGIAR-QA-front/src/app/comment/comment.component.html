@@ -1,6 +1,6 @@
 <div class="comments-container">
     <i class="icon-close" (click)="closeComments()"></i>
-    <div *ngIf="commentsByCol.length && !availableComment">
+    <div *ngIf="commentsByCol.length && !availableComment && currentUser.hasOwnProperty('cycle')">
         <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
         <div class="comment-container">
             <ng-container *ngFor="let comment of commentsByCol">
@@ -12,11 +12,11 @@
                                 <span>ADDED BY {{comment.user.username}} </span>
                                 <div>
                                     <p>On {{comment.updatedAt | date: 'long'}}</p>
-                                    <p *ngIf="comment.cycle"> {{comment.cycle.cycle_name}}: <strong>{{comment.cycle.cycle_stage}} </strong></p>
+                                    <p *ngIf="comment.cycle"> {{comment.cycle.cycle_name}}:
+                                        <strong>{{comment.cycle.cycle_stage}} </strong></p>
                                 </div>
                             </div>
                             <div>
-                                <!-- <i *ngIf="(comment.user.id === currentUser.id  && comment.replies.replies_count == '0') && !crpComment " class="icon-edit"></i> -->
                                 <i *ngIf="(comment.user.id === currentUser.id || currentUser.roles[0].description === allRoles.admin) && comment.replies.replies_count == '0' && !crpComment "
                                     (click)="updateComment('is_deleted', comment)" class="icon-remove"></i>
                             </div>
@@ -25,7 +25,6 @@
                         <p class="comment">
                             {{comment.detail}}
                         </p>
-                        <!--  getCommentReplies(comment) -->
                         <a *ngIf="comment.replies.replies_count != '0'" style="cursor: pointer;"
                             (click)="comment.isCollapsed = !comment.isCollapsed;">
                             {{comment.replies.replies_count}} replies:
@@ -41,10 +40,9 @@
                                                 <span>ADDED BY {{reply.user.username}} </span>
                                                 <p>On {{reply.updatedAt  | date: 'long'}}</p>
                                             </div>
-                                            <!-- {{reply.user.id}} {{currentUser.id}} -->
-                                            <!-- && comment.replies.replies_count == '0' && !crpComment /// || currentUser.roles[0].description === allRoles.admin)  -->
                                             <i style="height: 2em;" *ngIf="reply.user.id === currentUser.id "
-                                                (click)="updateCommentReply('is_deleted', reply)" class="icon-remove"></i>
+                                                (click)="updateCommentReply('is_deleted', reply)"
+                                                class="icon-remove"></i>
                                         </div>
                                         <hr style="margin: 0;">
                                         <p class="reply">
@@ -91,6 +89,67 @@
         </div>
 
     </div>
+    <!-- VIEW ONLY -->
+    <div *ngIf="commentsByCol.length && !availableComment && (!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended)">
+        <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
+        <div class="comment-container">
+            <ng-container *ngFor="let comment of commentsByCol">
+                <div class="comment-body {{ comment.crp_approved == '1' ? 'approved': ''}} {{  comment.crp_approved == '0' ? 'declined': ''}}"
+                    *ngIf="!comment.is_deleted && comment.is_visible">
+                    <div>
+                        <div class="comment-title">
+                            <div>
+                                <span>ADDED BY {{comment.user.username}} </span>
+                                <div>
+                                    <p>On {{comment.updatedAt | date: 'long'}}</p>
+                                    <p *ngIf="comment.cycle">
+                                        {{comment.cycle.cycle_name}}:
+                                        <strong>{{comment.cycle.cycle_stage}} </strong>
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                        <hr style="margin: 0;">
+                        <p class="comment">
+                            {{comment.detail}}
+                        </p>
+                        <a *ngIf="comment.replies.replies_count != '0'" style="cursor: pointer;"
+                            (click)="comment.isCollapsed = !comment.isCollapsed;">
+                            {{comment.replies.replies_count}} replies:
+                        </a>
+                        <div [attr.aria-expanded]="!comment.isCollapsed" id="collapseBasic-{{comment.id}}">
+                            <div [collapse]="!comment.isCollapsed" [isAnimated]="true">
+                                <div class="well well-lg card card-block card-header">
+                                    <ng-container *ngFor="let reply of comment.loaded_replies"
+                                        class="replies-container">
+
+                                        <div class="comment-title">
+                                            <div style="flex-direction: column;">
+                                                <span>ADDED BY {{reply.user.username}} </span>
+                                                <p>On {{reply.updatedAt  | date: 'long'}}</p>
+                                            </div>
+                                            <i style="height: 2em;" *ngIf="reply.user.id === currentUser.id "
+                                                (click)="updateCommentReply('is_deleted', reply)"
+                                                class="icon-remove"></i>
+                                        </div>
+                                        <hr style="margin: 0;">
+                                        <p class="reply">
+                                            {{reply.detail}}
+                                        </p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <ngx-spinner [name]="spinner_replies" [fullScreen]="false">
+                            </ngx-spinner>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+        </div>
+    </div>
 
     <!-- NO COMMENTS -->
     <div *ngIf="!commentsByCol.length && !availableComment">
@@ -98,7 +157,8 @@
         <p>No comments made</p>
     </div>
     <!-- ADD COMMENT -->
-    <div *ngIf="!availableComment && !crpComment && dataFromItem.status !== statusHandler.Finalized" class="add-comment-container">
+    <div *ngIf="!availableComment && !crpComment && dataFromItem.status !== statusHandler.Finalized && currentUser.hasOwnProperty('cycle')"
+        class="add-comment-container">
         <form [formGroup]="commentGroup">
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>

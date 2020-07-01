@@ -63,7 +63,7 @@ export class CommentComponent implements OnInit {
   }
 
   updateData(data: any, params: any) {
-    console.log(data)
+    // console.log(data)
     Object.assign(this.dataFromItem, data, params)
     this.availableComment = false;
     this.showSpinner(this.spinner_comment);

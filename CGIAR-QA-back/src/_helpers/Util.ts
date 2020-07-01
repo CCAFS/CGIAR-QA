@@ -363,7 +363,8 @@ class Util {
                 .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
                 .getRawOne();
 
-
+            console.log(current_cycle == undefined)
+            if(current_cycle == undefined) throw new Error('Could not created comment')
             let comment_ = new QAComments();
             comment_.detail = detail;
             comment_.approved = approved;
@@ -375,7 +376,7 @@ class Util {
 
             return new_comment;
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             return null;
         }
     }

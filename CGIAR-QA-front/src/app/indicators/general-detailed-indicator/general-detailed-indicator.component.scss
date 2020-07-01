@@ -34,6 +34,17 @@
   }
 }
 
+.approved-no-comment {
+  background: var(--yellow-primary);
+  border-radius: 0.3em;
+  font-size: 0.5em;
+  padding: 2px 5px;
+  margin-left: 1em;
+  border: var(--yellow-secondary) 2px solid;
+  display: block !important;
+  float: right;
+}
+
 .nav-item {
   padding-top: 0;
   margin-bottom: 2em;

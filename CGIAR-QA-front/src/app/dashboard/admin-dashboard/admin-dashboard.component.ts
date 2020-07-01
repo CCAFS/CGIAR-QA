@@ -278,29 +278,13 @@ export class AdminDashboardComponent implements OnInit {
   // comments by crp
   getCommentStats(crp_id?) {
     // this.showSpinner();
-    return this.commentService.getCommentCRPStats({ crp_id, id: null }).pipe()
-    // .subscribe(
-    //   res => {
-    //     // this.has_comments = res.data ? true : false
-    //     this.dashboardCommentsData = this.dashService.groupData(res.data);
-    //     // console.log(this.dashboardCommentsData);
-    //     // this.dashboardCommentsData = res.data;
-    //     // this._setCharData(res)
-    //     // Object.assign(this, { barChartLabels: res.data.label });
-    //     // Object.assign(this, { barChartData: res.data.data_set });
-    //     this.hideSpinner();
-    //   },
-    //   error => {
-    //     this.hideSpinner()
-    //     console.log("getCommentStats", error);
-    //     this.alertService.error(error);
-    //   },
-    // )
+    return this.commentService.getCommentCRPStats({ crp_id, id: null }).pipe();
   }
 
   // comments raw data
   getRawComments(crp_id?) {
     // console.log('asd', crp_id)
+    this.showSpinner()
     this.commentService.getRawComments({ crp_id })
       .subscribe(
         res => {

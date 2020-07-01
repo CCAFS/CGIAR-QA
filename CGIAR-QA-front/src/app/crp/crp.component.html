@@ -1,12 +1,12 @@
 <div class="row justify-content-center dashboard-container">
-    <div class="col col-2 col-programs crp-list-group" routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{exact: true}">
+
+    <div *ngIf="currentUser && currentUser.hasOwnProperty('cycle')" class="col col-2 col-programs crp-list-group"
+        routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
 
         <a class="nav-item nav-link" style="padding-bottom: 0;" [routerLinkActive]="['active']"
             routerLink="/crp/dashboard">Home</a>
-            <ng-container *ngFor="let indicator of indicators; index as i">
-                <!-- {{currentUser}} -->
-            <a *ngIf="indicator.enable_crp " class="nav-item nav-link" [routerLinkActive]="['active']"
+        <ng-container *ngFor="let indicator of indicators; index as i">
+            <a *ngIf="indicator.enable_crp" class="nav-item nav-link" [routerLinkActive]="['active']"
                 routerLink="/crp/indicator/{{ indicator.view_name.split('qa_')[1]}}/{{ indicator.primary_field}}">
                 {{indicator.name}}
             </a>
@@ -19,6 +19,28 @@
         </a>
         <ngx-spinner [name]="spinner_name" [fullScreen]="false"></ngx-spinner>
     </div>
+
+    <div *ngIf="currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended"
+        class="col col-2 col-programs crp-list-group" routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{exact: true}">
+
+        <a class="nav-item nav-link" style="padding-bottom: 0;" [routerLinkActive]="['active']"
+            routerLink="/crp/dashboard">Home</a>
+        <ng-container *ngFor="let indicator of indicators; index as i">
+            <a class="nav-item nav-link" [routerLinkActive]="['active']"
+                routerLink="/crp/indicator/{{ indicator.view_name.split('qa_')[1]}}/{{ indicator.primary_field}}">
+                {{indicator.name}}
+            </a>
+        </ng-container>
+        <a *ngIf="!env.production" class="nav-item nav-link" (click)="logout()">
+            Logout
+        </a>
+        <ngx-spinner [name]="spinner_name" [fullScreen]="false"></ngx-spinner>
+    </div>
+
+
+
+
     <div class="col-10 col-progress">
         <router-outlet></router-outlet>
     </div>

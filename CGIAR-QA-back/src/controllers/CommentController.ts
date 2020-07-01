@@ -243,10 +243,11 @@ class CommentController {
 
         try {
             let new_comment = await Util.createComment(detail, approved, userId, metaId, evaluationId);
+            if (new_comment == null)  throw new Error('Could not created comment');
             res.status(200).send({ data: new_comment, message: 'Comment created' });
 
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             res.status(404).json({ message: "Comment can not be created.", data: error });
         }
     }

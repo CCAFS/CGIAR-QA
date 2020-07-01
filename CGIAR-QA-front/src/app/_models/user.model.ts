@@ -9,6 +9,7 @@ export class User {
     indicators:any[];
     crp:any;
     name: string;
+    cycle_ended:any;
     // lastName: string;
     token: string;
 }

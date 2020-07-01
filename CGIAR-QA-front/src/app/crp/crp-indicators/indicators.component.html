@@ -6,9 +6,15 @@
     <div class="col-12">
         <div>
             <h2>{{returnListName(indicatorType, 'header')}} </h2>
-            <h4 style="text-align: center;">
+            <h4 style="text-align: center;"
+                *ngIf="currentUser.hasOwnProperty('cycle') && !currentUser.hasOwnProperty('cycle_ended')">
                 {{(currentUser.cycle.cycle_stage > 1 ) ? currentUser.cycle.cycle_name+ ':'+ currentUser.cycle.cycle_stage: ''}}
             </h4>
+            <h4 style="margin: 1em auto; text-align: center;"
+                *ngIf="currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">
+                The quality assessment process has ended.
+            </h4>
+            
             <div class="row col sub-header">
                 <div class="col row text-left">
                     <div class="model-link-container" (click)="goToPDF('AR')">

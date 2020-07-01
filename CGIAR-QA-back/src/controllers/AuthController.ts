@@ -88,7 +88,7 @@ class AuthController {
             user["token"] = token;
             user["config"] = generalConfig;
             user['cycle'] = current_cycle;
-            console.log(current_cycle)
+            // console.log(current_cycle)
             delete user.password;
             delete user.replies;
             //Send the jwt in the response

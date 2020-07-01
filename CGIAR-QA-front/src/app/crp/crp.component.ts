@@ -29,12 +29,16 @@ export class CrpComponent implements OnInit {
     private indicatorService: IndicatorsService,
     private router: Router,
     private alertService: AlertService,
-    private spinner: NgxSpinnerService, ) {
+    private spinner: NgxSpinnerService,) {
 
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
       if (params.has('token')) {
         this.validateToken(this.params['params']);
+      } else {
+        this.authenticationService.currentUser.subscribe(x => {
+          this.currentUser = x;
+        })
       }
     });
   }
@@ -52,6 +56,7 @@ export class CrpComponent implements OnInit {
         this.authenticationService.currentUser.subscribe(x => {
           this.hideSpinner(this.spinner_name);
           this.currentUser = x;
+          console.log(this.currentUser)
           this.router.navigate([`/crp/dashboard`])
           this.getCRPIndicators();
         })
@@ -69,7 +74,7 @@ export class CrpComponent implements OnInit {
 
     if (!this.indicators.length && this.currentUser) {
       this.showSpinner(this.spinner_name)
-      this.indicatorService.getIndicatorsByUser(this.currentUser.id, this.currentUser.crp.crp_id )
+      this.indicatorService.getIndicatorsByUser(this.currentUser.id, this.currentUser.crp.crp_id)
         .subscribe(
           res => {
             this.indicators = res.data;

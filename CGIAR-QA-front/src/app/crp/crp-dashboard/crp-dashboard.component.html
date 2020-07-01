@@ -1,5 +1,9 @@
 <div class="row justify-content-center">
     <i class="qa-timeline-icon"></i>
+    <h2 style="margin: 1em auto;"
+        *ngIf="currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">
+        The quality assessment process has ended.
+    </h2>
 </div>
 
 <div class="row justify-content-center dashboard-container">
@@ -27,9 +31,11 @@
                     <p>Not responded yet</p>
                 </div>
                 <div class="row" style="justify-content: flex-end; padding: 0 1em;">
-                    <button type="button"  class="btn btn-success col-3" (click)="openModal(template)">Comments statics</button>
+                    <button type="button" class="btn btn-success col-3" (click)="openModal(template)">
+                        Comments statics
+                    </button>
                 </div>
-                <ng-container *ngIf="(dashboardData | json) != ({} | json)">
+                <ng-container *ngIf="(dashboardData | json) != ({} | json) && currentUser.hasOwnProperty('cycle')">
                     <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
                         [ngClass]="{'no-available': !item.value[0].indicator_status}" class="progress-container">
                         <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
@@ -37,8 +43,13 @@
                         <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                             <span>{{item.value.total}}</span>
                         </progressbar>
-                        <p *ngIf="item && dashboardCommentsData[item.key]"># of comments {{dashboardCommentsData[item.key].total}} ({{getPendingResponseComments(dashboardCommentsData[item.key])}}) </p>
-                        <progressbar id="comments-progessbar" *ngIf="item && dashboardCommentsData[item.key]" class="progress" [value]="dashboardCommentsData[item.key]" [max]="dashboardCommentsData[item.key].total">
+                        <p *ngIf="item &&  dashboardCommentsData.hasOwnProperty(item.key)"># of comments
+                            <!-- <p *ngIf="item &&  dashboardCommentsData[item.key]"># of comments -->
+                            {{dashboardCommentsData[item.key].total}}
+                            ({{getPendingResponseComments(dashboardCommentsData[item.key])}}) </p>
+                        <progressbar id="comments-progessbar" *ngIf="item && dashboardCommentsData[item.key]"
+                            class="progress" [value]="dashboardCommentsData[item.key]"
+                            [max]="dashboardCommentsData[item.key].total">
                             <span>{{dashboardCommentsData[item.key].value}}</span>
                         </progressbar>
 
@@ -48,6 +59,33 @@
                             Go to {{getIndicatorName(item.key)}}
                         </a>
                         <a *ngIf="item.value[0].indicator_status == 0">
+                            Go to {{getIndicatorName(item.key)}}
+                        </a>
+                    </div>
+
+                </ng-container>
+
+                <!-- cycle ended -->
+                <ng-container
+                    *ngIf="(dashboardData | json) != ({} | json) && (currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended)">
+                    <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' " class="progress-container">
+                        <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
+                        <progressbar class="progress" [value]="item.value" [max]="item.value.total">
+                            <span>{{item.value.total}}</span>
+                        </progressbar>
+                        <p *ngIf="item && (dashboardCommentsData && dashboardCommentsData.hasOwnProperty(item.key))">
+                            # of comments
+                            {{dashboardCommentsData[item.key].total}}
+                            ({{getPendingResponseComments(dashboardCommentsData[item.key])}})
+                        </p>
+                        <progressbar id="comments-progessbar" *ngIf="item && dashboardCommentsData[item.key]"
+                            class="progress" [value]="dashboardCommentsData[item.key]"
+                            [max]="dashboardCommentsData[item.key].total">
+                            <span>{{dashboardCommentsData[item.key].value}}</span>
+                        </progressbar>
+
+                        <a routerLinkActive="active" [routerLinkActive]="['active']" (click)="modalRef.hide()"
+                            routerLink="../indicator/{{item.key.split('qa_')[1]}}/id">
                             Go to {{getIndicatorName(item.key)}}
                         </a>
                     </div>
@@ -81,31 +119,21 @@
         </div>
         <div class="modal-body">
             <div class="row justify-content-center comments-dash-container">
-                <ngx-charts-bar-vertical-stacked 
-                    *ngIf="has_comments"
-                    [scheme]="colorScheme"
-                    [results]="multi"
-                    [gradient]="gradient"
-                    [xAxis]="showXAxis"
-                    [yAxis]="showYAxis"
-                    [legend]="showLegend"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxisLabel]="xAxisLabel"
-                    [yAxisLabel]="yAxisLabel"
-                    [animations]="animations"
-                    (activate)="onActivate($event)" 
-                    (deactivate)="onDeactivate($event)"
-                    (select)="onSelect($event)">
+                <ngx-charts-bar-vertical-stacked *ngIf="has_comments" [scheme]="colorScheme" [results]="multi"
+                    [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
+                    [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
+                    [yAxisLabel]="yAxisLabel" [animations]="animations" (activate)="onActivate($event)"
+                    (deactivate)="onDeactivate($event)" (select)="onSelect($event)">
                 </ngx-charts-bar-vertical-stacked>
-                
+
                 <div *ngIf="!has_comments" class="no-data">
-                    Sorry, we couldn't get comments. 
+                    Sorry, we couldn't get comments.
                     Please contact support.
                 </div>
 
             </div>
         </div>
+        <ngx-spinner [name]="spinner1" [fullScreen]="false"></ngx-spinner>
     </div>
 </ng-template>
 
