@@ -929,9 +929,11 @@ class CommentController {
                             (SELECT view_name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_name',
                             ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'display_name',
                             comments.id AS 'comment_id',
-                            (SELECT username FROM qa_users WHERE id = comments.userId) as 'assessor_username',
+                            (SELECT username FROM qa_users WHERE id = comments.userId) as 'username',
                             comments.detail AS 'detail',
                             ( SELECT GROUP_CONCAT(detail SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id ) as 'reply',
+                            ( SELECT  GROUP_CONCAT( (SELECT username from qa_users WHERE id = userId) SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id) AS user_replied,
+                            ( SELECT  GROUP_CONCAT( createdAt SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id) AS reply_createdAt,
                             SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
                             (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle_stage',
                             IF(comments.crp_approved IS NULL , 'Pending', IF(comments.crp_approved = 1, 'Aproved', 'Rejected')) AS crp_approved_txt,
@@ -942,8 +944,7 @@ class CommentController {
                         LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
                         WHERE comments.is_deleted = 0
                         AND comments.detail IS NOT NULL
-                        AND evaluations.crp_id = 'CRP-22'
-                        
+                        AND evaluations.crp_id = :crp_id
                         GROUP BY
                             evaluations.crp_id,
                             'display_name',
@@ -978,9 +979,13 @@ class CommentController {
                             (SELECT view_name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_name',
                             ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'display_name',
                             comments.id AS 'comment_id',
-                            (SELECT username FROM qa_users WHERE id = comments.userId) as 'assessor_username',
+                            (SELECT username FROM qa_users WHERE id = comments.userId) as 'username',
                             comments.detail AS 'detail',
+
                             ( SELECT GROUP_CONCAT(detail SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id ) as 'reply',
+                            ( SELECT  GROUP_CONCAT( (SELECT username from qa_users WHERE id = userId) SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id) AS user_replied,
+                            ( SELECT  GROUP_CONCAT( createdAt SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id) AS reply_createdAt,
+
                             SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
                             (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle_stage',
                             IF(comments.crp_approved IS NULL , 'Pending', IF(comments.crp_approved = 1, 'Aproved', 'Rejected')) AS crp_approved_txt,
@@ -1007,12 +1012,13 @@ class CommentController {
                 rawData = await queryRunner.connection.query(query, parameters);
             }
             // console.log(rawData)
-            const stream: Buffer = await Util.createCommentsExcel([
+            const stream: Buffer = await Util.createRawCommentsExcel([
+                { header: 'CRP', key: 'crp_acronym' },
                 { header: 'Comment id', key: 'comment_id' },
                 { header: 'Indicator id', key: 'id' },
                 { header: 'Indicator Title', key: 'indicator_title' },
                 { header: 'Field', key: 'field' },
-                { header: 'User', key: 'user' },
+                { header: 'Assessor', key: 'assessor' },
                 { header: 'Comment', key: 'comment' },
                 { header: 'Cycle', key: 'cycle_stage' },
                 { header: 'Created Date', key: 'createdAt' },
@@ -1030,6 +1036,7 @@ class CommentController {
 
 
             res.status(200).send(stream);
+            return;
             // res.status(200).json({ message: "Comments raw excel", data: rawData });
         } catch (error) {
             console.log(error);

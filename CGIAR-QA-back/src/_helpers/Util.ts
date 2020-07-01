@@ -339,6 +339,49 @@ class Util {
         }
 
     }
+    static createRawCommentsExcel = async (headers: Partial<excel.Column>[], rows: any[], sheetName: string): Promise<Buffer> => {
+
+        try {
+            const workbook: excel.stream.xlsx.WorkbookWriter = new excel.stream.xlsx.WorkbookWriter({});
+            const sheet: excel.Worksheet = workbook.addWorksheet(sheetName);
+            sheet.columns = headers;
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i]) {
+                    let row = {
+                        id: rows[i].id,
+                        crp_acronym: rows[i].crp_acronym,
+                        indicator_title: rows[i].indicator_title,
+                        createdAt: rows[i].createdAt,
+                        updatedAt: rows[i].updatedAt,
+                        comment: rows[i].detail,
+                        assessor: rows[i].username,
+                        field: rows[i].display_name ? rows[i].display_name : 'General Comment',
+                        crp_approved: (rows[i].crp_approved != null) ? ((rows[i].crp_approved == 1) ? 'Yes' : 'No') : '',
+                        reply: rows[i].reply,
+                        user_replied: rows[i].user_replied,
+                        reply_createdAt: rows[i].reply_createdAt,
+                        comment_id: rows[i].comment_id,
+                        cycle_stage: rows[i].cycle_stage,
+                    };
+                    sheet.addRow(row);
+
+                }
+            }
+            sheet.commit();
+            return new Promise((resolve, reject): void => {
+                workbook.commit().then(() => {
+                    const stream: any = (workbook as any).stream;
+                    const result: Buffer = stream.read();
+                    resolve(result);
+                }).catch((e) => {
+                    reject(e);
+                });
+            });
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
 
     static createComment = async (detail, approved, userId, metaId, evaluationId) => {
         const userRepository = getRepository(QAUsers);

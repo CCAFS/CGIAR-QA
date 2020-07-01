@@ -32,7 +32,7 @@
                 </div>
                 <div class="row" style="justify-content: flex-end; padding: 0 1em;">
                     <button type="button" class="btn btn-success col-3" (click)="openModal(template)">
-                        Comments statics
+                        Download all comments and replies
                     </button>
                 </div>
                 <ng-container *ngIf="(dashboardData | json) != ({} | json) && currentUser.hasOwnProperty('cycle')">
