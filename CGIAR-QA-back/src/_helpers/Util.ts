@@ -356,7 +356,8 @@ class Util {
                         comment: rows[i].detail,
                         assessor: rows[i].username,
                         field: rows[i].display_name ? rows[i].display_name : 'General Comment',
-                        crp_approved: (rows[i].crp_approved != null) ? ((rows[i].crp_approved == 1) ? 'Yes' : 'No') : '',
+                        // crp_approved: rows[i].crp_approved,
+                        crp_approved: (rows[i].crp_approved != null) ? ((rows[i].crp_approved == 1) ? 'Yes' : 'No') : '<not replied>',
                         reply: rows[i].reply,
                         user_replied: rows[i].user_replied,
                         reply_createdAt: rows[i].reply_createdAt,
@@ -407,7 +408,7 @@ class Util {
                 .getRawOne();
 
             console.log(current_cycle == undefined)
-            if(current_cycle == undefined) throw new Error('Could not created comment')
+            if (current_cycle == undefined) throw new Error('Could not created comment')
             let comment_ = new QAComments();
             comment_.detail = detail;
             comment_.approved = approved;

@@ -914,29 +914,29 @@ class CommentController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                            (
-                                SELECT
-                                        acronym
-                                FROM
-                                        qa_crp
-                                WHERE
-                                        crp_id = evaluations.crp_id
+                                (
+                                    SELECT
+                                                    acronym
+                                    FROM
+                                                    qa_crp
+                                    WHERE
+                                                    crp_id = evaluations.crp_id
                             ) AS 'crp_acronym',
                             evaluations.indicator_view_id AS 'id',
-                            (SELECT name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_title',
+                            
                             comments.createdAt AS createdAt,
                             comments.updatedAt AS updatedAt,
-                            (SELECT view_name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_name',
+                            (SELECT name FROM qa_indicators WHERE view_name = evaluations.indicator_view_name) AS 'indicator_title',
+                            evaluations.indicator_view_name AS 'indicator_view_name',
                             ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'display_name',
                             comments.id AS 'comment_id',
                             (SELECT username FROM qa_users WHERE id = comments.userId) as 'username',
                             comments.detail AS 'detail',
-                            ( SELECT GROUP_CONCAT(detail SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id ) as 'reply',
-                            ( SELECT  GROUP_CONCAT( (SELECT username from qa_users WHERE id = userId) SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id) AS user_replied,
-                            ( SELECT  GROUP_CONCAT( createdAt SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id) AS reply_createdAt,
+                            IFNULL(( SELECT GROUP_CONCAT(detail SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id ),'<not replied>') as 'reply',
+                            IFNULL(( SELECT  GROUP_CONCAT( (SELECT username from qa_users WHERE id = userId) SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id),'<not replied>') AS user_replied,
+                            IFNULL(( SELECT  GROUP_CONCAT( createdAt SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id),'<not replied>') AS reply_createdAt,
                             SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
                             (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle_stage',
-                            IF(comments.crp_approved IS NULL , 'Pending', IF(comments.crp_approved = 1, 'Aproved', 'Rejected')) AS crp_approved_txt,
                             comments.crp_approved AS crp_approved
                         FROM
                             qa_comments comments
@@ -964,32 +964,30 @@ class CommentController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                            (
-                                SELECT
-                                        acronym
-                                FROM
-                                        qa_crp
-                                WHERE
-                                        crp_id = evaluations.crp_id
-                            ) AS 'crp_acronym',
-                            evaluations.indicator_view_id AS 'id',
-                            (SELECT name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_title',
-                            comments.createdAt AS createdAt,
-                            comments.updatedAt AS updatedAt,
-                            (SELECT view_name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_name',
-                            ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'display_name',
-                            comments.id AS 'comment_id',
-                            (SELECT username FROM qa_users WHERE id = comments.userId) as 'username',
-                            comments.detail AS 'detail',
-
-                            ( SELECT GROUP_CONCAT(detail SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id ) as 'reply',
-                            ( SELECT  GROUP_CONCAT( (SELECT username from qa_users WHERE id = userId) SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id) AS user_replied,
-                            ( SELECT  GROUP_CONCAT( createdAt SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id) AS reply_createdAt,
-
-                            SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
-                            (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle_stage',
-                            IF(comments.crp_approved IS NULL , 'Pending', IF(comments.crp_approved = 1, 'Aproved', 'Rejected')) AS crp_approved_txt,
-                            comments.crp_approved AS crp_approved
+                        (
+                            SELECT
+                                acronym
+                            FROM
+                                qa_crp
+                            WHERE
+                                crp_id = evaluations.crp_id
+                        ) AS 'crp_acronym',
+                        evaluations.indicator_view_id AS 'id',
+                        
+                        comments.createdAt AS createdAt,
+                        comments.updatedAt AS updatedAt,
+                        (SELECT name FROM qa_indicators WHERE view_name = evaluations.indicator_view_name) AS 'indicator_title',
+                        evaluations.indicator_view_name AS 'indicator_view_name',
+                        ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'display_name',
+                        comments.id AS 'comment_id',
+                        (SELECT username FROM qa_users WHERE id = comments.userId) as 'username',
+                        comments.detail AS 'detail',
+                        IFNULL(( SELECT GROUP_CONCAT(detail SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id ),'<not replied>') as 'reply',
+                        IFNULL(( SELECT  GROUP_CONCAT( (SELECT username from qa_users WHERE id = userId) SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id),'<not replied>') AS user_replied,
+                        IFNULL(( SELECT  GROUP_CONCAT( createdAt SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id),'<not replied>') AS reply_createdAt,
+                        SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
+                        (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle_stage',
+                        comments.crp_approved AS crp_approved
                         FROM
                             qa_comments comments
                         LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId AND evaluations.status <> 'Deleted'
@@ -1032,9 +1030,6 @@ class CommentController {
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             res.setHeader('Content-Disposition', `attachment; filename=qa_raw_comments.xlsx`);
             res.setHeader('Content-Length', stream.length);
-            res.status(200).send(stream);
-
-
             res.status(200).send(stream);
             return;
             // res.status(200).json({ message: "Comments raw excel", data: rawData });
