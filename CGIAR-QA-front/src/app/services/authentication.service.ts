@@ -19,7 +19,7 @@ export class AuthenticationService {
   public NOT_APPLICABLE = '<Not applicable>';
 
   private usrCookie = 'currentUser';
-  Tawk_LoadStart = new Date();
+  private Tawk_LoadStart = new Date();
 
   constructor(private http: HttpClient, private cookiesService: CookiesService) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem(this.usrCookie)));
@@ -72,7 +72,7 @@ export class AuthenticationService {
       }));
   }
 
-  setLoggedUser(user) {
+  private setLoggedUser(user) {
     if (window.hasOwnProperty('Tawk_API')) {
       if (window['Tawk_API'].isVisitorEngaged()) window['Tawk_API'].endChat();
       window['Tawk_API'].setAttributes({

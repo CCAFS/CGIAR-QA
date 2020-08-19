@@ -1,9 +1,9 @@
 export class CRP {
-    id: number;
-    name: string;
-    crp_id: string;
-    acronym: string;
-    is_marlo: boolean;
-    createdAt?: Date;
-    updatedAt?: Date;
+    private id: number;
+    private name: string;
+    private crp_id: string;
+    private acronym: string;
+    private is_marlo: boolean;
+    private createdAt?: Date;
+    private updatedAt?: Date;
 }

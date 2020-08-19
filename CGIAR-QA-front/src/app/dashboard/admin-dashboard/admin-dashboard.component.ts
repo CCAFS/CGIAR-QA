@@ -29,48 +29,48 @@ import * as moment from 'moment';
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
-  currentUser: User;
-  crps: CRP[];
-  dashboardData: any[];
-  dashboardModalData: any[];
-  dashboardCommentsData: any[];
-  dashboardCyclesData: any[];
-  configurationData: any[];
-  selectedProgramName: string;
-  selectedProg = {}
-  settingsForm: FormGroup;
-  programsForm: FormGroup;
-  generalStatus = GeneralStatus;
-  indicatorsName = GeneralIndicatorName;
+  private currentUser: User;
+  private crps: CRP[];
+  private dashboardData: any[];
+  private dashboardModalData: any[];
+  private dashboardCommentsData: any[];
+  private dashboardCyclesData: any[];
+  private configurationData: any[];
+  private selectedProgramName: string;
+  private selectedProg = {}
+  private settingsForm: FormGroup;
+  private programsForm: FormGroup;
+  private generalStatus = GeneralStatus;
+  private indicatorsName = GeneralIndicatorName;
 
-  enableQATooltip: string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
-  enableCommentsTooltip: string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
+  private enableQATooltip: string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
+  private enableCommentsTooltip: string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
 
-  modalRef: BsModalRef;
-  multi = [];
-  rawCommentsData = [];
-  has_comments: boolean = false;
-  has_comments_detailed: boolean = false;
+  private modalRef: BsModalRef;
+  private multi = [];
+  private rawCommentsData = [];
+  private has_comments: boolean = false;
+  private has_comments_detailed: boolean = false;
   // options
-  showXAxis: boolean = true;
-  showYAxis: boolean = true;
-  gradient: boolean = false;
-  showLegend: boolean = true;
-  showXAxisLabel: boolean = true;
-  xAxisLabel: string = 'Indicator';
-  showYAxisLabel: boolean = true;
-  yAxisLabel: string = '# of comments';
-  animations: boolean = true;
+  private showXAxis: boolean = true;
+  private showYAxis: boolean = true;
+  private gradient: boolean = false;
+  private showLegend: boolean = true;
+  private showXAxisLabel: boolean = true;
+  private xAxisLabel: string = 'Indicator';
+  private showYAxisLabel: boolean = true;
+  private yAxisLabel: string = '# of comments';
+  private animations: boolean = true;
 
-  colorScheme = {
+  private colorScheme = {
     domain: ['#67be71', '#F1B7B7']
   };
 
-  hoveredDate: NgbDate | null = null;
+  private hoveredDate: NgbDate | null = null;
 
-  fromDate: NgbDate | null;
-  toDate: NgbDate | null;
-  currenTcycle;
+  private fromDate: NgbDate | null;
+  private toDate: NgbDate | null;
+  private currenTcycle;
 
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,
@@ -115,16 +115,16 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
-  getIndicatorName(indicator: string) {
+  private getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
 
-  isChecked(indicator, type) {
+  private isChecked(indicator, type) {
     return type === 'enableQA' ? indicator.enable_assessor : indicator.enable_crp;
     // return indicator.status === this.generalStatus.Open ? true : false;
   }
 
-  updateConfig(type: string, id: number, isActive: boolean) {
+  private updateConfig(type: string, id: number, isActive: boolean) {
     // let id = 
     let status = isActive ? this.generalStatus.Open : this.generalStatus.Close;
     // console.log(type, id, status);
@@ -160,7 +160,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
-  onCheckboxChange(e, type) {
+  private onCheckboxChange(e, type) {
     const checkboxData: FormArray = this.settingsForm.get(type) as FormArray;
 
     if (e.target.checked) {
@@ -179,7 +179,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
-  onProgramChange({ target }, value) {
+  private onProgramChange({ target }, value) {
     this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
     this.selectedProg = value;
     this.showSpinner()
@@ -208,16 +208,16 @@ export class AdminDashboardComponent implements OnInit {
 
   }
 
-  goToView(view: string, primary_column: string) {
+  private goToView(view: string, primary_column: string) {
     this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
     // this.router.navigate(['/reload']).then(() => { this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]); });
   }
 
-  getPendings(data) {
+  private getPendings(data) {
     return data.acronym === 'All' ? '' : '- ' + (data.qa_active === this.generalStatus.Open ? 'Open' : 'Pending')
   }
 
-  loadDashData() {
+  private loadDashData() {
     let responses = forkJoin([
       this.getAllDashData(),
       this.getAllCRP(),
@@ -261,28 +261,28 @@ export class AdminDashboardComponent implements OnInit {
    * 
    */
   // all evaluations
-  getAllDashData(crp_id?): Observable<any> {
+  private getAllDashData(crp_id?): Observable<any> {
     return this.dashService.getAllDashboardEvaluations(crp_id).pipe();
   }
 
   // all active CRPS
-  getAllCRP(): Observable<any> {
+  private getAllCRP(): Observable<any> {
     return this.dashService.getCRPS().pipe();
   }
 
   // indicators by CRPS
-  getIndicatorsByCRP(): Observable<any> {
+  private getIndicatorsByCRP(): Observable<any> {
     return this.dashService.getIndicatorsByCRP().pipe();
   }
 
   // comments by crp
-  getCommentStats(crp_id?) {
+  private getCommentStats(crp_id?) {
     // this.showSpinner();
     return this.commentService.getCommentCRPStats({ crp_id, id: null }).pipe();
   }
 
   // comments raw data
-  getRawComments(crp_id?) {
+  private getRawComments(crp_id?) {
     // console.log('asd', crp_id)
     this.showSpinner()
     this.commentService.getRawComments({ crp_id })
@@ -303,11 +303,11 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // cycles data
-  getCycles() {
+  private getCycles() {
     return this.commentService.getCycles().pipe();
   }
 
-  setCycle(params) {
+  private setCycle(params) {
     return this.commentService.updateCycle(params).pipe();
   }
 
@@ -317,10 +317,10 @@ export class AdminDashboardComponent implements OnInit {
    *  Spinner 
    * 
    ***/
-  showSpinner() {
+  private showSpinner() {
     this.spinner.show();
   }
-  hideSpinner() {
+  private hideSpinner() {
     this.spinner.hide();
   }
 
@@ -330,14 +330,14 @@ export class AdminDashboardComponent implements OnInit {
    * 
    */
 
-  openModal(template: TemplateRef<any>) {
+  private openModal(template: TemplateRef<any>) {
     // this.dashboardModalData = []
     // this.getCommentStats()
     this.getRawComments(this.selectedProg['crp_id']);
     this.modalRef = this.modalService.show(template);
   }
 
-  updateCycle() {
+  private updateCycle() {
     let copyCurrenCycle = Object.assign({}, this.currenTcycle);
     copyCurrenCycle.start_date = this.formatDate(this.currenTcycle.start_date)['format']("YYYY-MM-DDT00:00:00.000Z");
     copyCurrenCycle.end_date = this.formatDate(this.currenTcycle.end_date)['format']("YYYY-MM-DDT23:59:00.000Z");
@@ -363,7 +363,7 @@ export class AdminDashboardComponent implements OnInit {
     )
   }
 
-  downloadRawComments() {
+  private downloadRawComments() {
     this.showSpinner();
     // console.log(this.selectedProg)
     let crp_id = this.selectedProg['crp_id'];
@@ -474,7 +474,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
-  onDateSelection(date: NgbDate) {
+  private onDateSelection(date: NgbDate) {
     // console.log(date)
     if (!this.fromDate && !this.toDate) {
       this.fromDate = date;
@@ -489,24 +489,24 @@ export class AdminDashboardComponent implements OnInit {
     this.currenTcycle.end_date = this.toDate ? this.toDate : this.currenTcycle.end_date;
   }
 
-  isHovered(date: NgbDate) {
+  private isHovered(date: NgbDate) {
     return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
   }
 
-  isInside(date: NgbDate) {
+  private isInside(date: NgbDate) {
     return this.toDate && date.after(this.fromDate) && date.before(this.toDate);
   }
 
-  isRange(date: NgbDate) {
+  private isRange(date: NgbDate) {
     return date.equals(this.fromDate) || (this.toDate && date.equals(this.toDate)) || this.isInside(date) || this.isHovered(date);
   }
 
-  validateInput(currentValue: NgbDate | null, input: string): NgbDate | null {
+  private validateInput(currentValue: NgbDate | null, input: string): NgbDate | null {
     const parsed = this.formatter.parse(input);
     return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
   }
 
-  validateNewDate() {
+  private validateNewDate() {
     let endDate = this.formatDate(this.toDate);
     // let currDb = this.dashboardCyclesData.find(cycle => cycle.id == this.currenTcycle.id);
     // let isDiff = currDb.start_date !== this.fromDate && currDb.end_date !== this.toDate;
@@ -523,7 +523,7 @@ export class AdminDashboardComponent implements OnInit {
    */
 
 
-  onSelect(data): void {
+  private onSelect(data): void {
     let parsedData = JSON.parse(JSON.stringify(data))
     if (typeof parsedData === 'object') {
       // console.log('Item clicked', parsedData);
@@ -532,11 +532,11 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  onActivate(data): void {
+  private onActivate(data): void {
     // console.log('Activate', JSON.parse(JSON.stringify(data)));
   }
 
-  onDeactivate(data): void {
+  private onDeactivate(data): void {
     // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 

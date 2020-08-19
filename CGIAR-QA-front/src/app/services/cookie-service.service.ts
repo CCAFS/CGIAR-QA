@@ -8,24 +8,24 @@ export class CookiesService {
 
   constructor(private cookieService: CookieService) { }
 
-  setData(name: string, data: any) {
+  private setData(name: string, data: any) {
     let dataString = JSON.stringify(data);
     this.cookieService.set(name, dataString,null,'/', '',false, 'Strict');
     // console.log(this.cookieService.check(name), dataString)
     return this.cookieService.check(name);
   }
-  getData(name: string) {
+  private getData(name: string) {
     let dataFromString = !this.cookieService.get(name) ? this.cookieService.get(name) : JSON.parse(this.cookieService.get(name));
     return dataFromString;
   }
-  getAllData() {
+  private getAllData() {
     const allCookies: {} = this.cookieService.getAll()
     return allCookies;
   }
   delete(name: string) {
     return this.cookieService.delete(name, '/')
   }
-  deleteAll() {
+  private deleteAll() {
     return this.cookieService.deleteAll()
   }
 }

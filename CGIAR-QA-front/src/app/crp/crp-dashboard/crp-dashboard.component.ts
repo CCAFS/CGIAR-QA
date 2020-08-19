@@ -27,15 +27,15 @@ import * as moment from 'moment';
 
 
 export class CrpDashboardComponent implements OnInit {
-  dashboardData: any[];
-  dashboardCommentsData: any[];
+  private dashboardData: any[];
+  private dashboardCommentsData: any[];
 
 
-  currentUser: User;
-  indicatorsName = GeneralIndicatorName;
+  private currentUser: User;
+  private indicatorsName = GeneralIndicatorName;
 
-  dashboardModalData: any[];
-  modalRef: BsModalRef;
+  private dashboardModalData: any[];
+  private modalRef: BsModalRef;
 
   public barChartOptions: ChartOptions = {
     responsive: true,
@@ -50,38 +50,38 @@ export class CrpDashboardComponent implements OnInit {
     },
     onClick: this.graphClickEvent
   };
-  barChartLabels: Label[];
-  barChartType: ChartType = 'horizontalBar';
+  private barChartLabels: Label[];
+  private barChartType: ChartType = 'horizontalBar';
   // barChartType: ChartType = 'horizontalBar';
-  barChartLegend = true;
+  private barChartLegend = true;
 
-  barChartData: ChartDataSets[];
+  private barChartData: ChartDataSets[];
 
-  has_comments: boolean = false;
+  private has_comments: boolean = false;
 
-  spinner1 = 'spinner1';
-  spinner2 = 'spinner2';
+  private spinner1 = 'spinner1';
+  private spinner2 = 'spinner2';
 
-  @ViewChild('crpChart', { static: false }) crpChart: BaseChartDirective;
+  @ViewChild('crpChart', { static: false }) private crpChart: BaseChartDirective;
 
   // @ViewChild('crpChart', { static: true })
   // crpChart: BaseChartDirective;
   // myChart: any;
 
-  multi = [];
-  rawCommentsData = [];
+  private multi = [];
+  private rawCommentsData = [];
   // options
-  showXAxis: boolean = true;
-  showYAxis: boolean = true;
-  gradient: boolean = false;
-  showLegend: boolean = true;
-  showXAxisLabel: boolean = true;
-  xAxisLabel: string = 'Indicator';
-  showYAxisLabel: boolean = true;
-  yAxisLabel: string = '# of comments';
-  animations: boolean = true;
+  private showXAxis: boolean = true;
+  private showYAxis: boolean = true;
+  private gradient: boolean = false;
+  private showLegend: boolean = true;
+  private showXAxisLabel: boolean = true;
+  private xAxisLabel: string = 'Indicator';
+  private showYAxisLabel: boolean = true;
+  private yAxisLabel: string = '# of comments';
+  private animations: boolean = true;
 
-  colorScheme = {
+  private colorScheme = {
     domain: ['#67be71', '#F1B7B7']
   };
 
@@ -117,7 +117,7 @@ export class CrpDashboardComponent implements OnInit {
     // console.log('crp-dashboard')
   }
 
-  getEvaluationsStats() {
+  private getEvaluationsStats() {
     this.showSpinner(this.spinner2);
     // this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
     this.dashService.getAllDashboardEvaluations(this.currentUser.crp.crp_id)
@@ -136,7 +136,7 @@ export class CrpDashboardComponent implements OnInit {
 
   }
 
-  getCommentStats() {
+  private getCommentStats() {
     this.showSpinner(this.spinner1);
     this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
       .subscribe(
@@ -158,7 +158,7 @@ export class CrpDashboardComponent implements OnInit {
       )
   }
 
-  getRawComments(crp_id?) {
+  private getRawComments(crp_id?) {
     // console.log('asd', crp_id)
     this.commentService.getRawComments({ crp_id })
       .subscribe(
@@ -177,7 +177,7 @@ export class CrpDashboardComponent implements OnInit {
       )
   }
 
-  downloadRawComments() {
+  private downloadRawComments() {
     this.showSpinner(this.spinner1);
     // console.log(this.selectedProg)
     let crp_id = this.currentUser.crp['crp_id'];
@@ -202,7 +202,7 @@ export class CrpDashboardComponent implements OnInit {
 
 
 
-  getPendingResponseComments(data) {
+  private getPendingResponseComments(data) {
     // console.log(data, ))
     let f = this.findObjectByKey(data, 'type', 'secondary')
     let resText = f ? `${f.comments_without_answer} not responde yet` : 'all responded';
@@ -255,18 +255,18 @@ export class CrpDashboardComponent implements OnInit {
     return res;
   }
 
-  getIndicatorName(indicator: string) {
+  private getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
 
-  goToView(indicatorId, primary_column) {
+  private goToView(indicatorId, primary_column) {
     console.log(indicatorId, primary_column)
     this.router.navigate([`crp/indicator/${indicatorId}/${primary_column}`]);
   }
 
 
 
-  openModal(template: TemplateRef<any>) {
+  private openModal(template: TemplateRef<any>) {
     this.dashboardModalData = []
     this.getCommentStats()
     this.getRawComments(this.currentUser.crp.crp_id)
@@ -281,10 +281,10 @@ export class CrpDashboardComponent implements OnInit {
    *  Spinner 
    * 
    ***/
-  showSpinner(name) {
+  private showSpinner(name) {
     this.spinner.show(name);
   }
-  hideSpinner(name) {
+  private hideSpinner(name) {
     this.spinner.hide(name);
   }
 
@@ -301,14 +301,14 @@ export class CrpDashboardComponent implements OnInit {
 
 
 
-  graphClickEvent(event, array) {
+  private graphClickEvent(event, array) {
     console.log(event, array[0], this.crpChart)
     console.log('ch<rt', this.crpChart)
     // .chart.getElementsAtEvent(event))
     // .getElementsAtEvent(evt))
   }
 
-  onSelect(data): void {
+  private onSelect(data): void {
     let parsedData = JSON.parse(JSON.stringify(data))
     if (typeof parsedData === 'object') {
       // console.log('Item clicked', parsedData);
@@ -317,11 +317,11 @@ export class CrpDashboardComponent implements OnInit {
     }
   }
 
-  onActivate(data): void {
+  private onActivate(data): void {
     // console.log('Activate', JSON.parse(JSON.stringify(data)));
   }
 
-  onDeactivate(data): void {
+  private onDeactivate(data): void {
     // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 

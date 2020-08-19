@@ -10,11 +10,11 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./tawk-to.component.scss']
 })
 export class TawkToComponent implements OnInit {
-  @Input() id: string;
-  script = this._renderer.createElement('script');
-  isVisibleTawk = true;
-  currentUser: User;
-  config = environment;
+  @Input() private id: string;
+  private script = this._renderer.createElement('script');
+  private isVisibleTawk = true;
+  private currentUser: User;
+  private config = environment;
 
 
   constructor(private _renderer: Renderer2, @Inject(DOCUMENT) private _document, private authService: AuthenticationService) {
@@ -46,14 +46,14 @@ export class TawkToComponent implements OnInit {
 
   }
 
-  openChat() {
+  private openChat() {
     if (window['Tawk_API'].hasOwnProperty('maximize')) {
       window['Tawk_API'].maximize();
     }
 
   }
 
-  setLoggedUser() {
+  private setLoggedUser() {
     if (window['Tawk_API'].hasOwnProperty('visitor')) {
       // console.log(window['Tawk_API'])
       // window['Tawk_API'].setAttributes({

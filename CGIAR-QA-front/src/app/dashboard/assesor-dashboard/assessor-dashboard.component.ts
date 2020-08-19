@@ -19,11 +19,11 @@ import { CommentService } from 'src/app/services/comment.service';
 })
 export class AssessorDashboardComponent implements OnInit {
 
-  currentUser: User;
-  dashboardData: any[];
-  dashboardCommentsData: any[];
-  generalStatus = GeneralStatus;
-  indicatorsName = GeneralIndicatorName;
+  private currentUser: User;
+  private dashboardData: any[];
+  private dashboardCommentsData: any[];
+  private generalStatus = GeneralStatus;
+  private indicatorsName = GeneralIndicatorName;
 
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
@@ -45,16 +45,16 @@ export class AssessorDashboardComponent implements OnInit {
     // 
   }
 
-  getIndicatorName(indicator: string) {
+  private getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
 
-  goToView(view: string, primary_column: string) {
+  private goToView(view: string, primary_column: string) {
     this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
   }
 
 
-  getDashData() {
+  private getDashData() {
     this.showSpinner();
     this.dashService.getDashboardEvaluations(this.currentUser.id).subscribe(
       res => {
@@ -71,7 +71,7 @@ export class AssessorDashboardComponent implements OnInit {
     )
   }
   // comments by crp
-  getCommentStats(crp_id?) {
+  private getCommentStats(crp_id?) {
     // this.showSpinner();
     return this.commentService.getCommentCRPStats({ crp_id, id: null })
       .subscribe(
@@ -93,10 +93,10 @@ export class AssessorDashboardComponent implements OnInit {
    *  Spinner 
    * 
    ***/
-  showSpinner() {
+  private showSpinner() {
     this.spinner.show();
   }
-  hideSpinner() {
+  private hideSpinner() {
     this.spinner.hide();
   }
 

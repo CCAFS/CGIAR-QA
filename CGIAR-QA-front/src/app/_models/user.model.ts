@@ -1,15 +1,14 @@
 export class User {
     id: number;
-    username: string;
-    email: string;
-    password: string;
+    private username: string;
+    private email: string;
+    private password: string;
     roles:any[];
     config:any[];
-    cycle:any;
-    indicators:any[];
+    private cycle:any;
+    private indicators:any[];
     crp:any;
-    name: string;
-    cycle_ended:any;
-    // lastName: string;
+    private name: string;
+    private cycle_ended:any;
     token: string;
 }

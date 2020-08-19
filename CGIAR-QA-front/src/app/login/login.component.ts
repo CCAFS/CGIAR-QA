@@ -18,11 +18,11 @@ import { Title } from '@angular/platform-browser';
 })
 export class LoginComponent implements OnInit {
 
-  loginForm: FormGroup;
-  loading = false;
-  submitted = false;
-  returnUrl: string;
-  env = environment;
+  private loginForm: FormGroup;
+  private loading = false;
+  private submitted = false;
+  private returnUrl: string;
+  private env = environment;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
 
-  onSubmit() {
+  private onSubmit() {
     this.submitted = true;
 
     // reset alerts on submit

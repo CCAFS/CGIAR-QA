@@ -27,17 +27,17 @@ import { FormBuilder } from '@angular/forms';
   providers: [SortByPipe]
 })
 export class IndicatorsComponent implements OnInit {
-  indicatorType: string;
-  indicatorTypeName: string;
-  evaluationList: any[];
-  returnedArray: any[];
-  currentUser: User;
+  private indicatorType: string;
+  private indicatorTypeName: string;
+  private evaluationList: any[];
+  private returnedArray: any[];
+  private currentUser: User;
 
-  currentPage = {
+  private currentPage = {
     startItem: 0,
     endItem: 10
   }
-  stageHeaderText = {
+  private stageHeaderText = {
     policies: 'Level',
     oicr: 'Maturity Level',
     innovations: 'Stage',
@@ -46,21 +46,21 @@ export class IndicatorsComponent implements OnInit {
     milestones: 'Milestone Status',
   }
 
-  maxSize = 5;
-  pageSize = 4;
-  collectionSize = 0;
-  searchText;
-  evalStatusFilter = '';
+  private maxSize = 5;
+  private pageSize = 4;
+  private collectionSize = 0;
+  private searchText;
+  private evalStatusFilter = '';
   // uncheckableRadioModel = '';
 
-  hasTemplate = false;
+  private hasTemplate = false;
 
-  notProviedText = '<No provided>'
+  private notProviedText = '<No provided>'
 
-  order: string = 'id';
-  configTemplate: string;
-  reverse: boolean = false;
-  btonFilterForm: any;
+  private order: string = 'id';
+  private configTemplate: string;
+  private reverse: boolean = false;
+  private btonFilterForm: any;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -96,7 +96,7 @@ export class IndicatorsComponent implements OnInit {
     // console.log('loaded indicators')
   }
 
-  getEvaluationsList(params) {
+  private getEvaluationsList(params) {
     this.showSpinner();
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
       res => {
@@ -116,7 +116,7 @@ export class IndicatorsComponent implements OnInit {
     )
   }
 
-  pageChanged(event: PageChangedEvent): void {
+  private pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
     // // console.log(this.evaluationList.length, this.returnedArray.length)
@@ -129,7 +129,7 @@ export class IndicatorsComponent implements OnInit {
   }
 
 
-  setOrder(value: string) {
+  private setOrder(value: string) {
     if (value == null) {
       this.reverse = !this.reverse;
     } else {
@@ -143,18 +143,18 @@ export class IndicatorsComponent implements OnInit {
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
-  filterByEvalStatus() {
+  private filterByEvalStatus() {
     this.evalStatusFilter = 'Removed'
   }
 
 
-  goToView(indicatorId) {
+  private goToView(indicatorId) {
 
     this.router.navigate(['./detail', indicatorId], { relativeTo: this.activeRoute });
     // this.router.navigate(['/reload']).then(() => { this.router.navigate(['./detail', indicatorId], { relativeTo: this.activeRoute }) });
   }
 
-  goToPDF(type: string) {
+  private goToPDF(type: string) {
     let pdf_url;
     switch (type) {
       case 'AR':
@@ -168,7 +168,7 @@ export class IndicatorsComponent implements OnInit {
   }
 
 
-  exportComments(item) {
+  private exportComments(item) {
     this.showSpinner();
     let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}-${item.id}_${moment().format('YYYYMMDD_HHmm')}`
     if(this.authenticationService.getBrowser() === 'Safari')
@@ -190,7 +190,7 @@ export class IndicatorsComponent implements OnInit {
   }
 
 
-  returnListName(indicator: string, type: string) {
+  private returnListName(indicator: string, type: string) {
     let r;
     if (type === 'header') {
       switch (indicator) {
@@ -225,7 +225,7 @@ export class IndicatorsComponent implements OnInit {
    *  Spinner 
    * 
    ***/
-  showSpinner() {
+  private showSpinner() {
     this.spinner.show(undefined,
       {
         fullScreen: true,
@@ -233,7 +233,7 @@ export class IndicatorsComponent implements OnInit {
       }
     );
   }
-  hideSpinner() {
+  private hideSpinner() {
     this.spinner.hide();
   }
 

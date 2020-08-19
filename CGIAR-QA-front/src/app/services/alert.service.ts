@@ -47,7 +47,7 @@ export class AlertService {
   }
 
 
-  autoClear() {
+  private autoClear() {
     setTimeout(() => {
       this.clear();
     }, 5000);

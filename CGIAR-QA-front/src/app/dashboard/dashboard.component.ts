@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   //   styleUrls: ['./dashboard.component.scss']
 })
 export class DashBoardComponent implements OnInit {
-  currentUser: User;
+  private currentUser: User;
 
   constructor(private authenticationService: AuthenticationService,
               private router: Router,) {

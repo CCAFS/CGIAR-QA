@@ -22,25 +22,25 @@ import { WordCounterPipe } from '../pipes/word-counter.pipe';
 })
 export class CommentComponent implements OnInit {
 
-  dataFromItem: any = {};
-  commentGroup: FormGroup;
-  totalChar = 6500;
-  statusHandler = DetailedStatus;
-  commentsByCol: any = [];
-  commentsByColReplies: any = [];
-  currentUser: User;
-  availableComment = false;
-  crpComment = false;
-  is_approved = false;
+  private dataFromItem: any = {};
+  private commentGroup: FormGroup;
+  private totalChar = 6500;
+  private statusHandler = DetailedStatus;
+  private commentsByCol: any = [];
+  private commentsByColReplies: any = [];
+  private currentUser: User;
+  private availableComment = false;
+  private crpComment = false;
+  private is_approved = false;
 
-  spinner_replies = 'spinner_Comment_Rply';
-  spinner_comment = 'spinner_Comment';
+  private spinner_replies = 'spinner_Comment_Rply';
+  private spinner_comment = 'spinner_Comment';
 
-  currentComment;
+  private currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
-  @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
-  @Output("updateNumCommnts") updateNumCommnts: EventEmitter<any> = new EventEmitter();
-  allRoles = Role;
+  @Output("parentFun") private parentFun: EventEmitter<any> = new EventEmitter();
+  @Output("updateNumCommnts") private updateNumCommnts: EventEmitter<any> = new EventEmitter();
+  private allRoles = Role;
 
 
   constructor(
@@ -62,7 +62,7 @@ export class CommentComponent implements OnInit {
     this.dataFromItem = [];
   }
 
-  updateData(data: any, params: any) {
+  private updateData(data: any, params: any) {
     // console.log(data)
     Object.assign(this.dataFromItem, data, params)
     this.availableComment = false;
@@ -74,7 +74,7 @@ export class CommentComponent implements OnInit {
   get formData() { return this.commentGroup.controls; }
   // get replyformData() { return this.replyGroup.controls; }
 
-  closeComments() {
+  private closeComments() {
     this.parentFun.emit();
     this.commentsByCol = [];
     this.commentsByColReplies = [];
@@ -82,7 +82,7 @@ export class CommentComponent implements OnInit {
     this.is_approved = false;
   }
 
-  addComment() {
+  private addComment() {
 
     if (this.commentGroup.invalid) {
       this.alertService.error('comment is required', false)
@@ -109,7 +109,7 @@ export class CommentComponent implements OnInit {
 
   }
 
-  updateComment(type, data) {
+  private updateComment(type, data) {
     let canUpdate = this.validComment(type, data)
     if (!canUpdate.is_valid) {
       this.alertService.error(canUpdate.message);
@@ -133,7 +133,7 @@ export class CommentComponent implements OnInit {
 
   }
 
-  updateCommentReply(type, data) {
+  private updateCommentReply(type, data) {
     let canUpdate = this.validComment(type, data)
     if (!canUpdate.is_valid) {
       this.alertService.error(canUpdate.message);
@@ -161,7 +161,7 @@ export class CommentComponent implements OnInit {
   }
 
 
-  getItemCommentData() {
+  private getItemCommentData() {
 
     let params = { evaluationId: this.dataFromItem.evaluation_id, metaId: this.dataFromItem.field_id };
     this.commentService.getDataComment(params).subscribe(
@@ -201,7 +201,7 @@ export class CommentComponent implements OnInit {
     )
   }
 
-  getCommentReplies(comment) {
+  private getCommentReplies(comment) {
     if (comment.isCollapsed) {
       // this.showSpinner(this.spinner_comment);
       let params = { commentId: comment.id, evaluationId: this.dataFromItem.evaluation_id, }
@@ -222,13 +222,13 @@ export class CommentComponent implements OnInit {
   }
 
 
-  answerComment(is_approved: boolean, comment: any) {
+  private answerComment(is_approved: boolean, comment: any) {
     comment.crp_response = is_approved;
     // this.is_approved = is_approved;
     // this.availableComment = true
   }
 
-  replyComment(currentComment) {
+  private replyComment(currentComment) {
     if (this.commentGroup.invalid || this.formData.comment.value === "") {
       this.alertService.error('Comment is required', false)
       return;
@@ -255,13 +255,13 @@ export class CommentComponent implements OnInit {
 
   }
 
-  validateStartedMssgs() {
+  private validateStartedMssgs() {
     return true;
     // let isAdmin = this.currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.admin })
     // return isAdmin;
   }
 
-  getWordCount(value: string) {
+  private getWordCount(value: string) {
     return this.wordCount.transform(value);
   }
 
@@ -270,12 +270,12 @@ export class CommentComponent implements OnInit {
   *  Spinner 
   * 
   ***/
-  showSpinner(name: string) {
+  private showSpinner(name: string) {
     // this.spinner.show();
     this.spinner.show(name);
   }
 
-  hideSpinner(name: string) {
+  private hideSpinner(name: string) {
     // this.spinner.hide();
     this.spinner.hide(name);
   }

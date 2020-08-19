@@ -50,7 +50,7 @@ export class DashboardService {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/crp/indicators`);
   }
 
-  sortProperties(obj) {
+  private sortProperties(obj) {
     // convert object into array
     var sortable = [];
     for (var key in obj)
