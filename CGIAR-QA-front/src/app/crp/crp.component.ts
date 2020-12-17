@@ -16,12 +16,12 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./crp.component.scss']
 })
 export class CrpComponent implements OnInit {
-  private currentUser: User;
-  private indicators = [];
-  private params;
-  private spinner_name = 'sp1';
-  private allRoles = Role;
-  private env = environment;
+  currentUser: User;
+  indicators = [];
+  params;
+  spinner_name = 'sp1';
+  allRoles = Role;
+  env = environment;
 
   constructor(private authenticationService: AuthenticationService,
     private cookieService: CookieService,
@@ -47,7 +47,7 @@ export class CrpComponent implements OnInit {
     this.indicators = JSON.parse(localStorage.getItem('indicators')) || [];
   }
 
-  private validateToken(params: {}) {
+  validateToken(params: {}) {
     this.clearSavedData();
     this.showSpinner(this.spinner_name)
     this.authenticationService.tokenLogin(params).subscribe(
@@ -70,7 +70,7 @@ export class CrpComponent implements OnInit {
     )
   }
 
-  private getCRPIndicators() {
+  getCRPIndicators() {
 
     if (!this.indicators.length && this.currentUser) {
       this.showSpinner(this.spinner_name)
@@ -92,12 +92,12 @@ export class CrpComponent implements OnInit {
     }
   }
 
-  private logout() {
+  logout() {
     this.authenticationService.logout();
     this.router.navigate(['/qa-close'], { relativeTo: this.route });
   }
 
-  private clearSavedData() {
+  clearSavedData() {
     this.authenticationService.logout();
   }
 
@@ -106,11 +106,11 @@ export class CrpComponent implements OnInit {
    *  Spinner 
    * 
    ***/
-  private showSpinner(name: string) {
+  showSpinner(name: string) {
     this.spinner.show(name);
   }
 
-  private hideSpinner(name: string) {
+  hideSpinner(name: string) {
     this.spinner.hide(name);
   }
 

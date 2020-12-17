@@ -5,8 +5,8 @@ import { AlertService } from '../../services/alert.service';
 
 @Component({ selector: 'alert', templateUrl: 'alert.component.html' })
 export class AlertComponent implements OnInit, OnDestroy {
-  private subscription: Subscription;
-  private message: any;
+  subscription: Subscription;
+  message: any;
 
   constructor(private alertService: AlertService) { }
 

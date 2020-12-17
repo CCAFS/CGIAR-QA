@@ -11,11 +11,11 @@ declare let gtag: Function;
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  private title = 'qa-app';
-  private env = environment;
-  private isModalShown = false;
+  title = 'qa-app';
+  env = environment;
+  isModalShown = false;
 
-  @ViewChild('autoShownModal', { static: false }) private autoShownModal: ModalDirective;
+  @ViewChild('autoShownModal', { static: false }) autoShownModal: ModalDirective;
 
   constructor(public router: Router) {
     const isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
@@ -35,16 +35,16 @@ export class AppComponent {
 
 
 
-  private showModal(): void {
+  showModal(): void {
     this.isModalShown = true;
 
   }
 
-  private hideModal(): void {
+  hideModal(): void {
     this.autoShownModal.hide();
   }
 
-  private onHidden(): void {
+  onHidden(): void {
     this.isModalShown = false;
   }
 

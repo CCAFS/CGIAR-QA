@@ -27,13 +27,13 @@ import * as moment from 'moment';
 export class DetailIndicatorComponent implements OnInit {
 
 
-  private currentUser: User;
-  private detailedData: any[];
-  private params: any;
-  private spinner1 = 'spinner1';
-  private spinner2 = 'spinner2';
-  private currentY = 0;
-  private gnralInfo = {
+  currentUser: User;
+  detailedData: any[];
+  params: any;
+  spinner1 = 'spinner1';
+  spinner2 = 'spinner2';
+  currentY = 0;
+  gnralInfo = {
     status: "",
     response_status: "",
     evaluation_id: '',
@@ -43,33 +43,33 @@ export class DetailIndicatorComponent implements OnInit {
     general_comment_updatedAt: '',
     crp_id: ''
   };
-  private statusHandler = DetailedStatus;
-  private generalCommentGroup: FormGroup;
-  private currentType = '';
+  statusHandler = DetailedStatus;
+  generalCommentGroup: FormGroup;
+  currentType = '';
 
-  private general_comment_reply;
+  general_comment_reply;
 
-  private approveAllitems;
+  approveAllitems;
 
   @ViewChild("commentsElem", { static: false }) private commentsElem: ElementRef;
   @ViewChild("containerElement", { static: false }) private containerElement: ElementRef;
 
 
-  private activeCommentArr = [];
-  private fieldIndex: number;
-  private notApplicable = '';
-  private tickGroup: FormGroup;
-  private tooltips = {
+  activeCommentArr = [];
+  fieldIndex: number;
+  notApplicable = '';
+  tickGroup: FormGroup;
+  tooltips = {
     public_link: '',
     editable_link: 'Click here to access the item in MARLO/MEL',
     download_excel: 'Click here to download all comments in an excel file.',
     all_approved: 'Setting this option true, will approved all items without comments.'
   }
 
-  private criteriaData;
-  private criteria_loading = false;
+  criteriaData;
+  criteria_loading = false;
 
-  private totalChar = 6500;
+  totalChar = 6500;
 
 
   constructor(private activeRoute: ActivatedRoute,
@@ -111,7 +111,7 @@ export class DetailIndicatorComponent implements OnInit {
   ngOnInit() {
   }
 
-  private getDetailedData() {
+  getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.activeRoute.snapshot.params).subscribe(
       res => {
         this.detailedData = res.data.filter(field => {
@@ -144,7 +144,7 @@ export class DetailIndicatorComponent implements OnInit {
     )
   }
 
-  private getIndicatorCriteria(id) {
+  getIndicatorCriteria(id) {
     this.criteria_loading = true;
     // console.log(id)
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
@@ -162,7 +162,7 @@ export class DetailIndicatorComponent implements OnInit {
   }
 
 
-  private getCommentsExcel(evaluation) {
+  getCommentsExcel(evaluation) {
     // console.log(evaluation)
     this.showSpinner('spinner1');
     let evaluationId = evaluation.evaluation_id;
@@ -188,7 +188,7 @@ export class DetailIndicatorComponent implements OnInit {
     )
   }
 
-  private addGeneralComment(data) {
+  addGeneralComment(data) {
     if (this.formData.general_comment.invalid) {
       this.alertService.error('Reply to general comment can not be empty', false)
       return;
@@ -215,7 +215,7 @@ export class DetailIndicatorComponent implements OnInit {
     )
   }
 
-  private updateGeneralCommentReply(type, data) {
+  updateGeneralCommentReply(type, data) {
     // let canUpdate = this.validComment(type, data)
     // if (!canUpdate.is_valid) {
     //   this.alertService.error(canUpdate.message);
@@ -243,7 +243,7 @@ export class DetailIndicatorComponent implements OnInit {
   // convenience getter for easy access to form fields
   get formData() { return this.generalCommentGroup.controls; }
 
-  private showComments(index: number, field: any, e) {
+  showComments(index: number, field: any, e) {
     if (e) {
       let parentPos = this.getPosition(this.containerElement.nativeElement);
       let yPosition = e.clientY - parentPos.y - (this.commentsElem.nativeElement.clientHeight / 2);
@@ -255,7 +255,7 @@ export class DetailIndicatorComponent implements OnInit {
     // this.getDetailedData();
   }
 
-  private updateNumCommnts(event, detailedData) {
+  updateNumCommnts(event, detailedData) {
     // console.log('updateNumCommnts', event, event[0].replies.replies_count)
     //  event[0].replies.replies_count;
     detailedData.replies_count = event.length;
@@ -266,7 +266,7 @@ export class DetailIndicatorComponent implements OnInit {
     detailedData.comments_replies_count = repls_count
   }
 
-  private updateEvaluation(type: string, data: any) {
+  updateEvaluation(type: string, data: any) {
     let evaluationData = {
       evaluation_id: data[0].evaluation_id,
       // general_comments: data[0].general_comments,
@@ -298,7 +298,7 @@ export class DetailIndicatorComponent implements OnInit {
 
   }
 
-  private validateCommentAvility(field, is_embed) {
+  validateCommentAvility(field, is_embed) {
     // console.log(this.gnralInfo)
 
     let userRole = this.currentUser.roles[0].description, avility = false;
@@ -318,7 +318,7 @@ export class DetailIndicatorComponent implements OnInit {
 
   }
 
-  private getCommentReplies() {
+  getCommentReplies() {
     // this.showSpinner('spinner1');
     // let params = { commentId: comment.id, evaluationId: this.gnralInfo.evaluation_id }
     let params = { commentId: this.gnralInfo.general_comment_id, evaluationId: this.gnralInfo.evaluation_id }
@@ -338,11 +338,11 @@ export class DetailIndicatorComponent implements OnInit {
     )
   }
 
-  private getWordCount(value: string) {
+  getWordCount(value: string) {
     return this.wordCount.transform(value);
   }
 
-  private getPosition(el) {
+  getPosition(el) {
     let xPos = 0;
     let yPos = 0;
     while (el) {
@@ -375,11 +375,11 @@ export class DetailIndicatorComponent implements OnInit {
   *  Spinner 
   * 
   ***/
-  private showSpinner(name: string) {
+  showSpinner(name: string) {
     this.spinner.show(name);
   }
 
-  private hideSpinner(name: string) {
+  hideSpinner(name: string) {
     this.spinner.hide(name);
   }
 

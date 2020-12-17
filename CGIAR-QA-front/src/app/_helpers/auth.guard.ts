@@ -45,19 +45,19 @@ export class AuthGuard implements CanActivate {
     return false;
   }
 
-  private validateRole(available_roles: [], currentUser) {
+  validateRole(available_roles: [], currentUser) {
     let userRoles = currentUser.roles.map(role => { return role ? role['description'] : null });
     let hasCRP = currentUser.crp ? true : false;
     let found = intersectionWith(available_roles, userRoles, (a, b) => a === b);
     return hasCRP ? hasCRP && found.length > 0 : found.length > 0
   }
 
-  private validateConfig(currentUser) {
+  validateConfig(currentUser) {
     if (!currentUser.config.length) return true;
     if (currentUser.config[0].status !== GeneralStatus.Close) return false;
     return false;
   }
-  private validateCycle(currentUser) {
+  validateCycle(currentUser) {
     let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });
     // console.log('validateCycle',  isAdmin ? false : !currentUser.hasOwnProperty('cycle'));
     return isAssessor && !currentUser.hasOwnProperty('cycle') ? true : false;

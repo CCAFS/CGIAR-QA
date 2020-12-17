@@ -18,29 +18,29 @@ import { Role } from '../_models/roles.model';
 })
 export class AdminComponent implements OnInit {
 
-  private addUserForm: FormGroup;
-  private editUserForm: FormGroup;
-  private modalRef: BsModalRef;
+  addUserForm: FormGroup;
+  editUserForm: FormGroup;
+  modalRef: BsModalRef;
 
-  private users: User[] = [];
+  users: User[] = [];
 
-  private loading = false;
-  private submitted = false;
-  private selectedRole = '';
-  private allRoles = Role;
-  private suggestedIndicators = [];
+  loading = false;
+  submitted = false;
+  selectedRole = '';
+  allRoles = Role;
+  suggestedIndicators = [];
   // [
   //   'test',
   //   'test1',
   //   'test2',
   //   'test3',
   // ];
-  private modalConfig = {
+  modalConfig = {
     keyboard: true,
     animated: true,
     class: 'custom-confirmation modal-lg'
   };
-  private confirmationData = {
+  confirmationData = {
     text: '',
     title: '',
     type: '',
@@ -80,7 +80,7 @@ export class AdminComponent implements OnInit {
   get t() { return this.editUserForm.get('editUserFormArray') as FormArray; }
 
   // load all users
-  private loadAllUsers() {
+  loadAllUsers() {
     this.loading = true;
     this.showSpinner();
     this.userService.getAllUsers()
@@ -112,7 +112,7 @@ export class AdminComponent implements OnInit {
 
 
   //load all indicators
-  private loadAllIndicators() {
+  loadAllIndicators() {
     this.indicatorService.getIndicators()
       .subscribe(res => {
         this.suggestedIndicators = res.data;
@@ -124,13 +124,13 @@ export class AdminComponent implements OnInit {
 
 
   // change between roles
-  private selectRole(role) {
+  selectRole(role) {
     this.selectedRole = role;
     this.resetForm();
   }
 
   //add new user
-  private addUser() {
+  addUser() {
     this.submitted = true;
 
     // stop here if form is invalid
@@ -168,7 +168,7 @@ export class AdminComponent implements OnInit {
   }
 
   //delete current user
-  private deleteUser(id: string) {
+  deleteUser(id: string) {
     this.loading = true;
     this.showSpinner();
 
@@ -188,7 +188,7 @@ export class AdminComponent implements OnInit {
   }
 
   //save edited users
-  private editUser(user) {
+  editUser(user) {
     user.isEditing = !user.isEditing;
     user.isCollapsed = false;
     let editUserData = {
@@ -210,7 +210,7 @@ export class AdminComponent implements OnInit {
 
 
   //reset forms and field validations
-  private resetForm() {
+  resetForm() {
     this.addUserForm.reset();
     this.addUserForm.controls.name.setErrors(null);
     this.addUserForm.controls.email.setErrors(null);
@@ -224,7 +224,7 @@ export class AdminComponent implements OnInit {
    */
 
   //confirmation logic
-  private openModal(template: TemplateRef<any>, type: string, data: any) {
+  openModal(template: TemplateRef<any>, type: string, data: any) {
     this.confirmationData.type = type;
     this.confirmationData.data = data;
     switch (type) {
@@ -242,7 +242,7 @@ export class AdminComponent implements OnInit {
     this.modalRef = this.modalService.show(template, this.modalConfig);
   }
 
-  private confirm(confirmData: any): void {
+  confirm(confirmData: any): void {
     switch (confirmData.type) {
       case 'delete':
         this.deleteUser(confirmData.data.id)
@@ -258,7 +258,7 @@ export class AdminComponent implements OnInit {
     this.modalRef.hide();
   }
 
-  private decline(): void {
+  decline(): void {
     // this.message = 'Declined!';
     this.modalRef.hide();
   }
@@ -271,7 +271,7 @@ export class AdminComponent implements OnInit {
 
 
   // spinner
-  private showSpinner() {
+  showSpinner() {
     this.spinner.show(undefined,
       {
         fullScreen: true,
@@ -279,7 +279,7 @@ export class AdminComponent implements OnInit {
       }
     );
   }
-  private hideSpinner() {
+  hideSpinner() {
     this.spinner.hide();
   }
 

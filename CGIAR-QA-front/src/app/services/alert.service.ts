@@ -7,8 +7,8 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class AlertService {
-  private subject = new Subject<any>();
-  private keepAfterRouteChange = false;
+  subject = new Subject<any>();
+  keepAfterRouteChange = false;
 
   constructor(private router: Router) {
     // clear alert messages on route change unless 'keepAfterRouteChange' flag is true
@@ -47,7 +47,7 @@ export class AlertService {
   }
 
 
-  private autoClear() {
+  autoClear() {
     setTimeout(() => {
       this.clear();
     }, 5000);

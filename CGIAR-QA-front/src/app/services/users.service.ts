@@ -11,7 +11,7 @@ import { User } from './../_models/user.model';
   providedIn: 'root'
 })
 export class UsersService {
-  private currentUserSubject: BehaviorSubject<User>;
+  currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
   constructor(private http: HttpClient) {

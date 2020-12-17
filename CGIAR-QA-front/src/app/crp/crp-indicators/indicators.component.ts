@@ -27,17 +27,17 @@ import { FormBuilder } from '@angular/forms';
   providers: [SortByPipe]
 })
 export class CRPIndicatorsComponent implements OnInit {
-  private indicatorType: string;
-  private indicatorTypeName: string;
-  private evaluationList: any[];
-  private returnedArray: any[];
-  private currentUser: User;
+  indicatorType: string;
+  indicatorTypeName: string;
+  evaluationList: any[];
+  returnedArray: any[];
+  currentUser: User;
 
-  private currentPage = {
+  currentPage = {
     startItem: 0,
     endItem: 10
   }
-  private stageHeaderText = {
+  stageHeaderText = {
     policies: 'Level',
     oicr: 'Maturity Level',
     innovations: 'Stage',
@@ -46,22 +46,22 @@ export class CRPIndicatorsComponent implements OnInit {
     milestones: 'Milestone Status',
   }
 
-  private maxSize = 5;
-  private pageSize = 4;
-  private collectionSize = 0;
-  private searchText;
-  private evalStatusFilter = '';
+  maxSize = 5;
+  pageSize = 4;
+  collectionSize = 0;
+  searchText;
+  evalStatusFilter = '';
 
-  private hasTemplate = false;
+  hasTemplate = false;
 
-  private notProviedText = '<No provided>'
+  notProviedText = '<No provided>'
 
-  private order: string = 'id';
-  private configTemplate: string;
-  private reverse: boolean = false;
+  order: string = 'id';
+  configTemplate: string;
+  reverse: boolean = false;
 
-  private spinner_name = 'spIndicators';
-  private btonFilterForm: any;
+  spinner_name = 'spIndicators';
+  btonFilterForm: any;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -95,7 +95,7 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
 
-  private getEvaluationsList(params) {
+  getEvaluationsList(params) {
     this.showSpinner(this.spinner_name);
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column, this.currentUser.crp.crp_id).subscribe(
       res => {
@@ -114,7 +114,7 @@ export class CRPIndicatorsComponent implements OnInit {
     )
   }
 
-  private pageChanged(event: PageChangedEvent): void {
+  pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
     // // console.log(this.evaluationList.length, this.returnedArray.length)
@@ -127,7 +127,7 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
 
-  private setOrder(value: string) {
+  setOrder(value: string) {
     if (value == null) {
       this.reverse = !this.reverse;
     } else {
@@ -141,11 +141,11 @@ export class CRPIndicatorsComponent implements OnInit {
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
   }
 
-  private goToView(indicatorId) {
+  goToView(indicatorId) {
     this.router.navigate(['./detail', indicatorId], { relativeTo: this.activeRoute });
   }
 
-  private goToPDF(type: string) {
+  goToPDF(type: string) {
     let pdf_url;
     switch (type) {
       case 'AR':
@@ -158,7 +158,7 @@ export class CRPIndicatorsComponent implements OnInit {
     window.open(pdf_url, "_blank");
   }
 
-  private exportComments(item, all?) {
+  exportComments(item, all?) {
     this.showSpinner(this.spinner_name);
     let filename = `QA-${this.indicatorType.charAt(0).toUpperCase()}${this.indicatorType.charAt(1).toUpperCase()}${(item) ? '-' + item.id : ''}_${moment().format('YYYYMMDD_HHmm')}`
     console.log('filename',filename);
@@ -180,7 +180,7 @@ export class CRPIndicatorsComponent implements OnInit {
     )
   }
 
-  private returnListName(indicator: string, type: string) {
+  returnListName(indicator: string, type: string) {
     let r;
     if (type === 'header') {
       switch (indicator) {
@@ -218,11 +218,11 @@ export class CRPIndicatorsComponent implements OnInit {
    *  Spinner 
    * 
    ***/
-  private showSpinner(name: string) {
+  showSpinner(name: string) {
     this.spinner.show(name);
   }
 
-  private hideSpinner(name: string) {
+  hideSpinner(name: string) {
     this.spinner.hide(name);
   }
 

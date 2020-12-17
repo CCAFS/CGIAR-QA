@@ -28,13 +28,13 @@ import * as moment from 'moment';
   providers: [UrlTransformPipe, WordCounterPipe]
 })
 export class GeneralDetailedIndicatorComponent implements OnInit {
-  private currentUser: User;
-  private detailedData: any[];
-  private params: any;
-  private spinner1 = 'spinner1';
-  private spinner2 = 'spinner2';
-  private currentY = 0;
-  private gnralInfo = {
+  currentUser: User;
+  detailedData: any[];
+  params: any;
+  spinner1 = 'spinner1';
+  spinner2 = 'spinner2';
+  currentY = 0;
+  gnralInfo = {
     status: "",
     evaluation_id: '',
     evaluation_status: '',
@@ -45,30 +45,30 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     status_update: null,
     crp_id: ''
   };
-  private statusHandler = DetailedStatus;
-  private generalCommentGroup: FormGroup;
-  private currentType = '';
+  statusHandler = DetailedStatus;
+  generalCommentGroup: FormGroup;
+  currentType = '';
 
-  private approveAllitems;
-  private general_comment_reply;
+  approveAllitems;
+  general_comment_reply;
 
   @ViewChild("commentsElem", { static: false }) private commentsElem: ElementRef;
   @ViewChild("containerElement", { static: false }) private containerElement: ElementRef;
 
-  private totalChar = 6500;
+  totalChar = 6500;
 
-  private activeCommentArr = [];
-  private fieldIndex: number;
-  private notApplicable = '';
-  private tickGroup: FormGroup;
-  private tooltips = {
+  activeCommentArr = [];
+  fieldIndex: number;
+  notApplicable = '';
+  tickGroup: FormGroup;
+  tooltips = {
     public_link: '',
     download_excel: 'Click here to download all comments in an excel file.',
     all_approved: 'Setting this option true, will approved all items without comments.'
   }
 
-  private criteriaData;
-  private criteria_loading = false;
+  criteriaData;
+  criteria_loading = false;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -118,7 +118,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   get formData() { return this.generalCommentGroup.controls; }
   get formTickData() { return this.tickGroup.get('tick') as FormArray; }
 
-  private addCheckboxes() {
+  addCheckboxes() {
     this.tickGroup = this.formBuilder.group({
       selectAll: [''],
       tick: this.formBuilder.array([], Validators.required)
@@ -134,7 +134,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   }
 
-  private validateComments() {
+  validateComments() {
     let response;
     for (let index = 0; index < this.detailedData.length; index++) {
       const element = this.detailedData[index];
@@ -144,7 +144,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     return !response;
   }
 
-  private validateUpdateEvaluation() {
+  validateUpdateEvaluation() {
     let checked_row = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
     let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id);
     let availableData = this.detailedData.filter(data => data.enable_comments)
@@ -163,7 +163,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
 
-  private onTickChange(e, field) {
+  onTickChange(e, field) {
     if (field) {
       let noComment = (e.target.checked) ? true : false;
       field.loading = true
@@ -184,7 +184,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   }
 
-  private onChangeSelectAll(e) {
+  onChangeSelectAll(e) {
 
     let selected_meta = [];
     let noComment;
@@ -215,7 +215,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     // console.log(selected_meta)
   }
 
-  private getDetailedData() {
+  getDetailedData() {
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
         console.log(res)
@@ -252,7 +252,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
   }
 
-  private getCommentsExcel(evaluation) {
+  getCommentsExcel(evaluation) {
     // console.log(evaluation)
     this.showSpinner('spinner1');
     let evaluationId = evaluation.evaluation_id;
@@ -274,19 +274,19 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
   }
 
-  private goToLink(url: string) {
+  goToLink(url: string) {
     window.open(url, "_blank");
   }
 
-  private goToList() {
+  goToList() {
     console.log(this.params)
   }
 
-  private getLink(field) {
+  getLink(field) {
     return (field.col_name === 'evidence_link') ? true : false;
   }
 
-  private getIndicatorCriteria(id) {
+  getIndicatorCriteria(id) {
     this.criteria_loading = true;
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
       res => {
@@ -307,13 +307,13 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
    * 
    */
 
-  private getWordCount(value: string) {
+  getWordCount(value: string) {
     return this.wordCount.transform(value);
   }
 
 
 
-  private showComments(index: number, field: any, e?) {
+  showComments(index: number, field: any, e?) {
     if (e) {
       let parentPos = this.getPosition(this.containerElement.nativeElement);
       let yPosition = e.clientY - parentPos.y - (this.commentsElem.nativeElement.clientHeight / 2);
@@ -324,7 +324,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.activeCommentArr[index] = !this.activeCommentArr[index];
   }
 
-  private getPosition(el) {
+  getPosition(el) {
     let xPos = 0;
     let yPos = 0;
     while (el) {
@@ -350,11 +350,11 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     };
   }
 
-  private updateNumCommnts(event, detailedData) {
+  updateNumCommnts(event, detailedData) {
     detailedData.replies_count = event.length;
   }
 
-  private updateEvaluation(type: string, data: any) {
+  updateEvaluation(type: string, data: any) {
     let evaluationData = {
       evaluation_id: data[0].evaluation_id,
       status: data[0].status,
@@ -398,7 +398,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   }
 
-  private validateCommentAvility(field, is_embed?) {
+  validateCommentAvility(field, is_embed?) {
 
     let userRole = this.currentUser.roles[0].description, avility = false;
     switch (userRole) {
@@ -425,7 +425,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     return avility;
   }
 
-  private addGeneralComment(name, array) {
+  addGeneralComment(name, array) {
     let data = array[0]
     let request;
     if (data.general_comment) {
@@ -464,7 +464,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   }
 
-  private getCommentReplies() {
+  getCommentReplies() {
     // this.showSpinner('spinner1');
     // let params = { commentId: comment.id, evaluationId: this.gnralInfo.evaluation_id }
     let params = { commentId: this.gnralInfo.general_comment_id, evaluationId: this.gnralInfo.evaluation_id }
@@ -484,7 +484,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
   }
 
-  private parseGeneralStatus(status){
+  parseGeneralStatus(status){
     if(status === this.statusHandler.Finalized){
       return 'closed'
     }
@@ -497,11 +497,11 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   *  Spinner 
   * 
   ***/
-  private showSpinner(name: string) {
+  showSpinner(name: string) {
     this.spinner.show(name);
   }
 
-  private hideSpinner(name: string) {
+  hideSpinner(name: string) {
     this.spinner.hide(name);
   }
 

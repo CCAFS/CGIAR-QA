@@ -13,13 +13,13 @@ import { CookiesService } from './cookie-service.service';
 })
 export class AuthenticationService {
 
-  private currentUserSubject: BehaviorSubject<User>;
+  currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
   public userHeaders = [];
   public NOT_APPLICABLE = '<Not applicable>';
 
-  private usrCookie = 'currentUser';
-  private Tawk_LoadStart = new Date();
+  usrCookie = 'currentUser';
+  Tawk_LoadStart = new Date();
 
   constructor(private http: HttpClient, private cookiesService: CookiesService) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem(this.usrCookie)));
@@ -72,7 +72,7 @@ export class AuthenticationService {
       }));
   }
 
-  private setLoggedUser(user) {
+  setLoggedUser(user) {
     if (window.hasOwnProperty('Tawk_API')) {
       if (window['Tawk_API'].isVisitorEngaged()) window['Tawk_API'].endChat();
       window['Tawk_API'].setAttributes({
@@ -146,7 +146,7 @@ export class AuthenticationService {
 
 
 
-  private parseIndicators(user) {
+  parseIndicators(user) {
     if (user.hasOwnProperty('indicators') && user.indicators.length > 0) {
       user.indicators.forEach(element => {
         delete element.indicator.meta
@@ -158,14 +158,14 @@ export class AuthenticationService {
     return user
   }
 
-  private parseMultipleCRP(user, crp_id?) {
+  parseMultipleCRP(user, crp_id?) {
     if (user.crps.length > 0) {
       // console.log(user.crps, user.crps.find(crp => crp.crp_id == crp_id))
       user.crp = user.crps.find(crp => crp.crp_id == crp_id)
     }
   }
 
-  private markCyclesEnd(user){
+  markCyclesEnd(user){
     if(!user.hasOwnProperty('cycle')){
       user.cycle_ended = true;
     }
