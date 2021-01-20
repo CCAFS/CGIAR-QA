@@ -219,11 +219,16 @@ class AuthController {
     }
 
     static validateAD(qa_user, password) {
+        console.log(config_.active_directory)
         let ad = new ActiveDirectory(config_.active_directory);
 
-        let ad_user = qa_user.username + "@" + config_.active_directory.domain;
+        // let ad_user = qa_user.username + "@" + config_.active_directory.domain;
+        let ad_user = qa_user.email;
+        
         return new Promise((resolve, reject) => {
             ad.authenticate(ad_user, password, (err, auth) => {
+                // console.log(err)
+                // console.log(auth)
 
                 if (err) {
                     if (err.errno == "ENOTFOUND") {
