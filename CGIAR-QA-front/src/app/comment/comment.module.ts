@@ -12,7 +12,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { TagsBarComponent } from './tags-bar/tags-bar.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 @NgModule({
   declarations: [CommentComponent, TagsBarComponent],
@@ -24,6 +24,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     CollapseModule.forRoot(),
     PaginationModule.forRoot(),
     TooltipModule.forRoot(),
+    CarouselModule.forRoot(),
     NgxSpinnerModule,
     OrderModule,
     ReactiveFormsModule,

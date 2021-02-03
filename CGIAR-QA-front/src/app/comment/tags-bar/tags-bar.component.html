@@ -1,6 +1,6 @@
 <div class="tags-bar">
     <div class="left-side">
-        <div class="tag" [tooltip]="popTemplateSeen" (click)="toggleTag(1)">
+        <div class="tag"  (click)="toggleTag(1)" [tooltip]="popTemplateSeen" containerClass="tooltipClass">
             <!-- <i class="icon-seen" [ngClass]="{'active': userTags.seen, 'inactive': !userTags.seen}"></i> -->
             <svg  [ngClass]="{'active': userTags.seen, 'inactive': !userTags.seen}" width="32px" version="1.1"
                 id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
@@ -60,7 +60,7 @@
                 <div [innerHtml]="tooltipMessage('seen')"></div>
             </ng-template>
         </div>
-        <div class="tag" [tooltip]="popTemplateNotSure" (click)="toggleTag(2)">
+        <div class="tag" [tooltip]="popTemplateNotSure" (click)="toggleTag(2)" containerClass="tooltipClass">
             <!-- <i class="icon-notsure"></i> -->
                 <svg  [ngClass]="{'active': userTags.notSure, 'inactive': !userTags.notSure}" id="Capa_1"
                     enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512"
@@ -82,7 +82,7 @@
         </div>
     </div>
     <div class="right-side">
-        <div class="tag"  [tooltip]="popTemplateAgree" (click)="toggleTag(3)">
+        <div class="tag"  [tooltip]="popTemplateAgree" (click)="toggleTag(3)" containerClass="tooltipClass">
             <!-- <i class="icon-agree"></i> -->
             <svg [ngClass]="{'active': userTags.agree, 'inactive': !userTags.agree}" version="1.1" id="Capa_1"
                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -142,7 +142,7 @@
                 <div [innerHtml]="tooltipMessage('agree')"></div>
             </ng-template>
         </div>
-        <div class="tag" [tooltip]="popTemplateDisagree" (click)="toggleTag(4)">
+        <div class="tag" [tooltip]="popTemplateDisagree" (click)="toggleTag(4)" containerClass="tooltipClass">
             <!-- <i class="icon-disagree"></i> -->
             <svg  [ngClass]="{'active': userTags.disagree, 'inactive': !userTags.disagree}" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 x="0px" y="0px" viewBox="0 0 478.174 478.174" style="enable-background:new 0 0 478.174 478.174;"

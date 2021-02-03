@@ -6,6 +6,8 @@
   box-sizing: border-box;
 }
 
+
+
 .tags-bar {
     height: auto;
     // background-color: rgb(255, 255, 255);
@@ -24,9 +26,6 @@
       max-width: 120px;
 
       .tag {
-        :host ::ng-deep .tooltip-arrow {
-          border-bottom-color: white;
-        }
         // fill: black;
         width: 50%;
         border: none;
