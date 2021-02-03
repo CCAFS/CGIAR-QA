@@ -12,10 +12,10 @@ export class TagsBarComponent implements OnInit {
   @Input() currentUser;
 
   infoTags = {
-    seen: {total: 0, users: []},
-    notSure: {total: 0, users: []},
-    agree: {total: 0, users: []},
-    disagree: {total: 0, users: []}
+    seen: {total: 0, users: [], description: 'Seen'},
+    notSure: {total: 0, users: [], description: 'Not sure'},
+    agree: {total: 0, users: [], description: 'Agree'},
+    disagree: {total: 0, users: [], description: 'Disagree'}
   }
 
   userTags = {
@@ -76,6 +76,21 @@ export class TagsBarComponent implements OnInit {
     console.log(this.userTags);
     
     this.tagEvent.emit({commentId: this.comment.id,tagTypeId, newTagValue});
+  }
+
+  tooltipMessage(tagTypeKey: string) {
+    let msg = '';
+    msg += `<strong>${this.infoTags[tagTypeKey].description}</strong><br>`;
+
+    this.infoTags[tagTypeKey].users.forEach(user => {
+      msg += `${user}, `
+    });
+    
+    //Delete last ","
+    msg = msg.slice(0, -2);
+    return msg;
+    // let connector = this.infoTags[tagTypeKey].users.length > 1 ? 'are' : 'is';
+    // msg += connector;
   }
 
 

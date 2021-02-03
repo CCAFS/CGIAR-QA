@@ -1,8 +1,8 @@
 <div class="tags-bar">
     <div class="left-side">
-        <div class="tag" (click)="toggleTag(1)">
+        <div class="tag" [tooltip]="popTemplateSeen" (click)="toggleTag(1)">
             <!-- <i class="icon-seen" [ngClass]="{'active': userTags.seen, 'inactive': !userTags.seen}"></i> -->
-            <svg [ngClass]="{'active': userTags.seen, 'inactive': !userTags.seen}" width="32px" version="1.1"
+            <svg  [ngClass]="{'active': userTags.seen, 'inactive': !userTags.seen}" width="32px" version="1.1"
                 id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
                 y="0px" viewBox="0 0 511.999 511.999" style="enable-background:new 0 0 511.999 511.999;"
                 xml:space="preserve">
@@ -56,27 +56,33 @@
             <div *ngIf="infoTags.seen.total" class="replies-count">
                 {{infoTags.seen.total}}
             </div>
+            <ng-template #popTemplateSeen>
+                <div [innerHtml]="tooltipMessage('seen')"></div>
+            </ng-template>
         </div>
-        <div class="tag" (click)="toggleTag(2)">
+        <div class="tag" [tooltip]="popTemplateNotSure" (click)="toggleTag(2)">
             <!-- <i class="icon-notsure"></i> -->
-            <svg [ngClass]="{'active': userTags.notSure, 'inactive': !userTags.notSure}" id="Capa_1"
-                enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512"
-                xmlns="http://www.w3.org/2000/svg">
-                <g>
-                    <path
-                        d="m256 0c-132.635 0-239.995 107.338-239.995 239.995 0 58.157 20.91 113.887 58.999 157.593v99.401c0 13.399 16.221 19.994 25.606 10.606l51.304-51.304c157.773 75.911 344.082-38.158 344.082-216.297-.001-132.634-107.339-239.994-239.996-239.994zm-99.839 424.784c-5.836-3.16-13.055-2.108-17.749 2.584l-33.409 33.409v-68.911c0-3.749-1.404-7.362-3.935-10.128-35.508-38.79-55.063-89.129-55.063-141.744 0-115.792 94.204-209.996 209.996-209.996s209.996 94.204 209.996 209.996c-.001 159.334-171.095 259.918-309.836 184.79z" />
-                    <path
-                        d="m256 105.898c-49.652 0-90.048 40.396-90.048 90.048 0 8.284 6.716 15 15 15s15-6.716 15-15c0-33.111 26.938-60.049 60.049-60.049s60.049 26.938 60.049 60.049-26.939 60.049-60.05 60.049c-8.284 0-15 6.716-15 15v44.949c0 8.284 6.716 15 15 15s15-6.716 15-15v-31.199c42.538-7.163 75.048-44.256 75.048-88.799 0-49.652-40.396-90.048-90.048-90.048z" />
-                    <circle cx="256" cy="375.942" r="14.95" />
-                </g>
-            </svg>
+                <svg  [ngClass]="{'active': userTags.notSure, 'inactive': !userTags.notSure}" id="Capa_1"
+                    enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <path
+                            d="m256 0c-132.635 0-239.995 107.338-239.995 239.995 0 58.157 20.91 113.887 58.999 157.593v99.401c0 13.399 16.221 19.994 25.606 10.606l51.304-51.304c157.773 75.911 344.082-38.158 344.082-216.297-.001-132.634-107.339-239.994-239.996-239.994zm-99.839 424.784c-5.836-3.16-13.055-2.108-17.749 2.584l-33.409 33.409v-68.911c0-3.749-1.404-7.362-3.935-10.128-35.508-38.79-55.063-89.129-55.063-141.744 0-115.792 94.204-209.996 209.996-209.996s209.996 94.204 209.996 209.996c-.001 159.334-171.095 259.918-309.836 184.79z" />
+                        <path
+                            d="m256 105.898c-49.652 0-90.048 40.396-90.048 90.048 0 8.284 6.716 15 15 15s15-6.716 15-15c0-33.111 26.938-60.049 60.049-60.049s60.049 26.938 60.049 60.049-26.939 60.049-60.05 60.049c-8.284 0-15 6.716-15 15v44.949c0 8.284 6.716 15 15 15s15-6.716 15-15v-31.199c42.538-7.163 75.048-44.256 75.048-88.799 0-49.652-40.396-90.048-90.048-90.048z" />
+                        <circle cx="256" cy="375.942" r="14.95" />
+                    </g>
+                </svg>
             <div *ngIf="infoTags.notSure.total" class="replies-count">
                 {{infoTags.notSure.total}}
             </div>
+            <ng-template #popTemplateNotSure>
+                <div [innerHtml]="tooltipMessage('notSure')"></div>
+            </ng-template>
         </div>
     </div>
     <div class="right-side">
-        <div class="tag" (click)="toggleTag(3)">
+        <div class="tag"  [tooltip]="popTemplateAgree" (click)="toggleTag(3)">
             <!-- <i class="icon-agree"></i> -->
             <svg [ngClass]="{'active': userTags.agree, 'inactive': !userTags.agree}" version="1.1" id="Capa_1"
                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -129,14 +135,16 @@
                 <g>
                 </g>
             </svg>
-
             <div *ngIf="infoTags.agree.total" class="replies-count">
                 {{infoTags.agree.total}}
             </div>
+            <ng-template #popTemplateAgree>
+                <div [innerHtml]="tooltipMessage('agree')"></div>
+            </ng-template>
         </div>
-        <div class="tag" (click)="toggleTag(4)">
+        <div class="tag" [tooltip]="popTemplateDisagree" (click)="toggleTag(4)">
             <!-- <i class="icon-disagree"></i> -->
-            <svg [ngClass]="{'active': userTags.disagree, 'inactive': !userTags.disagree}" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            <svg  [ngClass]="{'active': userTags.disagree, 'inactive': !userTags.disagree}" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 x="0px" y="0px" viewBox="0 0 478.174 478.174" style="enable-background:new 0 0 478.174 478.174;"
                 xml:space="preserve">
                 <g>
@@ -190,6 +198,9 @@
             <div *ngIf="infoTags.disagree.total" class="replies-count">
                 {{infoTags.disagree.total}}
             </div>
+            <ng-template #popTemplateDisagree>
+                <div [innerHtml]="tooltipMessage('disagree')"></div>
+            </ng-template>
         </div>
     </div>
 </div>

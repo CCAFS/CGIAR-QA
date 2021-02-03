@@ -453,6 +453,35 @@ class Util {
         }
     }
 
+    static getTagId = async (commentId, tagTypeId, userId) => {
+
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT tag.id as tagId
+                FROM qa_tags tag 
+                JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                JOIN qa_users us ON us.id = tag.userId
+                WHERE tag.commentId = :commentId
+                AND tag.tagTypeId= :tagTypeId
+                AND tag.userId= :userId;
+                        `,
+                { commentId, tagTypeId, userId},
+                {}
+            );
+
+            let tagId = await queryRunner.connection.query(query, parameters);
+            console.log('TagID' ,tagId);
+            
+            return tagId[0].tagId;
+        } catch(error) {
+            console.log(error);
+            return null;
+        }
+
+    }
+
 
     private static formatResponse = (element, type) => {
         let field = element["meta_col_name"];

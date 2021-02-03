@@ -921,6 +921,35 @@ class CommentController {
         //Check if username and password are set
         const { userId, tagTypeId, commentId } = req.body;
 
+        const tagsRepository = getRepository(QATags);
+        let tag: QATags;
+        switch (tagTypeId) {
+            case 3:
+                const idDisagree = await Util.getTagId(commentId, 4, userId);
+                    try {
+                        tag = await tagsRepository.findOneOrFail(idDisagree);
+                        tagsRepository.delete(idDisagree);
+                        console.log('Tag disagree deleted');
+                    } catch (error) {
+                        console.log(error);
+                    }
+                    
+                break;
+            case 4:
+                const idAgree = await Util.getTagId(commentId, 3, userId);
+                try {
+                    tag = await tagsRepository.findOneOrFail(idAgree);
+                    tagsRepository.delete(idAgree);
+                    console.log('Tag agree deleted');
+                } catch (error) {
+                    console.log(error);
+                }
+                break;
+        
+            default:
+                break;
+        }
+
         try {
             let new_tag = await Util.createTag(userId, tagTypeId, commentId);
             if (new_tag == null) throw new Error('Could not created tag');
