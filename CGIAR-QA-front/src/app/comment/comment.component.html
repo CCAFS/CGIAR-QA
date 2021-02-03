@@ -25,6 +25,8 @@
                         <p class="comment">
                             {{comment.detail}}
                         </p>
+                        <app-tags-bar [comment] = "comment" [currentUser] = "currentUser" (tagEvent)="toggleTag($event)"></app-tags-bar>
+
                         <a *ngIf="comment.replies.replies_count != '0'" style="cursor: pointer;"
                             (click)="comment.isCollapsed = !comment.isCollapsed;">
                             {{comment.replies.replies_count}} replies:
@@ -115,6 +117,7 @@
                         <p class="comment">
                             {{comment.detail}}
                         </p>
+                        <app-tags-bar [comment] = "comment" [currentUser] = "currentUser" (tagEvent)="toggleTag($event)"></app-tags-bar>
                         <a *ngIf="comment.replies.replies_count != '0'" style="cursor: pointer;"
                             (click)="comment.isCollapsed = !comment.isCollapsed;">
                             {{comment.replies.replies_count}} replies:

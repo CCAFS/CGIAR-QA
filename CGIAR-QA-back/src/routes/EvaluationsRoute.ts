@@ -46,6 +46,17 @@ router.get("/crp", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsContr
 // get active indicators by admin
 router.get("/crp/indicators", [checkJwt, checkRole([RolesHandler.admin])], EvaluationsController.getIndicatorsByCrp);
 
+//TAGS
+
+// create tag in comment item
+router.get("/detail/comment/tag/:commentId([0-9]+)/:tagTypeId([0-9]+)/:userId([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.getTagId)
+
+// create tag in comment item
+router.post("/detail/comment/tag", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.createTag)
+
+// create tag in comment item
+router.delete("/detail/comment/tag/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.deleteTag)
+
 // create comment in indicator item
 router.post("/detail/comment", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.createComment)
 

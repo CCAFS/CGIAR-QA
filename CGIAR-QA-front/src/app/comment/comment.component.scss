@@ -49,6 +49,12 @@
       margin: 0;
       word-wrap: break-word;
     }
+
+    app-tags-bar{
+      width: 100%;
+      height: auto;
+    }
+
   }
   .replies-container {
     border: 1px solid var(--gray-primary);

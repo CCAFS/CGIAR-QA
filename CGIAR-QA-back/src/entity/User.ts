@@ -7,6 +7,7 @@ import { QAIndicatorUser } from "../entity/IndicatorByUser";
 import { QACrp } from "../entity/CRP";
 import { QAComments } from "../entity/Comments";
 import { QACommentsReplies } from "../entity/CommentsReplies";
+import { QATags } from "./Tags";
 // import { QARoles } from "@entity/Roles";
 // import { QAIndicatorUser } from "@entity/IndicatorByUser";
 
@@ -65,6 +66,9 @@ export class QAUsers {
 
     @OneToMany(type => QACommentsReplies, reply => reply.user, { eager: true })
     replies: QACommentsReplies
+
+    @OneToMany(type => QATags, tag => tag.tagType)
+    tags: QATags;
 
     @Column()
     @UpdateDateColumn()

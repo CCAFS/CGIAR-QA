@@ -42,6 +42,21 @@
 .icon-public-link {
   content: url("~/assets/icons/public-link.svg");
 }
+.icon-seen {
+  content: url("~/assets/icons/seen-icon.svg");
+
+    fill: #b2bec3;
+
+}
+.icon-notsure {
+  content: url("~/assets/icons/notsure-icon.svg");
+}
+.icon-agree {
+  content: url("~/assets/icons/agree-icon.svg");
+}
+.icon-disagree {
+  content: url("~/assets/icons/disagree-icon.svg");
+}
 .icon-new {
   content: url("~/assets/icons/new-icon.svg");
   height: 1.1em;

@@ -13,6 +13,7 @@ import { Role } from '../_models/roles.model';
 import { CommentService } from '../services/comment.service';
 import { from } from 'rxjs';
 import { WordCounterPipe } from '../pipes/word-counter.pipe';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-comment',
@@ -80,6 +81,52 @@ export class CommentComponent implements OnInit {
     this.commentsByColReplies = [];
     this.availableComment = false;
     this.is_approved = false;
+  }
+
+
+  toggleTag({commentId, tagTypeId, newTagValue}) {
+        if (newTagValue) {
+      this.addTag(commentId, tagTypeId)
+    } else {
+      this.deleteTag(commentId, tagTypeId)
+    }
+  }
+
+  addTag(commentId, tagTypeId) {
+
+    this.showSpinner(this.spinner_comment);
+
+    this.commentService.createTag({ userId: this.currentUser.id, tagTypeId, commentId }).subscribe(
+      res => {
+        this.getItemCommentData();
+        console.log(res.message);
+        
+      },
+      error => {
+        console.log("addTag", error);
+        this.hideSpinner(this.spinner_comment);
+        this.alertService.error(error);
+      }
+    );
+  }
+
+  deleteTag(commentId, tagTypeId) {
+    this.showSpinner(this.spinner_comment);
+
+    this.commentService.getTagId({ commentId, tagTypeId, userId: this.currentUser.id }).pipe(
+      mergeMap((res) => this.commentService.deleteTag(res.data[0].tagId))
+    ).subscribe(
+      res => {
+        this.getItemCommentData();
+        console.log(res.message);
+      },
+      error => {
+        console.log("deleteTag", error);
+        this.hideSpinner(this.spinner_comment);
+        this.alertService.error(error);
+      }
+    )
+
   }
 
   addComment() {
@@ -186,6 +233,8 @@ export class CommentComponent implements OnInit {
             this.commentsByCol = res.data
             break;
         }
+        console.log(this.commentsByCol);
+
         this.commentsByCol.forEach(comment => {
           if (comment.replies.replies_count != '0') {
             comment.isCollapsed = true;
@@ -199,6 +248,7 @@ export class CommentComponent implements OnInit {
         this.alertService.error(error);
       }
     )
+
   }
 
   getCommentReplies(comment) {

@@ -10,9 +10,10 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { OrderModule } from 'ngx-order-pipe';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { TagsBarComponent } from './tags-bar/tags-bar.component';
 
 @NgModule({
-  declarations: [CommentComponent],
+  declarations: [CommentComponent, TagsBarComponent],
   exports: [CommentComponent],
   imports: [
     CommonModule,

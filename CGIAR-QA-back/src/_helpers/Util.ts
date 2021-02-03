@@ -18,6 +18,8 @@ import * as jwt from "jsonwebtoken";
 import * as excel from 'exceljs';
 import { QAComments } from "@entity/Comments";
 import { QACycle } from "@entity/Cycles";
+import { QATags } from "@entity/Tags";
+import { QATagType } from "@entity/TagType";
 // const excel = require('exceljs');
 
 
@@ -421,6 +423,32 @@ class Util {
             return new_comment;
         } catch (error) {
             // console.log(error)
+            return null;
+        }
+    }
+
+    static createTag = async ( userId, tagTypeId, commentId) => {
+        const userRepository = getRepository(QAUsers);
+        const commentsRepository = getRepository(QAComments);
+        const tagsRepository = getRepository(QATags);
+        const tagTypeRepository = getRepository(QATagType);
+
+        try {
+
+            let user = await userRepository.findOneOrFail({ where: { id: userId } });
+            let tagType = await tagTypeRepository.findOneOrFail({ where: { id: tagTypeId } });
+            let comment = await commentsRepository.findOneOrFail({ where: { id: commentId } });
+
+            let tag_ = new QATags();
+            tag_.user = user;
+            tag_.tagType = tagType;
+            tag_.comment = comment;
+
+            let new_tag = await tagsRepository.save(tag_);
+
+            return new_tag;
+        } catch (error) {
+            console.log(error)
             return null;
         }
     }

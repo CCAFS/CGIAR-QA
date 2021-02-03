@@ -81,4 +81,18 @@ export class CommentService {
     return this.http.post(`${environment.apiUrl}/comment/approved/${evaluationId}`, params)
   }
 
+    // create comment data for evaluation
+    createTag(params) {
+      return this.http.post<any>(`${environment.apiUrl}/evaluation/detail/comment/tag`, params)
+    }
+
+    // create comment data for evaluation
+    deleteTag(id) {
+      return this.http.delete<any>(`${environment.apiUrl}/evaluation/detail/comment/tag/${id}`)
+    }
+
+    getTagId(params) {
+      return this.http.get<any>(`${environment.apiUrl}/evaluation/detail/comment/tag/${params.commentId}/${params.tagTypeId}/${params.userId}`)
+    }
+
 }
