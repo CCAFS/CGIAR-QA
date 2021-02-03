@@ -21,8 +21,8 @@ export class QACycle {
     @Column({ nullable: true })
     cycle_name: string;
 
-    // @OneToMany(type => QAComments, comment => comment.cycle)
-    // comments: QAComments
+    @OneToMany(type => QAComments, comment => comment.cycle)
+    comments: QAComments
 
     @Column()
     @CreateDateColumn()
