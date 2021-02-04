@@ -3,7 +3,7 @@
     <app-on-boarding></app-on-boarding>
     <i class="icon-close" (click)="closeComments()"></i>
     <div *ngIf="commentsByCol.length && !availableComment && currentUser.hasOwnProperty('cycle')">
-        <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
+        <h2 class="title-section">COMMENTS ON {{dataFromItem.display_name}}</h2>
         <div class="comment-container">
             <ng-container *ngFor="let comment of commentsByCol">
                 <div class="comment-body {{ comment.crp_approved == '1' ? 'approved': ''}} {{  comment.crp_approved == '0' ? 'declined': ''}}"

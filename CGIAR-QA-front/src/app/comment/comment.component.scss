@@ -13,6 +13,9 @@
   flex-direction: column;
   min-height: 200px;
   margin-left: 1em;
+  .icon-close {
+    margin-top: 1em;
+  }
   .comment-body.approved,
   .reply-comment.approved {
     background-color: var(--green-tertiary) !important;
