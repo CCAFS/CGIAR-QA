@@ -15,12 +15,13 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SharedModule } from '../shared-module/shared-module.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
     imports: [
         CommonModule,
         DashboardRoutingModule,
+        BsDropdownModule.forRoot(),
         ProgressbarModule.forRoot(),
         ButtonsModule.forRoot(),
         CollapseModule.forRoot(),

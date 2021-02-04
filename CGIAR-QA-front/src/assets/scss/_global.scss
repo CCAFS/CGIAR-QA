@@ -118,6 +118,21 @@
   background-color: var(--green-secondary);
   border-color: var(--green-secondary);
 }
+.btn-white,
+.btn-white:hover,
+.btn-white:not(:disabled):not(.disabled).active,
+.btn-white:not(:disabled):not(.disabled):active,
+.show > .btn-white.dropdown-toggle {
+  background-color: var(--white);
+  border-color: var(--white);
+  color: var(--black-gray);
+}
+.btn-white.disabled,
+.btn-white:disabled {
+  color: var(--black-gray);
+  background-color: var(--white);
+  border-color: var(--white);
+}
 .btn-red-secondary,
 .btn-red-secondary:hover,
 .btn-red-secondary:not(:disabled):not(.disabled).active,

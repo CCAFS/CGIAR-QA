@@ -233,7 +233,7 @@ export class CommentComponent implements OnInit {
             this.commentsByCol = res.data
             break;
         }
-        console.log(this.commentsByCol);
+        // console.log(this.commentsByCol);
 
         this.commentsByCol.forEach(comment => {
           if (comment.replies.replies_count != '0') {

@@ -26,6 +26,7 @@ export class AssessorDashboardComponent implements OnInit {
   dashboardCommentsData: any[];
   generalStatus = GeneralStatus;
   indicatorsName = GeneralIndicatorName;
+  selectedIndicator = 'qa_slo';
 
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
@@ -45,10 +46,7 @@ export class AssessorDashboardComponent implements OnInit {
   
   ngOnInit() {
     console.log(this.currentUser);
-    this.usersService.getUserById(this.currentUser.id).subscribe(res => {
-      console.log(res.data.indicators);
-      this.authenticationService.parseUpdateIndicators(res.data.indicators);
-    })
+      this.authenticationService.parseUpdateIndicators(this.currentUser.indicators);
     this.getCommentStats();
 
     console.log(this.dashboardData);
@@ -57,6 +55,10 @@ export class AssessorDashboardComponent implements OnInit {
 
   getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
+  }
+
+  actualIndicator(indicator: string) {
+    this.selectedIndicator = indicator;
   }
 
   goToView(view: string, primary_column: string) {

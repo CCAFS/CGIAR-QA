@@ -30,7 +30,7 @@ export class TagsBarComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.comment, this.currentUser);
+    // console.log(this.comment, this.currentUser);
     if(this.comment && this.currentUser) {
       this.getUserTags(this.comment.tags);
       this.getInfoByTag(this.comment.tags)
@@ -63,7 +63,7 @@ export class TagsBarComponent implements OnInit {
     this.infoTags.disagree.total =  tags.filter(({tag_type}) => tag_type == 4).length;
     this.infoTags.disagree.users = tags.filter(({tag_type}) => tag_type == 4).map(tag => tag.user_name);
 
-    console.log(this.infoTags);
+    // console.log(this.infoTags);
     
   }
 
@@ -73,7 +73,7 @@ export class TagsBarComponent implements OnInit {
     this.userTags[tagsKey[tagTypeId-1]] = newTagValue;
 
     // console.log(`${tagsKey[tagTypeId-1]}`,newTagValue);
-    console.log(this.userTags);
+    // console.log(this.userTags);
     
     this.tagEvent.emit({commentId: this.comment.id,tagTypeId, newTagValue});
   }

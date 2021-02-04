@@ -39,7 +39,7 @@ export class AvailableGuard implements CanActivate {
       let found = isAdmin ? null : meta_indicators.find(meta => meta.view_name.split('qa_')[1] == current_indicator);
       // let found = isAdmin ? null : meta_indicators.find(meta => { console.log(meta, current_indicator); return meta.name.toLocaleLowerCase() == current_indicator });
       // console.log(found,currentUser)
-      console.log('HEY',found);
+      // console.log('HEY',found);
       if (isAdmin === Role.admin) return true;
       
       if (isAssessor === Role.asesor && (found && found.comment_meta.enable_assessor)) {
