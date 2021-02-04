@@ -30,7 +30,7 @@ router.get("/all", [checkJwt, checkRole([RolesHandler.admin])], UserController.l
 // Get one user
 router.get(
     "/:id([0-9]+)",
-    [checkJwt, checkRole([RolesHandler.admin])],
+    [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])],
     UserController.getOneById
 );
 

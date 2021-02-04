@@ -38,7 +38,6 @@
                     <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                         <span>{{item.value.total}}</span>
                     </progressbar>
-                    
                     <p *ngIf="item && dashboardCommentsData[item.key]">Total comments:
                     {{dashboardCommentsData[item.key].total}}</p>
                     <progressbar id="comments-progessbar" *ngIf="dashboardCommentsData[item.key]"

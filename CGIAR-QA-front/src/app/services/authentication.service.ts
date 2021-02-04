@@ -17,7 +17,7 @@ export class AuthenticationService {
   public currentUser: Observable<User>;
   public userHeaders = [];
   public NOT_APPLICABLE = '<Not applicable>';
-
+  public userIndicators;
   private usrCookie = 'currentUser';
   Tawk_LoadStart = new Date();
 
@@ -36,6 +36,7 @@ export class AuthenticationService {
     return this.http.post<any>(`${environment.apiUrl}/auth/login`, { username, password })
       .pipe(map(user => {
         let currentUsr = this.parseIndicators(user.data)
+        this.userIndicators = user.data;
         delete currentUsr.password
         this.userHeaders = user.data.indicators;
         this.markCyclesEnd(currentUsr);
@@ -152,11 +153,28 @@ export class AuthenticationService {
         delete element.indicator.meta
       });
       localStorage.setItem('indicators', JSON.stringify(user.indicators));
+      console.log('Indicadores actualizados');
+      
       // console.log(JSON.parse(localStorage.getItem('indicators')))
-      delete user.indicators;
+      // delete user.indicators;
     }
     return user
   }
+   parseUpdateIndicators(userIndicators) {
+     
+    if (userIndicators.length > 0) {
+      userIndicators.forEach(element => {
+        delete element.indicator.meta
+      });
+      localStorage.setItem('indicators', JSON.stringify(userIndicators));
+      console.log('Indicadores actualizados');
+      
+      // console.log(JSON.parse(localStorage.getItem('indicators')))
+      delete userIndicators.indicators;
+    }
+    return userIndicators
+  }
+
 
   private parseMultipleCRP(user, crp_id?) {
     if (user.crps.length > 0) {

@@ -11,6 +11,8 @@ import { User } from '../../_models/user.model';
 import { GeneralStatus, GeneralIndicatorName } from "../../_models/general-status.model"
 import { Title } from '@angular/platform-browser';
 import { CommentService } from 'src/app/services/comment.service';
+import { IndicatorsService } from 'src/app/services/indicators.service';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-assessor-dashboard',
@@ -27,6 +29,8 @@ export class AssessorDashboardComponent implements OnInit {
 
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
+    private indicatorService: IndicatorsService,
+    private usersService: UsersService,
     private spinner: NgxSpinnerService,
     private commentService: CommentService,
     private router: Router,
@@ -38,11 +42,17 @@ export class AssessorDashboardComponent implements OnInit {
     /** set page title */
     this.titleService.setTitle(`Assessor Dashboard`);
   }
-
+  
   ngOnInit() {
+    console.log(this.currentUser);
+    this.usersService.getUserById(this.currentUser.id).subscribe(res => {
+      console.log(res.data.indicators);
+      this.authenticationService.parseUpdateIndicators(res.data.indicators);
+    })
     this.getDashData();
     this.getCommentStats();
-    // 
+    console.log(this.dashboardData);
+    
   }
 
   getIndicatorName(indicator: string) {
@@ -53,14 +63,15 @@ export class AssessorDashboardComponent implements OnInit {
     this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
   }
 
-
   getDashData() {
     this.showSpinner();
     this.dashService.getDashboardEvaluations(this.currentUser.id).subscribe(
       res => {
-        // console.log(res)
+        console.log(res)
         this.dashboardData = this.dashService.groupData(res.data);
         // this.getCommentStats();
+    console.log(this.dashboardData);
+
         this.hideSpinner();
       },
       error => {

@@ -20,14 +20,17 @@ export class AvailableGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const currentUser = this.authenticationService.currentUserValue;
+    
     let current_indicator = state.url.split('/')[2];
     let user_indicators = JSON.parse(localStorage.getItem('indicators'));
+    
     let meta_indicators;
     if (user_indicators) {
       meta_indicators = user_indicators.map(indi => {
         return indi.indicator
       })
-
+      console.log(user_indicators, meta_indicators);
+      
     }
     // console.log(user_indicators)
     if (currentUser) {
@@ -36,7 +39,9 @@ export class AvailableGuard implements CanActivate {
       let found = isAdmin ? null : meta_indicators.find(meta => meta.view_name.split('qa_')[1] == current_indicator);
       // let found = isAdmin ? null : meta_indicators.find(meta => { console.log(meta, current_indicator); return meta.name.toLocaleLowerCase() == current_indicator });
       // console.log(found,currentUser)
+      console.log('HEY',found);
       if (isAdmin === Role.admin) return true;
+      
       if (isAssessor === Role.asesor && (found && found.comment_meta.enable_assessor)) {
         return true
       } else {

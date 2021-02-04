@@ -34,5 +34,9 @@ export class UsersService {
     return this.http.delete<any>(`${environment.apiUrl}/user/${id}`);
   }
 
+  getUserById(id) {
+    return this.http.get<any>(`${environment.apiUrl}/user/${id}`);
+  }
+
 
 }
