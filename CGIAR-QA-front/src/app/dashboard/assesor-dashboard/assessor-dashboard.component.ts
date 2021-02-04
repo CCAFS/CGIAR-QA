@@ -49,8 +49,8 @@ export class AssessorDashboardComponent implements OnInit {
       console.log(res.data.indicators);
       this.authenticationService.parseUpdateIndicators(res.data.indicators);
     })
-    this.getDashData();
     this.getCommentStats();
+
     console.log(this.dashboardData);
     
   }
@@ -64,7 +64,7 @@ export class AssessorDashboardComponent implements OnInit {
   }
 
   getDashData() {
-    this.showSpinner();
+    // this.showSpinner();
     this.dashService.getDashboardEvaluations(this.currentUser.id).subscribe(
       res => {
         console.log(res)
@@ -83,12 +83,16 @@ export class AssessorDashboardComponent implements OnInit {
   }
   // comments by crp
   getCommentStats(crp_id?) {
-    // this.showSpinner();
+    this.showSpinner();
     return this.commentService.getCommentCRPStats({ crp_id, id: null })
       .subscribe(
         res => {
           // console.log(res)
           this.dashboardCommentsData = this.dashService.groupData(res.data);
+
+          //getDashData depends on getCommentStats
+          this.getDashData();
+
           // this.hideSpinner();
         },
         error => {
