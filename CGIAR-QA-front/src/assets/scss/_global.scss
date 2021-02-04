@@ -44,9 +44,6 @@
 }
 .icon-seen {
   content: url("~/assets/icons/seen-icon.svg");
-
-    fill: #b2bec3;
-
 }
 .icon-notsure {
   content: url("~/assets/icons/notsure-icon.svg");
@@ -368,4 +365,74 @@ progressbar {
 }
 .tooltipClass .tooltip-arrow.arrow::before {
   border-top-color:white;
+}
+
+carousel{
+  width: 100%;
+  position: relative;
+  height: auto;
+  padding: 20px;
+  margin-left: 1em;
+  border-radius: 10px;
+  .carousel.slide{
+    display: flex;
+    justify-content: center;
+    font-family: $primary_font;
+    .carousel-indicators.ng-star-inserted{
+      display: none;
+    }
+    .header{
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1em;
+      h3{
+        font-size: $font-sm;
+        color: black;
+        text-align: start;
+        font-weight: bold;
+        width: auto;
+      }
+      .skip{
+        font-size: $font-sm;
+        color: var(--blue-secondary);
+        text-align: start;
+        width: auto;
+        font-weight: 500;
+        &:hover{
+          cursor: pointer;
+          color: var(--blue-tertiarty);
+        }
+      }
+    }
+    .carousel-inner{
+      width: 86%;
+      .container{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1em;
+        i{
+          width:40px;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+  a{
+    &:hover{
+      cursor: pointer;
+    }
+  }
+  a.right.carousel-control.carousel-control-next.ng-star-inserted{
+    width: 7%;
+    background-color: rgb(221, 221, 221);
+  }
+  a.left.carousel-control.carousel-control-prev.ng-star-inserted{
+    width: 7%;
+    background-color: rgb(221, 221, 221);
+
+  }
 }

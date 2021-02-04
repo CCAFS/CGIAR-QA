@@ -1,15 +1,11 @@
 @import "../../assets/variables.scss";
 
-carousel{
-  // width: 100%;
-  position: relative;
-  min-height: 200px;
-  padding: 20px;
-  margin-left: 1em;
 
-}
 
 .comments-container {
+  app-on-boarding{
+    border-radius: 10px;
+  }
   border: 1px solid var(--gray-primary);
   padding: 20px;
   position: relative;

@@ -1,1 +1,50 @@
-<p>on-boarding works!</p>
+<carousel *ngIf="onboarding">
+    <slide>
+        <div class="text-center px-2 py-3  bg-light text-black">
+            <div class="header">
+                <h3>New feedback system</h3>
+                <div class="skip" (click)="toggleOnBoarding()">skip</div>
+            </div>
+            <div class="container">
+                <i class=icon-seen></i>
+                <div class="description">Indicates that you've <strong>seen</strong> the comment</div>
+            </div>
+        </div>
+    </slide>
+    <slide>
+        <div class="text-center px-2 py-3 bg-light text-black">
+            <div class="header">
+                <h3>New feedback system</h3>
+                <div class="skip" (click)="toggleOnBoarding()">skip</div>
+            </div>
+            <div class="container">
+                <i class=icon-notsure></i>
+                <div class="description">Indicates that you are <strong>not sure</strong> the comment</div>
+            </div>
+        </div>
+    </slide>
+    <slide>
+        <div class="text-center px-2 py-3 bg-light text-black">
+            <div class="header">
+                <h3>New feedback system</h3>
+                <div class="skip" (click)="toggleOnBoarding()">skip</div>
+            </div>
+            <div class="container">
+                <i class=icon-agree></i>
+                <div class="description">Indicates that you <strong>agree</strong> with the comment</div>
+            </div>
+        </div>
+    </slide>
+    <slide>
+        <div class="text-center px-2 py-3 bg-light text-black">
+            <div class="header">
+                <h3>New feedback system</h3>
+                <div class="skip" (click)="toggleOnBoarding()">skip</div>
+            </div>
+            <div class="container">
+                <i class=icon-disagree></i>
+                <div class="description">Indicates that you <strong>disagree</strong> with the comment</div>
+            </div>
+        </div>
+    </slide>
+</carousel>

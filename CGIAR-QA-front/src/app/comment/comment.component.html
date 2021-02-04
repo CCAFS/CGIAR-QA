@@ -1,42 +1,6 @@
-<!-- <carousel>
-    <slide>
-      <div class="text-center py-5 bg-dark text-white">
-        <h2>Seen</h2>
-        <div class="lead">
-          <h3>First slide label</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-        </div>
-      </div>
-    </slide>
-    <slide>
-      <div class="text-center py-5 bg-dark text-white">
-        <h2>Not sure</h2>
-        <div class="lead">
-          <h3>Second slide label</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-        </div>
-      </div>
-    </slide>
-    <slide>
-      <div class="text-center py-5 bg-dark text-white">
-        <h2>Agree</h2>
-        <div class="lead">
-          <h3>Third slide label</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum. </p>
-        </div>
-      </div>
-    </slide>
-    <slide>
-      <div class="text-center py-5 bg-dark text-white">
-        <h2>Disagree</h2>
-        <div class="lead">
-          <h3>Third slide label</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum. </p>
-        </div>
-      </div>
-    </slide>
-  </carousel> -->
+
 <div class="comments-container">
+    <app-on-boarding></app-on-boarding>
     <i class="icon-close" (click)="closeComments()"></i>
     <div *ngIf="commentsByCol.length && !availableComment && currentUser.hasOwnProperty('cycle')">
         <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>

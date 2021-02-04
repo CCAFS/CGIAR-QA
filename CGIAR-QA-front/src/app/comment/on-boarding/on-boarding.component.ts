@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OnBoardingComponent implements OnInit {
 
+  onboarding = true;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  toggleOnBoarding() {
+    this.onboarding = false;
   }
 
 }
