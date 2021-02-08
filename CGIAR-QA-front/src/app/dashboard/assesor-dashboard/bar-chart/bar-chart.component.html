@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="options">
+        <span class="legendTitle">Tags: </span>
+        <div class="legendInline">
+            <igx-legend  #legend orientation="Horizontal"></igx-legend>
+        </div>
+    </div>
+
+    <div class="chart">
+        <igx-data-chart #chart isHorizontalZoomEnabled="true" isVerticalZoomEnabled="true" width="100%"
+            height="calc(100% - 60px)" [dataSource]="data"  [brushes]="brushes"  [legend]="legend">
+            <igx-numeric-x-axis title="" #xAxis name="xAxis">
+            </igx-numeric-x-axis>
+            <igx-category-y-axis label="Tags" title="" #yAxis  name="yAxis">
+            </igx-category-y-axis>
+
+            <igx-bar-series showDefaultTooltip=true valueMemberPath="Seen" [xAxis]="xAxis" [yAxis]="yAxis" title="Seen">
+            </igx-bar-series>
+            <igx-bar-series showDefaultTooltip=true valueMemberPath="NotSure" [xAxis]="xAxis" [yAxis]="yAxis" title="NotSure">
+            </igx-bar-series>
+            <igx-bar-series showDefaultTooltip=true valueMemberPath="Disagree" [xAxis]="xAxis" [yAxis]="yAxis" title="Disagree">
+            </igx-bar-series>
+            <igx-bar-series showDefaultTooltip=true valueMemberPath="Agree" [xAxis]="xAxis" [yAxis]="yAxis" title="Agree">
+            </igx-bar-series>
+        </igx-data-chart>
+    </div>
+</div>
+
+<!-- <div class="container">
+    <div>
+      <div style="position: relative;height:100%; width:100%">
+        <canvas  baseChart
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [plugins]="barChartPlugins"
+          [legend]="barChartLegend"
+          [chartType]="barChartType"
+          [colors]="colors">
+        </canvas>
+      </div>
+    </div>
+  </div> -->

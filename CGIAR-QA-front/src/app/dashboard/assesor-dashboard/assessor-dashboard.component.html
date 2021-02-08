@@ -23,11 +23,31 @@
                     </ul>
                 </div>
             </div>
-            <div class="grid-container">
-                <div class="chart chart-1">Chart 1</div>
-                <div class="chart chart-2">Chart 2</div>
-                <div class="chart chart-3">Chart 3</div>
-                <div class="chart chart-4">Chart 4</div>
+            <div *ngIf="dashboardData && ((dashboardData | json) != ({} | json))" class="grid-container">
+                <div class="chart chart-1">
+                    <h4 class="chart-title">Status  -  {{dataSelected.total}} {{getIndicatorName(selectedIndicator)}}</h4>
+                    <div class="chart-container">
+                        <app-doughnut-chart [data]="formatStatusIndicatorData(dataSelected)"></app-doughnut-chart>
+                    </div>
+                </div>
+                <div class="chart chart-2">
+                    <h4 class="chart-title">Comments interactions</h4>
+                    <div class="chart-container">
+                        <app-bar-chart></app-bar-chart>
+                    </div>
+                </div>
+                <div class="chart chart-3">
+                    <h4 class="chart-title">Comments</h4>
+                    <div class="chart-container">
+                        <app-doughnut-chart [data]="formatStatusIndicatorData(dataSelected)"></app-doughnut-chart>
+                    </div>
+                </div>
+                <div class="chart chart-4">
+                    <h4 class="chart-title">Comments by field</h4>
+                    <div class="chart-container">
+                        <app-line-chart></app-line-chart>
+                    </div>
+                </div>
             </div>
 
             <ng-container *ngIf="(dashboardData | json) != ({} | json)">

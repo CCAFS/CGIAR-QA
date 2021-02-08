@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { NgxSpinnerService } from 'ngx-spinner';
 
+
 import { DashboardService } from "../../services/dashboard.service";
 import { AuthenticationService } from "../../services/authentication.service";
 import { AlertService } from '../../services/alert.service';
@@ -27,6 +28,7 @@ export class AssessorDashboardComponent implements OnInit {
   generalStatus = GeneralStatus;
   indicatorsName = GeneralIndicatorName;
   selectedIndicator = 'qa_slo';
+  dataSelected: any;
 
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
@@ -59,6 +61,9 @@ export class AssessorDashboardComponent implements OnInit {
 
   actualIndicator(indicator: string) {
     this.selectedIndicator = indicator;
+    this.dataSelected = this.dashboardData[this.selectedIndicator];
+    console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]);
+    
   }
 
   goToView(view: string, primary_column: string) {
@@ -72,7 +77,8 @@ export class AssessorDashboardComponent implements OnInit {
         console.log(res)
         this.dashboardData = this.dashService.groupData(res.data);
         // this.getCommentStats();
-    console.log(this.dashboardData);
+      console.log(this.dashboardData);
+      this.dataSelected = this.dashboardData[this.selectedIndicator];
 
         this.hideSpinner();
       },
@@ -115,6 +121,22 @@ export class AssessorDashboardComponent implements OnInit {
   }
   hideSpinner() {
     this.spinner.hide();
+  }
+
+  formatStatusIndicatorData(data) {
+    const colors= {
+      complete: '#59ed9c',
+      pending: '#f3da90',
+      finalized: '#ed8b84'
+    }
+    let dataset = [];
+    let brushes = [];
+    for (const item of data) {
+      dataset.push({Label: item.status, Value: +item.label});
+      brushes.push(colors[item.status]);
+    }
+
+    return {dataset, brushes}
   }
 
 

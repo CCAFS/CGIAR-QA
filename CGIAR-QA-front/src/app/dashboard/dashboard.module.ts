@@ -13,9 +13,25 @@ import { DashBoardComponent } from './dashboard.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ChartsModule, ThemeService } from 'ng2-charts';
 import { SharedModule } from '../shared-module/shared-module.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import {
+    IgxDoughnutChartModule,
+    IgxRingSeriesModule,
+    IgxDataChartCoreModule,
+    IgxDataChartCategoryModule,
+    IgxLegendModule,
+    IgxDataChartInteractivityModule,
+    IgxDataChartVerticalCategoryCoreModule,
+    IgxDataChartVerticalCategoryModule,
+    
+} from "igniteui-angular-charts";
+
+import { BarChartComponent } from './assesor-dashboard/bar-chart/bar-chart.component';
+import { DoughnutChartComponent } from './assesor-dashboard/doughnut-chart/doughnut-chart.component';
+import { LineChartComponent } from './assesor-dashboard/line-chart/line-chart.component';
 
 @NgModule({
     imports: [
@@ -31,9 +47,20 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
         FormsModule,
         SharedModule,
         NgxChartsModule,
+        ChartsModule,
+        IgxDoughnutChartModule,
+        IgxRingSeriesModule,
+        IgxDataChartCoreModule,
+        IgxDataChartCategoryModule,
+        IgxLegendModule,
+        IgxDataChartInteractivityModule,
+        IgxDataChartVerticalCategoryCoreModule,
+		IgxDataChartVerticalCategoryModule,
         NgbModule
     ],
-    declarations: [AssessorDashboardComponent,  AdminDashboardComponent, DashBoardComponent],
-    
+    declarations: [AssessorDashboardComponent, AdminDashboardComponent, DashBoardComponent, BarChartComponent, DoughnutChartComponent, LineChartComponent,
+    ],
+    providers:[ThemeService]
+
 })
 export class DashboardModule { }

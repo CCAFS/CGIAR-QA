@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="options">
+        <span class="legendTitle">Tags: </span>
+        <div class="legendInline">
+            <igx-legend #legend orientation="Horizontal"></igx-legend>
+        </div>
+    </div>
+
+    <div class="chart">
+        <igx-data-chart #chart isHorizontalZoomEnabled="true" isVerticalZoomEnabled="true" width="100%"
+            height="calc(100% - 60px)" [dataSource]="data" [legend]="legend" [brushes]="brushes">
+            <igx-numeric-y-axis title="" #yAxis>
+            </igx-numeric-y-axis>
+            <igx-category-x-axis label="Item" title="" #xAxis>
+            </igx-category-x-axis>
+
+            <igx-spline-series  valueMemberPath="Approved" [xAxis]="xAxis" [yAxis]="yAxis" title="Approved">
+            </igx-spline-series>
+
+            <igx-spline-series valueMemberPath="Pending" [xAxis]="xAxis" [yAxis]="yAxis" title="Pending">
+            </igx-spline-series>
+            <igx-spline-series valueMemberPath="Rejected" [xAxis]="xAxis" [yAxis]="yAxis" title="Rejected">
+            </igx-spline-series>
+        </igx-data-chart>
+    </div>
+</div>
