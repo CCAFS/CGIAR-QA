@@ -1,9 +1,33 @@
-<div style="display: block;" >
+<!-- <div style="position: relative;height:100%;width:100%" >
   <canvas baseChart
+              height="100%"
               [data]="doughnutChartData"
               [labels]="doughnutChartLabels"
               [colors]="chartColors"
               [chartType]="doughnutChartType"
               (chartHover)="chartHovered($event)"
               (chartClick)="chartClicked($event)"></canvas>
+</div> -->
+<div class="legend-container">
+  <div class="legend">
+    <div *ngFor="let tag of statusLegend"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}}</p></div>
+  </div>
+</div>
+<div class="pie-container">
+  <ngx-charts-pie-chart
+    [view]=""
+    [scheme]="data.brushes"
+    [animations]="false"
+    [results]="data.dataset"
+    [gradient]="gradient"
+    [legend]="showLegend"
+    [legendPosition]="legendPosition"
+    [labels]="showLabels"
+    [labelFormatting]="setLabelFormatting"  
+    [doughnut]="isDoughnut"
+    (select)="onSelect($event)"
+    (activate)="onActivate($event)"
+    (deactivate)="onDeactivate($event)"
+    >
+  </ngx-charts-pie-chart>
 </div>

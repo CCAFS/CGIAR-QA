@@ -29,6 +29,7 @@ export class AssessorDashboardComponent implements OnInit {
   indicatorsName = GeneralIndicatorName;
   selectedIndicator = 'qa_slo';
   dataSelected: any;
+  indicatorData: any;
 notifications: any[] = [
   {assessor: 'assessor-a', description: ' has approved without comment title in QA-PO-101'},
   {assessor: 'assessor-b', description: ' has closed QA-OI-002'},
@@ -184,13 +185,13 @@ notifications: any[] = [
       finalized: '#ed8b84'
     }
     let dataset = [];
-    let brushes = [];
+    let brushes = {domain: []};
     for (const item of data) {
-      dataset.push({Label: item.status, Value: +item.label});
-      brushes.push(colors[item.status]);
+      dataset.push({name: item.status, value: +item.label});
+      brushes.domain.push(colors[item.status]);
     }
-
-    return {dataset, brushes}
+    
+    return {dataset, brushes};
   }
 
 

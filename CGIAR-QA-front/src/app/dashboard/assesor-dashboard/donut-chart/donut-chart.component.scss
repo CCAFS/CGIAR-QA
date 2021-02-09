@@ -1,0 +1,62 @@
+
+@import "../../../..//assets/variables.scss";
+
+*{
+    margin:0;
+    padding:0;
+}
+.legend-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.legend{
+    height: auto;
+    max-height: 40px;
+    width:60%;
+    flex-wrap: wrap;
+    // background-color: black;
+    display: flex;
+
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: $font-xs;
+}
+.pie-container{
+    height:calc(100% - 40px);
+    width:100%;
+}
+
+.square{
+    width: 10px;
+    height: 10px;
+}
+.tag{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: $font-xs;
+    font-weight: $bold;
+    width: auto;
+    margin: 0px;
+    p{
+        max-height: 100%;
+    width: max-content;
+
+    }
+}
+.autochecked {
+    background-color: #46bdc6;
+}
+.complete {
+    background-color: #59ed9c;
+}
+
+.pending {
+    background-color: #f3da90;
+}
+
+.finalized {
+    background-color: #ed8b84;
+}
