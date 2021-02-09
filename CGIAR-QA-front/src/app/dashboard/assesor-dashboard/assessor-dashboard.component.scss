@@ -10,9 +10,14 @@
   }
   .dashboard-container{
     background-color: var(--background);
+    height: max-content;
+    .dashboard-container-charts{
+      height: max-content;
+    }
     .feed-container{
       background-color: var(--white);
       border-radius: 5px;
+      max-height: auto;
       .feed-title{
         font-family: $secondary-font;
         font-size: $font-md;
@@ -24,6 +29,9 @@
         list-style-type: none;
         margin:0;
         padding: 1em;
+        overflow-y: scroll;
+        max-height: 800px;
+
         li{
           margin-bottom: 1.5em;
         }
@@ -50,9 +58,12 @@
       .grid-container {
         display: grid;
         grid-template-columns: minmax(250px, 450px) auto;
-        grid-template-rows: repeat(2, minmax(200px, 400px));
+        grid-template-rows: repeat(2, minmax(200px, 400px)) auto;
         column-gap: 15px;
         row-gap: 15px;
+        button {
+          grid-column: 1 / 3;
+        }
         .chart {
           background-color: white;
           height: 100%;

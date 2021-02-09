@@ -34,6 +34,48 @@ notifications: any[] = [
   {assessor: 'assessor-b', description: ' has closed QA-OI-002'},
   {assessor: 'assessor-c', description: ' has comment title in QA-SL-200'},
   {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
 ]
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
@@ -67,8 +109,15 @@ notifications: any[] = [
   actualIndicator(indicator: string) {
     this.selectedIndicator = indicator;
     this.dataSelected = this.dashboardData[this.selectedIndicator];
-    console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]);
-    
+    console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
+  }
+
+  actualStatusIndicator(data) {
+    let indicator_status = false;
+    for (const item of data) {
+      if(item.indicator_status==1) indicator_status =  true;
+    }
+    return indicator_status;
   }
 
   goToView(view: string, primary_column: string) {

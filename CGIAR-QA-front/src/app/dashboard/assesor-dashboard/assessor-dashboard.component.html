@@ -7,7 +7,7 @@
         <h4>Progress on Quality Assessment</h4>
     </div>
     <div class="dashboard-container row w-100">
-        <div class="card-body col col-sm-9">
+        <div class="card-body dashboard-container-charts col col-sm-9">
             <div class="w-100 dashboard-header mb-2">
                 <div class="h-100 w-75 title">Dashboard {{getIndicatorName(selectedIndicator)}}</div>
                 <div class="btn-group h-100 w-25" dropdown>
@@ -25,7 +25,7 @@
             </div>
             <div *ngIf="dashboardData && ((dashboardData | json) != ({} | json))" class="grid-container">
                 <div class="chart chart-1">
-                    <h4 class="chart-title">Status  -  {{dataSelected.total}} {{getIndicatorName(selectedIndicator)}}</h4>
+                    <h4 class="chart-title">Status - {{dataSelected.total}} {{getIndicatorName(selectedIndicator)}}</h4>
                     <div class="chart-container">
                         <app-doughnut-chart [data]="formatStatusIndicatorData(dataSelected)"></app-doughnut-chart>
                     </div>
@@ -48,9 +48,21 @@
                         <app-line-chart></app-line-chart>
                     </div>
                 </div>
+                <!-- <button class="btn btn-green-secondary">Download all comments and replies</button> -->
+                <button class="btn btn-primary" *ngIf="dashboardData && ((dashboardData | json) != ({} | json)) && actualStatusIndicator(dataSelected)"
+                routerLinkActive="active" [routerLinkActive]="['active']"
+                routerLink="../../indicator/{{selectedIndicator.split('qa_')[1]}}/id">Go to {{getIndicatorName(selectedIndicator)}}</button>
+                <button class="btn btn-red-secondary disabled" title="Indicator {{getIndicatorName(selectedIndicator)}} isn't enable" *ngIf="dashboardData && ((dashboardData | json) != ({} | json)) && !actualStatusIndicator(dataSelected)">Go to {{getIndicatorName(selectedIndicator)}}</button>
+                <!-- <a *ngIf="dashboardData && ((dashboardData | json) != ({} | json)) && actualStatusIndicator(dataSelected)"
+                    routerLinkActive="active" [routerLinkActive]="['active']"
+                    routerLink="../../indicator/{{selectedIndicator.split('qa_')[1]}}/id">
+                    Go to {{getIndicatorName(selectedIndicator)}}
+                </a>
+                <a *ngIf="dashboardData && ((dashboardData | json) != ({} | json)) && !actualStatusIndicator(dataSelected)">
+                    Go to {{getIndicatorName(selectedIndicator)}}
+                </a> -->
             </div>
-
-            <ng-container *ngIf="(dashboardData | json) != ({} | json)">
+            <!-- <ng-container *ngIf="(dashboardData | json) != ({} | json)">
                 <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
                     [ngClass]="{'closed': !item.value[0].indicator_status }" class="progress-container">
                     <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
@@ -72,7 +84,7 @@
                     </a>
                 </div>
 
-            </ng-container>
+            </ng-container> -->
             <div class="no-data" *ngIf="(dashboardData | json) == ({} | json)">
                 You don't have any indicator assingned.
                 Please contact your Administrator.
@@ -89,7 +101,7 @@
                     </li>
                 </ul>
             </div>
-            
+
         </div>
     </div>
 </div>
