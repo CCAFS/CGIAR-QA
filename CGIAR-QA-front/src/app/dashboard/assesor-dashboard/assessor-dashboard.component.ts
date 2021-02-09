@@ -29,7 +29,12 @@ export class AssessorDashboardComponent implements OnInit {
   indicatorsName = GeneralIndicatorName;
   selectedIndicator = 'qa_slo';
   dataSelected: any;
-
+notifications: any[] = [
+  {assessor: 'assessor-a', description: ' has approved without comment title in QA-PO-101'},
+  {assessor: 'assessor-b', description: ' has closed QA-OI-002'},
+  {assessor: 'assessor-c', description: ' has comment title in QA-SL-200'},
+  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
+]
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
     private indicatorService: IndicatorsService,
@@ -48,11 +53,11 @@ export class AssessorDashboardComponent implements OnInit {
   
   ngOnInit() {
     console.log(this.currentUser);
-      this.authenticationService.parseUpdateIndicators(this.currentUser.indicators);
+    this.usersService.getUserById(this.currentUser.id).subscribe(res => {
+      console.log(res.data.indicators);
+      this.authenticationService.parseUpdateIndicators(res.data.indicators);
+    })
     this.getCommentStats();
-
-    console.log(this.dashboardData);
-    
   }
 
   getIndicatorName(indicator: string) {

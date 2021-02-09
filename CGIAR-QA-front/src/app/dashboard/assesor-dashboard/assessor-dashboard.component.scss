@@ -8,14 +8,33 @@
       font-weight: $light;
     }
   }
-  .card{
+  .dashboard-container{
     background-color: var(--background);
+    .feed-container{
+      background-color: var(--white);
+      border-radius: 5px;
+      .feed-title{
+        font-family: $secondary-font;
+        font-size: $font-md;
+        font-weight: $bold;
+        padding: 5px;
+        text-align: center;
+      }
+      ul{
+        list-style-type: none;
+        margin:0;
+        padding: 1em;
+        li{
+          margin-bottom: 1.5em;
+        }
+      }
+    }
     .card-body{
       .dashboard-header{
         display: flex;
-        -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.60);
-        -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.60);
-        box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.60);
+        // -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.60);
+        // -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.60);
+        // box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.60);
         .title{
           background-color: var(--yellow-primary);
           font-size: $font-md;
@@ -81,72 +100,72 @@
   }
 }
 
-.asesor-dashboard {
-  .row.col.col-sm-8 {
-    h4 {
-      font-size: $font-md;
-      font-weight: $light;
-    }
-  }
-  .card {
-    .card-body {
-      .no-data {
-        text-align: center;
-        margin-bottom: 2em;
-        // font-weight: bold;
-        .circle {
-          margin-bottom: 0;
-          opacity: 0.5;
-        }
-      }
-      .example-container {
-        margin-bottom: 2em;
-        justify-content: center;
-        p {
-          margin: 0 15px;
-          line-height: $size-lg;
-          align-self: center;
-        }
-        .circle {
-          height: $size-md;
-          width: $size-md;
-        }
-        .complete {
-          background-color: var(--green-primary);
-        }
-        .pending {
-          background-color: var(--red-primary);
-        }
-        .finalized {
-          background-color: var(--blue-secondary);
-        }
-        .unanswered {
-          background-color: var(--gray-secondary);
-        }
-      }
-      .progress-container {
-        display: flex;
-        flex-direction: column;
-        p {
-          margin: 10px 0px;
-          text-transform: capitalize;
-        }
-        a {
-          max-width: 40%;
-          margin-left: auto;
-          text-align: right;
-          margin-top: 1em;
-          text-decoration: underline;
-          cursor: pointer;
-          // text-transform: capitalize;
-        }
-        .progress {
-          height: $size-lg;
-        }
-      }
-    }
-  }
-  .closed{
-    opacity: .3;
-  }
-}
+// .asesor-dashboard {
+//   .row.col.col-sm-8 {
+//     h4 {
+//       font-size: $font-md;
+//       font-weight: $light;
+//     }
+//   }
+//   .card {
+//     .card-body {
+//       .no-data {
+//         text-align: center;
+//         margin-bottom: 2em;
+//         // font-weight: bold;
+//         .circle {
+//           margin-bottom: 0;
+//           opacity: 0.5;
+//         }
+//       }
+//       .example-container {
+//         margin-bottom: 2em;
+//         justify-content: center;
+//         p {
+//           margin: 0 15px;
+//           line-height: $size-lg;
+//           align-self: center;
+//         }
+//         .circle {
+//           height: $size-md;
+//           width: $size-md;
+//         }
+//         .complete {
+//           background-color: var(--green-primary);
+//         }
+//         .pending {
+//           background-color: var(--red-primary);
+//         }
+//         .finalized {
+//           background-color: var(--blue-secondary);
+//         }
+//         .unanswered {
+//           background-color: var(--gray-secondary);
+//         }
+//       }
+//       .progress-container {
+//         display: flex;
+//         flex-direction: column;
+//         p {
+//           margin: 10px 0px;
+//           text-transform: capitalize;
+//         }
+//         a {
+//           max-width: 40%;
+//           margin-left: auto;
+//           text-align: right;
+//           margin-top: 1em;
+//           text-decoration: underline;
+//           cursor: pointer;
+//           // text-transform: capitalize;
+//         }
+//         .progress {
+//           height: $size-lg;
+//         }
+//       }
+//     }
+//   }
+//   .closed{
+//     opacity: .3;
+//   }
+// }

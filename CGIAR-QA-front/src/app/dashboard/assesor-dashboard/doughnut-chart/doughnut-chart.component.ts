@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { IgxLegendComponent } from 'igniteui-angular-charts';
 
 @Component({
   selector: 'app-doughnut-chart',
@@ -13,7 +14,8 @@ export class DoughnutChartComponent implements OnInit {
   }
   public brushes: any = [];
   public dataset = [];
-
+  @ViewChild("legend", { static: true })
+  public legend: IgxLegendComponent;
   @Input() data: any;
   constructor() {
       // this.data = [
@@ -30,12 +32,4 @@ export class DoughnutChartComponent implements OnInit {
     
   }
 
-  formatInputData() {
-    for (const item of this.data) {
-      console.log(item);
-      this.dataset.push({Label: item.status, Value: +item.label});
-      console.log(this.colors[item.status]);      
-      this.brushes.push(this.colors[item.status]);
-    }
-  }
 }

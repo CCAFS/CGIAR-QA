@@ -19,6 +19,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import {
     IgxDoughnutChartModule,
+    IgxPieChartModule,
     IgxRingSeriesModule,
     IgxDataChartCoreModule,
     IgxDataChartCategoryModule,
@@ -31,6 +32,7 @@ import {
 
 import { BarChartComponent } from './assesor-dashboard/bar-chart/bar-chart.component';
 import { DoughnutChartComponent } from './assesor-dashboard/doughnut-chart/doughnut-chart.component';
+import { DonutChartComponent } from './assesor-dashboard/donut-chart/donut-chart.component';
 import { LineChartComponent } from './assesor-dashboard/line-chart/line-chart.component';
 
 @NgModule({
@@ -49,6 +51,7 @@ import { LineChartComponent } from './assesor-dashboard/line-chart/line-chart.co
         NgxChartsModule,
         ChartsModule,
         IgxDoughnutChartModule,
+        IgxPieChartModule,
         IgxRingSeriesModule,
         IgxDataChartCoreModule,
         IgxDataChartCategoryModule,
@@ -58,7 +61,7 @@ import { LineChartComponent } from './assesor-dashboard/line-chart/line-chart.co
 		IgxDataChartVerticalCategoryModule,
         NgbModule
     ],
-    declarations: [AssessorDashboardComponent, AdminDashboardComponent, DashBoardComponent, BarChartComponent, DoughnutChartComponent, LineChartComponent,
+    declarations: [AssessorDashboardComponent, AdminDashboardComponent, DashBoardComponent, BarChartComponent, DoughnutChartComponent, LineChartComponent, DonutChartComponent
     ],
     providers:[ThemeService]
 
