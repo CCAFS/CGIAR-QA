@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, NgModule, OnInit, ViewChild } from '@angular/core';
 import { ChartSeriesEventArgs, IgxCategoryToolTipLayerComponent, IgxCategoryXAxisComponent, IgxDataChartComponent, IgxItemToolTipLayerComponent, IgxNumericYAxisComponent } from 'igniteui-angular-charts';
 
 
@@ -18,7 +18,7 @@ export class BarChartComponent implements OnInit {
 
   public brushes: any = [ '#5081ab','#f3da90', '#ed8b84', '#59ed9c',];
 
-  public data: any[];
+  @Input() data: any;
 
 
   public showDefaultTooltip: boolean = true;
@@ -51,13 +51,14 @@ export class BarChartComponent implements OnInit {
   private _toolTipType: string = "Default";
 
   constructor() {
-    this.initData();
+    // this.initData();
 
     this.itemTooltipLayer = new IgxItemToolTipLayerComponent();
     this.categoryTooltipLayer = new IgxCategoryToolTipLayerComponent();
   }
 
   ngOnInit() {
+    console.log(this.data);
     
   }
 

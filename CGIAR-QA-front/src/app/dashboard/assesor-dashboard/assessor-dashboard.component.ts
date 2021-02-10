@@ -27,6 +27,7 @@ export class AssessorDashboardComponent implements OnInit {
   dashboardCommentsData: any[];
   generalStatus = GeneralStatus;
   indicatorsName = GeneralIndicatorName;
+  indicatorsTags: any;
   selectedIndicator = 'qa_slo';
   dataSelected: any;
   indicatorData: any;
@@ -34,42 +35,6 @@ notifications: any[] = [
   {assessor: 'assessor-a', description: ' has approved without comment title in QA-PO-101'},
   {assessor: 'assessor-b', description: ' has closed QA-OI-002'},
   {assessor: 'assessor-c', description: ' has comment title in QA-SL-200'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
   {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
   {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
   {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
@@ -156,6 +121,7 @@ notifications: any[] = [
           this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
           //getDashData depends on getCommentStats
           this.getDashData();
+          this.getAllTags();
 
           // this.hideSpinner();
         },
@@ -165,6 +131,14 @@ notifications: any[] = [
           this.alertService.error(error);
         },
       )
+  }
+
+  getAllTags() {
+    this.commentService.getAllTags().subscribe(
+      res => {       
+        this.indicatorsTags = this.commentService.groupTags(res.data);;
+      }
+    )
   }
 
   /***

@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
+import { GeneralStatus, GeneralIndicatorName } from "../_models/general-status.model"
+
 
 @Injectable({
   providedIn: 'root'
@@ -93,6 +95,38 @@ export class CommentService {
 
     getTagId(params) {
       return this.http.get<any>(`${environment.apiUrl}/evaluation/detail/comment/tag/${params.commentId}/${params.tagTypeId}/${params.userId}`)
+    }
+
+    getAllTags() {
+      return this.http.get<any>(`${environment.apiUrl}/comment/tags`);
+    }
+
+    groupTags(tags) {
+      console.log( 'TAGS ',tags);
+      
+      const tagsType = ['agree', 'disagree', 'not-sure', 'seen'];
+      let keysIndicatorsName = Object.keys(GeneralIndicatorName);
+      let tagsByIndicator = {}
+
+      //Initialize properties
+      for (const indicatorName in GeneralIndicatorName) {
+
+        if(!tagsByIndicator.hasOwnProperty(indicatorName)) {
+          tagsByIndicator[indicatorName] = {};
+        }
+
+        tagsType.forEach(tagType => {
+          if(tagsByIndicator.hasOwnProperty(indicatorName)) {
+            let element: any = tags.find(el => el.indicator_view_name == indicatorName && el.tagType == tagType);
+            tagsByIndicator[indicatorName][tagType] = element ? +element.total : 0;
+          }
+        });
+
+      }
+
+      // console.log('TAGS BY INDICATOR',tagsByIndicator);
+      return tagsByIndicator;
+
     }
 
 }

@@ -316,6 +316,34 @@ class CommentController {
             res.status(404).json({ message: "Reply can not be updated.", data: error });
         }
     }
+    static getAllIndicatorTags = async (req: Request, res: Response) => {
+
+        
+
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT qe.indicator_view_name, tt.name as tagType, count(*) as total
+                FROM qa_tags tag 
+                LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                LEFT JOIN qa_users us ON us.id = tag.userId
+                LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                GROUP BY qe.indicator_view_name, tt.name;`
+                ,
+                {},
+                {}
+            );
+            let tagsByIndicators = await queryRunner.connection.query(query, parameters);
+            res.status(200).send({ data: tagsByIndicators, message: 'All tags by indicator' });
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Tags by indicators can not be retrived.", data: error });
+        }
+    }
 
     // get comments by indicator
     static getComments = async (req: Request, res: Response) => {
