@@ -152,7 +152,8 @@ notifications: any[] = [
         res => {
           // console.log(res)
           this.dashboardCommentsData = this.dashService.groupData(res.data);
-
+          console.log(this.dashboardCommentsData);
+          this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
           //getDashData depends on getCommentStats
           this.getDashData();
 
@@ -190,6 +191,35 @@ notifications: any[] = [
       dataset.push({name: item.status, value: +item.label});
       brushes.domain.push(colors[item.status]);
     }
+    
+    return {dataset, brushes};
+  }
+
+  formatCommentsIndicatorData(data) {
+    const colors= {
+      Approved: '#59ed9c',
+      Pending: '#f3da90',
+      Rejected: '#ed8b84'
+    }
+    let dataset = [];
+    let brushes = {domain: []};
+    let comments_approved = data.find(item => item.comments_approved != '0');
+    comments_approved = comments_approved ? {name: 'Approved', value: +comments_approved.value} : null;
+    if(comments_approved) dataset.push(comments_approved);
+
+    let comments_rejected = data.find(item => item.comments_rejected != '0');
+    comments_rejected = comments_rejected ? {name: 'Rejected', value: +comments_rejected.value} : null;
+    if(comments_rejected) dataset.push(comments_rejected);
+
+    
+    let comments_without_answer = data.find(item => item.comments_without_answer != '0');
+    comments_without_answer = comments_without_answer? {name: 'Pending', value: +comments_without_answer.value} : null;
+    if(comments_without_answer) dataset.push(comments_without_answer);
+
+    dataset.forEach(comment => {
+      brushes.domain.push(colors[comment.name]);
+    });
+    
     
     return {dataset, brushes};
   }

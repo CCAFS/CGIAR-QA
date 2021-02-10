@@ -8,13 +8,22 @@ import { Component, Input, OnInit } from '@angular/core';
 export class DonutChartComponent implements OnInit {
   wosColor = "#46bdc6";
   @Input() data;
+  @Input() chartName;
   myData;
-  public statusLegend: any[] = [
+  public legendLabels: any = { 
+    status: [
     {name:"Quality Checked by WoS/Scopus", class: "autochecked"},
     {name:"Complete", class:"complete" },
     {name:"Pending", class: "pending"},
     {name:"Finalized", class:"finalized" }
-  ];
+  ],
+  comments: [
+    {name:"Approve", class: "complete"},
+    {name:"Pending", class:"pending" },
+    {name:"Rejected", class: "finalized"},
+  ]};
+
+  public chartType: any;
   public doughnutChartData: any[] = [[350, 450, 100]];
   public doughnutChartType: string = "doughnut";
   public chartColors: Array<any> = [{backgroundColor: ['#59ed9c','#f3da90','#ed8b84']}]
@@ -29,8 +38,13 @@ export class DonutChartComponent implements OnInit {
 
   constructor() {
     // this.myData = [...this.data]
+
   }
   ngOnInit() {
+    this.chartType = this.legendLabels[this.chartName];
+    console.log(this.chartName);
+    console.log(this.chartType);
+    
   }
 
   onSelect(data): void {
@@ -45,10 +59,7 @@ export class DonutChartComponent implements OnInit {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
-  setLabelFormatting(c): string {
-    console.log(c);
-    console.log(this.data);
-    
+  setLabelFormatting(c): string {   
     let indicator = this.data.find(status => status.data.name == c)
     return `${indicator.value}`;
   }

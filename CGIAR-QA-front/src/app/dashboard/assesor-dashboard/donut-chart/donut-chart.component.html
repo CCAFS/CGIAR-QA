@@ -8,9 +8,9 @@
               (chartHover)="chartHovered($event)"
               (chartClick)="chartClicked($event)"></canvas>
 </div> -->
-<div class="legend-container">
+<div *ngIf="chartName" class="legend-container">
   <div class="legend">
-    <div *ngFor="let tag of statusLegend"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}}</p></div>
+    <div  *ngFor="let tag of legendLabels[chartName]"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}}</p></div>
   </div>
 </div>
 <div class="pie-container">
@@ -26,8 +26,11 @@
     [labelFormatting]="setLabelFormatting"  
     [doughnut]="isDoughnut"
     (select)="onSelect($event)"
-    (activate)="onActivate($event)"
-    (deactivate)="onDeactivate($event)"
+
     >
   </ngx-charts-pie-chart>
 </div>
+
+<!-- events
+(activate)="onActivate($event)"
+(deactivate)="onDeactivate($event)" -->
