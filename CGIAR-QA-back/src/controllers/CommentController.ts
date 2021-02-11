@@ -345,6 +345,32 @@ class CommentController {
         }
     }
 
+    static getFeedTags = async (req: Request, res: Response) => {
+
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, qe.indicator_view_id, qe.indicator_view_name
+                FROM qa_tags tag 
+                LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                LEFT JOIN qa_users us ON us.id = tag.userId
+                LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                ORDER BY tag.createdAt DESC;`,
+                {},
+                {}
+            );
+            let tags = await queryRunner.connection.query(query, parameters);
+
+            res.status(200).send({ data: tags, message: 'All new tags order by date (desc)' });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Recent tags can not be retrived.", data: error });
+        }
+    }
+
     // get comments by indicator
     static getComments = async (req: Request, res: Response) => {
         const evaluationId = req.params.evaluationId;

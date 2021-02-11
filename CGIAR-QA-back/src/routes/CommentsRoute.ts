@@ -20,8 +20,11 @@ router.get("/meta", [checkJwt, checkRole([RolesHandler.admin])], CommentControll
 // excel for comments
 router.get("/excel/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.getCommentsExcel);
 
-// excel for comments
+// get all indicators tags
 router.get("/tags", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.getAllIndicatorTags);
+
+// get all indicators tags for feed
+router.get("/tags/feed", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.getFeedTags);
 
 // set comments as approved
 router.post("/approved/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.toggleApprovedNoComments);

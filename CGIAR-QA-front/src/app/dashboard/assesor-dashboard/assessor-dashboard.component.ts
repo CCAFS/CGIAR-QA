@@ -31,6 +31,7 @@ export class AssessorDashboardComponent implements OnInit {
   selectedIndicator = 'qa_slo';
   dataSelected: any;
   indicatorData: any;
+  feedList: [];
 notifications: any[] = [
   {assessor: 'assessor-a', description: ' has approved without comment title in QA-PO-101'},
   {assessor: 'assessor-b', description: ' has closed QA-OI-002'},
@@ -62,7 +63,7 @@ notifications: any[] = [
   ngOnInit() {
     console.log(this.currentUser);
     this.usersService.getUserById(this.currentUser.id).subscribe(res => {
-      console.log(res.data.indicators);
+      // console.log(res.data.indicators);
       this.authenticationService.parseUpdateIndicators(res.data.indicators);
     })
     this.getCommentStats();
@@ -75,7 +76,7 @@ notifications: any[] = [
   actualIndicator(indicator: string) {
     this.selectedIndicator = indicator;
     this.dataSelected = this.dashboardData[this.selectedIndicator];
-    console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
+    // console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
   }
 
   actualStatusIndicator(data) {
@@ -94,10 +95,10 @@ notifications: any[] = [
     // this.showSpinner();
     this.dashService.getDashboardEvaluations(this.currentUser.id).subscribe(
       res => {
-        console.log(res)
+        // console.log(res)
         this.dashboardData = this.dashService.groupData(res.data);
         // this.getCommentStats();
-      console.log(this.dashboardData);
+      // console.log(this.dashboardData);
       this.dataSelected = this.dashboardData[this.selectedIndicator];
 
         this.hideSpinner();
@@ -117,17 +118,17 @@ notifications: any[] = [
         res => {
           // console.log(res)
           this.dashboardCommentsData = this.dashService.groupData(res.data);
-          console.log(this.dashboardCommentsData);
+          // console.log(this.dashboardCommentsData);
           this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
           //getDashData depends on getCommentStats
           this.getDashData();
           this.getAllTags();
-
+          this.getFeedTags();
           // this.hideSpinner();
         },
         error => {
           this.hideSpinner()
-          console.log("getCommentStats", error);
+          // console.log("getCommentStats", error);
           this.alertService.error(error);
         },
       )
@@ -137,6 +138,15 @@ notifications: any[] = [
     this.commentService.getAllTags().subscribe(
       res => {       
         this.indicatorsTags = this.commentService.groupTags(res.data);;
+      }
+    )
+  }
+
+  getFeedTags(){
+    this.commentService.getFeedTags().subscribe(
+      res => {
+        console.log(res.data);
+        this.feedList = res.data;
       }
     )
   }

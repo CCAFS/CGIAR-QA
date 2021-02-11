@@ -101,8 +101,12 @@ export class CommentService {
       return this.http.get<any>(`${environment.apiUrl}/comment/tags`);
     }
 
+    getFeedTags() {
+      return this.http.get<any>(`${environment.apiUrl}/comment/tags/feed`);
+    }
+
     groupTags(tags) {
-      console.log( 'TAGS ',tags);
+      // console.log( 'TAGS ',tags);
       
       const tagsType = ['agree', 'disagree', 'not-sure', 'seen'];
       let keysIndicatorsName = Object.keys(GeneralIndicatorName);

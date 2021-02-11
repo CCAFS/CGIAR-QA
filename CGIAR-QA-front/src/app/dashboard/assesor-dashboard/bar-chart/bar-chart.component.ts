@@ -58,7 +58,7 @@ export class BarChartComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.data);
+    // console.log(this.data);
     
   }
 
