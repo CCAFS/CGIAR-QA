@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -18,6 +18,7 @@ import { SortByPipe } from '../pipes/sort-by.pipe';
 
 import * as moment from 'moment';
 import { FormBuilder } from '@angular/forms';
+import { IndicatorsService } from '../services/indicators.service';
 
 
 @Component({
@@ -26,7 +27,7 @@ import { FormBuilder } from '@angular/forms';
   styleUrls: ['./indicators.component.scss'],
   providers: [SortByPipe]
 })
-export class IndicatorsComponent implements OnInit {
+export class IndicatorsComponent implements OnInit, DoCheck {
   indicatorType: string;
   indicatorTypeName: string;
   evaluationList: any[];
@@ -70,6 +71,7 @@ export class IndicatorsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private spinner: NgxSpinnerService,
     private orderPipe: SortByPipe,
+    private indicatorService: IndicatorsService,
     // private orderPipe: OrderPipe,
     private titleService: Title,
     private alertService: AlertService) {
@@ -87,13 +89,22 @@ export class IndicatorsComponent implements OnInit {
       });
       /** set page title */
       this.titleService.setTitle(`List of ${this.indicatorTypeName}`);
-
     });
-
+    
   }
+
+
 
   ngOnInit() {
     // console.log('loaded indicators')
+//     setTimeout(()=>{                           //<<<---using ()=> syntax
+//       this.verifyIfOrderByStatus();
+//  }, 3000);
+  }
+
+  ngDoCheck(){
+    this.verifyIfOrderByStatus();
+
   }
 
   getEvaluationsList(params) {
@@ -129,15 +140,20 @@ export class IndicatorsComponent implements OnInit {
   }
 
 
-  setOrder(value: string) {
+  setOrder(value: string, reverseValue?: boolean) {
     if (value == null) {
       this.reverse = !this.reverse;
+    } else if(value != null && reverseValue != null){
+      this.order = value;
+      this.reverse = reverseValue;
     } else {
       if (this.order === value) {
         this.reverse = !this.reverse;
       }
       this.order = value;
     }
+    console.log(this.order, this.reverse);
+    
     // console.log(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order)
     this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
     // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
@@ -218,6 +234,12 @@ export class IndicatorsComponent implements OnInit {
     }
 
     return r;
+  }
+
+  verifyIfOrderByStatus() {
+    if(this.indicatorService.getOrderByStatus() != null) {
+      this.setOrder('status', this.indicatorService.getOrderByStatus() )
+    }
   }
 
   /***

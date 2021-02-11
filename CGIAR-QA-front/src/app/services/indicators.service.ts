@@ -9,6 +9,8 @@ import { map } from 'rxjs/operators';
 })
 export class IndicatorsService {
 
+  orderByStatus: boolean = null;
+
   constructor(private http: HttpClient) { }
 
   // get indicators by user
@@ -22,5 +24,13 @@ export class IndicatorsService {
   //get all indicators
   getIndicators() {
     return this.http.get<any>(`${environment.apiUrl}/indicator/`);
+  }
+
+  getOrderByStatus() {
+    return this.orderByStatus;
+  }
+
+  setOrderByStatus(value: boolean) {
+    this.orderByStatus = value;
   }
 }

@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { IndicatorsService } from 'src/app/services/indicators.service';
 
 @Component({
   selector: 'app-donut-chart',
@@ -9,13 +11,15 @@ export class DonutChartComponent implements OnInit {
   wosColor = "#46bdc6";
   @Input() data;
   @Input() chartName;
+  @Input() selectedIndicator;
+
   myData;
   public legendLabels: any = { 
     status: [
     {name:"Quality Checked by WoS/Scopus", class: "autochecked"},
     {name:"Complete", class:"complete" },
     {name:"Pending", class: "pending"},
-    {name:"Finalized", class:"finalized" }
+    {name:"Closed", class:"finalized" }
   ],
   comments: [
     {name:"Approve", class: "complete"},
@@ -36,7 +40,8 @@ export class DonutChartComponent implements OnInit {
   isDoughnut: boolean = false;
   legendPosition: string = 'below';
 
-  constructor() {
+  constructor(private router: Router,
+    private indicatorService: IndicatorsService) {
     // this.myData = [...this.data]
 
   }
@@ -49,6 +54,8 @@ export class DonutChartComponent implements OnInit {
 
   onSelect(data): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    this.indicatorService.setOrderByStatus(false);
+    this.router.navigate([`/indicator/${this.selectedIndicator.split('qa_')[1]}/id`]);
   }
 
   onActivate(data): void {
