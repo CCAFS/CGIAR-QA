@@ -216,6 +216,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   getDetailedData() {
+    console.log(this.currentUser.id, this.params);
+    
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
         console.log('detaileedData',res)
