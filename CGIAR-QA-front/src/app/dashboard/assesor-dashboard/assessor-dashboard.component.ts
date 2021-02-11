@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { NgxSpinnerService } from 'ngx-spinner';
-
+import moment from 'moment';
 
 import { DashboardService } from "../../services/dashboard.service";
 import { AuthenticationService } from "../../services/authentication.service";
@@ -163,11 +163,21 @@ notifications: any[] = [
     this.spinner.hide();
   }
 
+  /**
+   * formats
+   * 
+   */
+
+  formatDate(date: any) {
+    let formatDate = moment(date).format("dddd, MMMM Do YYYY, HH:mm");;
+    return formatDate;
+  }
+
   formatStatusIndicatorData(data) {
     const colors= {
       complete: '#59ed9c',
       pending: '#f3da90',
-      finalized: '#ed8b84'
+      finalized: '#00958e'
     }
     let dataset = [];
     let brushes = {domain: []};

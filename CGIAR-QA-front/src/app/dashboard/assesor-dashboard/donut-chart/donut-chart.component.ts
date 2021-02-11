@@ -20,7 +20,7 @@ export class DonutChartComponent implements OnInit {
   comments: [
     {name:"Approve", class: "complete"},
     {name:"Pending", class:"pending" },
-    {name:"Rejected", class: "finalized"},
+    {name:"Rejected", class: "rejected"},
   ]};
 
   public chartType: any;

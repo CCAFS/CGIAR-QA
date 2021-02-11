@@ -351,7 +351,7 @@ class CommentController {
         try {
 
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, qe.indicator_view_id, qe.indicator_view_name
+                `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
                 FROM qa_tags tag 
                 LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
                 LEFT JOIN qa_users us ON us.id = tag.userId

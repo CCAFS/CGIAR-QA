@@ -30,7 +30,7 @@
         margin:0;
         overflow-y: scroll;
         max-height: 800px;
-        padding: 1em 0 1em 0.5em;
+        padding: 1em 0;
         &::-webkit-scrollbar-track
         {
           border-radius: 10px;
@@ -52,11 +52,22 @@
         }
         li{
           display: flex;
+          flex-direction: column;
+          justify-content: center;
           align-items: center;
           padding:  0.5em 1em;
           min-height: 3em;
+          border-top: 1px solid var(--gray-primary);
+          .datetime{
+            font-size: $font-xs;
+            font-weight: $light;
+            color: var(--gray-secondary);
+            align-self: flex-end;
+            margin-bottom: 0.5em;
+          }
           p{
             margin: 0;
+            width: 100%;
           }
           &:hover{
             background-color: var(--input-gray);
