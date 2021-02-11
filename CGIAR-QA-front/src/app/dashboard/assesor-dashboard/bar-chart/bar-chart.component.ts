@@ -1,5 +1,5 @@
 import { Component, Input, NgModule, OnInit, ViewChild } from '@angular/core';
-import { ChartSeriesEventArgs, IgxCategoryToolTipLayerComponent, IgxCategoryXAxisComponent, IgxDataChartComponent, IgxItemToolTipLayerComponent, IgxNumericYAxisComponent } from 'igniteui-angular-charts';
+import { ChartSeriesEventArgs, IgxCategoryToolTipLayerComponent, IgxCategoryXAxisComponent, IgxCategoryYAxisComponent, IgxDataChartComponent, IgxItemToolTipLayerComponent, IgxNumericXAxisComponent, IgxNumericYAxisComponent } from 'igniteui-angular-charts';
 
 
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
@@ -42,31 +42,31 @@ export class BarChartComponent implements OnInit {
   @ViewChild("chart", { static: true })
   public chart: IgxDataChartComponent;
 
-  @ViewChild("xAxis", { static: true })
-  public xAxis: IgxCategoryXAxisComponent;
+  @ViewChild("xAxis", { static: true,  })
+  public xAxis: IgxNumericXAxisComponent;
 
   @ViewChild("yAxis", { static: true })
-  public yAxis: IgxNumericYAxisComponent;
+  public yAxis: IgxCategoryYAxisComponent;
 
   private _toolTipType: string = "Default";
 
   constructor() {
     // this.initData();
-
+    // this.xAxis.interval = 20;
     this.itemTooltipLayer = new IgxItemToolTipLayerComponent();
     this.categoryTooltipLayer = new IgxCategoryToolTipLayerComponent();
   }
 
   ngOnInit() {
-    // console.log(this.data);
+    console.log(this.data);
     
   }
 
-  public initData() {
-    this.data = [
-      { Year: "Tags",  Seen: 195, NotSure: 90, Disagree: 50, Agree: 148 },
-    ];
-  }
+  // public initData() {
+  //   this.data = [
+  //     { Year: "Tags",  Seen: 195, NotSure: 90, Disagree: 50, Agree: 148 },
+  //   ];
+  // }
 
   public onTooltipTypeChanged() {
     switch (this.toolTipType) {
