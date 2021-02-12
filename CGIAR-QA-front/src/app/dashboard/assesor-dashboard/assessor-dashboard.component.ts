@@ -32,18 +32,8 @@ export class AssessorDashboardComponent implements OnInit {
   dataSelected: any;
   indicatorData: any;
   feedList: [];
-notifications: any[] = [
-  {assessor: 'assessor-a', description: ' has approved without comment title in QA-PO-101'},
-  {assessor: 'assessor-b', description: ' has closed QA-OI-002'},
-  {assessor: 'assessor-c', description: ' has comment title in QA-SL-200'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-  {assessor: 'assessor-d', description:  'has closed QA-OI-010'},
-]
+  itemStatusByIndicator = {};
+
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
     private indicatorService: IndicatorsService,
@@ -59,7 +49,7 @@ notifications: any[] = [
     /** set page title */
     this.titleService.setTitle(`Assessor Dashboard`);
   }
-  
+
   ngOnInit() {
     console.log(this.currentUser);
     this.usersService.getUserById(this.currentUser.id).subscribe(res => {
@@ -68,12 +58,20 @@ notifications: any[] = [
     })
     this.getCommentStats();
 
-    this.commentService.getItemStatusByIndicator().subscribe(
-      res => {
-        console.log(res.data);
-        
-      }
-    )
+  }
+
+  getAllItemStatusByIndicator() {
+    this.currentUser.indicators.forEach(el => {
+      this.indicatorService.getItemStatusByIndicator(el.indicator.view_name).subscribe(
+        res => {
+          this.itemStatusByIndicator[el.indicator.view_name] = this.indicatorService.formatItemStatusByIndicator(res.data);
+        }
+      );
+    });
+  }
+
+  getItemStatusByIndicator(indicator: string) {
+    return this.itemStatusByIndicator[indicator];
   }
 
   getIndicatorName(indicator: string) {
@@ -89,7 +87,7 @@ notifications: any[] = [
   actualStatusIndicator(data) {
     let indicator_status = false;
     for (const item of data) {
-      if(item.indicator_status==1) indicator_status =  true;
+      if (item.indicator_status == 1) indicator_status = true;
     }
     return indicator_status;
   }
@@ -105,8 +103,8 @@ notifications: any[] = [
         // console.log(res)
         this.dashboardData = this.dashService.groupData(res.data);
         // this.getCommentStats();
-      // console.log(this.dashboardData);
-      this.dataSelected = this.dashboardData[this.selectedIndicator];
+        // console.log(this.dashboardData);
+        this.dataSelected = this.dashboardData[this.selectedIndicator];
 
         this.hideSpinner();
       },
@@ -131,6 +129,8 @@ notifications: any[] = [
           this.getDashData();
           this.getAllTags();
           this.getFeedTags();
+          this.getAllItemStatusByIndicator();
+
           // this.hideSpinner();
         },
         error => {
@@ -143,13 +143,13 @@ notifications: any[] = [
 
   getAllTags() {
     this.commentService.getAllTags().subscribe(
-      res => {       
+      res => {
         this.indicatorsTags = this.commentService.groupTags(res.data);;
       }
     )
   }
 
-  getFeedTags(){
+  getFeedTags() {
     this.commentService.getFeedTags().subscribe(
       res => {
         console.log(res.data);
@@ -181,48 +181,48 @@ notifications: any[] = [
   }
 
   formatStatusIndicatorData(data) {
-    const colors= {
+    const colors = {
       complete: '#59ed9c',
       pending: '#f3da90',
       finalized: '#00958e'
     }
     let dataset = [];
-    let brushes = {domain: []};
+    let brushes = { domain: [] };
     for (const item of data) {
-      dataset.push({name: item.status, value: +item.label});
+      dataset.push({ name: item.status, value: +item.label });
       brushes.domain.push(colors[item.status]);
     }
-    
-    return {dataset, brushes};
+
+    return { dataset, brushes };
   }
 
   formatCommentsIndicatorData(data) {
-    const colors= {
+    const colors = {
       Approved: '#59ed9c',
       Pending: '#f3da90',
       Rejected: '#ed8b84'
     }
     let dataset = [];
-    let brushes = {domain: []};
+    let brushes = { domain: [] };
     let comments_approved = data.find(item => item.comments_approved != '0');
-    comments_approved = comments_approved ? {name: 'Approved', value: +comments_approved.value} : null;
-    if(comments_approved) dataset.push(comments_approved);
+    comments_approved = comments_approved ? { name: 'Approved', value: +comments_approved.value } : null;
+    if (comments_approved) dataset.push(comments_approved);
 
     let comments_rejected = data.find(item => item.comments_rejected != '0');
-    comments_rejected = comments_rejected ? {name: 'Rejected', value: +comments_rejected.value} : null;
-    if(comments_rejected) dataset.push(comments_rejected);
+    comments_rejected = comments_rejected ? { name: 'Rejected', value: +comments_rejected.value } : null;
+    if (comments_rejected) dataset.push(comments_rejected);
 
-    
+
     let comments_without_answer = data.find(item => item.comments_without_answer != '0');
-    comments_without_answer = comments_without_answer? {name: 'Pending', value: +comments_without_answer.value} : null;
-    if(comments_without_answer) dataset.push(comments_without_answer);
+    comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
+    if (comments_without_answer) dataset.push(comments_without_answer);
 
     dataset.forEach(comment => {
       brushes.domain.push(colors[comment.name]);
     });
-    
-    
-    return {dataset, brushes};
+
+
+    return { dataset, brushes };
   }
 
 

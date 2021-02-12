@@ -20,9 +20,6 @@ router.get("/meta", [checkJwt, checkRole([RolesHandler.admin])], CommentControll
 // excel for comments
 router.get("/excel/:evaluationId", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.getCommentsExcel);
 
-// get item indicators status
-router.get("/items", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.getItemStatusByIndicator);
-
 // get all indicators tags
 router.get("/tags", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.getAllIndicatorTags);
 

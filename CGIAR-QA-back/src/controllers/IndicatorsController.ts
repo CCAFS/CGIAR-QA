@@ -325,6 +325,61 @@ class IndicatorsController {
 
     }
 
+      // get status of items of each indicator
+      static getItemStatusByIndicator = async (req: Request, res: Response) => {
+
+        const indicator = req.params.indicator;
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT *
+                FROM qa_indicators_meta qim
+                LEFT JOIN qa_comments qc ON qc.metaId = qim.id
+                LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                WHERE qim.id = qc.metaId
+                AND qe.indicator_view_name like :indicator`
+                ,
+                {indicator},
+                {}
+            );
+            let itemsByIndicator = await queryRunner.connection.query(query, parameters);
+
+            let totalByItem = {};
+
+            for (let i = 0; i < itemsByIndicator.length; i++) {
+                let elem = totalByItem[itemsByIndicator[i].col_name];      
+
+                if(!totalByItem.hasOwnProperty(itemsByIndicator[i].col_name)) totalByItem[itemsByIndicator[i].col_name] = {}
+
+                switch (itemsByIndicator[i].approved) {
+                    case 0:
+                        totalByItem[itemsByIndicator[i].col_name]['rejected'] = totalByItem[itemsByIndicator[i].col_name]['rejected'] == undefined ? 1 : totalByItem[itemsByIndicator[i].col_name]['rejected'] + 1;
+                        break;
+                    case 1:
+                        totalByItem[itemsByIndicator[i].col_name]['approved'] = totalByItem[itemsByIndicator[i].col_name]['approved'] == undefined ? 1 : totalByItem[itemsByIndicator[i].col_name]['approved'] + 1;
+                        break;
+                        case null:
+                        totalByItem[itemsByIndicator[i].col_name]['pending'] = totalByItem[itemsByIndicator[i].col_name]['pending'] == undefined ? 1 : totalByItem[itemsByIndicator[i].col_name]['pending'] + 1;
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+
+            console.log(totalByItem);
+            
+
+            res.status(200).send({ data: totalByItem, message: 'All items by indicator' });
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+        }
+    }
+
 }
 
 export default IndicatorsController;

@@ -11,15 +11,15 @@
             height="calc(100% - 60px)" [dataSource]="data" [legend]="legend" [brushes]="brushes">
             <igx-numeric-y-axis title="" #yAxis>
             </igx-numeric-y-axis>
-            <igx-category-x-axis label="Item" title="" #xAxis>
+            <igx-category-x-axis label="item" title="" #xAxis>
             </igx-category-x-axis>
 
-            <igx-spline-series  showDefaultTooltip=true valueMemberPath="Approved" [xAxis]="xAxis" [yAxis]="yAxis" title="Approved">
+            <igx-spline-series  showDefaultTooltip=true valueMemberPath="approved" [xAxis]="xAxis" [yAxis]="yAxis" title="Approved">
             </igx-spline-series>
 
-            <igx-spline-series showDefaultTooltip=true valueMemberPath="Pending" [xAxis]="xAxis" [yAxis]="yAxis" title="Pending">
+            <igx-spline-series showDefaultTooltip=true valueMemberPath="pending" [xAxis]="xAxis" [yAxis]="yAxis" title="Pending">
             </igx-spline-series>
-            <igx-spline-series showDefaultTooltip=true valueMemberPath="Rejected" [xAxis]="xAxis" [yAxis]="yAxis" title="Rejected">
+            <igx-spline-series showDefaultTooltip=true valueMemberPath="rejected" [xAxis]="xAxis" [yAxis]="yAxis" title="Rejected">
             </igx-spline-series>
         </igx-data-chart>
     </div>

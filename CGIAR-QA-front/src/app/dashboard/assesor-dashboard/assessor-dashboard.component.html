@@ -45,7 +45,7 @@
                 <div class="chart chart-4">
                     <h4 class="chart-title">Comments by field</h4>
                     <div class="chart-container">
-                        <app-line-chart></app-line-chart>
+                        <app-line-chart [data]=" getItemStatusByIndicator(selectedIndicator)"></app-line-chart>
                     </div>
                 </div>
                 <!-- <button class="btn btn-green-secondary">Download all comments and replies</button> -->

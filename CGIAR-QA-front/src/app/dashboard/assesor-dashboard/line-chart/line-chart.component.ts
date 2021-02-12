@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { CommentService } from 'src/app/services/comment.service';
+import { IndicatorsService } from 'src/app/services/indicators.service';
 
 @Component({
   selector: 'app-line-chart',
@@ -7,19 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LineChartComponent implements OnInit {
 
+  @Input() data;
+
   public brushes: any = ['#59ed9cff', '#f3da90ff', '#ed8b84ff'];
   
-  public data = [
-    {Item: "Item 1", Approved: 148, Pending: 110, Rejected: 95},
-    {Item: "Item 2", Approved: 142, Pending: 115, Rejected: 91},
-    {Item: "Item 3", Approved: 134, Pending: 121, Rejected: 86},
-    {Item: "Item 4", Approved: 131, Pending: 129, Rejected: 65},
-    {Item: "Item 5", Approved: 135, Pending: 115, Rejected: 77},
-    {Item: "Item 6", Approved: 146, Pending: 112, Rejected: 88}
-];
-  constructor() { }
+    
+    constructor(private indicatorService: IndicatorsService) {
+
+   }
 
   ngOnInit() {
+    console.log(this.data);
+    
   }
 
 }

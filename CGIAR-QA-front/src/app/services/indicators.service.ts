@@ -34,4 +34,18 @@ export class IndicatorsService {
     this.orderByStatus = value;
   }
 
+  getItemStatusByIndicator(indicator_name) {
+    return this.http.get<any>(`${environment.apiUrl}/indicator/items/${indicator_name}`);
+  }
+
+  formatItemStatusByIndicator(obj) {
+    let response = [];
+    for (const key in obj) {
+      response.push(Object.assign({item: key, approved: 0, rejected: 0, pending: 0}, obj[key]));
+      }
+      // console.log(response);
+      return response;
+    }
+
+
 }
