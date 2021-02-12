@@ -54,7 +54,11 @@ export class DonutChartComponent implements OnInit {
 
   onSelect(data): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
-    this.indicatorService.setOrderByStatus(false);
+    let status = true;
+    if(data.name == 'pending') {
+      status = false;
+    }
+    this.indicatorService.setOrderByStatus(status);
     this.router.navigate([`/indicator/${this.selectedIndicator.split('qa_')[1]}/id`]);
   }
 

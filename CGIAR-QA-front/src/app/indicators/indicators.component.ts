@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DoCheck, OnInit } from '@angular/core';
+import {  Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -27,7 +27,7 @@ import { IndicatorsService } from '../services/indicators.service';
   styleUrls: ['./indicators.component.scss'],
   providers: [SortByPipe]
 })
-export class IndicatorsComponent implements OnInit, DoCheck {
+export class IndicatorsComponent implements OnInit {
   indicatorType: string;
   indicatorTypeName: string;
   evaluationList: any[];
@@ -97,15 +97,12 @@ export class IndicatorsComponent implements OnInit, DoCheck {
 
   ngOnInit() {
     // console.log('loaded indicators')
-//     setTimeout(()=>{                           //<<<---using ()=> syntax
-//       this.verifyIfOrderByStatus();
-//  }, 3000);
+    setTimeout(()=>{                           //<<<---using ()=> syntax
+      this.verifyIfOrderByStatus();
+ }, 2000);
   }
 
-  ngDoCheck(){
-    this.verifyIfOrderByStatus();
 
-  }
 
   getEvaluationsList(params) {
     this.showSpinner();
