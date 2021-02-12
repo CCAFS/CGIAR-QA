@@ -33,4 +33,5 @@ export class IndicatorsService {
   setOrderByStatus(value: boolean) {
     this.orderByStatus = value;
   }
+
 }

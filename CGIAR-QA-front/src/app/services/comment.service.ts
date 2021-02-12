@@ -133,4 +133,9 @@ export class CommentService {
 
     }
 
+    
+  getItemStatusByIndicator() {
+    return this.http.get<any>(`${environment.apiUrl}/comment/items`);
+  }
+
 }

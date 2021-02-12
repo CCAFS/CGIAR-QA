@@ -67,6 +67,13 @@ notifications: any[] = [
       this.authenticationService.parseUpdateIndicators(res.data.indicators);
     })
     this.getCommentStats();
+
+    this.commentService.getItemStatusByIndicator().subscribe(
+      res => {
+        console.log(res.data);
+        
+      }
+    )
   }
 
   getIndicatorName(indicator: string) {

@@ -97,7 +97,8 @@
                 <div class="feed-title">Feed</div>
                 <ul class="notifications">
                     <li class="notification" *ngFor="let item of feedList" [routerLinkActive]="['active']"  routerLink="../../indicator/{{item.indicator_view_name.split('qa_')[1]}}/id/detail/{{item.indicator_view_id}}">
-                        <div class="datetime">{{formatDate(item.updatedAt)}}</div>
+                        <div class="datetime">{{item.updatedAt | date:'long':'+0530'}}</div>
+                        <!-- <div class="datetime">{{formatDate(item.updatedAt)}}</div> -->
                         <p><strong>{{item.name}}</strong> {{item.tagName}}  <strong> QA-{{item.indicator_view_name.split('qa_')[1].substring(0,2).toUpperCase()}}-{{item.indicator_view_id}}</strong></p>
                     </li>
                 </ul>
