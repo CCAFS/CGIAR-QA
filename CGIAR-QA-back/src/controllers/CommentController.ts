@@ -977,24 +977,48 @@ class CommentController {
 
         const tagsRepository = getRepository(QATags);
         let tag: QATags;
+        const idAgree = await Util.getTagId(commentId, 3, userId);
+        const idNotSure = await Util.getTagId(commentId, 2, userId);
+        const idDisagree = await Util.getTagId(commentId, 4, userId);
+
         switch (tagTypeId) {
-            case 3:
-                const idDisagree = await Util.getTagId(commentId, 4, userId);
+            case 2: //Agree
                     try {
                         tag = await tagsRepository.findOneOrFail(idDisagree);
                         tagsRepository.delete(idDisagree);
                         console.log('Tag disagree deleted');
+
+                        tag = await tagsRepository.findOneOrFail(idAgree);
+                        tagsRepository.delete(idAgree);
+                        console.log('Tag not-sure deleted');
                     } catch (error) {
                         console.log(error);
                     }
                     
                 break;
-            case 4:
-                const idAgree = await Util.getTagId(commentId, 3, userId);
+            case 3: //Agree
+                    try {
+                        tag = await tagsRepository.findOneOrFail(idDisagree);
+                        tagsRepository.delete(idDisagree);
+                        console.log('Tag disagree deleted');
+
+                        tag = await tagsRepository.findOneOrFail(idNotSure);
+                        tagsRepository.delete(idNotSure);
+                        console.log('Tag not-sure deleted');
+                    } catch (error) {
+                        console.log(error);
+                    }
+                    
+                break;
+            case 4: //
                 try {
                     tag = await tagsRepository.findOneOrFail(idAgree);
                     tagsRepository.delete(idAgree);
-                    console.log('Tag agree deleted');
+                    console.log('Tag disagree deleted');
+
+                    tag = await tagsRepository.findOneOrFail(idNotSure);
+                    tagsRepository.delete(idNotSure);
+                    console.log('Tag not-sure deleted');
                 } catch (error) {
                     console.log(error);
                 }
