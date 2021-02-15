@@ -167,7 +167,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     if (field) {
       let noComment = (e.target.checked) ? true : false;
       field.loading = true
-
+      console.log(field.evaluation_id);
+      
 
       this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], isAll: false, userId: this.currentUser.id, noComment }, field.evaluation_id).subscribe(
         res => {
@@ -412,7 +413,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           avility = field.enable_assessor ?  field.enable_comments : field.enable_assessor
         }
         else{
-          avility = true;
+          avility = field.enable_assessor ?  field.enable_comments : field.enable_assessor
         }
         
         // else if (this.gnralInfo.status === this.statusHandler.Finalized){

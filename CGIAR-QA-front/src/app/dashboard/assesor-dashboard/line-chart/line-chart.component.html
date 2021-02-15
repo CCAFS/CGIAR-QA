@@ -14,12 +14,11 @@
             <igx-category-x-axis label="item" title="" #xAxis>
             </igx-category-x-axis>
 
-            <igx-spline-series  showDefaultTooltip=true valueMemberPath="approved" [xAxis]="xAxis" [yAxis]="yAxis" title="Approved">
-            </igx-spline-series>
-
             <igx-spline-series showDefaultTooltip=true valueMemberPath="pending" [xAxis]="xAxis" [yAxis]="yAxis" title="Pending">
             </igx-spline-series>
-            <igx-spline-series showDefaultTooltip=true valueMemberPath="rejected" [xAxis]="xAxis" [yAxis]="yAxis" title="Rejected">
+            <igx-spline-series  showDefaultTooltip=true valueMemberPath="approved_without_comment" [xAxis]="xAxis" [yAxis]="yAxis" title="Approved without comment">
+            </igx-spline-series>
+            <igx-spline-series showDefaultTooltip=true valueMemberPath="assessment_with_comments" [xAxis]="xAxis" [yAxis]="yAxis" title="Assesment with comments">
             </igx-spline-series>
         </igx-data-chart>
     </div>

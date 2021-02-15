@@ -764,7 +764,7 @@ class CommentController {
 
             for (let index = 0; index < meta_array.length; index++) {
                 let comment_ = new QAComments();
-                console.log(comments.length, comments.find(data => data.metaId == meta_array[index]))
+                // console.log(comments.length, comments.find(data => data.metaId == meta_array[index]))
                 if (comments && comments.find(data => data.metaId == meta_array[index])) {
                     let existnCommt = comments.find(data => data.metaId == meta_array[index]);
                     existnCommt.approved = noComment;
@@ -783,9 +783,12 @@ class CommentController {
                     comment_.approved_no_comment = noComment;
                     comment_.user = user;
                 }
+                // console.log(comment_);
                 response.push(comment_)
             }
             let result = await commentsRepository.save(response);
+            console.log(result);
+            
 
             res.status(200).send({ data: result, message: 'Comment toggle' });
 

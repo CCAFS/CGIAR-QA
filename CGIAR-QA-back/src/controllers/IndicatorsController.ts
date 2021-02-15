@@ -338,6 +338,8 @@ class IndicatorsController {
                 LEFT JOIN qa_comments qc ON qc.metaId = qim.id
                 LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
                 WHERE qim.id = qc.metaId
+                AND qim.display_name  not like 'id'
+                AND qe.evaluation_status not like 'Removed'
                 AND qe.indicator_view_name like :indicator`
                 ,
                 {indicator},
@@ -348,19 +350,19 @@ class IndicatorsController {
             let totalByItem = {};
 
             for (let i = 0; i < itemsByIndicator.length; i++) {
-                let elem = totalByItem[itemsByIndicator[i].col_name];      
+                let elem = totalByItem[itemsByIndicator[i].display_name];      
 
-                if(!totalByItem.hasOwnProperty(itemsByIndicator[i].col_name)) totalByItem[itemsByIndicator[i].col_name] = {}
+                if(!totalByItem.hasOwnProperty(itemsByIndicator[i].display_name)) totalByItem[itemsByIndicator[i].display_name] = {}
 
-                switch (itemsByIndicator[i].approved) {
+                switch (itemsByIndicator[i].approved_no_comment) {
                     case 0:
-                        totalByItem[itemsByIndicator[i].col_name]['rejected'] = totalByItem[itemsByIndicator[i].col_name]['rejected'] == undefined ? 1 : totalByItem[itemsByIndicator[i].col_name]['rejected'] + 1;
+                        totalByItem[itemsByIndicator[i].display_name]['pending'] = totalByItem[itemsByIndicator[i].display_name]['pending'] == undefined ? 1 : totalByItem[itemsByIndicator[i].display_name]['pending'] + 1;
                         break;
                     case 1:
-                        totalByItem[itemsByIndicator[i].col_name]['approved'] = totalByItem[itemsByIndicator[i].col_name]['approved'] == undefined ? 1 : totalByItem[itemsByIndicator[i].col_name]['approved'] + 1;
+                        totalByItem[itemsByIndicator[i].display_name]['approved_without_comment'] = totalByItem[itemsByIndicator[i].display_name]['approved_without_comment'] == undefined ? 1 : totalByItem[itemsByIndicator[i].display_name]['approved_without_comment'] + 1;
                         break;
                         case null:
-                        totalByItem[itemsByIndicator[i].col_name]['pending'] = totalByItem[itemsByIndicator[i].col_name]['pending'] == undefined ? 1 : totalByItem[itemsByIndicator[i].col_name]['pending'] + 1;
+                        totalByItem[itemsByIndicator[i].display_name]['assessment_with_comments'] = totalByItem[itemsByIndicator[i].display_name]['assessment_with_comments'] == undefined ? 1 : totalByItem[itemsByIndicator[i].display_name]['assessment_with_comments'] + 1;
                         break;
                 
                     default:

@@ -41,8 +41,10 @@ export class IndicatorsService {
   formatItemStatusByIndicator(obj) {
     let response = [];
     for (const key in obj) {
-      response.push(Object.assign({item: key, approved: 0, rejected: 0, pending: 0}, obj[key]));
+      response.push(Object.assign({item: key, approved_without_comment: 0, assessment_with_comments: 0, pending: 0}, obj[key]));
       }
+      console.log(response);
+      
       // console.log(response);
       return response;
     }
