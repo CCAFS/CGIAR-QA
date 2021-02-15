@@ -8,17 +8,17 @@
 
     <div class="chart">
         <igx-data-chart #chart isHorizontalZoomEnabled="true" isVerticalZoomEnabled="true" width="100%"
-            height="calc(100% - 60px)" [dataSource]="data" [legend]="legend" [brushes]="brushes">
+            height="calc(100% - 60px)" [dataSource]="data" [legend]="legend" brushes="#f3da90, #ff8200,#59ed9c">
             <igx-numeric-y-axis title="" #yAxis>
             </igx-numeric-y-axis>
             <igx-category-x-axis label="item" title="" #xAxis>
             </igx-category-x-axis>
 
-            <igx-spline-series showDefaultTooltip=true valueMemberPath="pending" [xAxis]="xAxis" [yAxis]="yAxis" title="Pending">
+            <igx-spline-series [markerType]="markersType" markerBrush="white" markerOutline="#f3da90" showDefaultTooltip=true valueMemberPath="pending" [xAxis]="xAxis" [yAxis]="yAxis" title="Pending">
             </igx-spline-series>
-            <igx-spline-series  showDefaultTooltip=true valueMemberPath="approved_without_comment" [xAxis]="xAxis" [yAxis]="yAxis" title="Approved without comment">
+            <igx-spline-series [markerType]="markersType" markerBrush="white" markerOutline="#ff8200" showDefaultTooltip=true valueMemberPath="assessment_with_comments" [xAxis]="xAxis" [yAxis]="yAxis" title="Assesment with comments">
             </igx-spline-series>
-            <igx-spline-series showDefaultTooltip=true valueMemberPath="assessment_with_comments" [xAxis]="xAxis" [yAxis]="yAxis" title="Assesment with comments">
+            <igx-spline-series  [markerType]="markersType" markerBrush="white" markerOutline="#59ed9c" showDefaultTooltip=true valueMemberPath="approved_without_comment" [xAxis]="xAxis" [yAxis]="yAxis" title="Approved without comment">
             </igx-spline-series>
         </igx-data-chart>
     </div>

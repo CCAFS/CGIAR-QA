@@ -19,3 +19,10 @@ export enum GeneralIndicatorName {
     qa_slo= 'SLOs',
     qa_outcomes= 'Outcomes',
 }
+
+export enum TagMessage {
+    agree = 'agrees with a comment in',
+    disagree = 'disagrees with a comment in',
+    notsure = 'is not sure about comment in',
+    seen = 'has seen a comment in'
+}

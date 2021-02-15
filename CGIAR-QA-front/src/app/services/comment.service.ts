@@ -108,7 +108,7 @@ export class CommentService {
     groupTags(tags) {
       // console.log( 'TAGS ',tags);
       
-      const tagsType = ['agree', 'disagree', 'not-sure'];
+      const tagsType = ['agree', 'disagree', 'notsure'];
       let keysIndicatorsName = Object.keys(GeneralIndicatorName);
       let tagsByIndicator = {}
 

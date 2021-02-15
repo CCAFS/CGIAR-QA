@@ -9,7 +9,7 @@ import { AuthenticationService } from "../../services/authentication.service";
 import { AlertService } from '../../services/alert.service';
 
 import { User } from '../../_models/user.model';
-import { GeneralStatus, GeneralIndicatorName } from "../../_models/general-status.model"
+import { GeneralStatus, GeneralIndicatorName, TagMessage } from "../../_models/general-status.model"
 import { Title } from '@angular/platform-browser';
 import { CommentService } from 'src/app/services/comment.service';
 import { IndicatorsService } from 'src/app/services/indicators.service';
@@ -27,6 +27,7 @@ export class AssessorDashboardComponent implements OnInit {
   dashboardCommentsData: any[];
   generalStatus = GeneralStatus;
   indicatorsName = GeneralIndicatorName;
+  tagMessages = TagMessage;
   indicatorsTags: any;
   selectedIndicator = 'qa_slo';
   dataSelected: any;
@@ -63,11 +64,18 @@ export class AssessorDashboardComponent implements OnInit {
   getAllItemStatusByIndicator() {
     this.currentUser.indicators.forEach(el => {
       this.indicatorService.getItemStatusByIndicator(el.indicator.view_name).subscribe(
-        res => {
+         (res) => {
           this.itemStatusByIndicator[el.indicator.view_name] = this.indicatorService.formatItemStatusByIndicator(res.data);
+        },
+        error => {
+          console.log("getAllItemStatusByIndicator", error);
+          this.hideSpinner();
+          this.alertService.error(error);
         }
       );
     });
+    this.hideSpinner();
+
   }
 
   getItemStatusByIndicator(indicator: string) {

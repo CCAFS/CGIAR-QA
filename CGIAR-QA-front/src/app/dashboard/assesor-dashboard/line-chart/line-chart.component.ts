@@ -10,7 +10,7 @@ import { IndicatorsService } from 'src/app/services/indicators.service';
 export class LineChartComponent implements OnInit {
 
   @Input() data;
-
+  markersType = "Circle";
   public brushes: any = ['#59ed9cff', '#f3da90ff', '#ed8b84ff'];
   
     
