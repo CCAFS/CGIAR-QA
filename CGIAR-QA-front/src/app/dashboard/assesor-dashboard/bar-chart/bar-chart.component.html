@@ -8,14 +8,11 @@
 
     <div class="chart">
         <igx-data-chart #chart isHorizontalZoomEnabled="true" isVerticalZoomEnabled="true" width="100%"
-            height="calc(100% - 60px)" [dataSource]="data"  [brushes]="brushes"  [legend]="legend">
+            height="calc(100% - 60px)" [dataSource]="data"  brushes="#f3da90,#ed8b84,#59ed9c" outlines="#f3da90,#ed8b84,#59ed9c" [legend]="legend">
             <igx-numeric-x-axis title="" #xAxis name="xAxis" interval="1" minimumValue=0 >
             </igx-numeric-x-axis>
             <igx-category-y-axis label="Tags" title="" #yAxis  name="yAxis" >
             </igx-category-y-axis>
-
-            <igx-bar-series showDefaultTooltip=true valueMemberPath="seen" [xAxis]="xAxis" [yAxis]="yAxis" title="Seen">
-            </igx-bar-series>
             <igx-bar-series showDefaultTooltip=true valueMemberPath="not-sure" [xAxis]="xAxis" [yAxis]="yAxis" title="NotSure">
             </igx-bar-series>
             <igx-bar-series showDefaultTooltip=true valueMemberPath="disagree" [xAxis]="xAxis" [yAxis]="yAxis" title="Disagree">

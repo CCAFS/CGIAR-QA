@@ -1,5 +1,5 @@
 import { Component, Input, NgModule, OnInit, ViewChild } from '@angular/core';
-import { ChartSeriesEventArgs, IgxCategoryToolTipLayerComponent, IgxCategoryXAxisComponent, IgxCategoryYAxisComponent, IgxDataChartComponent, IgxItemToolTipLayerComponent, IgxNumericXAxisComponent, IgxNumericYAxisComponent } from 'igniteui-angular-charts';
+import { ChartSeriesEventArgs, IgxCategoryToolTipLayerComponent, IgxCategoryXAxisComponent, IgxCategoryYAxisComponent, IgxDataChartComponent, IgxItemToolTipLayerComponent, IgxLegendComponent, IgxNumericXAxisComponent, IgxNumericYAxisComponent } from 'igniteui-angular-charts';
 
 
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
@@ -14,9 +14,11 @@ import { Label } from 'ng2-charts';
 export class BarChartComponent implements OnInit {
 
 
+agree = '#59ed9c';
+disagree = '#ed8b84';
+notsure = '#f3da90'
 
-
-  public brushes: any = [ '#5081ab','#f3da90', '#ed8b84', '#59ed9c',];
+public brushes: any = [];
 
   @Input() data: any;
 
@@ -48,6 +50,9 @@ export class BarChartComponent implements OnInit {
   @ViewChild("yAxis", { static: true })
   public yAxis: IgxCategoryYAxisComponent;
 
+  @ViewChild("legend", { static: true })
+  public legend: IgxLegendComponent;
+
   private _toolTipType: string = "Default";
 
   constructor() {
@@ -55,10 +60,11 @@ export class BarChartComponent implements OnInit {
     // this.xAxis.interval = 20;
     this.itemTooltipLayer = new IgxItemToolTipLayerComponent();
     this.categoryTooltipLayer = new IgxCategoryToolTipLayerComponent();
+    this.brushes = [this.agree, this.disagree, this.notsure];
   }
 
   ngOnInit() {
-    console.log(this.data);
+    console.log('BAR CHART',this.data);
     
   }
 

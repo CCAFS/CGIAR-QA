@@ -331,7 +331,9 @@ class CommentController {
                 LEFT JOIN qa_users us ON us.id = tag.userId
                 LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
                 LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
-                GROUP BY qe.indicator_view_name, tt.name;`
+                WHERE tt.name not like "seen"
+                GROUP BY qe.indicator_view_name, tt.name;
+                `
                 ,
                 {},
                 {}
