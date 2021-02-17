@@ -49,6 +49,8 @@ export class HeaderBarComponent implements OnInit {
 
   ngOnInit() {
     this.indicators = this.authenticationService.userHeaders;
+    console.log(this.indicators);
+    
     // this.getHeaderLinks();
   }
 

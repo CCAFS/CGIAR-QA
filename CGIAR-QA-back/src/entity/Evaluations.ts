@@ -50,4 +50,7 @@ export class QAEvaluations {
 
     @OneToMany(type => QAComments, comment => comment.evaluation)
     comments:QAComments;
+
+    @Column( "decimal", { precision: 10, scale: 0 })
+    phase_year: number;
 }

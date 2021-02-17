@@ -24,6 +24,9 @@ export class QACycle {
     @OneToMany(type => QAComments, comment => comment.cycle)
     comments: QAComments
 
+    @Column( "decimal", { precision: 10, scale: 0 })
+    phase_year: number;
+
     @Column()
     @CreateDateColumn()
     createdAt: Date;

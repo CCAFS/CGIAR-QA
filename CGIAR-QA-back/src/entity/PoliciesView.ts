@@ -10,7 +10,7 @@ import { Length, IsNotEmpty } from "class-validator";
     expression: `
         SELECT * FROM qa_policies_data
         WHERE phase_name = 'AR'
-        AND phase_year = '2019'
+        AND phase_year = '2020'
     `
 })
 

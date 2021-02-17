@@ -42,7 +42,7 @@
 </div>
 
 
-<table class="table table-bordered">
+<table class="table table-bordered" *ngIf="evaluationList.length > 0">
     <thead class="table-header">
         <tr>
             <th scope="col" [class.active]="order === 'id'" (click)="setOrder('id')">
@@ -72,7 +72,7 @@
                     </div>
                 </div>
             </th>
-            <th *ngIf="returnedArray && returnedArray[0].stage" scope="col" [class.active]="order === 'stage'"
+            <th *ngIf="returnedArray && returnedArrayHasStage" scope="col" [class.active]="order === 'stage'"
                 (click)="setOrder('stage')">
                 <div class="header-row">
                     {{stageHeaderText[indicatorType]}}
@@ -182,8 +182,8 @@
                     </div>
                 </a>
             </td>
-            <td>
-                <ul *ngFor="let subCategory of item.comment_by?.split(',')"
+            <td >
+                <ul  *ngFor="let subCategory of item.comment_by?.split(',')"
                     style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
                     <li>{{ subCategory }}</li>
                 </ul>
@@ -203,6 +203,8 @@
         [maxSize]="5" (pageChanged)="pageChanged($event)">
     </pagination>
 </div>
+
+<div class="div" *ngIf="evaluationList">There is no data for this indicator</div>
 
 
 <!-- Loading Spinner -->

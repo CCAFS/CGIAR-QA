@@ -32,6 +32,7 @@ export class IndicatorsComponent implements OnInit {
   indicatorTypeName: string;
   evaluationList: any[];
   returnedArray: any[];
+  returnedArrayHasStage: boolean;
   currentUser: User;
 
   currentPage = {
@@ -69,7 +70,7 @@ export class IndicatorsComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
     private formBuilder: FormBuilder,
-    private spinner: NgxSpinnerService,
+    private spinner: NgxSpinnerService, 
     private orderPipe: SortByPipe,
     private indicatorService: IndicatorsService,
     // private orderPipe: OrderPipe,
@@ -110,10 +111,17 @@ export class IndicatorsComponent implements OnInit {
       res => {
         // console.log(res)
         this.evaluationList = this.orderPipe.transform(res.data, 'id');
+        console.log('LISTA',this.evaluationList);
+        
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
+        this.returnedArrayHasStage = this.returnedArray.find(e => e.stage != null)
+        console.log(this.returnedArray);
+        
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
         this.hideSpinner();
+        console.log('Spinner hided');
+        
       },
       error => {
         this.hideSpinner();
