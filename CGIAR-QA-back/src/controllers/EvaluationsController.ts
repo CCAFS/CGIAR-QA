@@ -46,7 +46,7 @@ class EvaluationsController {
 
             WHERE (evaluations.evaluation_status <> 'Deleted' AND evaluations.evaluation_status <> 'Removed' OR evaluations.evaluation_status IS NULL)
             AND qa_indicator_user.userId = :user_Id
-
+            AND evaluations.phase_year = actual_phase_year()
             GROUP BY
                 evaluations.status,
                 evaluations.indicator_view_name,

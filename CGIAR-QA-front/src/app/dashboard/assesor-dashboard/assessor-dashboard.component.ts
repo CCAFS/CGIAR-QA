@@ -79,7 +79,11 @@ export class AssessorDashboardComponent implements OnInit {
   }
 
   getItemStatusByIndicator(indicator: string) {
-    return this.itemStatusByIndicator[indicator];
+    if(this.itemStatusByIndicator.hasOwnProperty(indicator)){
+      return this.itemStatusByIndicator[indicator];
+    } else {     
+          return false;
+    }
   }
 
   getIndicatorName(indicator: string) {
@@ -111,7 +115,8 @@ export class AssessorDashboardComponent implements OnInit {
         // console.log(res)
         this.dashboardData = this.dashService.groupData(res.data);
         // this.getCommentStats();
-        // console.log(this.dashboardData);
+        console.log(this.dashboardData);
+        this.selectedIndicator = Object.keys(this.dashboardData)[0];
         this.dataSelected = this.dashboardData[this.selectedIndicator];
 
         this.hideSpinner();
@@ -212,22 +217,25 @@ export class AssessorDashboardComponent implements OnInit {
     }
     let dataset = [];
     let brushes = { domain: [] };
-    let comments_approved = data.find(item => item.comments_approved != '0');
-    comments_approved = comments_approved ? { name: 'Approved', value: +comments_approved.value } : null;
-    if (comments_approved) dataset.push(comments_approved);
-
-    let comments_rejected = data.find(item => item.comments_rejected != '0');
-    comments_rejected = comments_rejected ? { name: 'Rejected', value: +comments_rejected.value } : null;
-    if (comments_rejected) dataset.push(comments_rejected);
-
-
-    let comments_without_answer = data.find(item => item.comments_without_answer != '0');
-    comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
-    if (comments_without_answer) dataset.push(comments_without_answer);
-
-    dataset.forEach(comment => {
-      brushes.domain.push(colors[comment.name]);
-    });
+    
+    if(data) {
+      let comments_approved = data.find(item => item.comments_approved != '0');
+      comments_approved = comments_approved ? { name: 'Approved', value: +comments_approved.value } : null;
+      if (comments_approved) dataset.push(comments_approved);
+  
+      let comments_rejected = data.find(item => item.comments_rejected != '0');
+      comments_rejected = comments_rejected ? { name: 'Rejected', value: +comments_rejected.value } : null;
+      if (comments_rejected) dataset.push(comments_rejected);
+  
+  
+      let comments_without_answer = data.find(item => item.comments_without_answer != '0');
+      comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
+      if (comments_without_answer) dataset.push(comments_without_answer);
+  
+      dataset.forEach(comment => {
+        brushes.domain.push(colors[comment.name]);
+      });
+    }
 
 
     return { dataset, brushes };

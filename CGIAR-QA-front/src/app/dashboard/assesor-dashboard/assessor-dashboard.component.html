@@ -27,7 +27,7 @@
                 <div class="chart chart-1">
                     <h4 class="chart-title">Status - {{dataSelected.total}} {{getIndicatorName(selectedIndicator)}}</h4>
                     <div class="chart-container">
-                        <app-donut-chart [data]="formatStatusIndicatorData(dataSelected)" [chartName]="'status'" [selectedIndicator]="selectedIndicator"></app-donut-chart>
+                        <app-donut-chart *ngIf="dataSelected" [data]="formatStatusIndicatorData(dataSelected)" [chartName]="'status'" [selectedIndicator]="selectedIndicator"></app-donut-chart>
                     </div>
                 </div>
                 <div class="chart chart-2">
@@ -44,8 +44,8 @@
                 </div>
                 <div class="chart chart-4">
                     <h4 class="chart-title">Comments by field</h4>
-                    <div class="chart-container">
-                        <app-line-chart [data]=" getItemStatusByIndicator(selectedIndicator)"></app-line-chart>
+                    <div class="chart-container" *ngIf="getItemStatusByIndicator(selectedIndicator)">
+                        <app-line-chart  [data]="getItemStatusByIndicator(selectedIndicator)"></app-line-chart>
                     </div>
                 </div>
                 <!-- <button class="btn btn-green-secondary">Download all comments and replies</button> -->
