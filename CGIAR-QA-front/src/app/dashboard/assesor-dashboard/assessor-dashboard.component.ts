@@ -99,13 +99,14 @@ export class AssessorDashboardComponent implements OnInit {
 
   actualStatusIndicator(data) {
     let indicator_status = false;
-    // console.log(data);
+    console.log(data);
     let i = 0;
     if(data) {
       for (const item of data) {
         if (item.indicator_status == 1) indicator_status = true;
         i++;
         // console.log(i);
+    console.log('INDICATOR STATUS',indicator_status);
         
       }
     }
@@ -123,10 +124,10 @@ export class AssessorDashboardComponent implements OnInit {
         // console.log(res)
         this.dashboardData = this.dashService.groupData(res.data);
         // this.getCommentStats();
-        console.log('DASH DATA',this.dashboardData);
+        // console.log('DASH DATA',this.dashboardData);
         this.selectedIndicator = Object.keys(this.dashboardData)[1];
         this.dataSelected = this.dashboardData[this.selectedIndicator];
-        console.log('DATA SELECTED', this.dataSelected);
+        // console.log('DATA SELECTED', this.dataSelected);
         
         this.hideSpinner();
       },

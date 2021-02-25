@@ -145,7 +145,7 @@ export class AdminDashboardComponent implements OnInit {
       this.indicatorService.getItemStatusByIndicator(indicator.viewname).subscribe(
          (res) => {
           this.itemStatusByIndicator[indicator.viewname] = this.indicatorService.formatItemStatusByIndicator(res.data);
-          console.log('ITEM STATUS',indicator.viewname,this.itemStatusByIndicator[indicator.viewname]);
+          // console.log('ITEM STATUS',indicator.viewname,this.itemStatusByIndicator[indicator.viewname]);
           
         },
         error => {
@@ -160,12 +160,8 @@ export class AdminDashboardComponent implements OnInit {
 
   getItemStatusByIndicator(indicator: string) {
     if(this.itemStatusByIndicator.hasOwnProperty(indicator)){
-      console.log('true',this.itemStatusByIndicator[indicator]);
-      
       return this.itemStatusByIndicator[indicator];
     } else {    
-      console.log('false',this.itemStatusByIndicator[indicator]);
-       
           return false;
     }
   }
@@ -182,7 +178,7 @@ export class AdminDashboardComponent implements OnInit {
 
   actualStatusIndicator(data) {
     let indicator_status = false;
-    // console.log(data);
+    console.log(data);
     let i = 0;
     if(data) {
       for (const item of data) {
@@ -192,6 +188,8 @@ export class AdminDashboardComponent implements OnInit {
         
       }
     }
+    console.log('INDICATOR STATUS',indicator_status);
+    
     return indicator_status;
   }
 
