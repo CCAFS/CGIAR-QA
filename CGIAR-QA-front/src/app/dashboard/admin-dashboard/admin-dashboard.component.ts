@@ -10,7 +10,7 @@ import { IndicatorsService } from '../../services/indicators.service';
 
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
-import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-status.model';
+import { GeneralStatus, GeneralIndicatorName, TagMessage } from '../../_models/general-status.model';
 
 import { Observable, forkJoin } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -42,6 +42,27 @@ export class AdminDashboardComponent implements OnInit {
   programsForm: FormGroup;
   generalStatus = GeneralStatus;
   indicatorsName = GeneralIndicatorName;
+
+  indicatorsNameDropdwon = [
+    {name: 'Policies', viewname:'qa_policies'},
+    {name: 'Innovations', viewname:'qa_innovations'},
+    {name: 'Peer Reviewed Papers', viewname:'qa_publications'},
+    {name: 'OICRs', viewname:'qa_oicr'},
+    {name: 'MELIAs', viewname:'qa_melia'},
+    {name: 'CapDevs', viewname:'qa_capdev'},
+    {name: 'Milestones', viewname:'qa_milestones'},
+    {name: 'SLOs', viewname:'qa_slo'},
+    // qa_outcomes: 'Outcomes',
+  ]
+
+  //new props
+  tagMessages = TagMessage;
+  indicatorsTags: any;
+  selectedIndicator = 'qa_slo';
+  dataSelected: any;
+  indicatorData: any;
+  feedList: [];
+  itemStatusByIndicator = {};
 
   enableQATooltip: string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
   enableCommentsTooltip: string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
@@ -105,6 +126,8 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.showSpinner()
+    console.log(this.currentUser);
+    
     this.loadDashData();
 
 
@@ -114,10 +137,140 @@ export class AdminDashboardComponent implements OnInit {
     // this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 10);
   }
 
+  // NEW
+  getAllItemStatusByIndicator() {
+    console.log('CALLEEED');
+    
+    this.indicatorsNameDropdwon.forEach(indicator => {
+      this.indicatorService.getItemStatusByIndicator(indicator.viewname).subscribe(
+         (res) => {
+          this.itemStatusByIndicator[indicator.viewname] = this.indicatorService.formatItemStatusByIndicator(res.data);
+          console.log('ITEM STATUS',indicator.viewname,this.itemStatusByIndicator[indicator.viewname]);
+          
+        },
+        error => {
+          console.log("getAllItemStatusByIndicator", error);
+          this.alertService.error(error);
+        }
+      );
+    });
+
+    this.hideSpinner();
+  }
+
+  getItemStatusByIndicator(indicator: string) {
+    if(this.itemStatusByIndicator.hasOwnProperty(indicator)){
+      console.log('true',this.itemStatusByIndicator[indicator]);
+      
+      return this.itemStatusByIndicator[indicator];
+    } else {    
+      console.log('false',this.itemStatusByIndicator[indicator]);
+       
+          return false;
+    }
+  }
 
   getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
+
+  actualIndicator(indicator: string) {
+    this.selectedIndicator = indicator;
+    this.dataSelected = this.dashboardData[this.selectedIndicator];
+    // console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
+  }
+
+  actualStatusIndicator(data) {
+    let indicator_status = false;
+    // console.log(data);
+    let i = 0;
+    if(data) {
+      for (const item of data) {
+        if (item.indicator_status == 1) indicator_status = true;
+        i++;
+        // console.log(i);
+        
+      }
+    }
+    return indicator_status;
+  }
+
+  
+  getAllTags() {
+    this.commentService.getAllTags().subscribe(
+      res => {
+        this.indicatorsTags = this.commentService.groupTags(res.data);;
+      }
+    )
+  }
+
+  getFeedTags() {
+    this.commentService.getFeedTags().subscribe(
+      res => {
+        // console.log(res.data);
+        this.feedList = res.data;
+      }
+    )
+  }
+
+  formatDateFeed(date: any) {
+    let formatDate = moment(date).format("dddd, MMMM Do YYYY, HH:mm");;
+    return formatDate;
+  }
+
+  formatStatusIndicatorData(data) {
+    const colors = {
+      complete: '#59ed9c',
+      pending: '#f3da90',
+      finalized: '#00958e'
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
+    for (const item of data) {
+      if(item.status != null) {
+        dataset.push({ name: item.status, value: +item.label });
+        brushes.domain.push(colors[item.status]);
+      }
+    }
+    let finalized = dataset.find(item => item.name == 'finalized');
+    if(finalized) finalized.name = 'closed';
+    // console.log('DATA SELECTED', { dataset, brushes });
+    
+    return { dataset, brushes };
+  }
+
+  formatCommentsIndicatorData(data) {
+    const colors = {
+      Approved: '#59ed9c',
+      Pending: '#f3da90',
+      Rejected: '#ed8b84'
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
+    
+    if(data) {
+      let comments_approved = data.find(item => item.comments_approved != '0');
+      comments_approved = comments_approved ? { name: 'Approved', value: +comments_approved.value } : null;
+      if (comments_approved) dataset.push(comments_approved);
+  
+      let comments_rejected = data.find(item => item.comments_rejected != '0');
+      comments_rejected = comments_rejected ? { name: 'Rejected', value: +comments_rejected.value } : null;
+      if (comments_rejected) dataset.push(comments_rejected);
+  
+  
+      let comments_without_answer = data.find(item => item.comments_without_answer != '0');
+      comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
+      if (comments_without_answer) dataset.push(comments_without_answer);
+  
+      dataset.forEach(comment => {
+        brushes.domain.push(colors[comment.name]);
+      });
+    }
+
+
+    return { dataset, brushes };
+  }
+
 
   isChecked(indicator, type) {
     return type === 'enableQA' ? indicator.enable_assessor : indicator.enable_crp;
@@ -186,6 +339,8 @@ export class AdminDashboardComponent implements OnInit {
     this.getAllDashData(value.crp_id).subscribe(
       res => {
         this.dashboardData = this.dashService.groupData(res.data);
+        this.selectedIndicator = Object.keys(this.dashboardData)[1];
+        this.dataSelected = this.dashboardData[this.selectedIndicator];
         this.hideSpinner()
       },
       error => {
@@ -197,6 +352,9 @@ export class AdminDashboardComponent implements OnInit {
     this.getCommentStats(value.crp_id).subscribe(
       res => {
         this.dashboardCommentsData = this.dashService.groupData(res.data);
+        this.getAllTags();
+        this.getFeedTags();
+        this.getAllItemStatusByIndicator();
         // this.getRawComments(value.crp_id)
       },
       error => {
@@ -223,12 +381,14 @@ export class AdminDashboardComponent implements OnInit {
       this.getAllCRP(),
       this.getIndicatorsByCRP(),
       this.getCommentStats(),
-      this.getCycles()
+      this.getCycles(),
     ]);
     responses.subscribe(res => {
       const [dashData, crps, indicatorsByCrps, commentsStats, cycleData] = res;
 
       this.dashboardData = this.dashService.groupData(dashData.data);
+      this.selectedIndicator = Object.keys(this.dashboardData)[1];
+      this.dataSelected = this.dashboardData[this.selectedIndicator];
       // console.log(res)
 
       this.crps = crps.data;
@@ -251,6 +411,10 @@ export class AdminDashboardComponent implements OnInit {
       console.log("getAllDashData", error);
       this.alertService.error(error);
     })
+    this.getAllTags();
+    this.getFeedTags();
+    this.getAllItemStatusByIndicator();
+
   }
 
 
@@ -278,6 +442,7 @@ export class AdminDashboardComponent implements OnInit {
   // comments by crp
   getCommentStats(crp_id?) {
     // this.showSpinner();
+
     return this.commentService.getCommentCRPStats({ crp_id, id: null }).pipe();
   }
 

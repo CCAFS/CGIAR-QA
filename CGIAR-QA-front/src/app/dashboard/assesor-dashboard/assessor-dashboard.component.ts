@@ -77,7 +77,6 @@ export class AssessorDashboardComponent implements OnInit {
       );
     });
     this.hideSpinner();
-
   }
 
   getItemStatusByIndicator(indicator: string) {

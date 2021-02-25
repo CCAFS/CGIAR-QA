@@ -21,6 +21,112 @@
             </div>
 
         </div>
+        <div class="col-activity">
+            <div class="title-button">
+                <p class="card-title">QA Settings</p>
+            </div>
+            <div class="card">
+                <div class="row row-padding qa-settings">
+                    <div class="col-sm">
+                    </div>
+                    <div class="col-sm" tooltip="{{enableQATooltip}}" placement="top">
+                        Enable Assessment
+                    </div>
+                    <div class="col-sm" tooltip="{{enableCommentsTooltip}}" placement="top">
+                        Submit comments
+                    </div>
+                </div>
+                <form [formGroup]="settingsForm" novalidate>
+                    <div *ngFor="let indicator of configurationData" class="activity-container">
+                        <!-- <div *ngFor="let indicator of configurationData | keyvalue" class="activity-container"> -->
+                        <div class="row row-padding activity-item">
+                            <!--<div class="col-sm" (click)="indicator.value.isCollapsed = !indicator.value.isCollapsed">-->
+                            <div class="col-sm">
+                                {{indicator.indicator_view_name}}
+                            </div>
+                            <div class="col-sm">
+                                <div class="custom-switch qa-toggle">
+                                    <input [value]="indicator.id" [checked]="isChecked(indicator, 'enableQA')"
+                                        (change)="onCheckboxChange($event,'enableQA')" type="checkbox"
+                                        class="custom-control-input" id="switch-a-{{indicator.id}}">
+                                    <label class="custom-control-label" for="switch-a-{{indicator.id}}"></label>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="custom-switch qa-toggle">
+                                    <input [value]="indicator.id" type="checkbox"
+                                        [checked]="isChecked(indicator, 'enableCRP')"
+                                        (change)="onCheckboxChange($event,'enableCRP')" class="custom-control-input"
+                                        id="switch-b-{{indicator.id}}">
+                                    <label class="custom-control-label" for="switch-b-{{indicator.id}}"></label>
+                                </div>
+                            </div>
+                        </div>
+    
+                    </div>
+    
+                </form>
+    
+            </div>
+            <!-- cycle date picker -->
+            <div class="card">
+                <p class="card-title" style="text-align: center; padding: 1em 0;">QA Cycles</p>
+                <div class="row row-padding qa-settings">
+                    <form class="form-inline">
+                        <div *ngFor="let cycle of dashboardCyclesData">
+                            <div class="row">
+                                <p style="margin: 0 1em; padding: 0.5em">Stage: <strong>{{cycle.cycle_stage}}</strong></p>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input #dpFromDate class="form-control" [disabled]="!cycle.is_active"
+                                            placeholder="yyyy-mm-dd" name="dpFromDate"
+                                            [value]="formatter.format(cycle.start_date)"
+                                            (input)="fromDate = validateInput(cycle.start_date, dpFromDate.value)">
+                                        <!-- (input)="validateInput(cycle.start_date, dpFromDate.value)"> -->
+                                        <div class="input-group-append">
+                                            <button [disabled]="!cycle.is_active" class="btn btn-outline-secondary calendar"
+                                                (click)="datepicker.toggle()" type="button"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group ml-2">
+                                    <div class="input-group">
+                                        <input #dpToDate class="form-control" [disabled]="!cycle.is_active"
+                                            placeholder="yyyy-mm-dd" name="dpToDate"
+                                            [value]="formatter.format(cycle.end_date)"
+                                            (input)="toDate = validateInput(cycle.end_date, dpToDate.value)">
+                                        <!-- (input)="validateInput(cycle.end_date, dpToDate.value)"> -->
+                                        <div class="input-group-append">
+                                            <button [disabled]="!cycle.is_active" class="btn btn-outline-secondary calendar"
+                                                (click)="datepicker.toggle()" type="button"></button>
+                                        </div>
+                                    </div>
+    
+                                </div>
+                            </div>
+    
+                        </div>
+                        <div class="form-group hidden">
+                            <div class="input-group">
+                                <input name="datepicker" style="opacity: 0;" class="form-control" ngbDatepicker
+                                    #datepicker="ngbDatepicker" [autoClose]="'outside'"
+                                    (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
+                                    outsideDays="hidden" [startDate]="fromDate!">
+                                <ng-template #t let-date let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+                                        [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
+                                        (mouseleave)="hoveredDate = null">
+                                        {{ date.day }}
+                                    </span>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </form>
+    
+                    <button style="margin: 2em auto;" type="button" class="btn btn-outline-warning" (click)="updateCycle()" [disabled]="!validateNewDate()">Update cycle</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col col-progress">
         <div class="row" style="padding: 0 15px;">
@@ -29,6 +135,108 @@
         </div>
         <div class="card">
             <div class="card-body">
+                <div class="dashboard-container row w-100">
+                    <div class="card-body dashboard-container-charts col col-sm-9">
+                        <div class="w-100 dashboard-header mb-2">
+                            <div class="h-100  title">Dashboard {{getIndicatorName(selectedIndicator)}}</div>
+                            <div class="btn-group h-100 selector" dropdown>
+                                <button id="button-animated" dropdownToggle type="button"
+                                    class="btn btn-white dropdown-toggle w-100" aria-controls="dropdown-animated">
+                                    {{getIndicatorName(selectedIndicator)}} <span class="caret"></span>
+                                </button>
+                                <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
+                                    aria-labelledby="button-animated">
+                                    <li *ngFor="let indicator of indicatorsNameDropdwon" role="menuitem"><a class="dropdown-item"
+                                            (click)=actualIndicator(indicator.viewname)>{{indicator.name}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div *ngIf="dashboardData && ((dashboardData | json) != ({} | json))" class="grid-container">
+                            <div class="chart chart-1">
+                                <h4 class="chart-title">Status - {{dataSelected.total}} {{getIndicatorName(selectedIndicator)}}</h4>
+                                <div class="chart-container">
+                                    <app-donut-chart *ngIf="dataSelected" [data]="formatStatusIndicatorData(dataSelected)" [chartName]="'status'" [selectedIndicator]="selectedIndicator"></app-donut-chart>
+                                </div>
+                            </div>
+                            <div class="chart chart-2">
+                                <h4 class="chart-title">Comments interactions</h4>
+                                <div class="chart-container">
+                                    <app-bar-chart *ngIf="indicatorsTags" [data]="[indicatorsTags[selectedIndicator]]"></app-bar-chart>
+                                </div>
+                            </div>
+                            <div class="chart chart-3">
+                                <h4 class="chart-title">Responses to comments</h4>
+                                <div *ngIf="dashboardCommentsData[selectedIndicator]" class="chart-container">
+                                    <app-donut-chart [data]="formatCommentsIndicatorData(dashboardCommentsData[selectedIndicator])" [chartName]="'comments'"></app-donut-chart>
+                                </div>
+                            </div>
+                            <div class="chart chart-4">
+                                <h4 class="chart-title">Items status</h4>
+                                <div class="chart-container" *ngIf="getItemStatusByIndicator(selectedIndicator)">
+                                    <app-line-chart  [data]="getItemStatusByIndicator(selectedIndicator)"></app-line-chart>
+                                </div>
+                            </div>
+                            <!-- <button class="btn btn-green-secondary">Download all comments and replies</button> -->
+                            <button class="btn btn-primary" *ngIf="dashboardData && ((dashboardData | json) != ({} | json)) && actualStatusIndicator(dataSelected)"
+                            routerLinkActive="active" [routerLinkActive]="['active']"
+                            routerLink="../../indicator/{{selectedIndicator.split('qa_')[1]}}/id">Go to {{getIndicatorName(selectedIndicator)}}</button>
+                            <button class="btn btn-red-secondary disabled" title="Indicator {{getIndicatorName(selectedIndicator)}} isn't enable" *ngIf="dashboardData && ((dashboardData | json) != ({} | json)) && !actualStatusIndicator(dataSelected)">Go to {{getIndicatorName(selectedIndicator)}}</button>
+                            <!-- <a *ngIf="dashboardData && ((dashboardData | json) != ({} | json)) && actualStatusIndicator(dataSelected)"
+                                routerLinkActive="active" [routerLinkActive]="['active']"
+                                routerLink="../../indicator/{{selectedIndicator.split('qa_')[1]}}/id">
+                                Go to {{getIndicatorName(selectedIndicator)}}
+                            </a>
+                            <a *ngIf="dashboardData && ((dashboardData | json) != ({} | json)) && !actualStatusIndicator(dataSelected)">
+                                Go to {{getIndicatorName(selectedIndicator)}}
+                            </a> -->
+                        </div>
+                        <!-- <ng-container *ngIf="(dashboardData | json) != ({} | json)">
+                            <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
+                                [ngClass]="{'closed': !item.value[0].indicator_status }" class="progress-container">
+                                <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
+                                <progressbar class="progress" [value]="item.value" [max]="item.value.total">
+                                    <span>{{item.value.total}}</span>
+                                </progressbar>
+                                <p *ngIf="item && dashboardCommentsData[item.key]">Total comments:
+                                    {{dashboardCommentsData[item.key].total}}</p>
+                                <progressbar id="comments-progessbar" *ngIf="dashboardCommentsData[item.key]" class="progress"
+                                    [value]="dashboardCommentsData[item.key]" [max]="dashboardCommentsData[item.key].total">
+                                    <span>{{dashboardCommentsData[item.key].value}}</span>
+                                </progressbar>
+                                <a *ngIf="item.value[0].indicator_status == 1" routerLinkActive="active"
+                                    [routerLinkActive]="['active']" routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
+                                    Go to {{getIndicatorName(item.key)}}
+                                </a>
+                                <a *ngIf="item.value[0].indicator_status == 0">
+                                    Go to {{getIndicatorName(item.key)}}
+                                </a>
+                            </div>
+            
+                        </ng-container> -->
+                        <div class="no-data" *ngIf="(dashboardData | json) == ({} | json)">
+                            You don't have any indicator assingned.
+                            Please contact your Administrator.
+                        </div>
+            
+            
+                    </div>
+                    <div class="card-body feed col col-sm-3">
+                        <div class="feed-container w-100 h-100">
+                            <div class="feed-title">Feed</div>
+                            <ul class="notifications">
+                                <li class="notification" *ngFor="let item of feedList" [routerLinkActive]="['active']"  routerLink="../../indicator/{{item.indicator_view_name.split('qa_')[1]}}/id/detail/{{item.indicator_view_id}}">
+                                    <div class="datetime">{{item.updatedAt | date:'long':'+0530'}}</div>
+                                    <!-- <div class="datetime">{{formatDate(item.updatedAt)}}</div> -->
+                                    <p><strong>{{item.name}}</strong> {{tagMessages[item.tagName]}}  <strong> QA-{{item.indicator_view_name.split('qa_')[1].substring(0,2).toUpperCase()}}-{{item.indicator_view_id}}</strong></p>
+                                </li>
+                            </ul>
+                        </div>
+            
+                    </div>
+                </div>
+            </div>
+            <div class="card-body old">
                 <div class="card-title example-container d-flex"
                     [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
                     <p><strong>By indicator: </strong></p>
@@ -81,112 +289,7 @@
             </div>
         </div>
     </div>
-    <div class="col-4 col-activity">
-        <div class="title-button">
-            <p class="card-title">QA Settings</p>
-        </div>
-        <div class="card">
-            <div class="row row-padding qa-settings">
-                <div class="col-sm">
-                </div>
-                <div class="col-sm" tooltip="{{enableQATooltip}}" placement="top">
-                    Enable Assessment
-                </div>
-                <div class="col-sm" tooltip="{{enableCommentsTooltip}}" placement="top">
-                    Submit comments
-                </div>
-            </div>
-            <form [formGroup]="settingsForm" novalidate>
-                <div *ngFor="let indicator of configurationData" class="activity-container">
-                    <!-- <div *ngFor="let indicator of configurationData | keyvalue" class="activity-container"> -->
-                    <div class="row row-padding activity-item">
-                        <!--<div class="col-sm" (click)="indicator.value.isCollapsed = !indicator.value.isCollapsed">-->
-                        <div class="col-sm">
-                            {{indicator.indicator_view_name}}
-                        </div>
-                        <div class="col-sm">
-                            <div class="custom-switch qa-toggle">
-                                <input [value]="indicator.id" [checked]="isChecked(indicator, 'enableQA')"
-                                    (change)="onCheckboxChange($event,'enableQA')" type="checkbox"
-                                    class="custom-control-input" id="switch-a-{{indicator.id}}">
-                                <label class="custom-control-label" for="switch-a-{{indicator.id}}"></label>
-                            </div>
-                        </div>
-                        <div class="col-sm">
-                            <div class="custom-switch qa-toggle">
-                                <input [value]="indicator.id" type="checkbox"
-                                    [checked]="isChecked(indicator, 'enableCRP')"
-                                    (change)="onCheckboxChange($event,'enableCRP')" class="custom-control-input"
-                                    id="switch-b-{{indicator.id}}">
-                                <label class="custom-control-label" for="switch-b-{{indicator.id}}"></label>
-                            </div>
-                        </div>
-                    </div>
 
-                </div>
-
-            </form>
-
-        </div>
-        <!-- cycle date picker -->
-        <div class="card">
-            <p class="card-title" style="text-align: center; padding: 1em 0;">QA Cycles</p>
-            <div class="row row-padding qa-settings">
-                <form class="form-inline">
-                    <div *ngFor="let cycle of dashboardCyclesData">
-                        <div class="row">
-                            <p style="margin: 0 1em; padding: 0.5em">Stage: <strong>{{cycle.cycle_stage}}</strong></p>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input #dpFromDate class="form-control" [disabled]="!cycle.is_active"
-                                        placeholder="yyyy-mm-dd" name="dpFromDate"
-                                        [value]="formatter.format(cycle.start_date)"
-                                        (input)="fromDate = validateInput(cycle.start_date, dpFromDate.value)">
-                                    <!-- (input)="validateInput(cycle.start_date, dpFromDate.value)"> -->
-                                    <div class="input-group-append">
-                                        <button [disabled]="!cycle.is_active" class="btn btn-outline-secondary calendar"
-                                            (click)="datepicker.toggle()" type="button"></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group ml-2">
-                                <div class="input-group">
-                                    <input #dpToDate class="form-control" [disabled]="!cycle.is_active"
-                                        placeholder="yyyy-mm-dd" name="dpToDate"
-                                        [value]="formatter.format(cycle.end_date)"
-                                        (input)="toDate = validateInput(cycle.end_date, dpToDate.value)">
-                                    <!-- (input)="validateInput(cycle.end_date, dpToDate.value)"> -->
-                                    <div class="input-group-append">
-                                        <button [disabled]="!cycle.is_active" class="btn btn-outline-secondary calendar"
-                                            (click)="datepicker.toggle()" type="button"></button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="form-group hidden">
-                        <div class="input-group">
-                            <input name="datepicker" style="opacity: 0;" class="form-control" ngbDatepicker
-                                #datepicker="ngbDatepicker" [autoClose]="'outside'"
-                                (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
-                                outsideDays="hidden" [startDate]="fromDate!">
-                            <ng-template #t let-date let-focused="focused">
-                                <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
-                                    [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
-                                    (mouseleave)="hoveredDate = null">
-                                    {{ date.day }}
-                                </span>
-                            </ng-template>
-                        </div>
-                    </div>
-                </form>
-
-                <button style="margin: 2em auto;" type="button" class="btn btn-outline-warning" (click)="updateCycle()" [disabled]="!validateNewDate()">Update cycle</button>
-            </div>
-        </div>
-    </div>
 </div>
 <ngx-spinner>
 </ngx-spinner>

@@ -37,13 +37,13 @@
                     </div>
                 </div>
                 <div class="chart chart-3">
-                    <h4 class="chart-title">Comments</h4>
+                    <h4 class="chart-title">Responses to comments</h4>
                     <div *ngIf="dashboardCommentsData[selectedIndicator]" class="chart-container">
                         <app-donut-chart [data]="formatCommentsIndicatorData(dashboardCommentsData[selectedIndicator])" [chartName]="'comments'"></app-donut-chart>
                     </div>
                 </div>
                 <div class="chart chart-4">
-                    <h4 class="chart-title">Comments by field</h4>
+                    <h4 class="chart-title">Items status</h4>
                     <div class="chart-container" *ngIf="getItemStatusByIndicator(selectedIndicator)">
                         <app-line-chart  [data]="getItemStatusByIndicator(selectedIndicator)"></app-line-chart>
                     </div>
