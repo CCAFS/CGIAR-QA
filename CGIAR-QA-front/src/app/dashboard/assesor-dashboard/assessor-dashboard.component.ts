@@ -217,6 +217,8 @@ export class AssessorDashboardComponent implements OnInit {
         brushes.domain.push(colors[item.status]);
       }
     }
+    let finalized = dataset.find(item => item.name == 'finalized');
+    if(finalized) finalized.name = 'closed';
     console.log('DATA SELECTED', { dataset, brushes });
     
     return { dataset, brushes };
