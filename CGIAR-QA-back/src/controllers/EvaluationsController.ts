@@ -33,7 +33,7 @@ class EvaluationsController {
                 evaluations.status AS status,
                 meta.enable_crp,
                 meta.enable_assessor,
-                evaluations.indicator_view_name AS indicator_view_name,
+                indicator.view_name AS indicator_view_name,
                 indicator.primary_field AS primary_field,
                 indicator.order AS indicator_order,
                 COUNT(DISTINCT evaluations.id) AS count
@@ -41,15 +41,14 @@ class EvaluationsController {
                 qa_indicator_user qa_indicator_user
             LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
             LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
+            AND evaluations.phase_year = actual_phase_year()
+            AND (evaluations.evaluation_status <> 'Deleted' AND evaluations.evaluation_status <> 'Removed' OR evaluations.evaluation_status IS NULL)
             LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
             LEFT JOIN qa_comments_meta meta ON meta.indicatorId = indicator.id
-
-            WHERE (evaluations.evaluation_status <> 'Deleted' AND evaluations.evaluation_status <> 'Removed' OR evaluations.evaluation_status IS NULL)
-            AND qa_indicator_user.userId = :user_Id
-            AND evaluations.phase_year = actual_phase_year()
+            WHERE qa_indicator_user.userId = :user_Id
             GROUP BY
                 evaluations.status,
-                evaluations.indicator_view_name,
+                indicator.view_name,
                 meta.enable_crp,
                 meta.enable_assessor,
                 indicator.order,
@@ -63,7 +62,9 @@ class EvaluationsController {
             );
             // console.log( query, parameters)
             let rawData = await queryRunner.connection.query(query, parameters);
-
+                console.log('rawData');
+                console.log(rawData);
+                
             let response = []
             for (let index = 0; index < rawData.length; index++) {
                 const element = rawData[index];

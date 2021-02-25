@@ -42,7 +42,7 @@
 </div>
 
 
-<table class="table table-bordered" *ngIf="evaluationList.length > 0">
+<table class="table table-bordered" *ngIf="collectionSize != 0">
     <thead class="table-header">
         <tr>
             <th scope="col" [class.active]="order === 'id'" (click)="setOrder('id')">
@@ -74,7 +74,7 @@
             </th>
             <th *ngIf="returnedArray && returnedArrayHasStage" scope="col" [class.active]="order === 'stage'"
                 (click)="setOrder('stage')">
-                <div class="header-row">
+                <div class="header-row"> 
                     {{stageHeaderText[indicatorType]}}
                     <div class="order-icon" *ngIf="order === 'stage'">
                         <span [hidden]="reverse">▼</span>

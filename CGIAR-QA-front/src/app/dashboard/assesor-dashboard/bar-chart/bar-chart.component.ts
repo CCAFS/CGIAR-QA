@@ -20,7 +20,7 @@ notsure = '#f3da90'
 
 public brushes: any = [];
 
-  @Input() data: any;
+  @Input() data: any = [];
 
 
   public showDefaultTooltip: boolean = true;

@@ -85,6 +85,7 @@ export class IndicatorsComponent implements OnInit {
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
       this.getEvaluationsList(routeParams);
 
+      
       this.btonFilterForm = this.formBuilder.group({
         radio: 'A'
       });
@@ -97,6 +98,7 @@ export class IndicatorsComponent implements OnInit {
 
 
   ngOnInit() {
+    
     // console.log('loaded indicators')
     setTimeout(()=>{                           //<<<---using ()=> syntax
       this.verifyIfOrderByStatus();
@@ -111,12 +113,12 @@ export class IndicatorsComponent implements OnInit {
       res => {
         // console.log(res)
         this.evaluationList = this.orderPipe.transform(res.data, 'id');
-        console.log('LISTA',this.evaluationList);
+        // console.log('LISTA',this.evaluationList);
         
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         this.returnedArrayHasStage = this.returnedArray.find(e => e.stage != null)
-        console.log(this.returnedArray);
+        // console.log('RETURNED_ARRAY', this.returnedArray);
         
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
         this.hideSpinner();

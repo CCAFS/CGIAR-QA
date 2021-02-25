@@ -9,7 +9,7 @@ import { IndicatorsService } from 'src/app/services/indicators.service';
 })
 export class LineChartComponent implements OnInit {
 
-  @Input() data;
+  @Input() data = [];
   markersType = "Circle";
   public brushes: any = ['#59ed9cff', '#f3da90ff', '#ed8b84ff'];
   
@@ -19,7 +19,7 @@ export class LineChartComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log(this.data);
+    console.log('LineChartData',this.data);
     
   }
 

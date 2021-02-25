@@ -9,6 +9,7 @@ import { IndicatorsService } from 'src/app/services/indicators.service';
 })
 export class DonutChartComponent implements OnInit {
   wosColor = "#46bdc6";
+  
   @Input() data;
   @Input() chartName;
   @Input() selectedIndicator;
@@ -47,6 +48,8 @@ export class DonutChartComponent implements OnInit {
   }
   ngOnInit() {
     this.chartType = this.legendLabels[this.chartName];
+    console.log('SWIMLANE DATA', this.data);
+    
     // console.log(this.chartName);
     // console.log(this.chartType);
     

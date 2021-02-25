@@ -13,7 +13,7 @@
     <div  *ngFor="let tag of legendLabels[chartName]"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}}</p></div>
   </div>
 </div>
-<div class="pie-container">
+<div class="pie-container" *ngIf="data.dataset">
   <ngx-charts-pie-chart
     [view]=""
     [scheme]="data.brushes"

@@ -66,6 +66,8 @@ export class AssessorDashboardComponent implements OnInit {
       this.indicatorService.getItemStatusByIndicator(el.indicator.view_name).subscribe(
          (res) => {
           this.itemStatusByIndicator[el.indicator.view_name] = this.indicatorService.formatItemStatusByIndicator(res.data);
+          console.log(el.indicator.view_name,this.itemStatusByIndicator[el.indicator.view_name]);
+          
         },
         error => {
           console.log("getAllItemStatusByIndicator", error);
@@ -98,8 +100,15 @@ export class AssessorDashboardComponent implements OnInit {
 
   actualStatusIndicator(data) {
     let indicator_status = false;
-    for (const item of data) {
-      if (item.indicator_status == 1) indicator_status = true;
+    // console.log(data);
+    let i = 0;
+    if(data) {
+      for (const item of data) {
+        if (item.indicator_status == 1) indicator_status = true;
+        i++;
+        // console.log(i);
+        
+      }
     }
     return indicator_status;
   }
@@ -115,10 +124,11 @@ export class AssessorDashboardComponent implements OnInit {
         // console.log(res)
         this.dashboardData = this.dashService.groupData(res.data);
         // this.getCommentStats();
-        console.log(this.dashboardData);
-        this.selectedIndicator = Object.keys(this.dashboardData)[0];
+        console.log('DASH DATA',this.dashboardData);
+        this.selectedIndicator = Object.keys(this.dashboardData)[1];
         this.dataSelected = this.dashboardData[this.selectedIndicator];
-
+        console.log('DATA SELECTED', this.dataSelected);
+        
         this.hideSpinner();
       },
       error => {
@@ -165,7 +175,7 @@ export class AssessorDashboardComponent implements OnInit {
   getFeedTags() {
     this.commentService.getFeedTags().subscribe(
       res => {
-        console.log(res.data);
+        // console.log(res.data);
         this.feedList = res.data;
       }
     )
@@ -202,10 +212,13 @@ export class AssessorDashboardComponent implements OnInit {
     let dataset = [];
     let brushes = { domain: [] };
     for (const item of data) {
-      dataset.push({ name: item.status, value: +item.label });
-      brushes.domain.push(colors[item.status]);
+      if(item.status != null) {
+        dataset.push({ name: item.status, value: +item.label });
+        brushes.domain.push(colors[item.status]);
+      }
     }
-
+    console.log('DATA SELECTED', { dataset, brushes });
+    
     return { dataset, brushes };
   }
 
