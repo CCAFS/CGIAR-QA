@@ -135,18 +135,18 @@ h2 {
   }
 }
 .total-items {
-  font-size: 0.9em;
+  font-size: 0.9em; 
   color: var(--gray-secondary);
   font-style: italic;
 }
 .circle.complete {
-  background-color: var(--green-primary);
+  background-color: var(--color-complete);
 }
 .circle.pending {
-  background-color: var(--red-primary);
+  background-color: var(--color-pending);
 }
 .circle.finalized {
-  background-color: var(--blue-secondary);
+  background-color: var(--color-finalized);
 }
 
 .pagination-container {

@@ -113,7 +113,7 @@ export class IndicatorsComponent implements OnInit {
       res => {
         // console.log(res)
         this.evaluationList = this.orderPipe.transform(res.data, 'id');
-        // console.log('LISTA',this.evaluationList);
+        console.log('LISTA',this.evaluationList);
         
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);

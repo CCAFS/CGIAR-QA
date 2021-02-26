@@ -20,10 +20,10 @@
         </div>
     </div>
     <div class="col row text-right">
-        <div class="circle complete"></div>
-        <p>Complete</p>
         <div class="circle pending" style="margin-left: 50px;"></div>
         <p>Pending</p>
+        <div class="circle complete"></div>
+        <p>Complete</p>
         <div class="circle finalized" style="margin-left: 50px;"></div>
         <p>Closed</p>
     </div>
@@ -197,14 +197,14 @@
 <div *ngIf='evaluationList' class="total-items">
     Total items: {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length}}
 </div>
-<div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
+<div *ngIf="collectionSize > 0" class="d-flex justify-content-center p-2 pagination-container">
     <pagination [rotate]="false"
         [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length"
         [maxSize]="5" (pageChanged)="pageChanged($event)">
     </pagination>
 </div>
 
-<div class="div" *ngIf="evaluationList">There is no data for this indicator</div>
+<div class="div" *ngIf="collectionSize == 0">There is no data for this indicator</div>
 
 
 <!-- Loading Spinner -->
