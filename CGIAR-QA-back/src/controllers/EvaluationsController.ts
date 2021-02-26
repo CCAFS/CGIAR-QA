@@ -121,12 +121,12 @@ class EvaluationsController {
                     
                     LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
                     LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
+                    AND evaluations.phase_year = actual_phase_year()
+                    AND (evaluations.evaluation_status <> 'Deleted' AND evaluations.evaluation_status <> 'Removed' OR evaluations.evaluation_status IS NULL)
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
 
 
-                    WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
-                    AND crp.crp_id = :crp_id
-
+                    WHERE crp.crp_id = :crp_id
 
                     GROUP BY
                         evaluations.status,
@@ -197,11 +197,13 @@ class EvaluationsController {
                     FROM
                         qa_evaluations evaluations
                     LEFT JOIN qa_indicators indicator ON indicator.view_name = evaluations.indicator_view_name
+
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
                     
                     WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                     AND evaluations.crp_id =:crp_id
                     AND evaluations.indicator_view_name <> 'qa_outcomes'
+                    AND evaluations.phase_year = actual_phase_year()
                     
 
                     GROUP BY
@@ -237,10 +239,9 @@ class EvaluationsController {
                 
                 LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
                 LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
+                AND evaluations.phase_year = actual_phase_year()
+                AND (evaluations.evaluation_status <> 'Deleted' AND evaluations.evaluation_status <> 'Removed' OR evaluations.evaluation_status IS NULL)
                 LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
-
-
-                WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
 
 
                 GROUP BY
