@@ -70,35 +70,36 @@
                             <div class="data-row">
                                 <div class="col">
                                     <!-- checkbox -->
-                                    <div class="row">
-                                        <input
+                                    <div class="row field">
+                                        <div class="field-title">
+                                            <h2 *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete" [innerHTML]="detailedData[i].display_name | markdown"></h2>
+     
+    
+                                            <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked "
+                                                [innerHTML]="detailedData[i].display_name | markdown">
+                                            </h2>
+                                            <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
+                                                {{detailedData[i].display_name}}</h2> -->
+    
+                                            <div *ngIf="detailedData[i].meta_description">
+                                                <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
+                                                    style="height: 2em;"></i>
+                                                <ng-template #popTemplate>
+                                                    <div [innerHtml]="detailedData[i].meta_description"></div>
+                                                </ng-template>
+                                            </div>
+                                        </div>
+                                            <input
                                             *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
                                             (change)="onTickChange($event,detailedData[i])"
                                             [value]="detailedData[i].field_id" formControlName="isChecked"
                                             type="checkbox" class="custom-control-input"
                                             id="field-{{detailedData[i].field_id}}">
-
                                         <!-- [disabled]="gnralInfo.status === statusHandler.Finalized" -->
                                         <label
                                             *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete"
                                             class="custom-control-label" for="field-{{detailedData[i].field_id}}">
-                                            <h2 [innerHTML]="detailedData[i].display_name | markdown"></h2>
                                         </label>
-
-                                        <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked "
-                                            [innerHTML]="detailedData[i].display_name | markdown">
-                                        </h2>
-                                        <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
-                                            {{detailedData[i].display_name}}</h2> -->
-
-                                        <div *ngIf="detailedData[i].meta_description">
-                                            <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
-                                                style="height: 2em;"></i>
-                                            <ng-template #popTemplate>
-                                                <div [innerHtml]="detailedData[i].meta_description"></div>
-                                            </ng-template>
-
-                                        </div>
                                     </div>
 
                                     <!-- data value -->
