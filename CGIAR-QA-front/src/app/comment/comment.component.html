@@ -1,6 +1,6 @@
 
 <div class="comments-container">
-    <app-on-boarding *ngIf="currentUser.roles[0].id == 2"></app-on-boarding>
+    <app-on-boarding *ngIf="currentUser.roles[0].id != 3"></app-on-boarding>
     <i class="icon-close" (click)="closeComments()"></i>
     <div *ngIf="commentsByCol.length && !availableComment && currentUser.hasOwnProperty('cycle')">
         <h2 class="title-section">COMMENTS ON {{dataFromItem.display_name}}</h2>
@@ -27,7 +27,7 @@
                         <p class="comment">
                             {{comment.detail}}
                         </p>
-                        <app-tags-bar *ngIf="currentUser.roles[0].id == 2" [comment] = "comment" [currentUser] = "currentUser" (tagEvent)="toggleTag($event)"></app-tags-bar>
+                        <app-tags-bar *ngIf="currentUser.roles[0].id != 3" [comment] = "comment" [currentUser] = "currentUser" (tagEvent)="toggleTag($event)"></app-tags-bar>
 
                         <a *ngIf="comment.replies.replies_count != '0'" style="cursor: pointer;"
                             (click)="comment.isCollapsed = !comment.isCollapsed;">
