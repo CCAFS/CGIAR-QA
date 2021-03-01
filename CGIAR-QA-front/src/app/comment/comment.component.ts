@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DetailedStatus } from "../_models/general-status.model"
+import { DetailedStatus, ReplyTypes } from "../_models/general-status.model"
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -33,6 +33,8 @@ export class CommentComponent implements OnInit {
   availableComment = false;
   crpComment = false;
   is_approved = false;
+  replyTypes = ReplyTypes;
+
 
   spinner_replies = 'spinner_Comment_Rply';
   spinner_comment = 'spinner_Comment';
@@ -274,8 +276,9 @@ export class CommentComponent implements OnInit {
   }
 
 
-  answerComment(is_approved: any, comment: any) {
+  answerComment(is_approved: any, replyTypeId: number,comment: any) {
     comment.crp_response = is_approved;
+    comment.replyTypeId = replyTypeId;
     // this.is_approved = is_approved;
     // this.availableComment = true
   }
@@ -292,6 +295,7 @@ export class CommentComponent implements OnInit {
       userId: this.currentUser.id,
       commentId: currentComment ? currentComment.id : this.currentComment.id,
       crp_approved: this.crpComment ? currentComment.crp_response : undefined,
+      replyTypeId: currentComment ? currentComment.replyTypeId : undefined
     }).subscribe(
       res => {
         this.availableComment = false;

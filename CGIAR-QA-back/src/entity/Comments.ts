@@ -27,6 +27,9 @@ export class QAComments {
     @ManyToOne(type => QACycle, cycle => cycle.comments)
     cycle: QAUsers;
 
+    @ManyToOne(type => QAReplyType, replyType => replyType.comments)
+    replyType: QAReplyType;
+    
     @OneToMany(type => QACommentsReplies, comment => comment.user)
     replies: QACommentsReplies;
 
@@ -62,8 +65,6 @@ export class QAComments {
     })
     crp_approved: boolean;
 
-    @ManyToOne(type => QAReplyType, replyType => replyType.comments)
-    replyType: QAReplyType;
 
     @Column({
         default: true

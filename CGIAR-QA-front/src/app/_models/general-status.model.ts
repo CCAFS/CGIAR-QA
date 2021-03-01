@@ -26,3 +26,9 @@ export enum TagMessage {
     notsure = 'is not sure about comment in',
     seen = 'has seen a comment in'
 }
+
+export enum ReplyTypes {
+    accepted = 1,
+    disagree = 2,
+    clarification = 3
+}

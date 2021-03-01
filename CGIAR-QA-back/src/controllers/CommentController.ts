@@ -12,6 +12,7 @@ import { RolesHandler } from "@helpers/RolesHandler";
 import { QAEvaluations } from "@entity/Evaluations";
 import { QACycle } from "@entity/Cycles";
 import { QATags } from "@entity/Tags";
+import { QAReplyType } from "@entity/ReplyType";
 
 // const vfile = require('to-vfile')
 // const retext = require('retext')
@@ -204,17 +205,20 @@ class CommentController {
     static createCommentReply = async (req: Request, res: Response) => {
 
         //Check if username and password are set
-        const { detail, userId, commentId, crp_approved, approved } = req.body;
+        const { detail, userId, commentId, crp_approved, approved, replyTypeId } = req.body;
         // const evaluationId = req.params.id;
 
         const userRepository = getRepository(QAUsers);
         const commentReplyRepository = getRepository(QACommentsReplies);
         const commentsRepository = getRepository(QAComments);
+        const replyTypeRepository = getRepository(QAReplyType);
 
         try {
 
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
             let comment = await commentsRepository.findOneOrFail({ where: { id: commentId } });
+            let replyType = await replyTypeRepository.findOneOrFail({ where: { id: replyTypeId } });
+            comment.replyType = replyType;
             let reply = new QACommentsReplies();
             reply.detail = detail;
             reply.comment = comment;
