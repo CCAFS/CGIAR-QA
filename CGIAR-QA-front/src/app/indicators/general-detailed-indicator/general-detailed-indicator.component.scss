@@ -39,6 +39,13 @@
 .custom-control-label::before {
   width: 24px;
   height: 24px;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.custom-control-label:hover {
+  cursor: pointer;
 }
 
 .custom-control-input:checked ~ .custom-control-label::before {

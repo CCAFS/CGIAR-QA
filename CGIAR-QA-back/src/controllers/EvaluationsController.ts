@@ -92,7 +92,7 @@ class EvaluationsController {
             res.status(404).json({ message: "User evaluations Could not access to evaluations." });
         }
     }
-    // get all evaluations dashboard
+    // get all evaluations dashboard - ADMIN DASHBOARD
     static getAllEvaluationsDash = async (req: Request, res: Response) => {
 
         let { crp_id } = req.query;
@@ -108,11 +108,11 @@ class EvaluationsController {
             let rawData;
             if (crp_id !== undefined && crp_id !== "undefined") {
                 if (user.roles[0].description === RolesHandler.admin) {
-
+                    // CRP DEFINED && ADMIN
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `SELECT
                         evaluations.status AS status,
-                        evaluations.indicator_view_name AS indicator_view_name,
+                        indicator.view_name AS indicator_view_name,
                         indicator.primary_field AS primary_field,
                         indicator.order AS indicator_order,
                         COUNT(DISTINCT evaluations.id) AS count
@@ -122,20 +122,17 @@ class EvaluationsController {
                     LEFT JOIN qa_indicators indicator ON indicator.id = qa_indicator_user.indicatorId
                     LEFT JOIN qa_evaluations evaluations ON evaluations.indicator_view_name = indicator.view_name
                     AND evaluations.phase_year = actual_phase_year()
-                    AND (evaluations.evaluation_status <> 'Deleted' AND evaluations.evaluation_status <> 'Removed' OR evaluations.evaluation_status IS NULL)
+                    AND (evaluations.evaluation_status <> 'Deleted' AND evaluations.evaluation_status <> 'Removed' OR evaluations.evaluation_status IS NULL)  AND evaluations.crp_id =:crp_id
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
-
-
-                    WHERE crp.crp_id = :crp_id
 
                     GROUP BY
                         evaluations.status,
-                        evaluations.indicator_view_name,
+                        indicator.view_name,
                         indicator_order,
                         indicator.primary_field
                     ORDER BY
                         indicator.order ASC,
-                        evaluations.status `,
+                        evaluations.status`,
                         { crp_id },
                         {}
                     );
@@ -144,6 +141,7 @@ class EvaluationsController {
                     rawData = await queryRunner.connection.query(query, parameters);
 
                 } else {
+                    //CRP DEFINED && NOT ADMIN
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `
                     SELECT
@@ -226,11 +224,11 @@ class EvaluationsController {
                 }
 
             } else {
-
+                // CRP UNDEFINED
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT
                     evaluations.status AS status,
-                    evaluations.indicator_view_name AS indicator_view_name,
+                    indicator.view_name AS indicator_view_name,
                     indicator.primary_field AS primary_field,
                     indicator.order AS indicator_order,
                     COUNT(DISTINCT evaluations.id) AS count
@@ -246,7 +244,7 @@ class EvaluationsController {
 
                 GROUP BY
                     evaluations.status,
-                    evaluations.indicator_view_name,
+                    indicator.view_name,
                     indicator_order,
                     indicator.primary_field
                 ORDER BY

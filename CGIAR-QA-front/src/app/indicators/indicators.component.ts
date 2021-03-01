@@ -79,6 +79,8 @@ export class IndicatorsComponent implements OnInit {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
+        console.log(this.currentUser);
+        
       });
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
