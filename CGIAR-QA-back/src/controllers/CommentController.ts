@@ -1385,7 +1385,7 @@ class CommentController {
         }
         let comments = await commentsRepository.find({
             where: whereClause,
-            relations: ['user', 'cycle', 'tags'],
+            relations: ['user', 'cycle', 'tags', 'replyType'],
             // relations: ['user'],
             order: {
                 createdAt: "ASC"

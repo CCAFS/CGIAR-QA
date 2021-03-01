@@ -6,7 +6,7 @@
         <h2 class="title-section">COMMENTS ON {{dataFromItem.display_name}}</h2>
         <div class="comment-container">
             <ng-container *ngFor="let comment of commentsByCol">
-                <div class="comment-body {{ comment.crp_approved == '1' ? 'approved': ''}} {{  comment.crp_approved == '0' ? 'declined': ''}}"
+                <div class="comment-body {{ comment.replyType?.id === 1 ? 'approved': ''}} {{  comment.replyType?.id === 2 ? 'declined': ''}} {{  comment.replyType?.id === 3 ? 'clarification': ''}}"
                     *ngIf="!comment.is_deleted && comment.is_visible">
                     <div>
                         <div class="comment-title">
