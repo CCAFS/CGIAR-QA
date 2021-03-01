@@ -272,7 +272,7 @@ export class CommentComponent implements OnInit {
   }
 
 
-  answerComment(is_approved: boolean, comment: any) {
+  answerComment(is_approved: any, comment: any) {
     comment.crp_response = is_approved;
     // this.is_approved = is_approved;
     // this.availableComment = true
@@ -283,7 +283,7 @@ export class CommentComponent implements OnInit {
       this.alertService.error('Comment is required', false)
       return;
     }
-
+    console.log('CRP_RESPONSE',currentComment.crp_response)
     this.showSpinner(this.spinner_comment);
     this.commentService.createDataCommentReply({
       detail: this.formData.comment.value,

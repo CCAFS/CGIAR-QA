@@ -62,19 +62,22 @@
 
                     <div *ngIf="crpComment && comment.crp_approved === null" style="flex-direction: row;"
                         class="add-comment-container">
-                        <button type="button" class="btn btn-danger"
-                            (click)="answerComment(false, comment)">DISAGREE</button>
-                        <button type="button" class="btn btn-success"
+                        <button type="button" class="btn accept"
                             (click)="answerComment(true, comment)">ACCEPT</button>
+                        <button type="button" class="btn disagree"
+                            (click)="answerComment(false, comment)">DISAGREE</button>
+                        <button type="button" class="btn request-clarification"
+                            (click)="answerComment(2, comment)">REQUEST CLARIFICATION</button>
                     </div>
 
                     <div *ngIf="crpComment && comment.replies.replies_count == '0'"
                         class="add-comment-container reply-comment"
-                        [ngClass]="{'approved' : comment.crp_response === true, 'declined' : comment.crp_response === false}">
+                        [ngClass]="{'approved' : comment.crp_response === true, 'declined' : comment.crp_response === false, 'clarification' : comment.crp_response === 2}" >
                         <h2 *ngIf="comment.hasOwnProperty('crp_response')">{{comment.crp_response ? 'ACCEPT':'REJECT'}}
                             COMMENT</h2>
-                        <p class="update-reminder" *ngIf="comment.crp_response">* Before you accept this comment, please
-                            make sure you have updated the information in MARLO/MEL.</p>
+                        <p class="update-reminder" *ngIf="comment.crp_response === 2">Be clear with any doubts you may have regarding the comment so that an assessor can help you</p>
+                            <!-- * Before you accept this comment, please
+                            make sure you have updated the information in MARLO/MEL. -->
                         <div *ngIf="comment.hasOwnProperty('crp_response')">
                             <form [formGroup]="commentGroup">
                                 <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
