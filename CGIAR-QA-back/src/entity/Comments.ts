@@ -7,6 +7,7 @@ import { QAIndicatorsMeta } from "../entity/IndicatorsMeta"
 import { QAUsers } from "../entity/User"
 import { QACycle } from "./Cycles";
 import { QATags } from "./Tags";
+import { QAReplyType } from "./ReplyType";
 
 @Entity()
 export class QAComments {
@@ -60,6 +61,9 @@ export class QAComments {
         nullable: true
     })
     crp_approved: boolean;
+
+    @ManyToOne(type => QAReplyType, replyType => replyType.comments)
+    replyType: QAReplyType;
 
     @Column({
         default: true

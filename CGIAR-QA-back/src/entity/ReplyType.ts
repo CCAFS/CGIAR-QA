@@ -1,20 +1,18 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from "typeorm";
-import { Length, IsNotEmpty } from "class-validator";
 
-import { QATags } from "../entity/Tags"
+import { QAComments } from "./Comments";
 
 @Entity()
-export class QATagType {
+export class QAReplyType {
 
     @PrimaryGeneratedColumn()
     id: number;
-
     
     @Column({
         nullable: false
     })
     name: string;
     
-    @OneToMany(type => QATags, tag => tag.tagType)
-    tags: QATags;
-}  
+    @OneToMany(type => QAComments, comment => comment.replyType)
+    comments: QAComments;
+} 
