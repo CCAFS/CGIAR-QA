@@ -54,7 +54,7 @@
                                         <p class="reply" *ngIf="comment.replyType?.id != replyTypes.accepted">
                                             {{reply.detail}}
                                         </p>
-                                        <p class="reply" *ngIf="comment.replyType?.id == replyTypes.accepted">
+                                        <p class="reply accept-msg" *ngIf="comment.replyType?.id == replyTypes.accepted">
                                             ACCEPTED
                                         </p>
                                     </ng-container>
@@ -165,7 +165,7 @@
                                         <p class="reply" *ngIf="comment.replyType?.id != replyTypes.accepted">
                                             {{reply.detail}}
                                         </p>
-                                        <p class="reply" *ngIf="comment.replyType?.id == replyTypes.accepted">
+                                        <p class="reply accept-msg" *ngIf="comment.replyType?.id == replyTypes.accepted">
                                             ACCEPTED
                                         </p>
                                     </ng-container>

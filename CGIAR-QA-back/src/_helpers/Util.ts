@@ -528,7 +528,10 @@ class Util {
                 approved_no_comment: element['approved_no_comment'] || null,
                 public_link: element[`public_link`],
                 editable_link: element[`editable_link`],
-                meta_description: element['meta_description']
+                meta_description: element['meta_description'],
+                count_accepted_comments: element['accepted_comments'],
+                count_disagree_comments: element['disagree_comments'],
+                count_clarification_comments: element['clarification_comments'],
             });
 
         }
