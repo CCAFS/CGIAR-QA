@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, TemplateRef  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { DetailedStatus, ReplyTypes } from "../_models/general-status.model"
@@ -14,6 +14,8 @@ import { CommentService } from '../services/comment.service';
 import { from } from 'rxjs';
 import { WordCounterPipe } from '../pipes/word-counter.pipe';
 import { mergeMap } from 'rxjs/operators';
+
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-comment',
@@ -39,6 +41,9 @@ export class CommentComponent implements OnInit {
   spinner_replies = 'spinner_Comment_Rply';
   spinner_comment = 'spinner_Comment';
 
+  modalRef: BsModalRef;
+  message: string;
+
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
@@ -52,7 +57,9 @@ export class CommentComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
     private wordCount: WordCounterPipe,
-    private spinner: NgxSpinnerService) {
+    private spinner: NgxSpinnerService,
+    private modalService: BsModalService
+    ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
     });
@@ -283,8 +290,23 @@ export class CommentComponent implements OnInit {
     // this.availableComment = true
   }
 
+  //ACCEPT COMMENT
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+  }
+ 
+  confirm(is_approved: any, replyTypeId: number,comment: any): void {
+    this.answerComment(true,replyTypeId, comment);
+    this.replyComment(comment);
+    this.modalRef.hide();
+  }
+ 
+  cancel(): void {
+    this.modalRef.hide();
+  }
+
   replyComment(currentComment) {
-    if (this.commentGroup.invalid || this.formData.comment.value === "") {
+    if ((this.commentGroup.invalid || this.formData.comment.value === "") && currentComment.replyTypeId != this.replyTypes.accepted  ) {
       this.alertService.error('Comment is required', false)
       return;
     }
@@ -320,6 +342,8 @@ export class CommentComponent implements OnInit {
   getWordCount(value: string) {
     return this.wordCount.transform(value);
   }
+
+  
 
   /***
   * 

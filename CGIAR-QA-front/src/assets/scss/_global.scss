@@ -471,3 +471,25 @@ body::-webkit-scrollbar-thumb
   border-radius: 10px;
   background-color: var(--yellow-secondary);
 }
+
+.accept {
+  background-color: var(--color-agree);
+  border: 2px solid var(--color-agree);
+  &:hover {
+    border: 2px solid var(--green-primary);
+  }
+}
+modal-container{
+  display: flex !important;
+}
+.modal-content {
+  max-width: 500px;
+  margin: auto;
+  h5{
+
+  }
+  p {
+    margin: 0;
+    font-size: $font-sm;
+  }
+}

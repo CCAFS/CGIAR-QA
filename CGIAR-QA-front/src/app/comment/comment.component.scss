@@ -102,14 +102,26 @@
 
     .accept {
   background-color: var(--color-agree);
+  border: 2px solid var(--color-agree);
+    &:hover {
+      border: 2px solid var(--green-primary);
+    }
     }
 
     .disagree {
     background-color: var(--color-disagree);
+    border: 2px solid var(--color-disagree);
+    &:hover {
+      border: 2px solid var(--red-secondary);
+    }
   }
 
     .request-clarification {
-    background-color: var(--color-pending);   
+    background-color: var(--color-pending);
+    border: 2px solid var(--color-pending);
+    &:hover {
+      border: 2px solid var(--yellow-quaternary);
+    }
     }
   }
   .icon-close {
