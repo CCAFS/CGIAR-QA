@@ -66,7 +66,7 @@ export class AssessorDashboardComponent implements OnInit {
       this.indicatorService.getItemStatusByIndicator(el.indicator.view_name).subscribe(
          (res) => {
           this.itemStatusByIndicator[el.indicator.view_name] = this.indicatorService.formatItemStatusByIndicator(res.data);
-          console.log(el.indicator.view_name,this.itemStatusByIndicator[el.indicator.view_name]);
+          // console.log(el.indicator.view_name,this.itemStatusByIndicator[el.indicator.view_name]);
           
         },
         error => {
@@ -99,14 +99,14 @@ export class AssessorDashboardComponent implements OnInit {
 
   actualStatusIndicator(data) {
     let indicator_status = false;
-    console.log(data);
+    // console.log(data);
     let i = 0;
     if(data) {
       for (const item of data) {
         if (item.indicator_status == 1) indicator_status = true;
         i++;
         // console.log(i);
-    console.log('INDICATOR STATUS',indicator_status);
+    // console.log('INDICATOR STATUS',indicator_status);
         
       }
     }
@@ -144,9 +144,9 @@ export class AssessorDashboardComponent implements OnInit {
     return this.commentService.getCommentCRPStats({ crp_id, id: null })
       .subscribe(
         res => {
-          // console.log(res)
+          console.log('COMMENTS_DATA',res.data)
           this.dashboardCommentsData = this.dashService.groupData(res.data);
-          // console.log(this.dashboardCommentsData);
+          console.log('DASH_COMMENTS_DATA',this.dashboardCommentsData);
           this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
           //getDashData depends on getCommentStats
           this.getDashData();
@@ -219,29 +219,33 @@ export class AssessorDashboardComponent implements OnInit {
     }
     let finalized = dataset.find(item => item.name == 'finalized');
     if(finalized) finalized.name = 'closed';
-    console.log('DATA SELECTED', { dataset, brushes });
+    // console.log('DATA SELECTED', { dataset, brushes });
     
     return { dataset, brushes };
   }
 
   formatCommentsIndicatorData(data) {
     const colors = {
-      Approved: '#59ed9c',
-      Pending: '#f3da90',
-      Rejected: '#ed8b84'
+      Accepted: '#59ed9c',
+      Clarification: '#f3da90',
+      Disagree: '#ed8b84',
+      Pending: '#e9e9e9'
     }
     let dataset = [];
     let brushes = { domain: [] };
     
     if(data) {
-      let comments_approved = data.find(item => item.comments_approved != '0');
-      comments_approved = comments_approved ? { name: 'Approved', value: +comments_approved.value } : null;
-      if (comments_approved) dataset.push(comments_approved);
+      let comments_accepted = data.find(item => item.comments_accepted != '0');
+      comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
+      if (comments_accepted) dataset.push(comments_accepted);
   
       let comments_rejected = data.find(item => item.comments_rejected != '0');
-      comments_rejected = comments_rejected ? { name: 'Rejected', value: +comments_rejected.value } : null;
+      comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
       if (comments_rejected) dataset.push(comments_rejected);
-  
+
+      let comments_clarification = data.find(item => item.comments_clarification != '0');
+      comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
+      if (comments_clarification) dataset.push(comments_clarification);
   
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;

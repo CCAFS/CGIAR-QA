@@ -47,23 +47,26 @@ class CommentController {
             if (crp_id !== undefined && crp_id !== 'undefined') {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
-                     SELECT
+                    SELECT
                             SUM(
-                                IF (comments.crp_approved = 1, 1, 0)
-                            ) AS comments_approved,
+                                IF (comments.replyTypeId = 1, 1, 0)
+                            ) AS comments_accepted,
                             SUM(
-                                IF (comments.crp_approved = 0, 1, 0)
+                                IF (comments.replyTypeId = 2, 1, 0)
                             ) AS comments_rejected,
                             SUM(
+                                IF (comments.replyTypeId = 3, 1, 0)
+                            ) AS comments_clarification,
+                            SUM(
                                 IF (
-                                    comments.crp_approved IS NULL,
+                                    comments.replyTypeId IS NULL,
                                     1,
                                     0
                                 )
                             ) AS comments_without_answer,
                             SUM(IF(replies.userId = 47, 1, 0)) AS auto_replies_total,
                     
-                            IF(comments.crp_approved IS NULL, 'secondary', IF(comments.crp_approved = 1, 'success','danger')) AS type,
+                            IF(comments.replyTypeId IS NULL, 'secondary', IF(comments.replyTypeId = 2, 'success','danger')) AS type,
                             
                             COUNT(DISTINCT comments.id) AS 'label',
                             COUNT(DISTINCT comments.id) AS 'value',
@@ -77,7 +80,7 @@ class CommentController {
                             AND evaluation_status <> 'Deleted'
                             AND evaluations.phase_year = actual_phase_year()
                             -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
-                    GROUP BY evaluations.indicator_view_name, comments.crp_approved
+                    GROUP BY evaluations.indicator_view_name, comments.replyTypeId
                     ORDER BY type DESC;
                     `,
                     { crp_id },
@@ -91,21 +94,24 @@ class CommentController {
                     `
                     SELECT
                             SUM(
-                                IF (comments.crp_approved = 1, 1, 0)
-                            ) AS comments_approved,
+                                IF (comments.replyTypeId = 1, 1, 0)
+                            ) AS comments_accepted,
                             SUM(
-                                IF (comments.crp_approved = 0, 1, 0)
+                                IF (comments.replyTypeId = 2, 1, 0)
                             ) AS comments_rejected,
                             SUM(
+                                IF (comments.replyTypeId = 3, 1, 0)
+                            ) AS comments_clarification,
+                            SUM(
                                 IF (
-                                    comments.crp_approved IS NULL,
+                                    comments.replyTypeId IS NULL,
                                     1,
                                     0
                                 )
                             ) AS comments_without_answer,
                             SUM(IF(replies.userId = 47, 1, 0)) AS auto_replies_total,
                     
-                            IF(comments.crp_approved IS NULL, 'secondary', IF(comments.crp_approved = 1, 'success','danger')) AS type,
+                            IF(comments.replyTypeId IS NULL, 'secondary', IF(comments.replyTypeId = 1, 'success','danger')) AS type,
                             
                             COUNT(DISTINCT comments.id) AS 'label',
                             COUNT(DISTINCT comments.id) AS 'value',
@@ -119,7 +125,7 @@ class CommentController {
                             AND evaluation_status <> 'Deleted'
                             AND evaluations.phase_year = actual_phase_year()
                             -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
-                    GROUP BY evaluations.indicator_view_name, comments.crp_approved
+                    GROUP BY evaluations.indicator_view_name, comments.replyTypeId
                     ORDER BY type DESC;
 
                         `,
