@@ -229,7 +229,7 @@ export class AssessorDashboardComponent implements OnInit {
       Accepted: '#59ed9c',
       Clarification: '#f3da90',
       Disagree: '#ed8b84',
-      Pending: '#e9e9e9'
+      Pending: '#cfcfcf'
     }
     let dataset = [];
     let brushes = { domain: [] };

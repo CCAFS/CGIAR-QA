@@ -47,19 +47,23 @@
     }
 }
 .autochecked {
-    background-color: #46bdc6;
+    background-color: var(--color-autochecked);
 }
 .complete {
-    background-color: #59ed9c;
+    background-color: var(--color-complete);
 }
 
 .pending {
-    background-color: #f3da90;
+    background-color: var(--color-pending-gray);
+}
+
+.clarification {
+    background-color: var(--color-clarification);
 }
 
 .finalized {
-    background-color: #00958e;
+    background-color: var(--color-finalized);
 }
 .rejected {
-    background-color: #ed8b84;
+    background-color: var(--color-disagree);
 }
