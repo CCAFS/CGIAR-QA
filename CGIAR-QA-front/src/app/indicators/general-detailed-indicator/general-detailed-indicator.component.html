@@ -249,6 +249,18 @@
                                                 style="display:none">
                                                 Approved without comments
                                             </div>
+                                            <div [ngClass]="{'comment-accepted reply-tag': detailedData[i].count_accepted_comments > 0} "
+                                                style="display:none">
+                                                Accepted
+                                            </div>
+                                            <div [ngClass]="{'comment-clarification reply-tag': detailedData[i].count_clarification_comments > 0} "
+                                                style="display:none">
+                                                Clarification needed
+                                            </div>
+                                            <div [ngClass]="{'comment-disagree reply-tag': detailedData[i].count_disagree_comments > 0} "
+                                                style="display:none">
+                                                Disagree
+                                            </div>
 
                                         </div>
                                     </div>
