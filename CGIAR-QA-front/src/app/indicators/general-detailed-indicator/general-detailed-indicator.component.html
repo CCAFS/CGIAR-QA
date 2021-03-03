@@ -72,21 +72,37 @@
                                     <!-- checkbox -->
                                     <div class="row field">
                                         <div class="field-title">
-                                            <h2 *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete" [innerHTML]="detailedData[i].display_name | markdown"></h2>
-     
-    
+                                            <h2 *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete"
+                                                [innerHTML]="detailedData[i].display_name | markdown"></h2>
+
+
                                             <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked "
                                                 [innerHTML]="detailedData[i].display_name | markdown">
-                                            </h2>
+                                            </h2>       
+  
                                             <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                                 {{detailedData[i].display_name}}</h2> -->
-    
+
                                             <div *ngIf="detailedData[i].meta_description">
-                                                <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
-                                                    style="height: 2em;"></i>
+                                                <i [tooltip]="popTemplate" container="body" placement="top"
+                                                    class="icon-pdf" style="height: 2em;"></i>
                                                 <ng-template #popTemplate>
                                                     <div [innerHtml]="detailedData[i].meta_description"></div>
                                                 </ng-template>
+                                                <!-- TODO - MOVE TO ROUND 2 -->
+                                            </div>
+
+                                            <div [ngClass]="{'comment-accepted reply-tag': detailedData[i].count_accepted_comments > 0} "
+                                                style="display:none">
+                                                Accepted
+                                            </div>
+                                            <div [ngClass]="{'comment-clarification reply-tag': detailedData[i].count_clarification_comments > 0} "
+                                                style="display:none">
+                                                Clarification needed
+                                            </div>
+                                            <div [ngClass]="{'comment-disagree reply-tag': detailedData[i].count_disagree_comments > 0} "
+                                                style="display:none">
+                                                Disagree
                                             </div>
                                         </div>
 
@@ -99,6 +115,7 @@
                                     <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  )"
                                         [innerHTML]="detailedData[i].value">
                                     </div>
+                                    
                                     <!-- <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'OICR' )"
                                         [innerHTML]="detailedData[i].value">
                                     </div> -->
@@ -112,20 +129,20 @@
                                 <div class="check-container">
                                     <div class="check-area">
                                         <input
-                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
-                                        (change)="onTickChange($event,detailedData[i])"
-                                        [value]="detailedData[i].field_id" formControlName="isChecked"
-                                        type="checkbox" class="custom-control-input"
-                                        id="field-{{detailedData[i].field_id}}">
-                                    <!-- [disabled]="gnralInfo.status === statusHandler.Finalized" -->
-                                    <label
-                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete"
-                                        class="custom-control-label" for="field-{{detailedData[i].field_id}}">
-                                    </label>
+                                            *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
+                                            (change)="onTickChange($event,detailedData[i])"
+                                            [value]="detailedData[i].field_id" formControlName="isChecked"
+                                            type="checkbox" class="custom-control-input"
+                                            id="field-{{detailedData[i].field_id}}">
+                                        <!-- [disabled]="gnralInfo.status === statusHandler.Finalized" -->
+                                        <label
+                                            *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete"
+                                            class="custom-control-label" for="field-{{detailedData[i].field_id}}">
+                                        </label>
                                     </div>
                                 </div>
 
-                                <!-- comments --> 
+                                <!-- comments -->
                                 <div #commentsElem style="cursor: pointer;"
                                     *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
                                     (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"
@@ -188,6 +205,7 @@
 
                     </div>
                 </div>
+                <!-- ROUND 2 -->
                 <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em;">
                     <div *ngIf="gnralInfo.status !== statusHandler.Finalized && gnralInfo.evaluation_status !== 'Added'"
                         class="bton-container">
@@ -248,8 +266,7 @@
                                 </div>
 
                                 <!-- comments -->
-                                <div #commentsElem style="cursor: pointer;"
-                                    *ngIf="detailedData[i].replies_count != '0'"
+                                <div #commentsElem style="cursor: pointer;" *ngIf="detailedData[i].replies_count != '0'"
                                     (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"
                                     class="activate-messages-container {{detailedData[i].replies_count == '0' ?  '':'active'}}">
 
