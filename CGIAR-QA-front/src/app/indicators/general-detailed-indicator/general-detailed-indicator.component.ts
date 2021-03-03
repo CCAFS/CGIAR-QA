@@ -148,7 +148,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let checked_row = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
     let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id);
     let availableData = this.detailedData.filter(data => data.enable_comments)
-    // console.log('update Eval',  commented_row, checked_row,  availableData.length)
+    // console.log('update Eval',  commented_row, checked_row,  availableData.length, this.statusHandler, this.gnralInfo, this.currentUser)
     if (this.gnralInfo.status !== this.statusHandler.Pending && this.gnralInfo.status !== this.statusHandler.Finalized && this.currentUser.hasOwnProperty('cycle')) {
     // if (this.gnralInfo.status !== this.statusHandler.Complete) {
       if ((checked_row.length + commented_row.length) == availableData.length) {
@@ -175,6 +175,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           // console.log(res);
           field.loading = false
           this.validateUpdateEvaluation();
+          this.validateAllFieldsAssessed()
         },
         error => {
           this.alertService.error(error);
@@ -214,6 +215,27 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
 
     // console.log(selected_meta)
+  }
+
+  validateAllFieldsAssessed() {
+    let allFieldsAssessed: boolean = false;
+    let statusByField = [];
+    this.formTickData.controls.forEach((value, i) => {
+      
+      statusByField.push({display_name: this.detailedData[i].display_name, value: (this.detailedData[i].replies_count != '0' || value.get('isChecked').value) ? true : false});
+    });
+    let fieldWithoutAssessed = statusByField.find(e => e.value == false);
+    // existNotAssessed = existNotAssessed.value;
+    
+    if(fieldWithoutAssessed == undefined) {
+      allFieldsAssessed = true;
+    } else {
+      allFieldsAssessed = false;
+    }
+    console.log(this.detailedData);
+    
+    console.log({fieldWithoutAssessed,statusByField,allFieldsAssessed});
+    
   }
 
   getDetailedData() {
@@ -387,7 +409,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
     this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
       res => {
-        //console.log(res)
+        console.log(res, 'EVAL UPDATE')
         this.alertService.success(res.message);
         
         this.getDetailedData();
