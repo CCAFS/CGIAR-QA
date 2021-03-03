@@ -89,17 +89,7 @@
                                                 </ng-template>
                                             </div>
                                         </div>
-                                            <input
-                                            *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
-                                            (change)="onTickChange($event,detailedData[i])"
-                                            [value]="detailedData[i].field_id" formControlName="isChecked"
-                                            type="checkbox" class="custom-control-input"
-                                            id="field-{{detailedData[i].field_id}}">
-                                        <!-- [disabled]="gnralInfo.status === statusHandler.Finalized" -->
-                                        <label
-                                            *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete"
-                                            class="custom-control-label" for="field-{{detailedData[i].field_id}}">
-                                        </label>
+
                                     </div>
 
                                     <!-- data value -->
@@ -119,8 +109,23 @@
                                     <!-- <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p> -->
 
                                 </div>
+                                <div class="check-container">
+                                    <div class="check-area">
+                                        <input
+                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
+                                        (change)="onTickChange($event,detailedData[i])"
+                                        [value]="detailedData[i].field_id" formControlName="isChecked"
+                                        type="checkbox" class="custom-control-input"
+                                        id="field-{{detailedData[i].field_id}}">
+                                    <!-- [disabled]="gnralInfo.status === statusHandler.Finalized" -->
+                                    <label
+                                        *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) && gnralInfo.status !== statusHandler.Complete"
+                                        class="custom-control-label" for="field-{{detailedData[i].field_id}}">
+                                    </label>
+                                    </div>
+                                </div>
 
-                                <!-- comments -->
+                                <!-- comments --> 
                                 <div #commentsElem style="cursor: pointer;"
                                     *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
                                     (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"
