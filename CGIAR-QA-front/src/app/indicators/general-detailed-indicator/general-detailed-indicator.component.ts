@@ -229,6 +229,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     
     if(fieldWithoutAssessed == undefined) {
       allFieldsAssessed = true;
+      this.gnralInfo.status_update = this.statusHandler.Complete;
+      this.updateEvaluation('status', this.detailedData)
     } else {
       allFieldsAssessed = false;
     }
