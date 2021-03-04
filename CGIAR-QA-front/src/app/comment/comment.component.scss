@@ -141,3 +141,8 @@
     font-size: $primary-fs;
   }
 }
+.btn {
+  &:hover {
+    cursor: pointer;
+  }
+}

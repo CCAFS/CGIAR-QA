@@ -62,6 +62,8 @@ export class CommentComponent implements OnInit {
     ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
+      console.log(this.currentUser.cycle_ended);
+      
     });
   }
 

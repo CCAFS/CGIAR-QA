@@ -42,20 +42,20 @@
 
                                         <div class="comment-title">
                                             <div style="flex-direction: column;">
-                                                <span>ADDED BY {{reply.user.username}} </span>
+                                                <p class="reply accept-msg" *ngIf="comment.replyType?.id == replyTypes.accepted">
+                                                    ACCEPTED BY {{reply.user.username}}
+                                                </p>
+                                                <span *ngIf="comment.replyType?.id != replyTypes.accepted">ADDED BY {{reply.user.username}} </span>
                                                 <p>On {{reply.updatedAt | date: 'long'}}</p>
                                             </div>
                                             <i style="height: 2em;" *ngIf="reply.user.id === currentUser.id "
                                                 (click)="updateCommentReply('is_deleted', reply)"
-                                                class="icon-remove"></i>
+                                                class="icon-remove btn"></i>
                                         </div>
                                         <hr style="margin: 0;">
 
                                         <p class="reply" *ngIf="comment.replyType?.id != replyTypes.accepted">
                                             {{reply.detail}}
-                                        </p>
-                                        <p class="reply accept-msg" *ngIf="comment.replyType?.id == replyTypes.accepted">
-                                            ACCEPTED
                                         </p>
                                     </ng-container>
                                 </div>
@@ -119,8 +119,7 @@
 
     </div>
     <!-- VIEW ONLY -->
-    <div
-        *ngIf="commentsByCol.length && !availableComment && (!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended)">
+    <div *ngIf="commentsByCol.length && !availableComment && (!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended)">
         <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
         <div class="comment-container">
             <ng-container *ngFor="let comment of commentsByCol">
@@ -158,7 +157,10 @@
 
                                         <div class="comment-title">
                                             <div style="flex-direction: column;">
-                                                <span>ADDED BY {{reply.user.username}} </span>
+                                                <p class="reply accept-msg" *ngIf="comment.replyType?.id == replyTypes.accepted">
+                                                    ACCEPTED BY {{reply.user.username}}
+                                                </p>
+                                                <span *ngIf="comment.replyType?.id == replyTypes.accepted">ADDED BY {{reply.user.username}} </span>
                                                 <p>On {{reply.updatedAt | date: 'long'}}</p>
                                             </div>
                                             <i style="height: 2em;" *ngIf="reply.user.id === currentUser.id "
@@ -168,9 +170,6 @@
                                         <hr style="margin: 0;">
                                         <p class="reply" *ngIf="comment.replyType?.id != replyTypes.accepted">
                                             {{reply.detail}}
-                                        </p>
-                                        <p class="reply accept-msg" *ngIf="comment.replyType?.id == replyTypes.accepted">
-                                            ACCEPTED
                                         </p>
                                     </ng-container>
                                 </div>
