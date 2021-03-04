@@ -144,6 +144,7 @@ export class AdminDashboardComponent implements OnInit {
     this.indicatorsNameDropdwon.forEach(indicator => {
       this.indicatorService.getItemStatusByIndicator(indicator.viewname).subscribe(
          (res) => {
+           console.log('ITEM STATUS',indicator.viewname,res.data);
           this.itemStatusByIndicator[indicator.viewname] = this.indicatorService.formatItemStatusByIndicator(res.data);
           // console.log('ITEM STATUS',indicator.viewname,this.itemStatusByIndicator[indicator.viewname]);
           
@@ -153,6 +154,11 @@ export class AdminDashboardComponent implements OnInit {
           this.alertService.error(error);
         }
       );
+      this.indicatorService.getAllItemStatusByIndicator().subscribe(
+        res => {
+          console.log('ALL ITEMS',res.data);
+        }
+      )
     });
 
     // this.hideSpinner();

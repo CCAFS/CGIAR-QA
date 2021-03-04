@@ -38,6 +38,10 @@ export class IndicatorsService {
     return this.http.get<any>(`${environment.apiUrl}/indicator/items/${indicator_name}`);
   }
 
+  getAllItemStatusByIndicator() {
+    return this.http.get<any>(`${environment.apiUrl}/indicator/items`);
+  }
+
   formatItemStatusByIndicator(obj) {
     let response = [];
     if(obj) {

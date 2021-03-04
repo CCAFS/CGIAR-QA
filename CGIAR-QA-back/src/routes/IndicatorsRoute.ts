@@ -45,5 +45,8 @@ router.get("/user/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesH
 router.patch("/:id([0-9]+)/user", [checkJwt, checkRole([RolesHandler.admin])], CommentController.editCommentsMeta);
 
 // get item indicators status
-router.get("/items/:indicator", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], IndicatorsController.getItemStatusByIndicator);
+router.get("/items/:indicator", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], IndicatorsController.getItemStatusByIndicator); 
+
+// get ALL item status by indicator
+router.get("/items", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], IndicatorsController.getAllItemStatusByIndicator); 
 export default router;

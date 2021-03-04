@@ -382,6 +382,75 @@ class IndicatorsController {
             res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
         }
     }
+      static getAllItemStatusByIndicator = async (req: Request, res: Response) => {
+
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
+                SUM(
+                   IF (approved_no_comment = 0, 1, 0)
+                   ) AS pending,
+               SUM(
+                   IF (approved_no_comment = 1, 1, 0)
+                   ) AS approved_without_comment,
+               SUM(
+                   IF (approved_no_comment is null, 1, 0)
+                   ) AS assessment_with_comments
+               FROM qa_indicators_meta qim
+               LEFT JOIN qa_comments qc ON qc.metaId = qim.id
+               LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+               WHERE qim.id = qc.metaId
+               AND qim.display_name  not like 'id'
+               AND qim.enable_comments = 1
+               AND qe.evaluation_status not like 'Removed'
+               AND qe.phase_year = actual_phase_year()
+               GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment`
+                ,
+                {},
+                {}
+            );
+            let allItems = await queryRunner.connection.query(query, parameters);
+            let totalByItem = {};
+            for (let i = 0; i < allItems.length; i++) {
+
+                if(!totalByItem.hasOwnProperty(allItems[i].indicator_view_name)) {
+                    totalByItem[allItems[i].indicator_view_name] = {}
+                }
+                if(!totalByItem[allItems[i].indicator_view_name].hasOwnProperty(allItems[i].display_name)) {
+                    totalByItem[allItems[i].indicator_view_name][allItems[i].display_name] = {pending: 0, approved_without_comment: 0, assessment_with_comments: 0};
+                }
+
+                //INDICATOR_VIEW_NAME => DISPLAY_NAME => STATUS
+                switch (allItems[i].approved_no_comment) {
+                    case 0:
+                        totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = allItems[i].pending;
+                        break;
+                    case 1:
+                        totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
+                        break;
+                    case null:
+                        totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+
+
+            console.log(totalByItem);
+            
+
+            res.status(200).send({ data: totalByItem, message: 'All items by indicator' });
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+        }
+    }
 
 }
 
