@@ -217,10 +217,12 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   formatStatusIndicatorData(data) {
+    // DEFINE COLORS WITH CSS
     const colors = {
-      complete: '#59ed9c',
-      pending: '#f3da90',
-      finalized: '#00958e'
+      complete: 'var(--color-complete)',
+      pending: 'var(--color-pending)',
+      finalized: 'var(--color-finalized)',
+      autochecked: 'var(--color-autochecked)'
     }
     let dataset = [];
     let brushes = { domain: [] };
@@ -239,22 +241,26 @@ export class AdminDashboardComponent implements OnInit {
 
   formatCommentsIndicatorData(data) {
     const colors = {
-      Approved: '#59ed9c',
-      Pending: '#f3da90',
-      Rejected: '#ed8b84'
+      Accepted: 'var(--color-agree)',
+      Clarification: 'var(--color-clarification)',
+      Disagree: 'var(--color-disagree)',
+      Pending: 'var(--color-pending)'
     }
     let dataset = [];
     let brushes = { domain: [] };
     
     if(data) {
-      let comments_approved = data.find(item => item.comments_approved != '0');
-      comments_approved = comments_approved ? { name: 'Approved', value: +comments_approved.value } : null;
-      if (comments_approved) dataset.push(comments_approved);
+      let comments_accepted = data.find(item => item.comments_accepted != '0');
+      comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
+      if (comments_accepted) dataset.push(comments_accepted);
   
       let comments_rejected = data.find(item => item.comments_rejected != '0');
-      comments_rejected = comments_rejected ? { name: 'Rejected', value: +comments_rejected.value } : null;
+      comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
       if (comments_rejected) dataset.push(comments_rejected);
-  
+
+      let comments_clarification = data.find(item => item.comments_clarification != '0');
+      comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
+      if (comments_clarification) dataset.push(comments_clarification);
   
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;

@@ -50,21 +50,22 @@
 .autochecked {
     background-color: var(--color-autochecked);
 }
-.complete {
-    background-color: var(--color-complete);
-}
-
 .pending {
     background-color: var(--color-pending);
 }
-
-.clarification {
-    background-color: var(--color-clarification);
+.complete {
+    background-color: var(--color-complete);
 }
-
 .finalized {
     background-color: var(--color-finalized);
 }
-.rejected {
+
+.agree {
+    background-color: var(--color-agree);
+}
+.disagree {
     background-color: var(--color-disagree);
+}
+.clarification {
+    background-color: var(--color-clarification);
 }
