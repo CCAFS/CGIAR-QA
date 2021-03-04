@@ -194,11 +194,11 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   
-  getAllTags(): Observable<any>{
-    return this.commentService.getAllTags().pipe();
+  getAllTags(crp_id?): Observable<any>{
+    return this.commentService.getAllTags(crp_id).pipe();
   }
 
-  getFeedTags(): Observable<any> {
+  getFeedTags(crp_id?): Observable<any> {
     return this.commentService.getFeedTags().pipe();
   }
 
@@ -359,7 +359,7 @@ export class AdminDashboardComponent implements OnInit {
       },
     );
 
-    this.getAllTags().subscribe(
+    this.getAllTags(value.crp_id).subscribe(
       res => {
         this.indicatorsTags = this.commentService.groupTags(res.data);
       }

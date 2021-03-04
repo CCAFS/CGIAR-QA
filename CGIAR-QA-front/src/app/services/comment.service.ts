@@ -97,8 +97,8 @@ export class CommentService {
       return this.http.get<any>(`${environment.apiUrl}/evaluation/detail/comment/tag/${params.commentId}/${params.tagTypeId}/${params.userId}`)
     }
 
-    getAllTags() {
-      return this.http.get<any>(`${environment.apiUrl}/comment/tags`);
+    getAllTags(crp_id?) {
+      return this.http.get<any>(`${environment.apiUrl}/comment/tags/?crp_id=${crp_id}`);
     }
 
     getFeedTags() {

@@ -332,26 +332,51 @@ class CommentController {
   
     // get total indicator tags for chart
     static getAllIndicatorTags = async (req: Request, res: Response) => {
-
+//TODO
+        const { crp_id } = req.query;
+        console.log({crp_id});
+        
         let queryRunner = getConnection().createQueryBuilder();
         try {
+            let tagsByIndicators;
+            if(crp_id !== 'undefined') {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT qe.indicator_view_name, tt.name as tagType, count(*) as total
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    WHERE tt.name not like "seen"
+                    AND qe.crp_id = :crp_id
+                    AND qe.phase_year = actual_phase_year()
+                    GROUP BY qe.indicator_view_name, tt.name
+                    `
+                    ,
+                    {crp_id},
+                    {}
+                );
+                tagsByIndicators = await queryRunner.connection.query(query, parameters);
+            } else{
 
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                `SELECT qe.indicator_view_name, tt.name as tagType, count(*) as total
-                FROM qa_tags tag 
-                LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
-                LEFT JOIN qa_users us ON us.id = tag.userId
-                LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
-                LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
-                WHERE tt.name not like "seen"
-                AND qe.phase_year = actual_phase_year()
-                GROUP BY qe.indicator_view_name, tt.name;
-                `
-                ,
-                {},
-                {}
-            );
-            let tagsByIndicators = await queryRunner.connection.query(query, parameters);
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT qe.indicator_view_name, tt.name as tagType, count(*) as total
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    WHERE tt.name not like "seen"
+                    AND qe.phase_year = actual_phase_year()
+                    GROUP BY qe.indicator_view_name, tt.name;
+                    `
+                    ,
+                    {},
+                    {}
+                );
+                tagsByIndicators = await queryRunner.connection.query(query, parameters);
+
+            }
             res.status(200).send({ data: tagsByIndicators, message: 'All tags by indicator' });
 
 
