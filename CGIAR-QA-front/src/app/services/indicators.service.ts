@@ -54,6 +54,12 @@ export class IndicatorsService {
       // console.log(response);
       return response;
     }
-
-
+  formatAllItemStatusByIndicator(allItems) {
+    if(allItems) {
+      for (const key in allItems) {
+        allItems[key] = Object.values(allItems[key]);
+        }
+    }
+    return allItems;
+  }
 }

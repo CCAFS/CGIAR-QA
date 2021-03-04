@@ -419,7 +419,7 @@ class IndicatorsController {
                     totalByItem[allItems[i].indicator_view_name] = {}
                 }
                 if(!totalByItem[allItems[i].indicator_view_name].hasOwnProperty(allItems[i].display_name)) {
-                    totalByItem[allItems[i].indicator_view_name][allItems[i].display_name] = {pending: 0, approved_without_comment: 0, assessment_with_comments: 0};
+                    totalByItem[allItems[i].indicator_view_name][allItems[i].display_name] = {item: allItems[i].display_name, pending: 0, approved_without_comment: 0, assessment_with_comments: 0};
                 }
 
                 //INDICATOR_VIEW_NAME => DISPLAY_NAME => STATUS

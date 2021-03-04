@@ -62,7 +62,7 @@ export class AdminDashboardComponent implements OnInit {
   dataSelected: any;
   indicatorData: any;
   feedList: [];
-  itemStatusByIndicator = {};
+  itemStatusByIndicator;
 
   enableQATooltip: string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
   enableCommentsTooltip: string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
@@ -140,32 +140,36 @@ export class AdminDashboardComponent implements OnInit {
   // NEW
   getAllItemStatusByIndicator() {
     console.log('CALLEEED');
-    
-    this.indicatorsNameDropdwon.forEach(indicator => {
-      this.indicatorService.getItemStatusByIndicator(indicator.viewname).subscribe(
-         (res) => {
-           console.log('ITEM STATUS',indicator.viewname,res.data);
-          this.itemStatusByIndicator[indicator.viewname] = this.indicatorService.formatItemStatusByIndicator(res.data);
-          // console.log('ITEM STATUS',indicator.viewname,this.itemStatusByIndicator[indicator.viewname]);
+    this.indicatorService.getAllItemStatusByIndicator().subscribe(
+      res => {
+        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(res.data);
+        console.log('ALL ITEMS',this.itemStatusByIndicator);
+      }
+    );
+
+    // this.indicatorsNameDropdwon.forEach(indicator => {
+    //   this.indicatorService.getItemStatusByIndicator(indicator.viewname).subscribe(
+    //      (res) => {
+    //        console.log('ITEM STATUS',indicator.viewname,res.data);
+    //       this.itemStatusByIndicator[indicator.viewname] = this.indicatorService.formatItemStatusByIndicator(res.data);
+    //       // console.log('ITEM STATUS',indicator.viewname,this.itemStatusByIndicator[indicator.viewname]);
           
-        },
-        error => {
-          console.log("getAllItemStatusByIndicator", error);
-          this.alertService.error(error);
-        }
-      );
-      this.indicatorService.getAllItemStatusByIndicator().subscribe(
-        res => {
-          console.log('ALL ITEMS',res.data);
-        }
-      )
-    });
+    //     },
+    //     error => {
+    //       console.log("getAllItemStatusByIndicator", error);
+    //       this.alertService.error(error);
+    //     }
+    //   );
+
+    // });
 
     // this.hideSpinner();
   }
 
   getItemStatusByIndicator(indicator: string) {
     if(this.itemStatusByIndicator.hasOwnProperty(indicator)){
+      console.log(this.itemStatusByIndicator[indicator]);
+      
       return this.itemStatusByIndicator[indicator];
     } else {    
           return false;
