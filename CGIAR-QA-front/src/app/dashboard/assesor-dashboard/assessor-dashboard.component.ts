@@ -204,10 +204,12 @@ export class AssessorDashboardComponent implements OnInit {
   }
 
   formatStatusIndicatorData(data) {
+    // DEFINE COLORS WITH CSS
     const colors = {
-      complete: '#59ed9c',
-      pending: '#f3da90',
-      finalized: '#00958e'
+      complete: 'var(--color-complete)',
+      pending: 'var(--color-pending)',
+      finalized: 'var(--color-finalized)',
+      autochecked: 'var(--color-autochecked)'
     }
     let dataset = [];
     let brushes = { domain: [] };
@@ -226,10 +228,10 @@ export class AssessorDashboardComponent implements OnInit {
 
   formatCommentsIndicatorData(data) {
     const colors = {
-      Accepted: '#59ed9c',
-      Clarification: '#f3da90',
-      Disagree: '#ed8b84',
-      Pending: '#cfcfcf'
+      Accepted: 'var(--color-agree)',
+      Clarification: 'var(--color-clarification)',
+      Disagree: 'var(--color-disagree)',
+      Pending: 'var(--color-pending)'
     }
     let dataset = [];
     let brushes = { domain: [] };

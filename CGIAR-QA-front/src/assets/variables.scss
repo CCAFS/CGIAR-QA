@@ -24,14 +24,16 @@
   --blue-primary: #0f8981;
   --blue-secondary: #17a2b8;
   --blue-tertiarty: #03535f;
+  --blue-quaternary:rgb(168, 209, 255);
+
+  --color-pending: #f3da90;
+  --color-complete: #00958e;
+  --color-finalized: #59ed9c;
+  --color-autochecked:#a64d79ff;
 
   --color-agree: #59ed9c;
   --color-disagree: #ed8b84;
-  --color-complete: #59ed9c;
-  --color-autochecked:#46bdc6;
-  --color-pending: #f3da90;
   --color-clarification:  rgb(109, 177, 255);
-  --color-finalized: #00958e;
   --color-pending-gray:  #cfcfcf;
 }
 

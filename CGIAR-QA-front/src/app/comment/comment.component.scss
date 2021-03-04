@@ -26,7 +26,7 @@
   }
   .comment-body.clarification,
   .reply-comment.clarification {
-    background-color: var(--yellow-tertiary) !important;
+    background-color: var(--blue-quaternary) !important;
   }
   .comment-body {
     padding: 0.75em;
@@ -118,10 +118,10 @@
   }
 
     .request-clarification {
-    background-color: var(--color-pending);
-    border: 2px solid var(--color-pending);
+    background-color: var(--color-clarification);
+    border: 2px solid var(--color-clarification);
     &:hover {
-      border: 2px solid var(--yellow-quaternary);
+      border: 2px solid var(--blue-tertiarty);
     }
     }
   }

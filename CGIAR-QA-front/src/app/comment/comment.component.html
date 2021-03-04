@@ -85,12 +85,16 @@
                         <button type="button" class="btn request-clarification"
                             (click)="answerComment(false,replyTypes.clarification,comment)">REQUEST
                             CLARIFICATION</button>
-                    </div>
+                    </div> 
 
                     <div *ngIf="crpComment && comment.replies.replies_count == '0' && comment.replyTypeId != 1"
                         class="add-comment-container reply-comment"
                         [ngClass]="{'approved' : comment.replyTypeId == 1, 'declined' : comment.replyTypeId == 2, 'clarification' : comment.replyTypeId == 3}">
-                        <h2 *ngIf="comment.replyTypeId != undefined && comment.replyTypeId != 1"> {{replyTypes[comment.replyTypeId]}} COMMENT
+                        <h2 *ngIf="comment.replyTypeId != undefined && comment.replyTypeId == replyTypes.clarification" >
+                            REQUEST {{replyTypes[comment.replyTypeId]}} ABOUT COMMENT
+                        </h2>
+                        <h2 *ngIf="comment.replyTypeId != undefined && comment.replyTypeId == replyTypes.disagree">
+                            {{replyTypes[comment.replyTypeId]}} COMMENT
                         </h2>
                         <p class="update-reminder" *ngIf="comment.replyTypeId === 3">Be clear with any doubts you may
                             have regarding the comment so that an assessor can help you</p>
