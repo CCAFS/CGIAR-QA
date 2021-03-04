@@ -155,7 +155,7 @@ export class AdminDashboardComponent implements OnInit {
       );
     });
 
-    this.hideSpinner();
+    // this.hideSpinner();
   }
 
   getItemStatusByIndicator(indicator: string) {
@@ -194,21 +194,12 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   
-  getAllTags() {
-    this.commentService.getAllTags().subscribe(
-      res => {
-        this.indicatorsTags = this.commentService.groupTags(res.data);;
-      }
-    )
+  getAllTags(): Observable<any>{
+    return this.commentService.getAllTags().pipe();
   }
 
-  getFeedTags() {
-    this.commentService.getFeedTags().subscribe(
-      res => {
-        // console.log(res.data);
-        this.feedList = res.data;
-      }
-    )
+  getFeedTags(): Observable<any> {
+    return this.commentService.getFeedTags().pipe();
   }
 
   formatDateFeed(date: any) {
@@ -356,9 +347,9 @@ export class AdminDashboardComponent implements OnInit {
     this.getCommentStats(value.crp_id).subscribe(
       res => {
         this.dashboardCommentsData = this.dashService.groupData(res.data);
-        this.getAllTags();
-        this.getFeedTags();
         this.getAllItemStatusByIndicator();
+        console.log('GET COMMENT STATS');
+        
         // this.getRawComments(value.crp_id)
       },
       error => {
@@ -366,7 +357,21 @@ export class AdminDashboardComponent implements OnInit {
         console.log("getCommentStats", error);
         this.alertService.error(error);
       },
-    )
+    );
+
+    this.getAllTags().subscribe(
+      res => {
+        this.indicatorsTags = this.commentService.groupTags(res.data);
+      }
+    );
+
+    this.getFeedTags().subscribe(
+      res => {
+        this.feedList = res.data;
+      }
+    );
+
+    
 
   }
 
@@ -386,9 +391,11 @@ export class AdminDashboardComponent implements OnInit {
       this.getIndicatorsByCRP(),
       this.getCommentStats(),
       this.getCycles(),
+      this.getAllTags(),
+      this.getFeedTags()
     ]);
     responses.subscribe(res => {
-      const [dashData, crps, indicatorsByCrps, commentsStats, cycleData] = res;
+      const [dashData, crps, indicatorsByCrps, commentsStats, cycleData, allTags, feedTags] = res;
 
       this.dashboardData = this.dashService.groupData(dashData.data);
       this.selectedIndicator = Object.keys(this.dashboardData)[1];
@@ -409,14 +416,18 @@ export class AdminDashboardComponent implements OnInit {
       this.dashboardCyclesData = this.parseCycleDates(cycleData.data);
       // console.log(this.currenTcycle, this.fromDate, this.toDate)
 
+      this.indicatorsTags = this.commentService.groupTags(allTags.data);;
+
+      this.feedList = feedTags.data;
+
       this.hideSpinner();
     }, error => {
       this.hideSpinner()
       console.log("getAllDashData", error);
       this.alertService.error(error);
     })
-    this.getAllTags();
-    this.getFeedTags();
+    // this.getAllTags();
+    // this.getFeedTags();
     this.getAllItemStatusByIndicator();
 
   }
