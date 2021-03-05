@@ -44,14 +44,14 @@ export class AdminDashboardComponent implements OnInit {
   indicatorsName = GeneralIndicatorName;
 
   indicatorsNameDropdwon = [
-    {name: 'Policies', viewname:'qa_policies'},
-    {name: 'Innovations', viewname:'qa_innovations'},
-    {name: 'Peer Reviewed Papers', viewname:'qa_publications'},
-    {name: 'OICRs', viewname:'qa_oicr'},
-    {name: 'MELIAs', viewname:'qa_melia'},
-    {name: 'CapDevs', viewname:'qa_capdev'},
-    {name: 'Milestones', viewname:'qa_milestones'},
-    {name: 'SLOs', viewname:'qa_slo'},
+    { name: 'Policies', viewname: 'qa_policies' },
+    { name: 'Innovations', viewname: 'qa_innovations' },
+    { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
+    { name: 'OICRs', viewname: 'qa_oicr' },
+    { name: 'MELIAs', viewname: 'qa_melia' },
+    { name: 'CapDevs', viewname: 'qa_capdev' },
+    { name: 'Milestones', viewname: 'qa_milestones' },
+    { name: 'SLOs', viewname: 'qa_slo' },
     // qa_outcomes: 'Outcomes',
   ]
 
@@ -127,7 +127,7 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit() {
     this.showSpinner()
     console.log(this.currentUser);
-    
+
     this.loadDashData();
 
 
@@ -137,44 +137,7 @@ export class AdminDashboardComponent implements OnInit {
     // this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 10);
   }
 
-  // NEW
-  getAllItemStatusByIndicator() {
-    console.log('CALLEEED');
-    this.indicatorService.getAllItemStatusByIndicator().subscribe(
-      res => {
-        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(res.data);
-        console.log('ALL ITEMS',this.itemStatusByIndicator);
-      }
-    );
 
-    // this.indicatorsNameDropdwon.forEach(indicator => {
-    //   this.indicatorService.getItemStatusByIndicator(indicator.viewname).subscribe(
-    //      (res) => {
-    //        console.log('ITEM STATUS',indicator.viewname,res.data);
-    //       this.itemStatusByIndicator[indicator.viewname] = this.indicatorService.formatItemStatusByIndicator(res.data);
-    //       // console.log('ITEM STATUS',indicator.viewname,this.itemStatusByIndicator[indicator.viewname]);
-          
-    //     },
-    //     error => {
-    //       console.log("getAllItemStatusByIndicator", error);
-    //       this.alertService.error(error);
-    //     }
-    //   );
-
-    // });
-
-    // this.hideSpinner();
-  }
-
-  getItemStatusByIndicator(indicator: string) {
-    if(this.itemStatusByIndicator.hasOwnProperty(indicator)){
-      console.log(this.itemStatusByIndicator[indicator]);
-      
-      return this.itemStatusByIndicator[indicator];
-    } else {    
-          return false;
-    }
-  }
 
   getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
@@ -190,21 +153,33 @@ export class AdminDashboardComponent implements OnInit {
     let indicator_status = false;
     console.log(data);
     let i = 0;
-    if(data) {
+    if (data) {
       for (const item of data) {
         if (item.indicator_status == 1) indicator_status = true;
         i++;
         // console.log(i);
-        
+
       }
     }
-    console.log('INDICATOR STATUS',indicator_status);
-    
+    console.log('INDICATOR STATUS', indicator_status);
+
     return indicator_status;
   }
 
-  
-  getAllTags(crp_id?): Observable<any>{
+  // NEW
+  getAllItemStatusByIndicator(): Observable<any> {
+    return this.indicatorService.getAllItemStatusByIndicator().pipe();
+  }
+
+  getItemStatusByIndicator(indicator: string) {
+    if (this.itemStatusByIndicator.hasOwnProperty(indicator)) {
+      return this.itemStatusByIndicator[indicator];
+    } else {
+      return false;
+    }
+  }
+
+  getAllTags(crp_id?): Observable<any> {
     return this.commentService.getAllTags(crp_id).pipe();
   }
 
@@ -228,15 +203,15 @@ export class AdminDashboardComponent implements OnInit {
     let dataset = [];
     let brushes = { domain: [] };
     for (const item of data) {
-      if(item.status != null) {
+      if (item.status != null) {
         dataset.push({ name: item.status, value: +item.label });
         brushes.domain.push(colors[item.status]);
       }
     }
     let finalized = dataset.find(item => item.name == 'finalized');
-    if(finalized) finalized.name = 'closed';
+    if (finalized) finalized.name = 'closed';
     // console.log('DATA SELECTED', { dataset, brushes });
-    
+
     return { dataset, brushes };
   }
 
@@ -249,12 +224,12 @@ export class AdminDashboardComponent implements OnInit {
     }
     let dataset = [];
     let brushes = { domain: [] };
-    
-    if(data) {
+
+    if (data) {
       let comments_accepted = data.find(item => item.comments_accepted != '0');
       comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
       if (comments_accepted) dataset.push(comments_accepted);
-  
+
       let comments_rejected = data.find(item => item.comments_rejected != '0');
       comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
       if (comments_rejected) dataset.push(comments_rejected);
@@ -262,11 +237,11 @@ export class AdminDashboardComponent implements OnInit {
       let comments_clarification = data.find(item => item.comments_clarification != '0');
       comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
       if (comments_clarification) dataset.push(comments_clarification);
-  
+
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
       if (comments_without_answer) dataset.push(comments_without_answer);
-  
+
       dataset.forEach(comment => {
         brushes.domain.push(colors[comment.name]);
       });
@@ -357,9 +332,8 @@ export class AdminDashboardComponent implements OnInit {
     this.getCommentStats(value.crp_id).subscribe(
       res => {
         this.dashboardCommentsData = this.dashService.groupData(res.data);
-        this.getAllItemStatusByIndicator();
         console.log('GET COMMENT STATS');
-        
+
         // this.getRawComments(value.crp_id)
       },
       error => {
@@ -367,6 +341,12 @@ export class AdminDashboardComponent implements OnInit {
         console.log("getCommentStats", error);
         this.alertService.error(error);
       },
+    );
+
+    this.getAllItemStatusByIndicator().subscribe(
+      res => {
+        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(res.data);
+      }
     );
 
     this.getAllTags(value.crp_id).subscribe(
@@ -381,7 +361,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
 
-    
+
 
   }
 
@@ -402,10 +382,11 @@ export class AdminDashboardComponent implements OnInit {
       this.getCommentStats(),
       this.getCycles(),
       this.getAllTags(),
-      this.getFeedTags()
+      this.getFeedTags(),
+      this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(res => {
-      const [dashData, crps, indicatorsByCrps, commentsStats, cycleData, allTags, feedTags] = res;
+      const [dashData, crps, indicatorsByCrps, commentsStats, cycleData, allTags, feedTags, assessmentByField] = res;
 
       this.dashboardData = this.dashService.groupData(dashData.data);
       this.selectedIndicator = Object.keys(this.dashboardData)[1];
@@ -430,15 +411,14 @@ export class AdminDashboardComponent implements OnInit {
 
       this.feedList = feedTags.data;
 
+      this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+
       this.hideSpinner();
     }, error => {
       this.hideSpinner()
       console.log("getAllDashData", error);
       this.alertService.error(error);
     })
-    // this.getAllTags();
-    // this.getFeedTags();
-    this.getAllItemStatusByIndicator();
 
   }
 
@@ -557,7 +537,7 @@ export class AdminDashboardComponent implements OnInit {
     this.showSpinner();
     // console.log(this.selectedProg)
     let crp_id = this.selectedProg['crp_id'];
-    let filename = `QA-COMMENTS-${this.selectedProg.hasOwnProperty('acronym') && this.selectedProg['acronym'] !== 'All'  ? '(' + this.selectedProg['acronym'] + ')' : ''}${moment().format('YYYYMMDD:HHmm')}`
+    let filename = `QA-COMMENTS-${this.selectedProg.hasOwnProperty('acronym') && this.selectedProg['acronym'] !== 'All' ? '(' + this.selectedProg['acronym'] + ')' : ''}${moment().format('YYYYMMDD:HHmm')}`
     if (this.authenticationService.getBrowser() === 'Safari')
       filename += `.xlsx`;
 
