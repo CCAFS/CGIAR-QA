@@ -167,10 +167,6 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // NEW
-  getAllItemStatusByIndicator(): Observable<any> {
-    return this.indicatorService.getAllItemStatusByIndicator().pipe();
-  }
-
   getItemStatusByIndicator(indicator: string) {
     if (this.itemStatusByIndicator.hasOwnProperty(indicator)) {
       return this.itemStatusByIndicator[indicator];
@@ -178,6 +174,11 @@ export class AdminDashboardComponent implements OnInit {
       return false;
     }
   }
+
+  getAllItemStatusByIndicator(): Observable<any> {
+    return this.indicatorService.getAllItemStatusByIndicator().pipe();
+  }
+
 
   getAllTags(crp_id?): Observable<any> {
     return this.commentService.getAllTags(crp_id).pipe();
@@ -316,6 +317,7 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
     this.selectedProg = value;
     this.showSpinner()
+    
     this.getAllDashData(value.crp_id).subscribe(
       res => {
         this.dashboardData = this.dashService.groupData(res.data);

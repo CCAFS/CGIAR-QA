@@ -14,6 +14,7 @@ import { Title } from '@angular/platform-browser';
 import { CommentService } from 'src/app/services/comment.service';
 import { IndicatorsService } from 'src/app/services/indicators.service';
 import { UsersService } from 'src/app/services/users.service';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-assessor-dashboard',
@@ -52,32 +53,53 @@ export class AssessorDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.currentUser);
     this.usersService.getUserById(this.currentUser.id).subscribe(res => {
       // console.log(res.data.indicators);
       this.authenticationService.parseUpdateIndicators(res.data.indicators);
     })
-    this.getCommentStats();
+    this.showSpinner()
+    console.log({currentUser: this.currentUser});
+
+    this.loadDashData();
 
   }
 
-  getAllItemStatusByIndicator() {
-    this.currentUser.indicators.forEach(el => {
-      this.indicatorService.getItemStatusByIndicator(el.indicator.view_name).subscribe(
-         (res) => {
-          this.itemStatusByIndicator[el.indicator.view_name] = this.indicatorService.formatItemStatusByIndicator(res.data);
-          // console.log(el.indicator.view_name,this.itemStatusByIndicator[el.indicator.view_name]);
-          
-        },
-        error => {
-          console.log("getAllItemStatusByIndicator", error);
-          this.hideSpinner();
-          this.alertService.error(error);
-        }
-      );
-    });
-    this.hideSpinner();
+  loadDashData() {
+    let responses = forkJoin([
+      this.getDashData(),
+      this.getCommentStats(),
+      this.getAllTags(),
+      this.getFeedTags(),
+      this.getAllItemStatusByIndicator()
+    ]);
+    responses.subscribe(
+      res => {
+        const [dashData, commentsStats, allTags, feedTags, assessmentByField] = res;
+
+        //dashData
+        this.dashboardData = this.dashService.groupData(dashData.data);
+        this.selectedIndicator = Object.keys(this.dashboardData)[1];
+        this.dataSelected = this.dashboardData[this.selectedIndicator];
+
+        //commentsStats
+        this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+
+        //allTags
+        this.indicatorsTags = this.commentService.groupTags(allTags.data);;
+
+        //feedTags
+        this.feedList = feedTags.data;
+  
+        //assessmentByField
+        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        
+        this.hideSpinner();
+      }
+    );
+
   }
+
+
 
   getItemStatusByIndicator(indicator: string) {
     if(this.itemStatusByIndicator.hasOwnProperty(indicator)){
@@ -117,68 +139,30 @@ export class AssessorDashboardComponent implements OnInit {
     this.router.navigate(['indicator', view.toLocaleLowerCase(), primary_column]);
   }
 
-  getDashData() {
+  //Observables
+  getDashData(): Observable<any> {
     // this.showSpinner();
-    this.dashService.getDashboardEvaluations(this.currentUser.id).subscribe(
-      res => {
-        // console.log(res)
-        this.dashboardData = this.dashService.groupData(res.data);
-        // this.getCommentStats();
-        // console.log('DASH DATA',this.dashboardData);
-        this.selectedIndicator = Object.keys(this.dashboardData)[1];
-        this.dataSelected = this.dashboardData[this.selectedIndicator];
-        // console.log('DATA SELECTED', this.dataSelected);
-        
-        this.hideSpinner();
-      },
-      error => {
-        console.log("getDashData", error);
-        this.hideSpinner();
-        this.alertService.error(error);
-      }
-    )
+    return this.dashService.getDashboardEvaluations(this.currentUser.id).pipe();
   }
+
   // comments by crp
-  getCommentStats(crp_id?) {
-    this.showSpinner();
-    return this.commentService.getCommentCRPStats({ crp_id, id: null })
-      .subscribe(
-        res => {
-          console.log('COMMENTS_DATA',res.data)
-          this.dashboardCommentsData = this.dashService.groupData(res.data);
-          console.log('DASH_COMMENTS_DATA',this.dashboardCommentsData);
-          this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
-          //getDashData depends on getCommentStats
-          this.getDashData();
-          this.getAllTags();
-          this.getFeedTags();
-          this.getAllItemStatusByIndicator();
-
-          // this.hideSpinner();
-        },
-        error => {
-          this.hideSpinner()
-          // console.log("getCommentStats", error);
-          this.alertService.error(error);
-        },
-      )
+  getCommentStats(crp_id?): Observable<any>  {
+    return this.commentService.getCommentCRPStats({ crp_id, id: null }).pipe();
+  }
+  
+  //Assessment by field
+  getAllItemStatusByIndicator(): Observable<any> {
+    return this.indicatorService.getAllItemStatusByIndicator().pipe();
   }
 
-  getAllTags() {
-    this.commentService.getAllTags().subscribe(
-      res => {
-        this.indicatorsTags = this.commentService.groupTags(res.data);;
-      }
-    )
+  //Comments tags
+  getAllTags(crp_id?): Observable<any> {
+    return this.commentService.getAllTags(crp_id).pipe();
   }
 
-  getFeedTags() {
-    this.commentService.getFeedTags().subscribe(
-      res => {
-        // console.log(res.data);
-        this.feedList = res.data;
-      }
-    )
+  //Feed Tags
+  getFeedTags(crp_id?): Observable<any> {
+    return this.commentService.getFeedTags().pipe();
   }
 
   /***
