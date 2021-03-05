@@ -69,7 +69,7 @@ export class AssessorDashboardComponent implements OnInit {
       this.getDashData(),
       this.getCommentStats(),
       this.getAllTags(),
-      this.getFeedTags(),
+      this.getFeedTags({}),
       this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(
@@ -161,8 +161,8 @@ export class AssessorDashboardComponent implements OnInit {
   }
 
   //Feed Tags
-  getFeedTags(crp_id?): Observable<any> {
-    return this.commentService.getFeedTags().pipe();
+  getFeedTags(params?): Observable<any> {
+    return this.commentService.getFeedTags(params).pipe();
   }
 
   /***

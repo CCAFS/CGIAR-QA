@@ -58,7 +58,7 @@ export class AdminDashboardComponent implements OnInit {
   //new props
   tagMessages = TagMessage;
   indicatorsTags: any;
-  selectedIndicator = 'qa_slo';
+  selectedIndicator = 'qa_policies';
   dataSelected: any;
   indicatorData: any;
   feedList: [];
@@ -184,8 +184,8 @@ export class AdminDashboardComponent implements OnInit {
     return this.commentService.getAllTags(crp_id).pipe();
   }
 
-  getFeedTags(crp_id?): Observable<any> {
-    return this.commentService.getFeedTags().pipe();
+  getFeedTags(indicator_view_name, tagTypeId?): Observable<any> {
+    return this.commentService.getFeedTags(indicator_view_name, tagTypeId).pipe();
   }
 
   formatDateFeed(date: any) {
@@ -317,7 +317,7 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
     this.selectedProg = value;
     this.showSpinner()
-    
+
     this.getAllDashData(value.crp_id).subscribe(
       res => {
         this.dashboardData = this.dashService.groupData(res.data);
@@ -357,7 +357,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
 
-    this.getFeedTags().subscribe(
+    this.getFeedTags(this.selectedIndicator).subscribe(
       res => {
         this.feedList = res.data;
       }
@@ -384,14 +384,14 @@ export class AdminDashboardComponent implements OnInit {
       this.getCommentStats(),
       this.getCycles(),
       this.getAllTags(),
-      this.getFeedTags(),
+      this.getFeedTags(this.selectedIndicator),
       this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(res => {
       const [dashData, crps, indicatorsByCrps, commentsStats, cycleData, allTags, feedTags, assessmentByField] = res;
 
       this.dashboardData = this.dashService.groupData(dashData.data);
-      this.selectedIndicator = Object.keys(this.dashboardData)[1];
+      // this.selectedIndicator = Object.keys(this.dashboardData)[1];
       this.dataSelected = this.dashboardData[this.selectedIndicator];
       // console.log(res)
 

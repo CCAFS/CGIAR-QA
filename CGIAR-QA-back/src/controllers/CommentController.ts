@@ -389,21 +389,55 @@ class CommentController {
     // get all QA recent tags
     static getFeedTags = async (req: Request, res: Response) => {
 
+        const {indicator_view_name, tagTypeId} = req.query;
+
+        let tags;
         let queryRunner = getConnection().createQueryBuilder();
         try {
+            if(indicator_view_name !== 'undefined' && tagTypeId !== 'undefined') {                
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    WHERE qe.indicator_view_name = :indicator_view_name
+                    AND tt.id = :tagTypeId
+                    ORDER BY tag.createdAt DESC`,
+                    {indicator_view_name, tagTypeId},
+                    {}
+                );
+                tags = await queryRunner.connection.query(query, parameters);
+            } else if (indicator_view_name !== 'undefined' && tagTypeId === 'undefined') {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    WHERE qe.indicator_view_name = :indicator_view_name
+                    ORDER BY tag.createdAt DESC`,
+                    {indicator_view_name},
+                    {}
+                );
+                tags = await queryRunner.connection.query(query, parameters);
+            } else {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    ORDER BY tag.createdAt DESC;`,
+                    {},
+                    {}
+                );
+                tags = await queryRunner.connection.query(query, parameters);
+            }
 
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
-                FROM qa_tags tag 
-                LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
-                LEFT JOIN qa_users us ON us.id = tag.userId
-                LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
-                LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
-                ORDER BY tag.createdAt DESC;`,
-                {},
-                {}
-            );
-            let tags = await queryRunner.connection.query(query, parameters);
 
             res.status(200).send({ data: tags, message: 'All new tags order by date (desc)' });
 

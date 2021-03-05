@@ -101,8 +101,8 @@ export class CommentService {
       return this.http.get<any>(`${environment.apiUrl}/comment/tags/?crp_id=${crp_id}`);
     }
 
-    getFeedTags() {
-      return this.http.get<any>(`${environment.apiUrl}/comment/tags/feed`);
+    getFeedTags(indicator_view_name, tagTypeId?) {
+      return this.http.get<any>(`${environment.apiUrl}/comment/tags/feed/?indicator_view_name=${indicator_view_name}&tagTypeId=${tagTypeId}`);
     }
 
     groupTags(tags) {
