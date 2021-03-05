@@ -314,7 +314,7 @@ class CommentController {
                 console.log(reply_)
                 let comment = await commentsRepository.findOneOrFail(reply_.comment.id);
                 comment.crp_approved = null;
-
+                comment.replyType = null;
                 commentsRepository.save(comment);
             }
 

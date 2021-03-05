@@ -197,6 +197,8 @@ export class CommentComponent implements OnInit {
       this.alertService.error(canUpdate.message);
       return;
     }
+    console.log(data);
+    
     data[type] = !data[type];
     delete data.user.replies;
     delete data.user.crps;
