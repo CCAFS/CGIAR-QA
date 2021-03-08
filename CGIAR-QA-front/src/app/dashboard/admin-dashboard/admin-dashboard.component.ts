@@ -55,6 +55,13 @@ export class AdminDashboardComponent implements OnInit {
     // qa_outcomes: 'Outcomes',
   ]
 
+  dataCharts = {
+    generalStatus: null,
+    assessorsInteractions: null,
+    responseToComments: null,
+    assessmentByField: null
+  }
+
   //new props
   tagMessages = TagMessage;
   indicatorsTags: any;
@@ -146,6 +153,15 @@ export class AdminDashboardComponent implements OnInit {
   actualIndicator(indicator: string) {
     this.selectedIndicator = indicator;
     this.dataSelected = this.dashboardData[this.selectedIndicator];
+
+    this.showSpinner();
+    this.updateDataCharts();
+    this.getFeedTags(this.selectedIndicator).subscribe(
+      res => {
+        this.feedList = res.data;
+        this.hideSpinner();
+      }
+    )
     // console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
   }
 
@@ -248,8 +264,31 @@ export class AdminDashboardComponent implements OnInit {
       });
     }
 
+    return { dataset, brushes };
+  }
+
+  formatIndicatorTags() {
+
+    const tags = this.indicatorsTags[this.selectedIndicator];
+
+    const colors = {
+      agree: 'var(--color-agree)',
+      disagree: 'var(--color-disagree)',
+      notsure: 'var(--color-not-sure)'
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
+    for (const tag in tags) {
+      dataset.push({ name: tag, value: tags[tag] })
+    }
+    dataset.forEach(tag => {
+      brushes.domain.push(colors[tag.name]);
+    });
+    console.log({ dataset, brushes });
+    
 
     return { dataset, brushes };
+
   }
 
 
@@ -415,12 +454,23 @@ export class AdminDashboardComponent implements OnInit {
 
       this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
 
+      //UPDATE CHARTS
+      this.updateDataCharts();
+
       this.hideSpinner();
     }, error => {
       this.hideSpinner()
       console.log("getAllDashData", error);
       this.alertService.error(error);
     })
+
+  }
+
+  updateDataCharts() {
+    this.dataCharts.generalStatus = this.formatStatusIndicatorData(this.dataSelected);
+    this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
+    this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
+    this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
 
   }
 

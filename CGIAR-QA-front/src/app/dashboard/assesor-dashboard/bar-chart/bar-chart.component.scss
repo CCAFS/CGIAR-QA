@@ -1,159 +1,71 @@
 
-.container {
+@import "../../../..//assets/variables.scss";
+
+*{
+    margin:0;
+    padding:0;
+}
+.legend-container{
     display: flex;
-    flex-flow: column;
-    height: 100%;
-    max-width: 100%
-}
-
-.sample {
-    height: 100%;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-right: 10px;
-    padding-left: 10px;
-    width: calc(100% - 25px);
-}
-
-.chart {
-    flex: 1;
-    height: calc(100% - 45px);
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-right: 0px;
-    padding-left: 0px;
+    justify-content: center;
+    align-items: center;
     width: 100%;
 }
+.legend{
+    height: auto;
+    max-height: 40px;
+    width:80%;
+    flex-wrap: wrap;
+    // background-color: black;
+    display: flex;
 
-.options {
-    margin-top: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-right: 0px;
-    padding-left: 0px;
-    width: 100%;
-    font-size: 1rem;
-    font-weight: 300;
-    font-family: aktiv-grotesk, sans-serif;
-    color: #585858;
-    display: inline-block;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: $font-xs;
+}
+.bar-container{
+    height:calc(100% - 40px);
+    width:100%;
 }
 
-.optionItem {
-    margin-left: 10px;
-    // font-family: Arial, Verdana, Helvetica, "Times New Roman", Times, serif;
-    display: inline-block;
-    vertical-align: center;
+.square{
+    width: 10px;
+    height: 10px;
 }
-
-.optionLabel {
-    margin-top: 0px;
-    margin-left: 10px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    // font-size: 11pt;
-    // font-family: Arial, Verdana, Helvetica, "Times New Roman", Times, serif;
-    vertical-align: center;
-    padding: 0px;
-    display: inline-block;
-}
-
-.optionValue {
-    margin-top: 0px;
-    margin-left: 10px;
-    margin-bottom: 5px;
-    margin-right: 5px;
-    // font-size: 11pt;
-    display: inline-block;
-    width: 40px;
-    padding: 0px;
-}
-
-.button {
-    vertical-align: center;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
-select {
-    font-size: 11pt;
-    font-family: Arial, Verdana, Helvetica, "Times New Roman", Times, serif;
-    margin-top: 0px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-    vertical-align: center;
-    padding: 4px;
-    display: inline-block;
-}
-
-
-.legend {
-    width: 100%;
-    font-size: 11pt;
-    /* font-family: Arial, Verdana, Helvetica, "Times New Roman", Times, serif; */
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-left: 15px;
-    display: inline-block;
-    vertical-align: top;
-}
-
-.legendCenter {
+.tag{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: $font-xs;
+    font-weight: $semibold;
     width: auto;
-    margin-top: 8px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding: 0px;
-    display: inline-block;
-    vertical-align: center;
+    margin: 0px;
+    p{
+    margin-left: 0.5em;
+    max-height: 100%;
+    width: max-content;
+
+    }
+}
+.autochecked {
+    background-color: var(--color-autochecked);
+}
+.pending {
+    background-color: var(--color-pending);
+}
+.complete {
+    background-color: var(--color-complete);
+}
+.finalized {
+    background-color: var(--color-finalized);
 }
 
-.legendInline {
-    width: auto;
-    /* font-size: 11pt; */
-    /* font-family: Arial, Verdana, Helvetica, "Times New Roman", Times, serif; */
-    margin-top: 8px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding: 0px;
-    display: inline-block;
-    vertical-align: top;
-    /* vertical-align: center; */
-    /* background: red; */
+.agree {
+    background-color: var(--color-agree);
 }
-
-.legendTitle {
-    margin-top: 13px;
-    margin-left: 20px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding: 0px;
-    /* font-size: 11pt; */
-    /* font-family: Arial, Verdana, Helvetica, "Times New Roman", Times, serif; */
-    /* vertical-align: top; */
-    vertical-align: center;
-    display: inline-block;
-    /* background: orange; */
+.disagree {
+    background-color: var(--color-disagree);
 }
-
-// .container{
-//     // display: flex;
-//     // flex-flow: column;
-//     // justify-content: center;
-//     // align-items: center;
-//     // div{
-//     //     display: flex;
-//     //     justify-content: center;
-//     //     align-items: center;
-//     // }
-//     max-height: 100%;
-//     height: 100%;
-//     // width: 100%;
-//     max-width: 100%;
-// }
+.clarification {
+    background-color: var(--color-clarification);
+}

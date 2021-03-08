@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
     <div class="options">
         <span class="legendTitle">Tags: </span>
         <div class="legendInline">
@@ -8,7 +8,7 @@
 
     <div class="chart">
         <igx-data-chart #chart isHorizontalZoomEnabled="true" isVerticalZoomEnabled="true" width="100%"
-            height="calc(100% - 60px)" [dataSource]="data"  brushes="#f3da90,#ed8b84,#59ed9c" outlines="#f3da90,#ed8b84,#59ed9c" [legend]="legend">
+            height="calc(100% - 60px)" [dataSource]="data"  brushes="#f3da90,#ed8b84,#59ed9c" outlines="#f3da90,#ed8b84,#59ed9c" [legend]="legend"  (seriesMouseLeftButtonDown)="onSeriesMouseLeftButtonDown($event)">
             <igx-numeric-x-axis title="" #xAxis name="xAxis" interval="1" minimumValue=0 >
             </igx-numeric-x-axis>
             <igx-category-y-axis label="Tags" title="" #yAxis  name="yAxis" >
@@ -17,24 +17,33 @@
             </igx-bar-series>
             <igx-bar-series showDefaultTooltip=true valueMemberPath="disagree" [xAxis]="xAxis" [yAxis]="yAxis" title="Disagree">
             </igx-bar-series>
-            <igx-bar-series showDefaultTooltip=true valueMemberPath="agree" [xAxis]="xAxis" [yAxis]="yAxis" title="Agree">
+            <igx-bar-series showDefaultTooltip=true  (seriesPointerDown)="clickTag($event.sender, $event.args)"
+            valueMemberPath="agree" [xAxis]="xAxis" [yAxis]="yAxis" title="Agree">
             </igx-bar-series>
         </igx-data-chart>
     </div>
+</div> -->
+<div *ngIf="chartName" class="legend-container">
+  <div class="legend">
+    <!-- <div  *ngFor="let tag of legendLabels[chartName]"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}}</p></div> -->
+  </div>
 </div>
+<div class="bar-container" *ngIf="data.dataset">
 
-<!-- <div class="container">
-    <div>
-      <div style="position: relative;height:100%; width:100%">
-        <canvas  baseChart
-          [datasets]="barChartData"
-          [labels]="barChartLabels"
-          [options]="barChartOptions"
-          [plugins]="barChartPlugins"
-          [legend]="barChartLegend"
-          [chartType]="barChartType"
-          [colors]="colors">
-        </canvas>
-      </div>
-    </div>
-  </div> -->
+<ngx-charts-bar-horizontal
+  [view]=""
+  [scheme]="data.brushes"
+  [results]="data.dataset"
+  [gradient]="gradient"
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="showLegend"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]="showYAxisLabel"
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)">
+</ngx-charts-bar-horizontal>
+</div>
