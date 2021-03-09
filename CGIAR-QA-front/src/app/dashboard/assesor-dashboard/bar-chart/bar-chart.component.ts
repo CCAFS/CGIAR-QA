@@ -1,4 +1,4 @@
-import { Component, Input, NgModule, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
 import { ChartSeriesEventArgs, DataChartMouseButtonEventArgs, IgxCategoryToolTipLayerComponent, IgxCategoryXAxisComponent, IgxCategoryYAxisComponent, IgxDataChartComponent, IgxItemToolTipLayerComponent, IgxLegendComponent, IgxNumericXAxisComponent, IgxNumericYAxisComponent } from 'igniteui-angular-charts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
@@ -13,7 +13,7 @@ export class BarChartComponent implements OnInit {
   chartName = true;
   // options
   showXAxis: boolean = true;
-  showYAxis: boolean = true;
+  showYAxis: boolean = false;
   gradient: boolean = false;
   showLegend: boolean = false;
   showXAxisLabel: boolean = true;
@@ -25,6 +25,7 @@ export class BarChartComponent implements OnInit {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
 
+  @Output() filterTagEvent = new EventEmitter<string>();
   constructor() {
   
   }
@@ -35,6 +36,7 @@ export class BarChartComponent implements OnInit {
 
   onSelect(data): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    this.filterTagEvent.emit('2');
   }
 
   onActivate(data): void {

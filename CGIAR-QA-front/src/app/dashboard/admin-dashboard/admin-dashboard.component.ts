@@ -471,7 +471,15 @@ export class AdminDashboardComponent implements OnInit {
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
     this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
     this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
+  }
 
+  updateFeedTags(tagTypeId) {
+    this.getFeedTags(this.selectedIndicator, tagTypeId).subscribe(
+      res => {
+        this.feedList = res.data;
+        this.hideSpinner();
+      }
+    )
   }
 
 

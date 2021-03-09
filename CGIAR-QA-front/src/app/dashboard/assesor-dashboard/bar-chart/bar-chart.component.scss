@@ -25,7 +25,8 @@
 }
 .bar-container{
     height:calc(100% - 40px);
-    width:100%;
+    width: 100%;
+    max-width:100%;
 }
 
 .square{
