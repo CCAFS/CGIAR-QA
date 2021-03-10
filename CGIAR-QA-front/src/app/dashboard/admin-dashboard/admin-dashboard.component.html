@@ -1,6 +1,7 @@
 <div class="row justify-content-center">
     <i class="qa-timeline-icon"></i>
 </div>
+<!-- <div class="embedded-chat" style="height: 700px; width: 500px;" ></div> -->
 
 <div class="row justify-content-center dashboard-container">
     <div class="col-3 col-programs">
@@ -62,11 +63,11 @@
                                 </div>
                             </div>
                         </div>
-    
+
                     </div>
-    
+
                 </form>
-    
+
             </div>
             <!-- cycle date picker -->
             <div class="card">
@@ -75,7 +76,8 @@
                     <form class="form-inline">
                         <div *ngFor="let cycle of dashboardCyclesData">
                             <div class="row">
-                                <p style="margin: 0 1em; padding: 0.5em">Stage: <strong>{{cycle.cycle_stage}}</strong></p>
+                                <p style="margin: 0 1em; padding: 0.5em">Stage: <strong>{{cycle.cycle_stage}}</strong>
+                                </p>
                                 <div class="form-group">
                                     <div class="input-group">
                                         <input #dpFromDate class="form-control" [disabled]="!cycle.is_active"
@@ -84,8 +86,9 @@
                                             (input)="fromDate = validateInput(cycle.start_date, dpFromDate.value)">
                                         <!-- (input)="validateInput(cycle.start_date, dpFromDate.value)"> -->
                                         <div class="input-group-append">
-                                            <button [disabled]="!cycle.is_active" class="btn btn-outline-secondary calendar"
-                                                (click)="datepicker.toggle()" type="button"></button>
+                                            <button [disabled]="!cycle.is_active"
+                                                class="btn btn-outline-secondary calendar" (click)="datepicker.toggle()"
+                                                type="button"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -97,14 +100,15 @@
                                             (input)="toDate = validateInput(cycle.end_date, dpToDate.value)">
                                         <!-- (input)="validateInput(cycle.end_date, dpToDate.value)"> -->
                                         <div class="input-group-append">
-                                            <button [disabled]="!cycle.is_active" class="btn btn-outline-secondary calendar"
-                                                (click)="datepicker.toggle()" type="button"></button>
+                                            <button [disabled]="!cycle.is_active"
+                                                class="btn btn-outline-secondary calendar" (click)="datepicker.toggle()"
+                                                type="button"></button>
                                         </div>
                                     </div>
-    
+
                                 </div>
                             </div>
-    
+
                         </div>
                         <div class="form-group hidden">
                             <div class="input-group">
@@ -114,16 +118,17 @@
                                     outsideDays="hidden" [startDate]="fromDate!">
                                 <ng-template #t let-date let-focused="focused">
                                     <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
-                                        [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
-                                        (mouseleave)="hoveredDate = null">
+                                        [class.faded]="isHovered(date) || isInside(date)"
+                                        (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
                                         {{ date.day }}
                                     </span>
                                 </ng-template>
                             </div>
                         </div>
                     </form>
-    
-                    <button style="margin: 2em auto;" type="button" class="btn btn-outline-warning" (click)="updateCycle()" [disabled]="!validateNewDate()">Update cycle</button>
+
+                    <button style="margin: 2em auto;" type="button" class="btn btn-outline-warning"
+                        (click)="updateCycle()" [disabled]="!validateNewDate()">Update cycle</button>
                 </div>
             </div>
         </div>
@@ -131,10 +136,44 @@
     <div class="col col-progress">
         <div class="row" style="padding: 0 15px;">
             <p class="card-title col-9">Progress by Assessors</p>
-            <button type="button" class="btn btn-success col-3" (click)="openModal(template)">Download all comments and replies</button>
+            <button type="button" class="btn btn-success col-3" (click)="openModal(template)">Download all comments and
+                replies</button>
         </div>
         <div class="card">
             <div class="card-body">
+                <!-- <div class="new-dashboard-container row w-100">
+                    <div class="card-body dashboard-container-charts col col-sm-9">
+                        <div class="w-100 dashboard-header mb-2">
+                            <div class="h-100  title">Dashboard {{getIndicatorName(selectedIndicator)}}</div>
+                            <div class="btn-group h-100 selector" dropdown>
+                                <button id="button-animated" dropdownToggle type="button"
+                                    class="btn btn-white dropdown-toggle w-100" aria-controls="dropdown-animated">
+                                    {{getIndicatorName(selectedIndicator)}} <span class="caret"></span>
+                                </button>
+                                <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
+                                    aria-labelledby="button-animated">
+                                    <li *ngFor="let indicator of indicatorsNameDropdwon" role="menuitem"><a
+                                            class="dropdown-item"
+                                            (click)=actualIndicator(indicator.viewname)>{{indicator.name}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div *ngIf="dashboardData && ((dashboardData | json) != ({} | json))" class="flex-container">
+                            <div class="row">
+                                <div class="chart chart-1 chart-left">
+                                    <h4 class="chart-title">Status - {{dataSelected.total}}
+                                        {{getIndicatorName(selectedIndicator)}}</h4>
+                                    <div class="chart-container">
+                                        <app-donut-chart *ngIf="dataSelected" [data]="dataCharts.generalStatus"
+                                            [chartName]="'status'" [selectedIndicator]="selectedIndicator">
+                                        </app-donut-chart>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
                 <div class="dashboard-container row w-100">
                     <div class="card-body dashboard-container-charts col col-sm-9">
                         <div class="w-100 dashboard-header mb-2">
@@ -146,7 +185,8 @@
                                 </button>
                                 <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
                                     aria-labelledby="button-animated">
-                                    <li *ngFor="let indicator of indicatorsNameDropdwon" role="menuitem"><a class="dropdown-item"
+                                    <li *ngFor="let indicator of indicatorsNameDropdwon" role="menuitem"><a
+                                            class="dropdown-item"
                                             (click)=actualIndicator(indicator.viewname)>{{indicator.name}}</a>
                                     </li>
                                 </ul>
@@ -154,154 +194,152 @@
                         </div>
                         <div *ngIf="dashboardData && ((dashboardData | json) != ({} | json))" class="grid-container">
                             <div class="chart chart-1">
-                                <h4 class="chart-title">Status - {{dataSelected.total}} {{getIndicatorName(selectedIndicator)}}</h4>
+                                <h4 class="chart-title">Status - {{dataSelected.total}}
+                                    {{getIndicatorName(selectedIndicator)}}</h4>
                                 <div class="chart-container">
-                                    <app-donut-chart *ngIf="dataSelected" [data]="dataCharts.generalStatus" [chartName]="'status'" [selectedIndicator]="selectedIndicator"></app-donut-chart>
+                                    <app-donut-chart *ngIf="dataSelected" [data]="dataCharts.generalStatus"
+                                        [chartName]="'status'" [selectedIndicator]="selectedIndicator">
+                                    </app-donut-chart>
                                 </div>
                             </div>
                             <div class="chart chart-2">
                                 <h4 class="chart-title">Assessors interactions</h4>
                                 <div class="chart-container">
-                                    <app-bar-chart *ngIf="indicatorsTags" [data]="dataCharts.assessorsInteractions" (filterTagEvent)="updateFeedTags($event)"></app-bar-chart>
+                                    <app-bar-chart *ngIf="indicatorsTags" [data]="dataCharts.assessorsInteractions"
+                                        (filterTagEvent)="updateFeedTags($event)"></app-bar-chart>
                                 </div>
                             </div>
                             <div class="chart chart-3">
                                 <h4 class="chart-title">Responses to comments</h4>
                                 <div *ngIf="dashboardCommentsData[selectedIndicator]" class="chart-container">
-                                    <app-donut-chart [data]="dataCharts.responseToComments" [chartName]="'comments'"></app-donut-chart>
+                                    <app-donut-chart [data]="dataCharts.responseToComments" [chartName]="'comments'">
+                                    </app-donut-chart>
                                 </div>
                             </div>
                             <div class="chart chart-4">
                                 <h4 class="chart-title">Assessment by field</h4>
                                 <div class="chart-container" *ngIf="getItemStatusByIndicator(selectedIndicator)">
-                                    <app-line-chart  [data]="dataCharts.assessmentByField"></app-line-chart>
+                                    <app-line-chart [data]="dataCharts.assessmentByField"></app-line-chart>
                                 </div>
                             </div>
                             <!-- <button class="btn btn-green-secondary">Download all comments and replies</button> -->
-                            <button class="btn btn-primary" *ngIf="dashboardData && ((dashboardData | json) != ({} | json))"
-                            routerLinkActive="active" [routerLinkActive]="['active']"
-                            routerLink="../../indicator/{{selectedIndicator.split('qa_')[1]}}/id">Go to {{getIndicatorName(selectedIndicator)}}</button>
-                           
+                            <button class="btn btn-primary"
+                                *ngIf="dashboardData && ((dashboardData | json) != ({} | json))"
+                                routerLinkActive="active" [routerLinkActive]="['active']"
+                                routerLink="../../indicator/{{selectedIndicator.split('qa_')[1]}}/id">Go to
+                                {{getIndicatorName(selectedIndicator)}}</button>
+
                         </div>
-                        
+
                         <div class="no-data" *ngIf="(dashboardData | json) == ({} | json)">
                             You don't have any indicator assingned.
                             Please contact your Administrator.
                         </div>
-            
-            
+
+
                     </div>
                     <div class="card-body feed col col-sm-3">
                         <div class="feed-container w-100 h-100">
                             <div class="feed-title">Feed</div>
                             <ul class="notifications">
-                                <li class="notification" *ngFor="let item of feedList" [routerLinkActive]="['active']"  routerLink="../../indicator/{{item.indicator_view_name.split('qa_')[1]}}/id/detail/{{item.indicator_view_id}}">
+                                <li class="notification" *ngFor="let item of feedList" [routerLinkActive]="['active']"
+                                    routerLink="../../indicator/{{item.indicator_view_name.split('qa_')[1]}}/id/detail/{{item.indicator_view_id}}">
                                     <div class="datetime">{{item.updatedAt | date:'long':'+0530'}}</div>
                                     <!-- <div class="datetime">{{formatDate(item.updatedAt)}}</div> -->
-                                    <p><strong>{{item.name}}</strong> {{tagMessages[item.tagName]}}  <strong> QA-{{item.indicator_view_name.split('qa_')[1].substring(0,2).toUpperCase()}}-{{item.indicator_view_id}}</strong></p>
+                                    <p><strong>{{item.name}}</strong> {{tagMessages[item.tagName]}} <strong>
+                                            QA-{{item.indicator_view_name.split('qa_')[1].substring(0,2).toUpperCase()}}-{{item.indicator_view_id}}</strong>
+                                    </p>
                                 </li>
                             </ul>
                         </div>
-            
+
                     </div>
                 </div>
-            </div>
-            <div class="card-body old">
-                <div class="card-title example-container d-flex"
-                    [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
-                    <p><strong>By indicator: </strong></p>
-                    <div class="circle complete"></div>
-                    <p>Complete</p>
-                    <div class="circle pending" style="margin-left: 50px;"></div>
-                    <p>Pending</p>
-                    <div class="circle finalized" style="margin-left: 50px;"></div>
-                    <p>Closed</p>
-                </div>
-                <div class="card-title example-container d-flex"
-                    [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
-                    <p><strong>By field: </strong></p>
-                    <div class="circle complete"></div>
-                    <p>Approved comments</p>
-                    <div class="circle pending" style="margin-left: 50px;"></div>
-                    <p>Rejected replies</p>
-                    <div class="circle unanswered" style="margin-left: 50px;"></div>
-                    <p>Pending response</p>
-                </div>
-
-                <ng-container *ngIf="(dashboardData | json) != ({} | json)">
-                    <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
-                        class="progress-container">
-                        <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
-                        <progressbar class="progress" [value]="item.value" [max]="item.value.total">
-                            <span>{{item.value.total}}</span>
-                        </progressbar>
-                        <hr>
-                        <p *ngIf=" item && dashboardCommentsData[item.key]">Total comments:
-                            {{dashboardCommentsData[item.key].total}}</p>
-                        <progressbar id="comments-progessbar" *ngIf=" item && dashboardCommentsData[item.key]"
-                            class="progress" [value]="dashboardCommentsData[item.key]"
-                            [max]="dashboardCommentsData[item.key].total">
-                            <span>{{dashboardCommentsData[item.key].value}}</span>
-                        </progressbar>
-                        <a routerLinkActive="active" [routerLinkActive]="['active']"
-                            routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
-                            <!-- (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)"> -->
-                            Go to all {{getIndicatorName(item.key)}}
-                        </a>
+                <div class="card-body old">
+                    <div class="card-title example-container d-flex"
+                        [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
+                        <p><strong>By indicator: </strong></p>
+                        <div class="circle complete"></div>
+                        <p>Complete</p>
+                        <div class="circle pending" style="margin-left: 50px;"></div>
+                        <p>Pending</p>
+                        <div class="circle finalized" style="margin-left: 50px;"></div>
+                        <p>Closed</p>
+                    </div>
+                    <div class="card-title example-container d-flex"
+                        [ngClass]="{'no-data': (dashboardData | json) == ({} | json)}">
+                        <p><strong>By field: </strong></p>
+                        <div class="circle complete"></div>
+                        <p>Approved comments</p>
+                        <div class="circle pending" style="margin-left: 50px;"></div>
+                        <p>Rejected replies</p>
+                        <div class="circle unanswered" style="margin-left: 50px;"></div>
+                        <p>Pending response</p>
                     </div>
 
-                </ng-container>
-                <div class="no-data" *ngIf="(dashboardData | json) == ({} | json)">
-                    You don't have any indicator assingned.
-                    Please contact your Administrator.
-                </div>
+                    <ng-container *ngIf="(dashboardData | json) != ({} | json)">
+                        <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
+                            class="progress-container">
+                            <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
+                            <progressbar class="progress" [value]="item.value" [max]="item.value.total">
+                                <span>{{item.value.total}}</span>
+                            </progressbar>
+                            <hr>
+                            <p *ngIf=" item && dashboardCommentsData[item.key]">Total comments:
+                                {{dashboardCommentsData[item.key].total}}</p>
+                            <progressbar id="comments-progessbar" *ngIf=" item && dashboardCommentsData[item.key]"
+                                class="progress" [value]="dashboardCommentsData[item.key]"
+                                [max]="dashboardCommentsData[item.key].total">
+                                <span>{{dashboardCommentsData[item.key].value}}</span>
+                            </progressbar>
+                            <a routerLinkActive="active" [routerLinkActive]="['active']"
+                                routerLink="../../indicator/{{item.key.split('qa_')[1]}}/id">
+                                <!-- (click)="goToView(item.key.split('qa_')[1], item.value[0].primary_field)"> -->
+                                Go to all {{getIndicatorName(item.key)}}
+                            </a>
+                        </div>
 
+                    </ng-container>
+                    <div class="no-data" *ngIf="(dashboardData | json) == ({} | json)">
+                        You don't have any indicator assingned.
+                        Please contact your Administrator.
+                    </div>
+
+                </div>
             </div>
         </div>
+
     </div>
-
-</div>
-<ngx-spinner>
-</ngx-spinner>
+    <ngx-spinner>
+    </ngx-spinner>
 
 
-<ng-template #template class="modal-dialog">
-    <div class="modal-content  modal-lg">
-        <div class="modal-header">
-            <button class="btn btn-warning" (click)="downloadRawComments()">
-                Download comments
-            </button>
-            <h2 style="margin-left: 1em;">All comments</h2>
-            <button type="button" class="close pull-right" (click)="modalRef.hide()" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="row justify-content-center comments-dash-container">
-                <ngx-charts-bar-vertical-stacked 
-                    *ngIf="has_comments"
-                    [scheme]="colorScheme"
-                    [results]="multi"
-                    [gradient]="gradient"
-                    [xAxis]="showXAxis"
-                    [yAxis]="showYAxis"
-                    [legend]="showLegend"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxisLabel]="xAxisLabel"
-                    [yAxisLabel]="yAxisLabel"
-                    [animations]="animations"
-                    (activate)="onActivate($event)" 
-                    (deactivate)="onDeactivate($event)"
-                    (select)="onSelect($event)">
-                </ngx-charts-bar-vertical-stacked>
-                
-                <div *ngIf="!has_comments && !has_comments_detailed" class="no-data">
-                    Sorry, we couldn't get comments. 
-                    Please contact support.
+    <ng-template #template class="modal-dialog">
+        <div class="modal-content  modal-lg">
+            <div class="modal-header">
+                <button class="btn btn-warning" (click)="downloadRawComments()">
+                    Download comments
+                </button>
+                <h2 style="margin-left: 1em;">All comments</h2>
+                <button type="button" class="close pull-right" (click)="modalRef.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-center comments-dash-container">
+                    <ngx-charts-bar-vertical-stacked *ngIf="has_comments" [scheme]="colorScheme" [results]="multi"
+                        [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
+                        [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel" [animations]="animations" (activate)="onActivate($event)"
+                        (deactivate)="onDeactivate($event)" (select)="onSelect($event)">
+                    </ngx-charts-bar-vertical-stacked>
+
+                    <div *ngIf="!has_comments && !has_comments_detailed" class="no-data">
+                        Sorry, we couldn't get comments.
+                        Please contact support.
+                    </div>
+
                 </div>
-
             </div>
         </div>
-    </div>
-</ng-template>
+    </ng-template>

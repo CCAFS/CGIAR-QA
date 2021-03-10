@@ -1,5 +1,5 @@
 @import "../../../assets/variables.scss";
-.dashboard-container {
+.dashboard-container, .new-dashboard-container {
   .card-title {
     font-weight: $light;
     font-size: $font-md;
@@ -18,7 +18,7 @@
   }
   .card {
     .card-body {
-      .dashboard-container{
+      .dashboard-container, .new-dashboard-container{
         background-color: var(--background);
         height: max-content;
         .dashboard-container-charts{
@@ -106,6 +106,38 @@
             ul>li {
               cursor: pointer;
             }
+          }
+          .flex-container {
+            .row{
+              .chart {
+                background-color: white;
+                min-height: 400px;
+                border-radius: 10px;
+                display: flex;
+                flex-direction: column;
+                padding: 0.5em;
+              }
+              .chart-1{
+                min-height: 400px;
+              }
+              .chart-left {
+                min-width: 400px;
+                max-width: 400px;
+                .chart-title{
+                  width: 100%;
+                  flex: 0 1 auto;
+                  margin: 0;
+                  padding: 5px;
+                  font-family: $secondary-font;
+                  font-weight: bold;
+                }
+                .chart-container {
+                  width: 100%;
+  
+                }
+            }
+            }
+            
           }
     
           .grid-container {

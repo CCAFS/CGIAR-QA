@@ -11,6 +11,12 @@ export class BarChartComponent implements OnInit {
 
   @Input() data;
   chartName = true;
+
+  tagTypesId = {
+    notsure: 2,
+    agree: 3,
+    disagree: 4
+  }
   // options
   showXAxis: boolean = true;
   showYAxis: boolean = false;
@@ -36,7 +42,7 @@ export class BarChartComponent implements OnInit {
 
   onSelect(data): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
-    this.filterTagEvent.emit('2');
+    this.filterTagEvent.emit(this.tagTypesId[data.name]);
   }
 
   onActivate(data): void {
