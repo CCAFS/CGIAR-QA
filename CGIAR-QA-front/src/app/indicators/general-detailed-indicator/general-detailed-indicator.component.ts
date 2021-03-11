@@ -318,6 +318,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
       res => {
         this.criteriaData = res.data[0];
+        console.log("CRITERIA DATA",this.criteriaData);
+        console.log("CRITERIA DATA",res.message);
+        
         this.criteria_loading = false;
       },
       error => {

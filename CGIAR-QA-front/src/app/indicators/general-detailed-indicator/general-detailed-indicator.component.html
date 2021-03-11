@@ -5,7 +5,7 @@
 <div class="row criteria-container">
     <div *ngIf="!criteria_loading">
         <h2>QUALITY ASSESSMENT CRITERIA</h2>
-        <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
+        <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>    
     </div>
     <div style="margin:auto;">
         <span *ngIf="criteria_loading" class="spinner-border spinner-border-sm mr-1"></span>

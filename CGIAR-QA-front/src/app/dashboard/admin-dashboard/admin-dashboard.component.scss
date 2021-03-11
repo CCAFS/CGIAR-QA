@@ -1,5 +1,56 @@
 @import "../../../assets/variables.scss";
+
+.btn-assessors-chat {
+  position: fixed;
+  right: 2em;
+  bottom: 2em;
+  z-index: 1000;
+  width: auto;
+  height: 40px;
+  background-color: rgb(80, 33, 166);
+  color: white;
+  padding: 0.5em 1.5em;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+
+
+.chat-container {
+  position: fixed;
+  width: 400px;
+  height: 700px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(80, 33, 166);
+  .btn-selector {
+    border: 0;
+    height: 40px;
+    background-color: rgb(80, 33, 166);
+    color: #fff;
+  }
+  iframe {
+    height: calc(100% - 40px);
+    border: 0;
+    width: 1px;
+    min-width: 100%;
+    border-radius: 4px;
+  }
+}
+
+.inactive{
+  display: none !important;
+}
+
 .dashboard-container, .new-dashboard-container {
+
   .card-title {
     font-weight: $light;
     font-size: $font-md;

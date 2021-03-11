@@ -25,7 +25,7 @@
 </div> -->
 <div *ngIf="chartName" class="legend-container">
   <div class="legend">
-    <!-- <div  *ngFor="let tag of legendLabels[chartName]"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}}</p></div> -->
+    <div  *ngFor="let tag of legendLabels.tags"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}}</p></div>
   </div>
 </div>
 <div class="bar-container" *ngIf="data.dataset">

@@ -17,6 +17,14 @@ export class BarChartComponent implements OnInit {
     agree: 3,
     disagree: 4
   }
+
+  public legendLabels: any = { 
+    tags: [
+    {name:"Agree", class: "agree"},
+    {name:"Disagree", class: "disagree"},
+    {name:"Not sure", class:"not-sure" },
+    ]
+  };
   // options
   showXAxis: boolean = true;
   showYAxis: boolean = false;

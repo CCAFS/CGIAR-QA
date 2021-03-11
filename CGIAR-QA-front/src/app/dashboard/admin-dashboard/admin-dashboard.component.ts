@@ -43,6 +43,22 @@ export class AdminDashboardComponent implements OnInit {
   generalStatus = GeneralStatus;
   indicatorsName = GeneralIndicatorName;
 
+  assessorsChat = {
+    isOpen: false,
+    indicators: {
+      qa_policies: true,
+      qa_innovations: false,
+      qa_publications: false,
+      qa_oicr: false,
+      qa_melia: false,
+      qa_capdev: false,
+      qa_milestones: false,
+      qa_slo: false,
+      qa_outcomes: false,
+    }
+  }
+
+
   indicatorsNameDropdwon = [
     { name: 'Policies', viewname: 'qa_policies' },
     { name: 'Innovations', viewname: 'qa_innovations' },
@@ -770,6 +786,10 @@ export class AdminDashboardComponent implements OnInit {
     // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
+
+  toggleAssessorsChat() {
+    this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
+  }
 
   // axisFormat(val) {
   //   if (val % 1 === 0) {
