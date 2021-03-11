@@ -2,7 +2,7 @@
     <i class="qa-timeline-icon"></i>
 </div>
 <!-- <div class="embedded-chat" style="height: 700px; width: 500px;" ></div> -->
-<div [ngClass]="{'inactive': assessorsChat.isOpen}" class="btn-assessors-chat">Assessors chat</div>
+<div [ngClass]="{'inactive': assessorsChat.isOpen}" (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
 <div [ngClass]="{'inactive': !assessorsChat.isOpen}"  class="chat-container">
     <div class="btn-group selector" dropdown>
         <button id="button-animated" dropdownToggle type="button"
