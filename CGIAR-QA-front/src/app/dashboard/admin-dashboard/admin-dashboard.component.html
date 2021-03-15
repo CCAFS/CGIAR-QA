@@ -2,7 +2,7 @@
     <i class="qa-timeline-icon"></i>
 </div>
 <!-- <div class="embedded-chat" style="height: 700px; width: 500px;" ></div> -->
-<div [ngClass]="{'inactive': assessorsChat.isOpen}" (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
+<div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
 <div [ngClass]="{'inactive': !assessorsChat.isOpen}"  class="chat-container">
     <div class="btn-group selector" dropdown>
         <button id="button-animated" dropdownToggle type="button"
@@ -17,7 +17,9 @@
             </li>
         </ul>
     </div>
-    <iframe src='https://go.arena.im/embed/chat/ciat/7v60'></iframe>
+    <div class="chat arena-chat" data-publisher="ciat" data-chatroom="86sr" data-position="bottom"></div>
+    <!-- <script async src="https://go.arena.im/public/js/arenachatlib.js?p=ciat&e=86sr"></script> -->
+    <!-- <iframe src='https://go.arena.im/embed/chat/ciat/7v60'></iframe> -->
 </div>
 <!-- <div class="arena-chat"  style='border: 0; width: 1px; min-width: 200px; height: 200px; border-radius: 4px;'
  data-publisher="ciat" data-chatroom="7v60" data-position="bottom"></div><script async src="https://go.arena.im/public/js/arenachatlib.js?p=ciat&e=7v60"></script> -->
