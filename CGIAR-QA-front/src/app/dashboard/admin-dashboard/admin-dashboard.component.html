@@ -17,11 +17,13 @@
             </li>
         </ul>
     </div>
+    <div class="holder">
+        <iframe [ngClass]="{'selected': assessorsChat.indicators.qa_slo}" src='https://go.arena.im/embed/chat/ciat/ciat-global'></iframe>
+        <iframe [ngClass]="{'selected': assessorsChat.indicators.qa_publications}" src='https://go.arena.im/embed/chat/ciat/7v60'></iframe>
+        <iframe [ngClass]="{'selected': assessorsChat.indicators.qa_innovations}" src='https://go.arena.im/embed/chat/ciat/86sr' ></iframe>
+    </div>
     <!-- <div class="arena-chat" data-publisher="ciat" data-chatroom="7v60" data-position="in-page" style="height: 660px; width:400px"></div>
     <script async src="https://go.arena.im/public/js/arenachatlib.js?p=ciat&e=7v60"></script> -->
-    <iframe *ngIf="assessorsChat.indicators.qa_slo" src='https://go.arena.im/embed/chat/ciat/ciat-global'></iframe>
-    <iframe *ngIf="assessorsChat.indicators.qa_publications" src='https://go.arena.im/embed/chat/ciat/7v60'></iframe>
-    <iframe *ngIf="assessorsChat.indicators.qa_innovations" src='https://go.arena.im/embed/chat/ciat/86sr' ></iframe>
 </div>
 <!-- <div class="arena-chat"  style='border: 0; width: 1px; min-width: 200px; height: 200px; border-radius: 4px;'
  data-publisher="ciat" data-chatroom="7v60" data-position="bottom"></div><script async src="https://go.arena.im/public/js/arenachatlib.js?p=ciat&e=7v60"></script> -->
