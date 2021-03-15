@@ -63,6 +63,12 @@
   display: none !important;
 }
 
+.clickable {
+  &:hover {
+    cursor:pointer;
+  }
+}
+
 .dashboard-container, .new-dashboard-container {
 
   .card-title {

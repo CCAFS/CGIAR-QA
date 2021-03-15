@@ -46,18 +46,19 @@ export class AdminDashboardComponent implements OnInit {
   assessorsChat = {
     isOpen: false,
     indicators: {
-      qa_policies: true,
+      qa_policies: false,
       qa_innovations: false,
       qa_publications: false,
       qa_oicr: false,
       qa_melia: false,
       qa_capdev: false,
       qa_milestones: false,
-      qa_slo: false,
+      qa_slo: true,
       qa_outcomes: false,
     }
   }
 
+  selectedChatIndicator = 'qa_slo';
 
   indicatorsNameDropdwon = [
     { name: 'Policies', viewname: 'qa_policies' },
@@ -179,6 +180,17 @@ export class AdminDashboardComponent implements OnInit {
       }
     )
     // console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
+  }
+
+  actualChatIndicator(indicatorName: string) {
+    this.selectedChatIndicator = indicatorName;
+    for (const indicator in this.assessorsChat.indicators) {
+      if (indicator != indicatorName) {
+        this.assessorsChat.indicators[indicator] = false;    
+      } else {
+        this.assessorsChat.indicators[indicator] = true;    
+      }
+    }
   }
 
   actualStatusIndicator(data) {
