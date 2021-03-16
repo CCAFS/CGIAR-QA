@@ -30,11 +30,18 @@ export class AssessorDashboardComponent implements OnInit {
   indicatorsName = GeneralIndicatorName;
   tagMessages = TagMessage;
   indicatorsTags: any;
-  selectedIndicator = 'qa_slo';
+  selectedIndicator = 'qa_policies';
   dataSelected: any;
   indicatorData: any;
   feedList: [];
   itemStatusByIndicator = {};
+
+  dataCharts = {
+    generalStatus: null,
+    assessorsInteractions: null,
+    responseToComments: null,
+    assessmentByField: null
+  }
 
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
@@ -58,7 +65,7 @@ export class AssessorDashboardComponent implements OnInit {
       this.authenticationService.parseUpdateIndicators(res.data.indicators);
     })
     this.showSpinner()
-    console.log({currentUser: this.currentUser});
+    console.log({ currentUser: this.currentUser });
 
     this.loadDashData();
 
@@ -69,7 +76,7 @@ export class AssessorDashboardComponent implements OnInit {
       this.getDashData(),
       this.getCommentStats(),
       this.getAllTags(),
-      this.getFeedTags({}),
+      this.getFeedTags(this.selectedIndicator),
       this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(
@@ -78,7 +85,6 @@ export class AssessorDashboardComponent implements OnInit {
 
         //dashData
         this.dashboardData = this.dashService.groupData(dashData.data);
-        this.selectedIndicator = Object.keys(this.dashboardData)[1];
         this.dataSelected = this.dashboardData[this.selectedIndicator];
 
         //commentsStats
@@ -89,10 +95,13 @@ export class AssessorDashboardComponent implements OnInit {
 
         //feedTags
         this.feedList = feedTags.data;
-  
+
         //assessmentByField
         this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
-        
+
+        //UPDATE CHARTS
+        this.updateDataCharts();
+
         this.hideSpinner();
       }
     );
@@ -102,10 +111,10 @@ export class AssessorDashboardComponent implements OnInit {
 
 
   getItemStatusByIndicator(indicator: string) {
-    if(this.itemStatusByIndicator.hasOwnProperty(indicator)){
+    if (this.itemStatusByIndicator.hasOwnProperty(indicator)) {
       return this.itemStatusByIndicator[indicator];
-    } else {     
-          return false;
+    } else {
+      return false;
     }
   }
 
@@ -116,20 +125,29 @@ export class AssessorDashboardComponent implements OnInit {
   actualIndicator(indicator: string) {
     this.selectedIndicator = indicator;
     this.dataSelected = this.dashboardData[this.selectedIndicator];
-    // console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
+
+
+    this.showSpinner();
+    this.updateDataCharts();
+    this.getFeedTags(this.selectedIndicator).subscribe(
+      res => {
+        this.feedList = res.data;
+        this.hideSpinner();
+      }
+    );
   }
 
   actualStatusIndicator(data) {
     let indicator_status = false;
     // console.log(data);
     let i = 0;
-    if(data) {
+    if (data) {
       for (const item of data) {
         if (item.indicator_status == 1) indicator_status = true;
         i++;
         // console.log(i);
-    // console.log('INDICATOR STATUS',indicator_status);
-        
+        // console.log('INDICATOR STATUS',indicator_status);
+
       }
     }
     return indicator_status;
@@ -146,10 +164,10 @@ export class AssessorDashboardComponent implements OnInit {
   }
 
   // comments by crp
-  getCommentStats(crp_id?): Observable<any>  {
+  getCommentStats(crp_id?): Observable<any> {
     return this.commentService.getCommentCRPStats({ crp_id, id: null }).pipe();
   }
-  
+
   //Assessment by field
   getAllItemStatusByIndicator(): Observable<any> {
     return this.indicatorService.getAllItemStatusByIndicator().pipe();
@@ -161,8 +179,8 @@ export class AssessorDashboardComponent implements OnInit {
   }
 
   //Feed Tags
-  getFeedTags(params?): Observable<any> {
-    return this.commentService.getFeedTags(params).pipe();
+  getFeedTags(indicator_view_name, tagTypeId?): Observable<any> {
+    return this.commentService.getFeedTags(indicator_view_name, tagTypeId).pipe();
   }
 
   /***
@@ -198,15 +216,15 @@ export class AssessorDashboardComponent implements OnInit {
     let dataset = [];
     let brushes = { domain: [] };
     for (const item of data) {
-      if(item.status != null) {
+      if (item.status != null) {
         dataset.push({ name: item.status, value: +item.label });
         brushes.domain.push(colors[item.status]);
       }
     }
     let finalized = dataset.find(item => item.name == 'finalized');
-    if(finalized) finalized.name = 'closed';
+    if (finalized) finalized.name = 'closed';
     // console.log('DATA SELECTED', { dataset, brushes });
-    
+
     return { dataset, brushes };
   }
 
@@ -219,12 +237,12 @@ export class AssessorDashboardComponent implements OnInit {
     }
     let dataset = [];
     let brushes = { domain: [] };
-    
-    if(data) {
+
+    if (data) {
       let comments_accepted = data.find(item => item.comments_accepted != '0');
       comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
       if (comments_accepted) dataset.push(comments_accepted);
-  
+
       let comments_rejected = data.find(item => item.comments_rejected != '0');
       comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
       if (comments_rejected) dataset.push(comments_rejected);
@@ -232,11 +250,11 @@ export class AssessorDashboardComponent implements OnInit {
       let comments_clarification = data.find(item => item.comments_clarification != '0');
       comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
       if (comments_clarification) dataset.push(comments_clarification);
-  
+
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
       if (comments_without_answer) dataset.push(comments_without_answer);
-  
+
       dataset.forEach(comment => {
         brushes.domain.push(colors[comment.name]);
       });
@@ -244,6 +262,46 @@ export class AssessorDashboardComponent implements OnInit {
 
 
     return { dataset, brushes };
+  }
+
+  formatIndicatorTags() {
+
+    const tags = this.indicatorsTags[this.selectedIndicator];
+
+    const colors = {
+      agree: 'var(--color-agree)',
+      disagree: 'var(--color-disagree)',
+      notsure: 'var(--color-not-sure)'
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
+    for (const tag in tags) {
+      dataset.push({ name: tag, value: tags[tag] })
+    }
+    dataset.forEach(tag => {
+      brushes.domain.push(colors[tag.name]);
+    });
+    console.log({ dataset, brushes });
+
+
+    return { dataset, brushes };
+
+  }
+
+  updateDataCharts() {
+    this.dataCharts.generalStatus = this.formatStatusIndicatorData(this.dataSelected);
+    this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
+    this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
+    this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
+  }
+
+  updateFeedTags(tagTypeId) {
+    this.getFeedTags(this.selectedIndicator, tagTypeId).subscribe(
+      res => {
+        this.feedList = res.data;
+        this.hideSpinner();
+      }
+    )
   }
 
 

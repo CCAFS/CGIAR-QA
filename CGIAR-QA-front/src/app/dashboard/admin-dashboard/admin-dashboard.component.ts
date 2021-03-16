@@ -178,7 +178,7 @@ export class AdminDashboardComponent implements OnInit {
         this.feedList = res.data;
         this.hideSpinner();
       }
-    )
+    );
     // console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
   }
 
@@ -186,9 +186,9 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedChatIndicator = indicatorName;
     for (const indicator in this.assessorsChat.indicators) {
       if (indicator != indicatorName) {
-        this.assessorsChat.indicators[indicator] = false;    
+        this.assessorsChat.indicators[indicator] = false;
       } else {
-        this.assessorsChat.indicators[indicator] = true;    
+        this.assessorsChat.indicators[indicator] = true;
       }
     }
   }
@@ -313,7 +313,7 @@ export class AdminDashboardComponent implements OnInit {
       brushes.domain.push(colors[tag.name]);
     });
     console.log({ dataset, brushes });
-    
+
 
     return { dataset, brushes };
 

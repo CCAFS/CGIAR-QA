@@ -175,7 +175,7 @@
                     </ng-container>
 
                 </div>
-                <div *ngIf="detailedData" class="col data-container">
+                <!-- <div *ngIf="detailedData" class="col data-container">
                     <div class="data-row  gnral-commnts">
                         <h2>General comment:</h2>
                         <p class="informative-text">
@@ -206,7 +206,7 @@
                         </div>
 
                     </div>
-                </div>
+                </div> -->
                 <!-- ROUND 2 -->
                 <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em;">
                     <div *ngIf="gnralInfo.status !== statusHandler.Finalized && gnralInfo.evaluation_status !== 'Added'"
@@ -299,7 +299,7 @@
 
                 </div>
 
-                <div *ngIf="detailedData && gnralInfo.general_comment" class="col data-container">
+                <!-- <div *ngIf="detailedData && gnralInfo.general_comment" class="col data-container">
                     <div class="data-row  gnral-commnts">
                         <h2>General comment:</h2>
                         <p class="informative-text">
@@ -315,7 +315,7 @@
                         </div>
 
                     </div>
-                </div>
+                </div> -->
             </div>
             <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
                 size="medium">
