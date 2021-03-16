@@ -34,6 +34,7 @@ export class BarChartComponent implements OnInit {
   yAxisLabel: string = 'Tags';
   showYAxisLabel: boolean = true;
   xAxisLabel: string = 'Count';
+  view = "";
 
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
@@ -60,5 +61,8 @@ export class BarChartComponent implements OnInit {
   onDeactivate(data): void {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
+//   onResize(event) {
+//     this.view = [event.target.innerWidth / 1.35, 400];
+// }
 
 }

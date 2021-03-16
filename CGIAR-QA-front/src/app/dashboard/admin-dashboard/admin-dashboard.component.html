@@ -166,39 +166,7 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <!-- <div class="new-dashboard-container row w-100">
-                    <div class="card-body dashboard-container-charts col col-sm-9">
-                        <div class="w-100 dashboard-header mb-2">
-                            <div class="h-100  title">Dashboard {{getIndicatorName(selectedIndicator)}}</div>
-                            <div class="btn-group h-100 selector" dropdown>
-                                <button id="button-animated" dropdownToggle type="button"
-                                    class="btn btn-white dropdown-toggle w-100" aria-controls="dropdown-animated">
-                                    {{getIndicatorName(selectedIndicator)}} <span class="caret"></span>
-                                </button>
-                                <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
-                                    aria-labelledby="button-animated">
-                                    <li *ngFor="let indicator of indicatorsNameDropdwon" role="menuitem"><a
-                                            class="dropdown-item"
-                                            (click)=actualIndicator(indicator.viewname)>{{indicator.name}}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div *ngIf="dashboardData && ((dashboardData | json) != ({} | json))" class="flex-container">
-                            <div class="row">
-                                <div class="chart chart-1 chart-left">
-                                    <h4 class="chart-title">Status - {{dataSelected.total}}
-                                        {{getIndicatorName(selectedIndicator)}}</h4>
-                                    <div class="chart-container">
-                                        <app-donut-chart *ngIf="dataSelected" [data]="dataCharts.generalStatus"
-                                            [chartName]="'status'" [selectedIndicator]="selectedIndicator">
-                                        </app-donut-chart>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+
                 <div class="dashboard-container row w-100">
                     <div class="card-body dashboard-container-charts col col-sm-9">
                         <div class="w-100 dashboard-header mb-2">
@@ -217,7 +185,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div *ngIf="dashboardData && ((dashboardData | json) != ({} | json))" class="grid-container">
+                        <div *ngIf="dashboardData && ((dashboardData | json) != ({} | json))" class="w-100 grid-container">
                             <div class="chart chart-1">
                                 <h4 class="chart-title">Status - {{dataSelected.total}}
                                     {{getIndicatorName(selectedIndicator)}}</h4>
