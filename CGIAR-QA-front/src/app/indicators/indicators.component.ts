@@ -66,6 +66,10 @@ export class IndicatorsComponent implements OnInit {
   btonFilterForm: any;
   chatRooms = null;
 
+  assessorsChat = {
+    isOpen: false
+  }
+
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
@@ -274,6 +278,10 @@ export class IndicatorsComponent implements OnInit {
   }
   hideSpinner() {
     this.spinner.hide();
+  }
+
+  toggleAssessorsChat() {
+    this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
   }
 
 
