@@ -26,11 +26,13 @@ export class BarChartComponent implements OnInit {
     ]
   };
   // options
-  showXAxis: boolean = true;
+  roundDomains: boolean = true;
+  showDataLabel: boolean = true;
+  showXAxis: boolean = false;
   showYAxis: boolean = false;
   gradient: boolean = false;
   showLegend: boolean = false;
-  showXAxisLabel: boolean = true;
+  showXAxisLabel: boolean = false;
   yAxisLabel: string = 'Tags';
   showYAxisLabel: boolean = true;
   xAxisLabel: string = 'Count';

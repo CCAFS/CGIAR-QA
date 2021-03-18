@@ -1,33 +1,6 @@
 <div class="row justify-content-center">
     <i class="qa-timeline-icon"></i>
 </div>
-<!-- <div class="embedded-chat" style="height: 700px; width: 500px;" ></div> -->
-<div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
-<div [ngClass]="{'inactive': !assessorsChat.isOpen}"  class="chat-container">
-    <div class="btn-group selector" dropdown>
-        <button id="button-animated" dropdownToggle type="button"
-            class="btn-selector dropdown-toggle w-100" aria-controls="dropdown-animated">
-            {{getIndicatorName(selectedChatIndicator)}} <span class="caret"></span>
-        </button>
-        <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
-            aria-labelledby="button-animated">
-            <li *ngFor="let indicator of indicatorsNameDropdwon" role="menuitem"><a
-                    class="dropdown-item clickable"
-                    (click)=actualChatIndicator(indicator.viewname)>{{indicator.name}}</a>
-            </li>
-        </ul>
-    </div>
-    <div class="holder">
-        <iframe [ngClass]="{'selected': assessorsChat.indicators.qa_slo}" src='https://go.arena.im/embed/chat/ciat/ciat-global'></iframe>
-        <iframe [ngClass]="{'selected': assessorsChat.indicators.qa_publications}" src='https://go.arena.im/embed/chat/ciat/7v60'></iframe>
-        <iframe [ngClass]="{'selected': assessorsChat.indicators.qa_innovations}" src='https://go.arena.im/embed/chat/ciat/86sr' ></iframe>
-    </div>
-    <!-- <div class="arena-chat" data-publisher="ciat" data-chatroom="7v60" data-position="in-page" style="height: 660px; width:400px"></div>
-    <script async src="https://go.arena.im/public/js/arenachatlib.js?p=ciat&e=7v60"></script> -->
-</div>
-<!-- <div class="arena-chat"  style='border: 0; width: 1px; min-width: 200px; height: 200px; border-radius: 4px;'
- data-publisher="ciat" data-chatroom="7v60" data-position="bottom"></div><script async src="https://go.arena.im/public/js/arenachatlib.js?p=ciat&e=7v60"></script> -->
-
 <div class="row justify-content-center dashboard-container">
     <div class="col-3 col-programs">
         <p class="card-title">Programs/Platforms ({{selectedProgramName}})</p>
@@ -237,6 +210,7 @@
                             <ul class="notifications">
                                 <li class="notification" *ngFor="let item of feedList" [routerLinkActive]="['active']"
                                     routerLink="../../indicator/{{item.indicator_view_name.split('qa_')[1]}}/id/detail/{{item.indicator_view_id}}">
+                                    <div [ngClass]="{'agree': item.tagName == 'agree', 'notsure': item.tagName == 'notsure', 'disagree': item.tagName == 'disagree'}" class="tag-color"></div>
                                     <div class="datetime">{{item.updatedAt | date:'long':'+0530'}}</div>
                                     <!-- <div class="datetime">{{formatDate(item.updatedAt)}}</div> -->
                                     <p><strong>{{item.name}}</strong> {{tagMessages[item.tagName]}} <strong>
