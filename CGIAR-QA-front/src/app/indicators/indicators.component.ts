@@ -262,7 +262,10 @@ export class IndicatorsComponent implements OnInit {
       this.setOrder('status', this.indicatorService.getOrderByStatus())
     }
   }
-
+  
+    toggleAssessorsChat() {
+      this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
+    }
   /***
    * 
    *  Spinner 
@@ -278,10 +281,6 @@ export class IndicatorsComponent implements OnInit {
   }
   hideSpinner() {
     this.spinner.hide();
-  }
-
-  toggleAssessorsChat() {
-    this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
   }
 
 

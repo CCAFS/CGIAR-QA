@@ -18,6 +18,8 @@ import { saveAs } from "file-saver";
 import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
 import { Title } from '@angular/platform-browser';
 import { WordCounterPipe } from 'src/app/pipes/word-counter.pipe';
+import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
+
 
 import * as moment from 'moment';
 
@@ -28,6 +30,7 @@ import * as moment from 'moment';
   providers: [UrlTransformPipe, WordCounterPipe]
 })
 export class GeneralDetailedIndicatorComponent implements OnInit {
+  indicatorType: string;
   currentUser: User;
   detailedData: any[];
   params: any;
@@ -51,6 +54,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   approveAllitems;
   general_comment_reply;
+  assessorsChat = {
+    isOpen: false
+  }
+
+  chatRooms = null;
+
 
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
   @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
@@ -80,13 +89,17 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     private wordCount: WordCounterPipe,
     private titleService: Title,
     private authenticationService: AuthenticationService,
-    private evaluationService: EvaluationsService) {
+    private evaluationService: EvaluationsService,
+    private sanitizer: DomSanitizer,
+    ) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
         console.log(this.currentUser);
         
       });
+      this.indicatorType = routeParams.type;
+
       //console.log("general detailed")
       this.generalCommentGroup = this.formBuilder.group({
         general_comment: ['', Validators.required]
@@ -114,6 +127,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.chatRooms = {
+      policies: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
+      innovations: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/JGdqSO6ko?username=${this.currentUser.name}`)
+    }
   }
 
   // convenience getter for easy access to form fields
@@ -522,6 +539,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     }
 
     return status;
+  }
+
+  toggleAssessorsChat() {
+    this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
   }
 
   /***
