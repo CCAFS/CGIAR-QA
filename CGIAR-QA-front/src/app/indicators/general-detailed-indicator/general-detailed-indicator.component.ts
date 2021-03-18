@@ -84,6 +84,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
+        console.log(this.currentUser);
+        
       });
       //console.log("general detailed")
       this.generalCommentGroup = this.formBuilder.group({

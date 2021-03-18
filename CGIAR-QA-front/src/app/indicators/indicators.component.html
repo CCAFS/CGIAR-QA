@@ -1,6 +1,10 @@
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']" routerLink="/dashboard/">
     <i class=icon-go-back></i> Dashboard
 </a>
+<div class="chat-container">
+    <iframe *ngIf="indicatorType == 'policies'" [src]="chatRooms.policies" ></iframe>
+    <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations" ></iframe>
+</div>
 
 <h2>{{returnListName(indicatorType, 'header')}} </h2>
 <h4 style="text-align: center;" *ngIf="currentUser.hasOwnProperty('cycle')">
@@ -205,6 +209,8 @@
 </div>
 
 <div class="div" *ngIf="collectionSize == 0">There is no data for this indicator</div>
+<!-- <div class="embedded-chat" style="height: 500px; width: 100%; border: 1px solid gray;" >
+</div> -->
 
 
 <!-- Loading Spinner -->

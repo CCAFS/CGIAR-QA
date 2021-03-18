@@ -16,6 +16,7 @@ import { GeneralIndicatorName } from 'src/app/_models/general-status.model';
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
 import { SortByPipe } from 'src/app/pipes/sort-by.pipe';
+import { SafeUrlPipe } from 'src/app/pipes/safe-url.pipe';
 
 import * as moment from 'moment';
 import { FormBuilder } from '@angular/forms';
@@ -24,7 +25,7 @@ import { FormBuilder } from '@angular/forms';
   selector: 'app-indicators',
   templateUrl: './indicators.component.html',
   styleUrls: ['./indicators.component.scss'],
-  providers: [SortByPipe]
+  providers: [SortByPipe, SafeUrlPipe]
 })
 export class CRPIndicatorsComponent implements OnInit {
   indicatorType: string;

@@ -20,6 +20,7 @@ import * as moment from 'moment';
 import { FormBuilder } from '@angular/forms';
 import { IndicatorsService } from '../services/indicators.service';
 
+import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-indicators',
@@ -63,6 +64,7 @@ export class IndicatorsComponent implements OnInit {
   configTemplate: string;
   reverse: boolean = false;
   btonFilterForm: any;
+  chatRooms = null;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -73,6 +75,7 @@ export class IndicatorsComponent implements OnInit {
     private spinner: NgxSpinnerService, 
     private orderPipe: SortByPipe,
     private indicatorService: IndicatorsService,
+    private sanitizer: DomSanitizer,
     // private orderPipe: OrderPipe,
     private titleService: Title,
     private alertService: AlertService) {
@@ -80,6 +83,7 @@ export class IndicatorsComponent implements OnInit {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
         console.log(this.currentUser);
+
         
       });
       this.indicatorType = routeParams.type;
@@ -105,6 +109,10 @@ export class IndicatorsComponent implements OnInit {
     setTimeout(()=>{                           //<<<---using ()=> syntax
       this.verifyIfOrderByStatus();
  }, 2000);
+ this.chatRooms = {
+  policies: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`), 
+  innovations: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/JGdqSO6ko?username=${this.currentUser.name}`)
+}
   }
 
 
