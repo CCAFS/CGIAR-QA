@@ -329,17 +329,17 @@ class CommentController {
         }
     }
 
-  
+
     // get total indicator tags for chart
     static getAllIndicatorTags = async (req: Request, res: Response) => {
-//TODO
+        //TODO
         const { crp_id } = req.query;
-        console.log({crp_id});
-        
+        console.log({ crp_id });
+
         let queryRunner = getConnection().createQueryBuilder();
         try {
             let tagsByIndicators;
-            if(crp_id !== 'undefined') {
+            if (crp_id !== 'undefined') {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT qe.indicator_view_name, tt.name as tagType, count(*) as total
                     FROM qa_tags tag 
@@ -353,11 +353,11 @@ class CommentController {
                     GROUP BY qe.indicator_view_name, tt.name
                     `
                     ,
-                    {crp_id},
+                    { crp_id },
                     {}
                 );
                 tagsByIndicators = await queryRunner.connection.query(query, parameters);
-            } else{
+            } else {
 
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT qe.indicator_view_name, tt.name as tagType, count(*) as total
@@ -389,12 +389,12 @@ class CommentController {
     // get all QA recent tags
     static getFeedTags = async (req: Request, res: Response) => {
 
-        const {indicator_view_name, tagTypeId} = req.query;
+        const { indicator_view_name, tagTypeId } = req.query;
 
         let tags;
         let queryRunner = getConnection().createQueryBuilder();
         try {
-            if(indicator_view_name !== 'undefined' && tagTypeId !== 'undefined') {                
+            if (indicator_view_name !== 'undefined' && tagTypeId !== 'undefined') {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
                     FROM qa_tags tag 
@@ -405,7 +405,7 @@ class CommentController {
                     WHERE qe.indicator_view_name = :indicator_view_name
                     AND tt.id = :tagTypeId
                     ORDER BY tag.createdAt DESC`,
-                    {indicator_view_name, tagTypeId},
+                    { indicator_view_name, tagTypeId },
                     {}
                 );
                 tags = await queryRunner.connection.query(query, parameters);
@@ -419,7 +419,7 @@ class CommentController {
                     LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
                     WHERE qe.indicator_view_name = :indicator_view_name
                     ORDER BY tag.createdAt DESC`,
-                    {indicator_view_name},
+                    { indicator_view_name },
                     {}
                 );
                 tags = await queryRunner.connection.query(query, parameters);
@@ -806,6 +806,7 @@ class CommentController {
     }
 
     static toggleApprovedNoComments = async (req: Request, res: Response) => {
+        //TODO
         const { evaluationId } = req.params;
         const { meta_array, userId, isAll, noComment } = req.body;
         let comments;
@@ -813,6 +814,8 @@ class CommentController {
         const userRepository = getRepository(QAUsers);
         const evaluationsRepository = getRepository(QAEvaluations);
         const commentsRepository = getRepository(QAComments);
+        const cycleRepo = getRepository(QACycle);
+
         // console.log(meta_array)
         try {
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
@@ -832,7 +835,15 @@ class CommentController {
             // console.log(comments.length, meta_array)
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
+            let current_cycle = await cycleRepo
+                .createQueryBuilder("qa_cycle")
+                .select('*')
+                .where("DATE(qa_cycle.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+                .getRawOne();
+
             let response = [];
+
 
             for (let index = 0; index < meta_array.length; index++) {
                 let comment_ = new QAComments();
@@ -854,13 +865,15 @@ class CommentController {
                     comment_.detail = null;
                     comment_.approved_no_comment = noComment;
                     comment_.user = user;
+                    if (current_cycle == undefined) throw new Error('Could not created comment')
+                    comment_.cycle = current_cycle;
                 }
                 // console.log(comment_);
                 response.push(comment_)
             }
             let result = await commentsRepository.save(response);
             console.log(result);
-            
+
 
             res.status(200).send({ data: result, message: 'Comment toggle' });
 
@@ -1062,32 +1075,32 @@ class CommentController {
 
         switch (tagTypeId) {
             case 2: //Agree
-                    try {
-                        tag = await tagsRepository.findOneOrFail(idDisagree);
-                        tagsRepository.delete(idDisagree);
-                        console.log('Tag disagree deleted');
+                try {
+                    tag = await tagsRepository.findOneOrFail(idDisagree);
+                    tagsRepository.delete(idDisagree);
+                    console.log('Tag disagree deleted');
 
-                        tag = await tagsRepository.findOneOrFail(idAgree);
-                        tagsRepository.delete(idAgree);
-                        console.log('Tag not-sure deleted');
-                    } catch (error) {
-                        console.log(error);
-                    }
-                    
+                    tag = await tagsRepository.findOneOrFail(idAgree);
+                    tagsRepository.delete(idAgree);
+                    console.log('Tag not-sure deleted');
+                } catch (error) {
+                    console.log(error);
+                }
+
                 break;
             case 3: //Agree
-                    try {
-                        tag = await tagsRepository.findOneOrFail(idDisagree);
-                        tagsRepository.delete(idDisagree);
-                        console.log('Tag disagree deleted');
+                try {
+                    tag = await tagsRepository.findOneOrFail(idDisagree);
+                    tagsRepository.delete(idDisagree);
+                    console.log('Tag disagree deleted');
 
-                        tag = await tagsRepository.findOneOrFail(idNotSure);
-                        tagsRepository.delete(idNotSure);
-                        console.log('Tag not-sure deleted');
-                    } catch (error) {
-                        console.log(error);
-                    }
-                    
+                    tag = await tagsRepository.findOneOrFail(idNotSure);
+                    tagsRepository.delete(idNotSure);
+                    console.log('Tag not-sure deleted');
+                } catch (error) {
+                    console.log(error);
+                }
+
                 break;
             case 4: //
                 try {
@@ -1102,7 +1115,7 @@ class CommentController {
                     console.log(error);
                 }
                 break;
-        
+
             default:
                 break;
         }
@@ -1138,7 +1151,7 @@ class CommentController {
 
     static getTagId = async (req: Request, res: Response) => {
 
-        const {commentId, tagTypeId, userId} = req.params;
+        const { commentId, tagTypeId, userId } = req.params;
 
         let queryRunner = getConnection().createQueryBuilder();
         try {
@@ -1152,14 +1165,14 @@ class CommentController {
                 AND tag.tagTypeId= :tagTypeId
                 AND tag.userId= :userId;
                         `,
-                { commentId, tagTypeId, userId},
+                { commentId, tagTypeId, userId },
                 {}
             );
 
             let tagId = await queryRunner.connection.query(query, parameters);
             res.status(200).send({ data: tagId, message: 'Tag id found' });
-            
-        } catch(error) {
+
+        } catch (error) {
             res.status(404).json({ message: "Tag id can not be found.", data: error });
 
         }
