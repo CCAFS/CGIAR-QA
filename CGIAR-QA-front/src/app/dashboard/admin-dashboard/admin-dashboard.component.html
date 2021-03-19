@@ -175,14 +175,14 @@
                                         (filterTagEvent)="updateFeedTags($event)"></app-bar-chart>
                                 </div>
                             </div>
-                            <div class="chart chart-3">
+                            <div class="chart responses-to-comments-r1">
                                 <h4 class="chart-title">Responses to comments</h4>
                                 <div *ngIf="dashboardCommentsData[selectedIndicator]" class="chart-container">
                                     <app-donut-chart [data]="dataCharts.responseToComments" [chartName]="'comments'">
                                     </app-donut-chart>
                                 </div>
                             </div>
-                            <div class="chart chart-4">
+                            <div class="chart assessment-by-field-r1">
                                 <h4 class="chart-title">Assessment by field</h4>
                                 <div class="chart-container" *ngIf="getItemStatusByIndicator(selectedIndicator)">
                                     <app-line-chart [data]="dataCharts.assessmentByField"></app-line-chart>
@@ -210,12 +210,17 @@
                             <ul class="notifications">
                                 <li class="notification" *ngFor="let item of feedList" [routerLinkActive]="['active']"
                                     routerLink="../../indicator/{{item.indicator_view_name.split('qa_')[1]}}/id/detail/{{item.indicator_view_id}}">
-                                    <div [ngClass]="{'agree': item.tagName == 'agree', 'notsure': item.tagName == 'notsure', 'disagree': item.tagName == 'disagree'}" class="tag-color"></div>
+                                    <!-- <div [ngClass]="{'agree': item.tagName == 'agree', 'notsure': item.tagName == 'notsure', 'disagree': item.tagName == 'disagree'}" class="tag-color"></div> -->
                                     <div class="datetime">{{item.updatedAt | date:'long':'+0530'}}</div>
                                     <!-- <div class="datetime">{{formatDate(item.updatedAt)}}</div> -->
-                                    <p><strong>{{item.name}}</strong> {{tagMessages[item.tagName]}} <strong>
-                                            QA-{{item.indicator_view_name.split('qa_')[1].substring(0,2).toUpperCase()}}-{{item.indicator_view_id}}</strong>
-                                    </p>
+                                    <div class="content-action">
+                                        <div [ngClass]="{'agree': item.tagName == 'agree', 'notsure': item.tagName == 'notsure', 'disagree': item.tagName == 'disagree'}" class="tag-color"></div>
+                                        <p>
+                                            
+                                            <strong>{{item.name}}</strong> {{tagMessages[item.tagName]}} <strong>
+                                                QA-{{item.indicator_view_name.split('qa_')[1].substring(0,2).toUpperCase()}}-{{item.indicator_view_id}}</strong>
+                                        </p>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
