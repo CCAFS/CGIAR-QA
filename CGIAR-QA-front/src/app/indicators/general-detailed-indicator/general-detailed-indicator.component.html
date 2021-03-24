@@ -32,7 +32,7 @@
 
     <p *ngIf="currentUser.hasOwnProperty('cycle')">Status:
         <span
-            [ngClass]=" {'text-success': gnralInfo.status === statusHandler.Complete, 'text-danger':gnralInfo.status === statusHandler.Pending, 'text-info': gnralInfo.status === statusHandler.Finalized} ">
+            [ngClass]=" {'text-success': gnralInfo.status === statusHandler.Complete, 'text-danger':gnralInfo.status === statusHandler.Pending, 'text-info': gnralInfo.status === statusHandler.Finalized, 'text-autochecked': gnralInfo.status === statusHandler.Autochecked} ">
             {{parseGeneralStatus(gnralInfo.status)}}
         </span>
     </p>
@@ -63,13 +63,13 @@
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div *ngIf="currentUser.hasOwnProperty('cycle')">
                 <div class="col data-container">
-                    <div class="select-all"
-                        *ngIf="detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
+                    <div class="select-all" 
+                        *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <button type="button" (click)="onChangeSelectAll(approveAllitems)"
                             class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">Approve/Dissaprove all items to
                             be
                             assessed.</button>
-                        <button type="button" (click)="onChangeSelectAll(approveAllitems)"
+                        <button type="button"  (click)="onChangeSelectAll(approveAllitems)"
                             class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">I agree with the validated fields</button>
                     </div>
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
@@ -134,7 +134,7 @@
                                     <!-- <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p> -->
 
                                 </div>
-                                <div class="check-container">
+                                <div *ngIf="gnralInfo.status != statusHandler.Autochecked" class="check-container">
                                     <div class="check-area">
                                         <input
                                             *ngIf="validateCommentAvility(detailedData[i]) && detailedData[i].replies_count == '0' || (summon.value.isChecked && detailedData[i].enable_comments) "
@@ -151,8 +151,8 @@
                                 </div>
 
                                 <!-- comments -->
-                                <div #commentsElem style="cursor: pointer;"
-                                    *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked"
+                                <div #commentsElem style="cursor: pointer;" 
+                                    *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked && gnralInfo.status != statusHandler.Autochecked"
                                     (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"
                                     class="activate-messages-container {{detailedData[i].replies_count == '0' ?  '':'active'}}">
 
