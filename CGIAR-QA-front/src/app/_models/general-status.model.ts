@@ -2,6 +2,7 @@ export enum DetailedStatus {
     Complete = 'complete',
     Pending = 'pending',
     Finalized = 'finalized',
+    Autochecked = 'autochecked'
 }
 export enum GeneralStatus {
     Open = 'open',

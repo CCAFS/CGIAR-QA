@@ -254,7 +254,9 @@ export class AdminDashboardComponent implements OnInit {
       }
     }
     let finalized = dataset.find(item => item.name == 'finalized');
-    if (finalized) finalized.name = 'closed';
+    if (finalized) finalized.name = 'Assessed 2nd round';
+    let autochecked = dataset.find(item => item.name == 'autochecked');
+    if (autochecked) autochecked.name = 'Automatically validated';
     // console.log('DATA SELECTED', { dataset, brushes });
 
     return { dataset, brushes };

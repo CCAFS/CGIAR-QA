@@ -82,6 +82,11 @@ h2 {
   }
   .text-right {
     justify-content: flex-end;
+    width: 500px;
+  }
+  .text-left {
+    justify-content: flex-start;
+    width: 200px;
   }
 }
 
@@ -145,6 +150,9 @@ h2 {
 }
 .circle.finalized {
   background-color: var(--color-finalized);
+}
+.circle.autochecked {
+  background-color: var(--color-autochecked);
 }
 
 .pagination-container {

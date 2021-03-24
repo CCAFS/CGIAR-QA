@@ -69,6 +69,8 @@
                             class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">Approve/Dissaprove all items to
                             be
                             assessed.</button>
+                        <button type="button" (click)="onChangeSelectAll(approveAllitems)"
+                            class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">I agree with the validated fields</button>
                     </div>
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
 

@@ -148,6 +148,21 @@
   background-color: var(--red-secondary);
   border-color: var(--red-secondary);
 }
+.btn-agree,
+.btn-agree:hover,
+.btn-agree:not(:disabled):not(.disabled).active,
+.btn-agree:not(:disabled):not(.disabled):active,
+.show > .btn-agree.dropdown-toggle {
+  background-color: var(--color-agree);
+  border-color: var(--color-agree);
+  color: var(--white);
+}
+.btn-agree.disabled,
+.btn-agree:disabled {
+  color: var(--white);
+  background-color: var(--color-agree);
+  border-color: var(--color-agree);
+}
 
 /***
 *** Type-ahead

@@ -11,7 +11,7 @@ import { CommentService } from "../services/comment.service";
 import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
-import { GeneralIndicatorName } from '../_models/general-status.model';
+import { DetailedStatus, GeneralIndicatorName } from '../_models/general-status.model';
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
 import { SortByPipe } from '../pipes/sort-by.pipe';
@@ -69,6 +69,8 @@ export class IndicatorsComponent implements OnInit {
   assessorsChat = {
     isOpen: false
   }
+
+  detailedStatus = DetailedStatus;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
