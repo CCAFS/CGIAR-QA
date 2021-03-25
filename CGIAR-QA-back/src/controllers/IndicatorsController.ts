@@ -12,6 +12,7 @@ import { QACommentsMeta } from "@entity/CommentsMeta";
 import { StatusHandler } from "@helpers/StatusHandler"
 import { RolesHandler } from "@helpers/RolesHandler"
 import Util from "@helpers/Util";
+import { GeneralIndicatorName } from "@helpers/GeneralIndicatorName";
 
 
 class IndicatorsController {
@@ -383,6 +384,47 @@ class IndicatorsController {
         }
     }
       static getAllItemStatusByIndicator = async (req: Request, res: Response) => {
+        let totalEvaluationsByIndicator = {
+            qa_innovations : {},
+            qa_policies : {},
+            qa_publications: {},
+            qa_oicr: {},
+            qa_melia: {},
+            qa_capdev: {},
+            qa_milestones: {},
+            qa_outcomes: {},
+            qa_slo: {}
+        };
+        const indicators = Object.keys(GeneralIndicatorName);
+
+
+
+        let qrMetas = getConnection().createQueryBuilder();
+            try {
+                const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
+                    `SELECT col_name, display_name, indicatorId, qi.view_name,
+                    (SELECT count(*) FROM qa_evaluations qe WHERE qe.indicator_view_name = qi.view_name AND qe.phase_year = actual_phase_year() AND qe.status <> 'autochecked') AS total
+                   FROM qa_indicators_meta qim
+                   LEFT JOIN qa_indicators qi ON qi.id = qim.indicatorId
+                   WHERE qim.display_name  not like 'id'
+                   AND qim.enable_comments <> 0
+                   AND qim.include_detail = 1`,
+                    {},
+                    {}
+                );
+                let allMetas  = await qrMetas.connection.query(query, parameters);
+                console.log('TOTALES',allMetas);
+
+                allMetas.forEach(meta => {
+                    totalEvaluationsByIndicator[meta.view_name][meta.display_name] = {item: meta.display_name, pending: meta.total, approved_without_comment: 0, assessment_with_comments: 0};
+                });
+            } catch(error) {
+                console.log(error);
+                res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+            }
+
+
+        
 
         let queryRunner = getConnection().createQueryBuilder();
         try {
@@ -406,6 +448,8 @@ class IndicatorsController {
                AND qim.enable_comments = 1
                AND qe.evaluation_status not like 'Removed'
                AND qe.phase_year = actual_phase_year()
+               AND qc.is_deleted = 0
+               AND enable_comments <> 0
                GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment`
                 ,
                 {},
@@ -415,35 +459,63 @@ class IndicatorsController {
             let totalByItem = {};
             for (let i = 0; i < allItems.length; i++) {
 
-                if(!totalByItem.hasOwnProperty(allItems[i].indicator_view_name)) {
-                    totalByItem[allItems[i].indicator_view_name] = {}
-                }
-                if(!totalByItem[allItems[i].indicator_view_name].hasOwnProperty(allItems[i].display_name)) {
-                    totalByItem[allItems[i].indicator_view_name][allItems[i].display_name] = {item: allItems[i].display_name, pending: 0, approved_without_comment: 0, assessment_with_comments: 0};
-                }
+                // if(!totalEvaluationsByIndicator.hasOwnProperty(allItems[i].indicator_view_name)) {
+                //     totalEvaluationsByIndicator[allItems[i].indicator_view_name] = {}
+                // }
+                // if(!totalEvaluationsByIndicator[allItems[i].indicator_view_name].hasOwnProperty(allItems[i].display_name)) {
+                //     totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name] = {item: allItems[i].display_name, pending: 0, approved_without_comment: 0, assessment_with_comments: 0};
+                // }
+                // totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = totalEvaluationsByIndicator[allItems[i].indicator_view_name];
 
                 //INDICATOR_VIEW_NAME => DISPLAY_NAME => STATUS
                 switch (allItems[i].approved_no_comment) {
-                    case 0:
-                        totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = allItems[i].pending;
-                        break;
+                    // case 0:
+                    //     totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = allItems[i].pending;
+                    //     break;
                     case 1:
-                        totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending']--;
                         break;
                     case null:
-                        totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending']--;
                         break;
                     default:
                         break;
                 }
+            // let totalByItem = {};
+            // for (let i = 0; i < allItems.length; i++) {
+
+            //     if(!totalByItem.hasOwnProperty(allItems[i].indicator_view_name)) {
+            //         totalByItem[allItems[i].indicator_view_name] = {}
+            //     }
+            //     if(!totalByItem[allItems[i].indicator_view_name].hasOwnProperty(allItems[i].display_name)) {
+            //         totalByItem[allItems[i].indicator_view_name][allItems[i].display_name] = {item: allItems[i].display_name, pending: 0, approved_without_comment: 0, assessment_with_comments: 0};
+            //     }
+            //     // totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = totalEvaluationsByIndicator[allItems[i].indicator_view_name];
+
+            //     //INDICATOR_VIEW_NAME => DISPLAY_NAME => STATUS
+            //     switch (allItems[i].approved_no_comment) {
+            //         case 0:
+            //             totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = allItems[i].pending;
+            //             break;
+            //         case 1:
+            //             totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
+            //             break;
+            //         case null:
+            //             totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
+            //             break;
+            //         default:
+            //             break;
+            //     }
             }
 
 
 
-            console.log(totalByItem);
+            // console.log(totalByItem);
             
 
-            res.status(200).send({ data: totalByItem, message: 'All items by indicator' });
+            res.status(200).send({ data: totalEvaluationsByIndicator, message: 'All items by indicator' });
 
 
         } catch (error) {

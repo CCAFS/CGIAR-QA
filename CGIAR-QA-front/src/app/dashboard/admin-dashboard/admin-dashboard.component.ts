@@ -488,6 +488,7 @@ export class AdminDashboardComponent implements OnInit {
       this.feedList = feedTags.data;
 
       this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+      console.log('CHART 3',this.itemStatusByIndicator);
 
       //UPDATE CHARTS
       this.updateDataCharts();
@@ -506,6 +507,7 @@ export class AdminDashboardComponent implements OnInit {
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
     this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
     this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
+    
   }
 
   updateFeedTags(tagTypeId) {
