@@ -58,9 +58,10 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  selectedChatIndicator = 'qa_slo';
+  indicator_status: string = 'indicators_status';
 
   indicatorsNameDropdwon = [
+    { name: 'SLOs', viewname: 'qa_slo' },
     { name: 'Policies', viewname: 'qa_policies' },
     { name: 'Innovations', viewname: 'qa_innovations' },
     { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
@@ -68,7 +69,6 @@ export class AdminDashboardComponent implements OnInit {
     { name: 'MELIAs', viewname: 'qa_melia' },
     { name: 'CapDevs', viewname: 'qa_capdev' },
     { name: 'Milestones', viewname: 'qa_milestones' },
-    { name: 'SLOs', viewname: 'qa_slo' },
     // qa_outcomes: 'Outcomes',
   ]
 
@@ -82,7 +82,7 @@ export class AdminDashboardComponent implements OnInit {
   //new props
   tagMessages = TagMessage;
   indicatorsTags: any;
-  selectedIndicator = 'qa_policies';
+  selectedIndicator = 'qa_slo';
   dataSelected: any;
   indicatorData: any;
   feedList: [];
@@ -183,7 +183,6 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   actualChatIndicator(indicatorName: string) {
-    this.selectedChatIndicator = indicatorName;
     for (const indicator in this.assessorsChat.indicators) {
       if (indicator != indicatorName) {
         this.assessorsChat.indicators[indicator] = false;
@@ -255,8 +254,14 @@ export class AdminDashboardComponent implements OnInit {
     }
     let finalized = dataset.find(item => item.name == 'finalized');
     if (finalized) finalized.name = 'Assessed 2nd round';
+
     let autochecked = dataset.find(item => item.name == 'autochecked');
-    if (autochecked) autochecked.name = 'Automatically validated';
+    if (autochecked) {
+      this.indicator_status = 'publications_status';
+      autochecked.name = 'Automatically validated';
+    } else {
+      this.indicator_status = 'indicator_status';
+    }
     // console.log('DATA SELECTED', { dataset, brushes });
 
     return { dataset, brushes };
@@ -390,7 +395,7 @@ export class AdminDashboardComponent implements OnInit {
     this.getAllDashData(value.crp_id).subscribe(
       res => {
         this.dashboardData = this.dashService.groupData(res.data);
-        this.selectedIndicator = Object.keys(this.dashboardData)[1];
+        // this.selectedIndicator = Object.keys(this.dashboardData)[1];
         this.dataSelected = this.dashboardData[this.selectedIndicator];
         this.hideSpinner()
       },

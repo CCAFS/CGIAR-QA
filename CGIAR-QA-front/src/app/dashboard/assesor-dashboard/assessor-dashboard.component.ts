@@ -35,6 +35,7 @@ export class AssessorDashboardComponent implements OnInit {
   indicatorData: any;
   feedList: [];
   itemStatusByIndicator = {};
+  indicator_status: string = 'indicators_status';
 
   dataCharts = {
     generalStatus: null,
@@ -222,11 +223,20 @@ export class AssessorDashboardComponent implements OnInit {
       }
     }
     let finalized = dataset.find(item => item.name == 'finalized');
-    if (finalized) finalized.name = 'closed';
+    if (finalized) finalized.name = 'Assessed 2nd round';
+    
+    let autochecked = dataset.find(item => item.name == 'autochecked');
+    if (autochecked) {
+      this.indicator_status = 'publications_status';
+      autochecked.name = 'Automatically validated';
+    } else {
+      this.indicator_status = 'indicator_status';
+    }
     // console.log('DATA SELECTED', { dataset, brushes });
 
     return { dataset, brushes };
   }
+
 
   formatCommentsIndicatorData(data) {
     const colors = {

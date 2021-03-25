@@ -16,7 +16,12 @@ export class DonutChartComponent implements OnInit {
 
   myData;
   public legendLabels: any = { 
-    status: [
+    indicator_status: [
+    {name:"Pending", class: "pending"},
+    {name:"Assessed (1st round)", class:"complete" },
+    {name:"Assessed (2st round)", class:"finalized" }
+  ],
+    publications_status: [
     {name:"Automatically validated", class: "autochecked"},
     {name:"Pending", class: "pending"},
     {name:"Assessed (1st round)", class:"complete" },
