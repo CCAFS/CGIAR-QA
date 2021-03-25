@@ -369,9 +369,10 @@ class EvaluationsController {
                     { view_name },
                     {}
                 );
-                // console.log('isadmin')
+                console.log('isadmin')
                 // console.log(sql)
                 let rawData = await queryRunner.connection.query(query, parameters);
+                console.log(rawData)
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
             } else if (user.crps.length > 0) {
