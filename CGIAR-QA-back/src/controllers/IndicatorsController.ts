@@ -423,9 +423,6 @@ class IndicatorsController {
                 res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
             }
 
-
-        
-
         let queryRunner = getConnection().createQueryBuilder();
         try {
 
@@ -459,19 +456,7 @@ class IndicatorsController {
             let totalByItem = {};
             for (let i = 0; i < allItems.length; i++) {
 
-                // if(!totalEvaluationsByIndicator.hasOwnProperty(allItems[i].indicator_view_name)) {
-                //     totalEvaluationsByIndicator[allItems[i].indicator_view_name] = {}
-                // }
-                // if(!totalEvaluationsByIndicator[allItems[i].indicator_view_name].hasOwnProperty(allItems[i].display_name)) {
-                //     totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name] = {item: allItems[i].display_name, pending: 0, approved_without_comment: 0, assessment_with_comments: 0};
-                // }
-                // totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = totalEvaluationsByIndicator[allItems[i].indicator_view_name];
-
-                //INDICATOR_VIEW_NAME => DISPLAY_NAME => STATUS
                 switch (allItems[i].approved_no_comment) {
-                    // case 0:
-                    //     totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = allItems[i].pending;
-                    //     break;
                     case 1:
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending']--;
@@ -483,37 +468,7 @@ class IndicatorsController {
                     default:
                         break;
                 }
-            // let totalByItem = {};
-            // for (let i = 0; i < allItems.length; i++) {
-
-            //     if(!totalByItem.hasOwnProperty(allItems[i].indicator_view_name)) {
-            //         totalByItem[allItems[i].indicator_view_name] = {}
-            //     }
-            //     if(!totalByItem[allItems[i].indicator_view_name].hasOwnProperty(allItems[i].display_name)) {
-            //         totalByItem[allItems[i].indicator_view_name][allItems[i].display_name] = {item: allItems[i].display_name, pending: 0, approved_without_comment: 0, assessment_with_comments: 0};
-            //     }
-            //     // totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = totalEvaluationsByIndicator[allItems[i].indicator_view_name];
-
-            //     //INDICATOR_VIEW_NAME => DISPLAY_NAME => STATUS
-            //     switch (allItems[i].approved_no_comment) {
-            //         case 0:
-            //             totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] = allItems[i].pending;
-            //             break;
-            //         case 1:
-            //             totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
-            //             break;
-            //         case null:
-            //             totalByItem[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
-            //             break;
-            //         default:
-            //             break;
-            //     }
             }
-
-
-
-            // console.log(totalByItem);
-            
 
             res.status(200).send({ data: totalEvaluationsByIndicator, message: 'All items by indicator' });
 

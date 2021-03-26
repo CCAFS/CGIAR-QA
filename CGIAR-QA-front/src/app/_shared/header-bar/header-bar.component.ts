@@ -26,6 +26,19 @@ export class HeaderBarComponent implements OnInit {
 
   isHome ;
 
+  
+  indicatorsNameDropdwon = [
+    { name: 'SLOs', viewname: 'qa_slo' },
+    { name: 'Policies', viewname: 'qa_policies' },
+    { name: 'Innovations', viewname: 'qa_innovations' },
+    { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
+    { name: 'OICRs', viewname: 'qa_oicr' },
+    { name: 'MELIAs', viewname: 'qa_melia' },
+    { name: 'CapDevs', viewname: 'qa_capdev' },
+    { name: 'Milestones', viewname: 'qa_milestones' },
+    // qa_outcomes: 'Outcomes',
+  ]
+
   constructor(private activeRoute: ActivatedRoute, private authenticationService: AuthenticationService, public router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.params = routeParams;
@@ -49,7 +62,7 @@ export class HeaderBarComponent implements OnInit {
 
   ngOnInit() {
     this.indicators = this.authenticationService.userHeaders;
-    console.log(this.indicators);
+    console.log('NAV INDICATORS', this.indicators);
     
     // this.getHeaderLinks();
   }
@@ -65,6 +78,11 @@ export class HeaderBarComponent implements OnInit {
 
     let view = indicator.indicator.name;
     let primary_column = indicator.indicator.primary_field;
+
+  }
+
+  goToAssessorsChat() {
+    this.router.navigate([`assessors-chat`]);
 
   }
 

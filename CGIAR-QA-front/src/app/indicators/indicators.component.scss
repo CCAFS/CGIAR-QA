@@ -201,7 +201,9 @@ h2 {
   z-index: 10;
   width: auto;
   height: 40px;
-  background-color: rgb(80, 33, 166);
+  background-color: #130f40;
+  font-weight: $semibold;
+  font-size: $font-sm;
   color: white;
   padding: 0.5em 1.5em;
   display: grid;

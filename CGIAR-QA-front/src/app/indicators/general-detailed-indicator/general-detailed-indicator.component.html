@@ -3,6 +3,7 @@
     <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations" ></iframe>
 </div>
 <div (click)="toggleAssessorsChat()" class="btn-assessors-chat">{{indicatorType.charAt(0).toUpperCase() + indicatorType.slice(1)}} chat</div>
+<div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
 
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
     routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
@@ -70,7 +71,7 @@
                             be
                             assessed.</button>
                         <button type="button"  (click)="onChangeSelectAll(approveAllitems)"
-                            class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">I agree with the validated fields</button>
+                            class="btn btn-agree">Agree with assessed fields</button>
                     </div>
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
 

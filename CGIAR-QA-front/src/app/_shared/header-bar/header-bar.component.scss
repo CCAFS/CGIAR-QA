@@ -12,10 +12,30 @@
     .upper-navbar {
       display: flex;
       justify-content: flex-end;
+      .assessors-chat{
+        background-color: #130f40;
+        padding: 7px 10px;
+        position: relative;
+        border-radius: 5px;
+        height: 5%;
+        margin: 0 10px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: column;
+        color: white;
+        font-weight: $semibold;
+        font-size: $font-sm;
+        top: -10px;
+        border: 1px solid  #130f40;
+        &:hover {
+          cursor: pointer;
+        }
+      }
       .panel {
         background-color: var(--gray-primary);
-        padding: 7px;
         position: relative;
+        padding: 7px 10px;
         border-radius: 5px;
         height: 5%;
         margin: 0 10px;
