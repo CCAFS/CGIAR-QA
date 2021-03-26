@@ -30,7 +30,7 @@ export class AssessorDashboardComponent implements OnInit {
   indicatorsName = GeneralIndicatorName;
   tagMessages = TagMessage;
   indicatorsTags: any;
-  selectedIndicator = 'qa_policies';
+  selectedIndicator = 'qa_slo';
   dataSelected: any;
   indicatorData: any;
   feedList: [];
@@ -43,6 +43,18 @@ export class AssessorDashboardComponent implements OnInit {
     responseToComments: null,
     assessmentByField: null
   }
+
+  indicatorsNameDropdwon = [
+    { name: 'SLOs', viewname: 'qa_slo' },
+    { name: 'Policies', viewname: 'qa_policies' },
+    { name: 'OICRs', viewname: 'qa_oicr' },
+    { name: 'Innovations', viewname: 'qa_innovations' },
+    { name: 'Milestones', viewname: 'qa_milestones' },
+    { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
+    { name: 'CapDevs', viewname: 'qa_capdev' },
+    { name: 'MELIAs', viewname: 'qa_melia' },
+    // qa_outcomes: 'Outcomes',
+  ]
 
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,

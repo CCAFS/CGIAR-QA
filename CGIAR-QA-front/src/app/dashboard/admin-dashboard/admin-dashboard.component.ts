@@ -63,12 +63,12 @@ export class AdminDashboardComponent implements OnInit {
   indicatorsNameDropdwon = [
     { name: 'SLOs', viewname: 'qa_slo' },
     { name: 'Policies', viewname: 'qa_policies' },
-    { name: 'Innovations', viewname: 'qa_innovations' },
-    { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
     { name: 'OICRs', viewname: 'qa_oicr' },
-    { name: 'MELIAs', viewname: 'qa_melia' },
-    { name: 'CapDevs', viewname: 'qa_capdev' },
+    { name: 'Innovations', viewname: 'qa_innovations' },
     { name: 'Milestones', viewname: 'qa_milestones' },
+    { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
+    { name: 'CapDevs', viewname: 'qa_capdev' },
+    { name: 'MELIAs', viewname: 'qa_melia' },
     // qa_outcomes: 'Outcomes',
   ]
 
