@@ -66,6 +66,10 @@ export class HeaderBarComponent implements OnInit {
     
     // this.getHeaderLinks();
   }
+  
+  getIndicators() {
+    console.log('NAV INDICATORS', this.indicators);
+  }
 
   goToView(indicator: any) {
     // //console.log(this.router.navigate(['/reload']), this.activeRoute.pathFromRoot.toString(), this.router.url.toString().indexOf('/indicator'))

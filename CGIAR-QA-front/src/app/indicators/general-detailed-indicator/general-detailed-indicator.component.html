@@ -67,9 +67,7 @@
                     <div class="select-all" 
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <button type="button" (click)="onChangeSelectAll(approveAllitems)"
-                            class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">Approve/Dissaprove all items to
-                            be
-                            assessed.</button>
+                            class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">Approve/Dissaprove all fields</button>
                         <button type="button"  (click)="onChangeSelectAll(approveAllitems)"
                             class="btn btn-agree">Agree with assessed fields</button>
                     </div>

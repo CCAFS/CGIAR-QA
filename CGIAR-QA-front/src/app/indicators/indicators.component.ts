@@ -238,7 +238,7 @@ export class IndicatorsComponent implements OnInit {
           break;
 
         default:
-          r = `List of ${this.indicatorTypeName}`
+          r = `${this.indicatorTypeName}`
           break;
       }
     } else if (type === 'list') {
