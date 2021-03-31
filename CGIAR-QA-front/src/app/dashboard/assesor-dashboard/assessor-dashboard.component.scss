@@ -128,13 +128,21 @@
           display: flex;
           flex-direction: column;
           padding: 0.5em;
-          .chart-title{
-            width: 100%;
-            flex: 0 1 auto;
-            margin: 0;
-            padding: 5px;
-            font-family: $secondary-font;
-            font-weight: bold;
+          .header-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            i {
+              max-width: 20px;
+            }
+            .chart-title{
+              width: auto;
+              flex: 0 1 auto;
+              margin: 0;
+              padding: 5px;
+              font-family: $secondary-font;
+              font-weight: bold;
+            }
           }
           .chart-container {
             width: 100%;
