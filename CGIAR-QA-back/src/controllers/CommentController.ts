@@ -272,9 +272,13 @@ class CommentController {
         //Check if username and password are set
         const { approved, is_visible, is_deleted, id, detail, userId } = req.body;
         const commentsRepository = getRepository(QAComments);
+        const tagsRepository = getRepository(QATags);
 
         try {
-            let comment_ = await commentsRepository.findOneOrFail(id);
+            let comment_ = await commentsRepository.findOneOrFail(id, { relations: ["tags"] });
+            if(is_deleted){
+                tagsRepository.remove(comment_.tags);
+            }
             comment_.approved = approved;
             comment_.is_deleted = is_deleted;
             comment_.is_visible = is_visible;
@@ -302,6 +306,7 @@ class CommentController {
         const repliesRepository = getRepository(QACommentsReplies);
 
         try {
+
             let reply_ = await repliesRepository.findOneOrFail(id, { relations: ['comment'] });
 
             reply_.is_deleted = is_deleted;

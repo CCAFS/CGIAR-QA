@@ -201,6 +201,8 @@ export class IndicatorsComponent implements OnInit {
         break;
       default:
         pdf_url = this.currentUser.config[0][`${type}_guideline`];
+        console.log({pdf_url}, this.currentUser.config[0]);
+        
         break;
     }
     window.open(pdf_url, "_blank");
@@ -234,7 +236,7 @@ export class IndicatorsComponent implements OnInit {
     if (type === 'header') {
       switch (indicator) {
         case 'slo':
-          r = 'Evidence on Progress towards SRF targets'
+          r = 'Contribution to SLO targets'
           break;
 
         default:
