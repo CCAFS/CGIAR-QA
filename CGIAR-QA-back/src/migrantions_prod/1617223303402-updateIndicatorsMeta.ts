@@ -4,7 +4,7 @@ import {MigrationInterface, QueryRunner} from "typeorm"
 export class updateIndicatorsMeta1617223303402 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.query("UPDATE qa_indicators_meta SET description = 'Does the case present significant quantitative progress against the 10 SLO targets from the CGIAR SRF and use appropriate metrics which correspond to a specific target (e.g. millions of hectares, millions of smallholder farmers, x% increased yield, etc.)If the results are updated from previous years, does the brief summary clearly indicates “updated results”? ' WHERE (id = '150')", undefined); ", undefined); 
+        await queryRunner.query("UPDATE qa_indicators_meta SET description = 'Does the case present significant quantitative progress against the 10 SLO targets from the CGIAR SRF and use appropriate metrics which correspond to a specific target (e.g. millions of hectares, millions of smallholder farmers, x% increased yield, etc.)If the results are updated from previous years, does the brief summary clearly indicates “updated results”? ' WHERE (id = '150')", undefined); 
         await queryRunner.query("UPDATE qa_indicators_meta SET description = 'Is the geographical scope, with precise location, clearly indicated? ' WHERE (id = '166')", undefined); 
         await queryRunner.query("INSERT INTO qa_indicators_meta (id, col_name, display_name, enable_comments, is_primay, include_general, include_detail, order, description, createdAt, updatedAt, indicatorId) VALUES ('166', 'geographic_scope', 'Geographic scope', '1', '0', '1', '1', '4', 'Is the geographical scope, with precise location, clearly indicated? ', '2021-03-30 10:09:22.534248', '2021-03-30 10:09:22.534248', '8')", undefined); 
         await queryRunner.query("INSERT INTO qa_indicators_meta (id, col_name, display_name, enable_comments, is_primay, include_general, include_detail, order, createdAt, updatedAt, indicatorId) VALUES ('167', 'countries', 'Country(ies)', '1', '0', '1', '1', '5', '2021-03-30 10:09:22.669333', '2021-03-30 10:09:22.669333', '8')", undefined); 
@@ -142,8 +142,7 @@ export class updateIndicatorsMeta1617223303402 implements MigrationInterface {
         await queryRunner.query("UPDATE qa_indicators_meta SET description = 'For an activity/study status marked “completed”, is there a credible explanation of progress? For an activity/study status marked “extended, cancelled or changed”, is there an appropriate explanation?' WHERE (id = '104')", undefined); 
         await queryRunner.query("UPDATE qa_indicators_meta SET description = 'Does the short narrative included in the description of activity/study highlight clearly the key points of interest for a non-specialist reader?' WHERE (id = '108')", undefined); 
         await queryRunner.query("UPDATE qa_indicators_meta SET description = 'Are reference(s) or link(s) to MELIA publication provided? Does it make reference to progress or changes?' WHERE (id = '109')", undefined); 
-        ", 
-        undefined) 
+
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {

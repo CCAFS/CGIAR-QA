@@ -111,11 +111,12 @@
                     </div>
                 </div>
             </th>
-            <th *ngIf="returnedArray && returnedArray[0].comments_replies_count" scope="col"
+            <!-- Do not show Replies count & accepted comments columns -->
+            <!-- <th *ngIf="returnedArray && returnedArray[0].comments_replies_count" scope="col"
                 [class.active]="order === 'comments_replies_count'" (click)="setOrder('comments_replies_count')">
                 <div class="header-row">
                     Replies count
-                    <!-- {{returnedArray[0].comments_replies_count}} -->
+                    {{returnedArray[0].comments_replies_count}}
                     <div class="order-icon" *ngIf="order === 'comments_replies_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
@@ -126,13 +127,13 @@
                 [class.active]="order === 'comments_accepted_count'" (click)="setOrder('comments_accepted_count')">
                 <div class="header-row">
                     Accepted comments
-                    <!-- {{returnedArray[0].comments_accepted_count}} -->
+                    {{returnedArray[0].comments_accepted_count}}
                     <div class="order-icon" *ngIf="order === 'comments_accepted_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
                     </div>
                 </div>
-            </th>
+            </th> -->
 
 
 
@@ -179,10 +180,10 @@
             <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
             <td *ngIf="item.hasOwnProperty('fp')">{{ (item.fp) ? item.fp: notProviedText}}</td>
             <td>{{ item.comments_count }}</td>
-            <td *ngIf="item.hasOwnProperty('comments_replies_count')">
+            <!-- <td *ngIf="item.hasOwnProperty('comments_replies_count')">
                 {{ (item.comments_replies_count) ? item.comments_replies_count: 0}}</td>
             <td *ngIf="item.hasOwnProperty('comments_accepted_count')">
-                {{ (item.comments_accepted_count) ? item.comments_accepted_count: 0}}</td>
+                {{ (item.comments_accepted_count) ? item.comments_accepted_count: 0}}</td> -->
             <td *ngIf="item" (click)="exportComments(item)">
                 <a target="_blank">
                     <div tooltip="Comment in excel format" container="body" placement="top"
