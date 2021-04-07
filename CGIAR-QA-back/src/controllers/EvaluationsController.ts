@@ -342,14 +342,12 @@ class EvaluationsController {
                     ) AS title,
                     (
                         SELECT
-                            group_concat(DISTINCT users.username)
+                        group_concat(DISTINCT users.username)
                         FROM
-                            qa_comments comments
-                        LEFT JOIN qa_users users ON users.id = comments.userId
+                            qa_evaluations_assessed_by_qa_users qea
+                            LEFT JOIN qa_users users ON users.id = qea.qaUsersId
                         WHERE
-                            comments.evaluationId = evaluations.id
-                        AND comments.is_deleted = 0
-                        AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                            qea.qaEvaluationsId = evaluations.id
                     ) comment_by
                 FROM
                     qa_evaluations evaluations
@@ -515,14 +513,12 @@ class EvaluationsController {
                         indicator_user.indicatorId,
                         (
                             SELECT
-                                group_concat(DISTINCT users.username)
+                            group_concat(DISTINCT users.username)
                             FROM
-                                qa_comments comments
-                            LEFT JOIN qa_users users ON users.id = comments.userId
+                                qa_evaluations_assessed_by_qa_users qea
+                                LEFT JOIN qa_users users ON users.id = qea.qaUsersId
                             WHERE
-                                comments.evaluationId = evaluations.id
-                            AND comments.is_deleted = 0
-                            AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                qea.qaEvaluationsId = evaluations.id
                         ) comment_by
                     FROM
                         qa_evaluations evaluations
