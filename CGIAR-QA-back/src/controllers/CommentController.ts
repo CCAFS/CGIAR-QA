@@ -839,7 +839,11 @@ class CommentController {
             comments = await queryRunner.connection.query(query, parameters);
             // console.log(comments.length, meta_array)
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by']  });
+            console.log('ASSESSORS',evaluation.assessed_by);
+            evaluation.assessed_by.push(user);
+            console.log('ASSESSORS',evaluation.assessed_by);
+            evaluationsRepository.save(evaluation);
             let current_cycle = await cycleRepo
                 .createQueryBuilder("qa_cycle")
                 .select('*')
