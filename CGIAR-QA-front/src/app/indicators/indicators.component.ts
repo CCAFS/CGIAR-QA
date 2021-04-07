@@ -270,6 +270,13 @@ export class IndicatorsComponent implements OnInit {
     toggleAssessorsChat() {
       this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
     }
+
+    formatBrief(brief: string) {
+      if(brief) {
+        return brief.split("<p>")[1].split("</p>")[0].substring(0, 200)  + '...';
+      }
+      return;
+    }
   /***
    * 
    *  Spinner 

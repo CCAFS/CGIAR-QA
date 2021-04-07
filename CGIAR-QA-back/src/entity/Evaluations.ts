@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, ManyToOne, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique, ManyToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAComments } from "../entity/Comments";
+import { QAUsers } from "../entity/User";
 import { StatusHandler } from "../_helpers/StatusHandler";
 import { EvaluationStatusHandler } from "../_helpers/EvaluationStatusHandler";
 
@@ -53,4 +54,8 @@ export class QAEvaluations {
 
     @Column( "decimal", { precision: 10, scale: 0 })
     phase_year: number;
+
+    @ManyToMany(() => QAUsers)
+    @JoinTable()
+    assessed_by: QAUsers[];
 }

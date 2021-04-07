@@ -588,6 +588,9 @@ class EvaluationsController {
             case 'qa_milestones':
                 response.view_sql = "(SELECT status FROM qa_milestones milestones WHERE milestones.id = evaluations.indicator_view_id) AS stage, (SELECT fp FROM qa_milestones milestones WHERE milestones.id = evaluations.indicator_view_id) AS fp,"
                 // response.innovations_stage = "qa_melia.study_type,"
+            case 'qa_slo':
+                response.view_sql = "(SELECT brief_summary FROM qa_slo slo WHERE slo.id = evaluations.indicator_view_id) AS brief,"
+                // response.innovations_stage = "qa_melia.study_type,"
                 break;
 
             default:

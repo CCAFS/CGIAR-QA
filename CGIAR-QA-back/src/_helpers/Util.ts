@@ -398,10 +398,11 @@ class Util {
             let meta;
             if (metaId != null)
                 meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
-
-
-
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by']  });
+            console.log('ASSESSORS',evaluation.assessed_by);
+            evaluation.assessed_by.push(user);
+            console.log('ASSESSORS',evaluation.assessed_by);
+            evaluationsRepository.save(evaluation);
             let current_cycle = await cycleRepo
                 .createQueryBuilder("qa_cycle")
                 .select('*')
@@ -508,6 +509,7 @@ class Util {
                 comment_by: element['comment_by'],
                 stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
                 fp: element.hasOwnProperty('fp') ? element['fp'] : undefined,
+                brief: element.hasOwnProperty('brief') ? element['brief'] : undefined, //TODO
             });
         } else {
             response = Object.assign(response, {

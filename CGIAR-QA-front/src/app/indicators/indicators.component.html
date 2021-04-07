@@ -63,6 +63,11 @@
                     </div>
                 </div>
             </th>
+            <th scope="col" *ngIf="returnedArray && returnedArray[0].brief" >
+                <div class="header-row">
+                    Brief
+                </div>
+            </th>
             <th scope="col" [class.active]="order === 'title'" (click)="setOrder('title')">
                 <div class="header-row">
                     {{returnListName(indicatorType, 'list')}}
@@ -167,6 +172,15 @@
             <th scope="row">
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
+            <td *ngIf="item.hasOwnProperty('brief') && item.brief">
+                <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
+                    class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}"
+                    style="display:none">
+                    {{item.evaluation_status}}
+                </div>
+                <a rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
+                    {{ formatBrief(item.brief) }}</a>
+            </td>
             <td>
                 <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
                     class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}"
