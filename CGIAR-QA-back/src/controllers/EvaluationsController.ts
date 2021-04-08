@@ -892,6 +892,32 @@ class EvaluationsController {
         }
     }
 
+    static getAssessorsByEvaluations = async (req: Request, res: Response) => {
+        const { evaluationId } = req.params;
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `
+                    SELECT
+                    group_concat(DISTINCT users.username) as comment_by
+                    FROM
+                        qa_evaluations_assessed_by_qa_users qea
+                        LEFT JOIN qa_users users ON users.id = qea.qaUsersId
+                    WHERE
+                        qea.qaEvaluationsId = :evaluationId       
+                       `,
+                { evaluationId },
+                {}
+            );
+            let assessorByEval = await queryRunner.connection.query(query, parameters);
+            res.status(200).json({ data: assessorByEval, message: `Assessors in  evaluation ${evaluationId}` });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Could not get any assesor for this evaluation." });
+        }
+    }
+
 }
 
 

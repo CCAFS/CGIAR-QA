@@ -64,12 +64,17 @@
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div *ngIf="currentUser.hasOwnProperty('cycle')">
                 <div class="col data-container">
-                    <div class="select-all" 
+                    <div class="assessment-info select-all" 
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
-                        <button type="button" (click)="onChangeSelectAll(approveAllitems)"
-                            class="btn btn-{{ approveAllitems ? 'primary' : 'danger'}}">Validate/Invalidate assessment</button>
-                        <button *ngIf="!approveAllitems" type="button"  (click)="onChangeSelectAll(true)"
-                            class="btn btn-agree">Agree with previous assessment</button>
+                        <div class="left-side">
+                            <button type="button" (click)="onChangeSelectAll(approveAllitems)"
+                                class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate/Invalidate assessment</button>
+                            <button *ngIf="!approveAllitems && currentUserHasAssessed" type="button"  (click)="onChangeSelectAll(true)"
+                                class="btn btn-agree">Agree with previous assessment</button>
+                        </div>
+                        <div class="right-side">
+                            <p> <strong>Assessed by: </strong> {{assessed_by}}</p>
+                        </div>
                     </div>
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
 

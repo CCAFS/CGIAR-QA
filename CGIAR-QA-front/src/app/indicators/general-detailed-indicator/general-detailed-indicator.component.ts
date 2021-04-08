@@ -59,8 +59,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   chatRooms = null;
-
-
+  assessed_by = null;
+  currentUserHasAssessed = false;
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
   @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
 
@@ -284,7 +284,18 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         }
         this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
-
+        this.evaluationService.getAssessorsByEvaluation(this.gnralInfo.evaluation_id).subscribe(
+          res => {
+            console.log(res.data[0].comment_by);
+            this.assessed_by = res.data[0].comment_by;
+            this.currentUserHasAssessed = this.assessed_by.indexOf(this.currentUser.username) ? true : false;
+            
+          }, error => {
+            console.log("getAssessorsByEvaluation", error);
+            this.hideSpinner('spinner1');
+            this.alertService.error(error);
+          }
+        )
         this.hideSpinner('spinner1');
         this.tickGroup.reset();
         this.getCommentReplies();
@@ -296,6 +307,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.alertService.error(error);
       }
     )
+    
   }
 
   getCommentsExcel(evaluation) {
