@@ -13,8 +13,8 @@
 <h4 style="text-align: center;" *ngIf="currentUser.hasOwnProperty('cycle')">
     {{(currentUser.cycle.cycle_stage > 1 ) ? currentUser.cycle.cycle_name+ ':'+ currentUser.cycle.cycle_stage: ''}}
 </h4>
-<div class="row col sub-header">
-    <div class="col-2 row text-left">
+<div class="row col indicator-header">
+    <div class="text-left">
         <div class="model-link-container" (click)="goToPDF('AR')">
             <i class="icon-pdf"></i>
             <hr>
@@ -26,7 +26,7 @@
             <p>Indicator Guidance</p>
         </div>
     </div>
-    <div class="col row text-right">
+    <div class="text-right">
         <div *ngIf="indicatorType == 'publications'" class="circle autochecked" style="margin-left: 50px;"></div>
         <p *ngIf="indicatorType == 'publications'">Automatically validated</p>
         <div class="circle pending" style="margin-left: 50px;"></div>

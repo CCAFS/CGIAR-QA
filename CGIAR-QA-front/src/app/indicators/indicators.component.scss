@@ -45,16 +45,21 @@ h2 {
   color: #d59b1b;
 }
 
-.sub-header {
+.indicator-header {
   margin: 1em 0;
   padding: 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   .model-link-container {
     padding: 10px;
     cursor: pointer;
     background-color: var(--gray-primary);
     border-radius: 0.3em;
     height: 2em;
-    // width: 8em;
+    width: auto;
     margin-right: 2em;
     display: flex;
     i {
@@ -81,12 +86,19 @@ h2 {
     margin: 0 1em;
   }
   .text-right {
+    display: flex;
     justify-content: flex-end;
-    width: 500px;
+    align-items: center;
+    width: auto;
+    p{
+      margin: 0;
+    }
   }
   .text-left {
+    display: flex;
     justify-content: flex-start;
-    width: 200px;
+    align-items: center;
+    width: auto;
   }
 }
 
