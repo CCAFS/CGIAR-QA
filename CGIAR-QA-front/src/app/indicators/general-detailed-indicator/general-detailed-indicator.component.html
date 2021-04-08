@@ -69,11 +69,11 @@
                         <div class="left-side">
                             <button type="button" (click)="onChangeSelectAll(approveAllitems)"
                                 class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate/Invalidate assessment</button>
-                            <button *ngIf="!approveAllitems && currentUserHasAssessed" type="button"  (click)="onChangeSelectAll(true)"
+                            <button *ngIf="!approveAllitems && !currentUserHasAssessed" type="button"  (click)="onChangeSelectAll(true)"
                                 class="btn btn-agree">Agree with previous assessment</button>
                         </div>
                         <div class="right-side">
-                            <p> <strong>Assessed by: </strong> {{assessed_by}}</p>
+                            <p *ngIf="assessed_by"> <strong>Assessed by: </strong> {{assessed_by}}</p>
                         </div>
                     </div>
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">

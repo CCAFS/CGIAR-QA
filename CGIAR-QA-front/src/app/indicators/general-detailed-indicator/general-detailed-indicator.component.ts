@@ -288,7 +288,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           res => {
             console.log(res.data[0].comment_by);
             this.assessed_by = res.data[0].comment_by;
-            this.currentUserHasAssessed = this.assessed_by.indexOf(this.currentUser.username) ? true : false;
+            if(this.assessed_by) {
+              this.currentUserHasAssessed = this.assessed_by.indexOf(this.currentUser.username) >= 0 ? true : false;
+            }
             
           }, error => {
             console.log("getAssessorsByEvaluation", error);

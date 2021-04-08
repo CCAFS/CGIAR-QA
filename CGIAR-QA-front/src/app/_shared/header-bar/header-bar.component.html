@@ -5,7 +5,7 @@
     </div>
     <div class="row navbar-container">
         <div class="upper-navbar">
-            <div (click)="goToAssessorsChat()" class="assessors-chat">
+            <div *ngIf="currentUser.roles[0].id != 3" (click)="goToAssessorsChat()" class="assessors-chat">
                 Assessors chat
             </div>
             <div (click)="getIndicators()" class="panel">
