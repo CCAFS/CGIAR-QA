@@ -62,7 +62,7 @@ export class IndicatorsComponent implements OnInit {
 
   order: string = 'id';
   configTemplate: string;
-  reverse: boolean = false;
+  reverse: boolean = true;
   btonFilterForm: any;
   chatRooms = null;
 
@@ -110,7 +110,11 @@ export class IndicatorsComponent implements OnInit {
 
 
   ngOnInit() {
-
+    console.log(this.indicatorType);
+    
+    if(this.indicatorType == 'slo') {
+      this.order = 'title';
+    }
     // console.log('loaded indicators')
     setTimeout(() => {                           //<<<---using ()=> syntax
       this.verifyIfOrderByStatus();
@@ -128,7 +132,13 @@ export class IndicatorsComponent implements OnInit {
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
       res => {
         // console.log(res)
-        this.evaluationList = this.orderPipe.transform(res.data, 'id');
+        if(this.indicatorType == 'slo') {
+          this.order = 'title';
+        } else {
+          this.order = 'id';
+        }
+        this.evaluationList = this.orderPipe.transform(res.data, this.order);
+        this.setOrder(this.order, this.reverse);
         console.log('LISTA', this.evaluationList);
 
         this.collectionSize = this.evaluationList.length;
@@ -237,6 +247,7 @@ export class IndicatorsComponent implements OnInit {
       switch (indicator) {
         case 'slo':
           r = 'Contribution to SLO targets'
+          this.indicatorType = 'slo'
           break;
 
         default:
