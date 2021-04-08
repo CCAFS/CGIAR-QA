@@ -8,6 +8,8 @@ INSERT INTO `marlodb`.`qa_indicators_meta` (`id`, `col_name`, `display_name`, `e
 INSERT INTO `marlodb`.`qa_indicators_meta` (`id`, `col_name`, `display_name`, `enable_comments`, `is_primay`, `include_general`, `include_detail`, `order`, `createdAt`, `updatedAt`, `indicatorId`) VALUES ('167', 'countries', 'Country(ies)', '1', '0', '1', '1', '5', '2021-03-30 10:09:22.669333', '2021-03-30 10:09:22.669333', '8');
 INSERT INTO `marlodb`.`qa_indicators_meta` (`id`, `col_name`, `display_name`, `enable_comments`, `is_primay`, `include_general`, `include_detail`, `order`, `createdAt`, `updatedAt`, `indicatorId`) VALUES ('168', 'regions', 'Regions', '1', '0', '1', '1', '6', '2021-03-30 10:09:22.829465', '2021-03-30 10:09:22.829465', '8');
 
+-- NEW!
+INSERT INTO `marlodb`.`qa_indicators_meta` (`col_name`, `display_name`, `enable_comments`, `is_primay`, `include_general`, `include_detail`, `order`, `indicatorId`) VALUES ('evidences', 'Evidences', '1', '0', '1', '1', '7', '8');
 -- POLICIES FIELDS
 
 -- UPDATE NAMES
