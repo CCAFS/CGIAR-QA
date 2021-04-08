@@ -187,8 +187,9 @@
                     style="display:none">
                     {{item.evaluation_status}}
                 </div>
-                <a rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
+                <a *ngIf="!item.hasOwnProperty('brief') && !item.brief" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
                     {{ item.title }}</a>
+                    <div *ngIf="item.hasOwnProperty('brief') && item.brief" class="div">{{ item.title }}</div>
             </td>
             <td>{{ item.crp_acronym }}</td>
             <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
