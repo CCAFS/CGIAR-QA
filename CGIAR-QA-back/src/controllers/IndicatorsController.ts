@@ -324,7 +324,7 @@ class IndicatorsController {
 
 
 
-    }
+    } 
 
       // get status of items of each indicator
       static getItemStatusByIndicator = async (req: Request, res: Response) => {
@@ -459,17 +459,18 @@ class IndicatorsController {
                 switch (allItems[i].approved_no_comment) {
                     case 1:
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
-                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending']--;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= allItems[i].approved_without_comment;
                         break;
                     case null:
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
-                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending']--;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= allItems[i].assessment_with_comments;
                         break;
                     default:
                         break;
                 }
             }
-
+            console.log(totalEvaluationsByIndicator['qa_slo']);
+            
             res.status(200).send({ data: totalEvaluationsByIndicator, message: 'All items by indicator' });
 
 
