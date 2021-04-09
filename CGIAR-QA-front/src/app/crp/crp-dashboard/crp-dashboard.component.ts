@@ -28,6 +28,17 @@ import * as moment from 'moment';
 
 export class CrpDashboardComponent implements OnInit {
   dashboardData: any[];
+  statusNames = {complete: 0, pending: 0}
+  statusChartData = {
+    qa_policies: {...this.statusNames},
+    qa_innovations: {...this.statusNames},
+    qa_publications: {...this.statusNames},
+    qa_oicr: {...this.statusNames},
+    qa_melia: {...this.statusNames},
+    qa_capdev: {...this.statusNames},
+    qa_milestones: {...this.statusNames},
+    qa_slo: {...this.statusNames}
+  }
   dashboardCommentsData: any[];
 
 
@@ -124,7 +135,10 @@ export class CrpDashboardComponent implements OnInit {
       .subscribe(
         res => {
           this.dashboardData = this.dashService.groupData(res.data);
-          // console.log(this.dashboardData)
+          console.log(this.dashboardData)
+          this.formatStatusCharts();
+          console.log('HERE', this.statusChartData)
+          
           this.hideSpinner(this.spinner2);
         },
         error => {
@@ -274,6 +288,18 @@ export class CrpDashboardComponent implements OnInit {
     this.modalRef = this.modalService.show(template);
   }
 
+  formatStatusCharts() {
+    console.log(this.dashboardData);
+    for (const indicator in this.dashboardData) {
+      if (this.dashboardData.hasOwnProperty.call(this.dashboardData, indicator)) {
+        const indicatorArray = this.dashboardData[indicator];
+        indicatorArray.forEach(element => {
+          this.statusChartData[indicator][element.status] = +element.value;        
+        });
+      }
+    }
+    console.log(this.statusChartData);
+  }
 
 
   /***

@@ -10,6 +10,18 @@
 
     <div class="col-12 col-progress">
 
+        <div *ngIf="dashboardData" class="dashboard-grid">
+            <div class="indicator">
+                <div class="chart status-chart"> 
+                    {{dashboardData['qa_slo'][0].status}}: {{dashboardData['qa_slo'][0].value}}: 
+                </div>
+                <div class="chart comments-chart"></div>
+                <div class="chart pending-responses"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-progress">
+
         <div class="card">
             <div class="card-body">
                 <div class="card-title example-container d-flex"
@@ -46,7 +58,8 @@
                         <p *ngIf="item &&  dashboardCommentsData.hasOwnProperty(item.key)"># of comments
                             <!-- <p *ngIf="item &&  dashboardCommentsData[item.key]"># of comments -->
                             {{dashboardCommentsData[item.key].total}}
-                            ({{getPendingResponseComments(dashboardCommentsData[item.key])}}) </p>
+                            ({{getPendingResponseComments(dashboardCommentsData[item.key])}})
+                        </p>
                         <progressbar id="comments-progessbar" *ngIf="item && dashboardCommentsData[item.key]"
                             class="progress" [value]="dashboardCommentsData[item.key]"
                             [max]="dashboardCommentsData[item.key].total">
@@ -68,7 +81,8 @@
                 <!-- cycle ended -->
                 <ng-container
                     *ngIf="(dashboardData | json) != ({} | json) && (currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended)">
-                    <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' " class="progress-container">
+                    <div *ngFor="let item of dashboardData | keyvalue | sortBy:'asc':'value.order' "
+                        class="progress-container">
                         <p>{{item.value.total}} {{getIndicatorName(item.key)}}</p>
                         <progressbar class="progress" [value]="item.value" [max]="item.value.total">
                             <span>{{item.value.total}}</span>

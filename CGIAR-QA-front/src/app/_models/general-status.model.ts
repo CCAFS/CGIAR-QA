@@ -18,7 +18,7 @@ export enum GeneralIndicatorName {
     qa_capdev= 'CapDevs',
     qa_milestones= 'Milestones',
     qa_slo= 'SLOs',
-    qa_outcomes= 'Outcomes',
+    // qa_outcomes= 'Outcomes',
 }
 
 export enum TagMessage {

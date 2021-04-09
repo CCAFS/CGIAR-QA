@@ -1,5 +1,25 @@
 @import "../../../assets/variables.scss";
 .dashboard-container {
+  .col-progress {
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 100%;
+      grid-auto-rows: 400px;
+      grid-gap: 10px;
+      padding: 1.5em;
+      background-color: var(--background);
+
+      .indicator{
+        background-color: white;
+        display: grid;
+        grid-template-columns: 50% 30% 20%;
+        grid-template-rows: 100%;
+        .chart {
+          border: 1px solid red;
+        }
+      }
+    }
+  }
   .col-programs {
     ul {
       background: var(--gray-primary);
