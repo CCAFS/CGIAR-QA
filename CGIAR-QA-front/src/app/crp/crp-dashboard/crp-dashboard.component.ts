@@ -30,14 +30,14 @@ export class CrpDashboardComponent implements OnInit {
   dashboardData: any[];
   statusNames = {complete: 0, pending: 0}
   statusChartData = {
-    qa_policies: {...this.statusNames},
-    qa_innovations: {...this.statusNames},
-    qa_publications: {...this.statusNames},
-    qa_oicr: {...this.statusNames},
-    qa_melia: {...this.statusNames},
-    qa_capdev: {...this.statusNames},
-    qa_milestones: {...this.statusNames},
-    qa_slo: {...this.statusNames}
+    qa_policies: [],
+    qa_innovations: [],
+    qa_publications: [],
+    qa_oicr: [],
+    qa_melia: [],
+    qa_capdev: [],
+    qa_milestones: [],
+    qa_slo: []
   }
   dashboardCommentsData: any[];
 
@@ -290,14 +290,25 @@ export class CrpDashboardComponent implements OnInit {
 
   formatStatusCharts() {
     console.log(this.dashboardData);
+    const colors = {
+      Answered: 'var(--color-agree)',
+      pending: 'var(--color-pending)',
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
     for (const indicator in this.dashboardData) {
       if (this.dashboardData.hasOwnProperty.call(this.dashboardData, indicator)) {
         const indicatorArray = this.dashboardData[indicator];
         indicatorArray.forEach(element => {
-          this.statusChartData[indicator][element.status] = +element.value;        
+          // this.statusChartData[indicator][element.status] = +element.value;
+          this.statusChartData[indicator].push({ name: element.status == 'complete' ? 'Answered' : element.status, value: +element.value })  
         });
       }
     }
+    
+    // dataset.forEach(tag => {
+    //   brushes.domain.push(colors[tag.name]);
+    // });
     console.log(this.statusChartData);
   }
 

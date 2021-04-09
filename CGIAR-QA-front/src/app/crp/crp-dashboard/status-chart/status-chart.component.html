@@ -1,1 +1,21 @@
-<p>status-chart works!</p>
+<div class="container">
+    <div class="header">
+        <h4 class="chart-title">{{data[0].name.split('qa_')[1]}}</h4>
+    </div>
+    <div class="chart-container">
+        <ngx-charts-bar-horizontal-normalized *ngIf="data"
+          [scheme]="colorScheme"
+          [results]="data"
+          [gradient]="gradient"
+          [xAxis]="showXAxis"
+          [yAxis]="showYAxis"
+          [legend]="showLegend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          (select)="onSelect($event)">
+        </ngx-charts-bar-horizontal-normalized>
+    </div>
+    <a href="">Go to {{data[0].name.split('qa_')[1]}}</a>
+</div>

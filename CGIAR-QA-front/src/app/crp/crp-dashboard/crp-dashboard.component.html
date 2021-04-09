@@ -11,9 +11,9 @@
     <div class="col-12 col-progress">
 
         <div *ngIf="dashboardData" class="dashboard-grid">
-            <div class="indicator">
+            <div *ngFor="let indicator of statusChartData | keyvalue" class="indicator">
                 <div class="chart status-chart"> 
-                    {{dashboardData['qa_slo'][0].status}}: {{dashboardData['qa_slo'][0].value}}: 
+                    <app-status-chart [data]="[{name: indicator.key, series: indicator.value}]"></app-status-chart>
                 </div>
                 <div class="chart comments-chart"></div>
                 <div class="chart pending-responses"></div>

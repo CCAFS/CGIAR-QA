@@ -1,0 +1,28 @@
+@import "../../../../assets/variables.scss";
+
+*{
+    margin:0;
+    padding:0;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 2em 1em;
+    .header{
+        .chart-title {
+            width: auto;
+            flex: 0 1 auto;
+            margin: 0;
+            padding: 5px;
+            font-family: $secondary-font;
+            font-weight: bold;
+        }
+    }
+    .chart-container{
+        max-height: 40%;
+        max-width: 100%;
+    }
+}

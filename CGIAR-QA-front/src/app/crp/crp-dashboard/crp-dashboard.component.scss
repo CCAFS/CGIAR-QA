@@ -17,6 +17,12 @@
         .chart {
           border: 1px solid red;
         }
+        .status-chart {
+          app-status-chart {
+            max-width: 100%;
+            max-height: 60%;
+          }
+        }
       }
     }
   }
