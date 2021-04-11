@@ -11,9 +11,11 @@
     <div class="col-12 col-progress">
 
         <div *ngIf="dashboardData" class="dashboard-grid">
-            <div *ngFor="let indicator of statusChartData | keyvalue" class="indicator">
+            <div *ngFor="let indicator of dashboardData | keyvalue | sortBy:'asc':'value.order'" class="indicator">
                 <div class="chart status-chart"> 
-                    <app-status-chart [data]="[{name: indicator.key, series: indicator.value}]"></app-status-chart>
+                    <app-status-chart 
+                    [indicator]="[{name: indicator.key, series: indicator.value}]"
+                    ></app-status-chart>
                 </div>
                 <div class="chart comments-chart"></div>
                 <div class="chart pending-responses"></div>

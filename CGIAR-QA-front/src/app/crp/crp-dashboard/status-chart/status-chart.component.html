@@ -1,11 +1,11 @@
-<div class="container">
+<div *ngIf="results[0].series" class="container">
     <div class="header">
-        <h4 class="chart-title">{{data[0].name.split('qa_')[1]}}</h4>
+        <h4 class="chart-title title-indicator">{{results[0].name.split('qa_')[1]}}</h4>
     </div>
     <div class="chart-container">
-        <ngx-charts-bar-horizontal-normalized *ngIf="data"
+        <ngx-charts-bar-horizontal-normalized 
           [scheme]="colorScheme"
-          [results]="data"
+          [results]="results"
           [gradient]="gradient"
           [xAxis]="showXAxis"
           [yAxis]="showYAxis"
@@ -17,5 +17,5 @@
           (select)="onSelect($event)">
         </ngx-charts-bar-horizontal-normalized>
     </div>
-    <a href="">Go to {{data[0].name.split('qa_')[1]}}</a>
+    <a class="title-indicator" href="">Go to {{results[0].name.split('qa_')[1]}}</a>
 </div>

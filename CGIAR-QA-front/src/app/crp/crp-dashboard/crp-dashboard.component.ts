@@ -301,7 +301,7 @@ export class CrpDashboardComponent implements OnInit {
         const indicatorArray = this.dashboardData[indicator];
         indicatorArray.forEach(element => {
           // this.statusChartData[indicator][element.status] = +element.value;
-          this.statusChartData[indicator].push({ name: element.status == 'complete' ? 'Answered' : element.status, value: +element.value })  
+          this.statusChartData[indicator].push({ name: element.status == 'complete' ? 'Assessed' : element.status, value: +element.value })  
         });
       }
     }
