@@ -20,5 +20,6 @@
           (select)="onSelect($event)">
         </ngx-charts-bar-horizontal-normalized>
     </div>
-    <a class="title-indicator" href="">Go to {{results[0].name.split('qa_')[1]}}</a>
+    <a class="title-indicator" routerLinkActive="active" [routerLinkActive]="['active']"
+    routerLink="../indicator/{{results[0].name.split('qa_')[1]}}/id">Go to {{results[0].name.split('qa_')[1]}}</a>
 </div>
