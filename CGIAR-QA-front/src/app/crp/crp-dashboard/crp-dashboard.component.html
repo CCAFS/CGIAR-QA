@@ -22,7 +22,7 @@
                     <app-comments-chart
                     *ngIf="dashboardCommentsData.hasOwnProperty(indicator.key)"
                      [total]="dashboardCommentsData[indicator.key].total"
-                     [data]="formatCommentsIndicatorData(dashboardCommentsData[indicator.key])">
+                     [data]="formatCommentsIndicatorData(dashboardCommentsData[indicator.key], indicator.key)">
                     </app-comments-chart>
                     <app-comments-chart
                     *ngIf="!dashboardCommentsData.hasOwnProperty(indicator.key)"
@@ -31,7 +31,7 @@
                     </app-comments-chart>
                 </div>
                 <div class="chart comments-chart" class="chart pending-responses">
-                    <div *ngIf="dashboardCommentsData.hasOwnProperty(indicator.key)" class="total-pending">{{dashboardCommentsData[indicator.key].total}}</div>
+                    <div *ngIf="dashboardCommentsData.hasOwnProperty(indicator.key)" class="total-pending">{{totalPendings[indicator.key]}}</div>
                     <div *ngIf="!dashboardCommentsData.hasOwnProperty(indicator.key)" class="total-pending">0</div>
                 <button class="btn btn-primary btn-response-pending" (click)="goToPendingItems(indicator.key)" >Answer pending comments</button>
                 </div>

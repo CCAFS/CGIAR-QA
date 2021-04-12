@@ -40,6 +40,16 @@ export class CrpDashboardComponent implements OnInit {
     qa_milestones: [],
     qa_slo: []
   }
+  totalPendings = {
+    qa_policies: 0,
+    qa_innovations: 0,
+    qa_publications: 0,
+    qa_oicr: 0,
+    qa_melia: 0,
+    qa_capdev: 0,
+    qa_milestones: 0,
+    qa_slo: 0
+  }
   dashboardCommentsData: any[];
 
 
@@ -315,7 +325,7 @@ export class CrpDashboardComponent implements OnInit {
     console.log(this.statusChartData);
   }
 
-  formatCommentsIndicatorData(data) {
+  formatCommentsIndicatorData(data, indicator?) {
     const colors = {
       Accepted: 'var(--color-agree)',
       Clarification: 'var(--color-clarification)',
@@ -340,7 +350,10 @@ export class CrpDashboardComponent implements OnInit {
 
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
-      if (comments_without_answer) dataset.push(comments_without_answer);
+      if (comments_without_answer) {
+        dataset.push(comments_without_answer); 
+        this.totalPendings[indicator] = +comments_without_answer.value;
+      }
 
       dataset.forEach(comment => {
         brushes.domain.push(colors[comment.name]);
