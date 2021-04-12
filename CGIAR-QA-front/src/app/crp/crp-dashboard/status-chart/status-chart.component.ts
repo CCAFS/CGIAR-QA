@@ -7,8 +7,14 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class StatusChartComponent implements OnInit{
   @Input() indicator;
+  @Input() total;
   multi: any[];
   view: any[] = [700, 400];
+
+  legendLabels = [
+    {name:"Answered", class: "complete", value: 0},
+    {name:"Pending", class:"pending", value: 0 },
+  ];
 
   // options
   results: any[];
@@ -22,7 +28,7 @@ export class StatusChartComponent implements OnInit{
   xAxisLabel: string = 'Normalized Population';
 
   colorScheme = {
-    domain: ['var(--color-agree)', 'var(--color-pending)']
+    domain: ['var(--color-complete)', 'var(--color-pending)']
   };
 
   constructor() {
@@ -42,8 +48,12 @@ export class StatusChartComponent implements OnInit{
     this.results = [{name: this.indicator[0].name, series: []}];
     this.indicator[0].series.forEach(element => {
       // this.statusChartData[indicator][element.status] = +element.value;
-      this.results[0].series.push({ name: element.status == 'complete' ? 'Assessed' : element.status, value: +element.value })  
+      let status = element.status == 'complete' ? 'Answered' : 'Pending';
+      this.legendLabels.find(el => el.name == status).value = element.value;
+      this.results[0].series.push({ name: element.status == 'complete' ? 'Answered' : 'Pending', value: +element.value })  
+      
     });
+    this.results[0].series.reverse();
   }
 
 }

@@ -20,6 +20,7 @@ import { SafeUrlPipe } from 'src/app/pipes/safe-url.pipe';
 
 import * as moment from 'moment';
 import { FormBuilder } from '@angular/forms';
+import { IndicatorsService } from 'src/app/services/indicators.service';
 
 @Component({
   selector: 'app-indicators',
@@ -72,6 +73,7 @@ export class CRPIndicatorsComponent implements OnInit {
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private orderPipe: SortByPipe,
+    private indicatorService: IndicatorsService,
     // private orderPipe: OrderPipe,
     private titleService: Title,
     private alertService: AlertService) {
@@ -93,6 +95,9 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
   ngOnInit() {
+    setTimeout(() => {                           //<<<---using ()=> syntax
+      this.verifyIfOrderByStatus();
+    }, 1000);
   }
 
 
@@ -211,7 +216,11 @@ export class CRPIndicatorsComponent implements OnInit {
     return r;
   }
 
-  
+  verifyIfOrderByStatus() {
+    if (this.indicatorService.getOrderByStatus() != null) {
+      this.setOrder('status')
+    }
+  }
 
 
   /***

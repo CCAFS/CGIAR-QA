@@ -1,16 +1,16 @@
+
 @import "../../../../assets/variables.scss";
 
 *{
     margin:0;
     padding:0;
 }
-
 .container{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: 100%;
-    // padding:1em 0;
+    // padding: 0.5em 0;
     .header{
         .chart-title {
             width: auto;
@@ -21,8 +21,8 @@
             font-weight: bold;
         }
     }
-    .chart-container{
-        max-height: 40%;
+    .pie-container{
+        height:calc(100% - 80px);
         max-width: 100%;
     }
     .title-indicator {
@@ -32,7 +32,7 @@
     .legend{
         height: auto;
         max-height: 40px;
-        width:100%;
+        width:90%;
         flex-wrap: wrap;
         // background-color: black;
         display: flex;
@@ -63,8 +63,14 @@
         .pending {
             background-color: var(--color-pending);
         }
-        .complete {
-            background-color: var(--color-complete);
+        .agree {
+            background-color: var(--color-agree);
+        }
+        .disagree {
+            background-color: var(--color-disagree);
+        }
+        .clarification {
+            background-color: var(--color-clarification);
         }
     }
 }

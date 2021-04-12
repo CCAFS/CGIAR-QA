@@ -18,6 +18,7 @@ import { Label, BaseChartDirective } from 'ng2-charts';
 import { saveAs } from "file-saver";
 
 import * as moment from 'moment';
+import { IndicatorsService } from 'src/app/services/indicators.service';
 
 @Component({
   selector: 'app-crp-dashboard',
@@ -107,7 +108,8 @@ export class CrpDashboardComponent implements OnInit {
     private dashService: DashboardService,
     private alertService: AlertService,
     private titleService: Title,
-    private spinner: NgxSpinnerService,) {
+    private spinner: NgxSpinnerService,
+    private indicatorService: IndicatorsService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         console.log(routeParams, x)
@@ -136,8 +138,8 @@ export class CrpDashboardComponent implements OnInit {
         res => {
           this.dashboardData = this.dashService.groupData(res.data);
           console.log(this.dashboardData)
-          this.formatStatusCharts();
-          console.log('HERE', this.statusChartData)
+          // this.formatStatusCharts();
+          // console.log('HERE', this.statusChartData)
           
           this.hideSpinner(this.spinner2);
         },
@@ -158,6 +160,7 @@ export class CrpDashboardComponent implements OnInit {
           // this.has_comments = res.data ? true : false
           this.dashboardCommentsData = this.dashService.groupData(res.data);
           console.log(this.dashboardCommentsData);
+          
           // this.dashboardCommentsData = res.data;
           // this._setCharData(res)
           // Object.assign(this, { barChartLabels: res.data.label });
@@ -310,6 +313,47 @@ export class CrpDashboardComponent implements OnInit {
     //   brushes.domain.push(colors[tag.name]);
     // });
     console.log(this.statusChartData);
+  }
+
+  formatCommentsIndicatorData(data) {
+    const colors = {
+      Accepted: 'var(--color-agree)',
+      Clarification: 'var(--color-clarification)',
+      Disagree: 'var(--color-disagree)',
+      Pending: 'var(--color-pending)'
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
+
+    if (data) {
+      let comments_accepted = data.find(item => item.comments_accepted != '0');
+      comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
+      if (comments_accepted) dataset.push(comments_accepted);
+
+      let comments_rejected = data.find(item => item.comments_rejected != '0');
+      comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
+      if (comments_rejected) dataset.push(comments_rejected);
+
+      let comments_clarification = data.find(item => item.comments_clarification != '0');
+      comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
+      if (comments_clarification) dataset.push(comments_clarification);
+
+      let comments_without_answer = data.find(item => item.comments_without_answer != '0');
+      comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
+      if (comments_without_answer) dataset.push(comments_without_answer);
+
+      dataset.forEach(comment => {
+        brushes.domain.push(colors[comment.name]);
+      });
+    }
+
+
+    return { dataset, brushes };
+  }
+
+  goToPendingItems(indicator: string) {
+    this.indicatorService.setOrderByStatus(false);
+    this.router.navigate([`crp/indicator/${indicator.split('qa_')[1]}/id`]);
   }
 
 
