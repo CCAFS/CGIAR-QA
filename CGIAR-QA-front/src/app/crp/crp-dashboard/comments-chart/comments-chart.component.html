@@ -20,5 +20,6 @@
           (select)="onSelect($event)"
           >
         </ngx-charts-pie-chart>
- </div>
+      </div>
+      <div *ngIf="!data.dataset" class="no-comments">There are no comments</div>
 </div>
