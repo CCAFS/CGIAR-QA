@@ -64,7 +64,7 @@ export class CrpComponent implements OnInit {
       error => {
         console.log("validateToken", error);
         this.hideSpinner(this.spinner_name);
-        this.logout()
+        // this.logout()
         this.alertService.error(error);
       }
     )

@@ -55,8 +55,8 @@
                     <div class="col">
                         <div class="row" style="padding: 0;">
                             <h2 [innerHTML]="detailedData[i].display_name | markdown"></h2>
-                            <div *ngIf="field.meta_description">
-                                <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
+                            <div >
+                                <i *ngIf="field.meta_description" [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
                                     style="height: 1.5em;"></i>
                                 <ng-template #popTemplate>
                                     <div [innerHtml]="field.meta_description"></div>

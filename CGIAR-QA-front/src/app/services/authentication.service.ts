@@ -54,6 +54,8 @@ export class AuthenticationService {
   }
 
   tokenLogin(params: {}) {
+    console.log('PARAMS TOKEN LOGIN',params);
+    
     return this.http.post<any>(`${environment.apiUrl}/auth/token/login`, params)
       .pipe(map(user => {
         this.parseMultipleCRP(user.data, params['crp_id'])
