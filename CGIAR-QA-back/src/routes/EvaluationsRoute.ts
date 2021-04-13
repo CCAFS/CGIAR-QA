@@ -75,7 +75,7 @@ router.get("/:evaluationId([0-9]+)/detail/comment/:metaId([0-9]+)", [checkJwt, c
 // get replies by comment
 router.get("/:evaluationId([0-9]+)/detail/comment/:commentId([0-9]+)/replies", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.getCommentsReplies)
 
-// get replies by comment
+// get Criteria By Indicator
 router.get("/indicator/:indicatorName", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp, RolesHandler.assesor])], EvaluationsController.getCriteriaByIndicator)
 
 // get assessors by evaluation
