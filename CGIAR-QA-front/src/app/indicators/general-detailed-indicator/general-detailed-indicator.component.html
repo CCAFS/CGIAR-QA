@@ -1,8 +1,9 @@
 <div [ngClass]="{'hide': !assessorsChat.isOpen}" class="chat-container">
-    <iframe *ngIf="indicatorType == 'policies'" [src]="chatRooms.policies" ></iframe>
-    <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations" ></iframe>
+    <iframe *ngIf="indicatorType == 'policies'" [src]="chatRooms.policies"></iframe>
+    <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations"></iframe>
 </div>
-<div (click)="toggleAssessorsChat()" class="btn-assessors-chat">{{indicatorType.charAt(0).toUpperCase() + indicatorType.slice(1)}} chat</div>
+<div (click)="toggleAssessorsChat()" class="btn-assessors-chat">{{indicatorType.charAt(0).toUpperCase() +
+    indicatorType.slice(1)}} chat</div>
 <div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
 
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
@@ -12,7 +13,7 @@
 <div class="row criteria-container">
     <div *ngIf="!criteria_loading">
         <h2>QUALITY ASSESSMENT CRITERIA</h2>
-        <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>    
+        <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
     </div>
     <div style="margin:auto;">
         <span *ngIf="criteria_loading" class="spinner-border spinner-border-sm mr-1"></span>
@@ -32,10 +33,12 @@
     </div>
 
     <p *ngIf="currentUser.hasOwnProperty('cycle')">Status:
-        <span
-            [ngClass]=" {'text-success': gnralInfo.status === statusHandler.Complete, 'text-danger':gnralInfo.status === statusHandler.Pending, 'text-info': gnralInfo.status === statusHandler.Finalized, 'text-autochecked': gnralInfo.status === statusHandler.Autochecked} ">
-            {{parseGeneralStatus(gnralInfo.status)}}
-        </span>
+        <strong>
+            <span
+                [ngClass]=" {'text-assessed-r1': gnralInfo.status === statusHandler.Complete, 'text-danger':gnralInfo.status === statusHandler.Pending, 'text-assessed-r2': gnralInfo.status === statusHandler.Finalized, 'text-autochecked': gnralInfo.status === statusHandler.Autochecked} ">
+                {{parseGeneralStatus(gnralInfo.status)}}
+            </span>
+        </strong>
     </p>
     <p *ngIf="!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended" class=" text-danger"
         style="text-transform: initial; text-align: center;">
@@ -64,13 +67,15 @@
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div *ngIf="currentUser.hasOwnProperty('cycle')">
                 <div class="col data-container">
-                    <div class="assessment-info select-all" 
+                    <div class="assessment-info select-all"
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
                             <button type="button" (click)="onChangeSelectAll(approveAllitems)"
-                                class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate/Invalidate assessment</button>
-                            <button *ngIf="!approveAllitems && !currentUserHasAssessed" type="button"  (click)="onChangeSelectAll(true)"
-                                class="btn btn-agree">Agree with previous assessment</button>
+                                class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate/Invalidate
+                                assessment</button>
+                            <button *ngIf="!approveAllitems && !currentUserHasAssessed" type="button"
+                                (click)="onChangeSelectAll(true)" class="btn btn-agree">Agree with previous
+                                assessment</button>
                         </div>
                         <div class="right-side">
                             <p *ngIf="assessed_by"> <strong>Assessed by: </strong> {{assessed_by}}</p>
@@ -90,8 +95,8 @@
 
                                             <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked "
                                                 [innerHTML]="detailedData[i].display_name | markdown">
-                                            </h2>       
-  
+                                            </h2>
+
                                             <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                                 {{detailedData[i].display_name}}</h2> -->
 
@@ -127,7 +132,7 @@
                                     <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  )"
                                         [innerHTML]="detailedData[i].value">
                                     </div>
-                                    
+
                                     <!-- <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'OICR' )"
                                         [innerHTML]="detailedData[i].value">
                                     </div> -->
@@ -155,7 +160,7 @@
                                 </div>
 
                                 <!-- comments -->
-                                <div #commentsElem style="cursor: pointer;" 
+                                <div #commentsElem style="cursor: pointer;"
                                     *ngIf="validateCommentAvility(detailedData[i],true) && !summon.value.isChecked && gnralInfo.status != statusHandler.Autochecked"
                                     (click)="showComments(i, detailedData[i], $event); comment.updateData(detailedData[i],params)"
                                     class="activate-messages-container {{detailedData[i].replies_count == '0' ?  '':'active'}}">
@@ -218,6 +223,19 @@
                     </div>
                 </div> -->
                 <!-- ROUND 2 -->
+                <div class="row" *ngIf="currentUser.cycle.cycle_stage == '1'" style="margin: 1em 0;">
+                    <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
+                        style="margin-left: 1em;">
+                        <button type="button" class="btn btn-agree"
+                            [disabled]="gnralInfo.status === statusHandler.Finalized"
+                            (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
+                    </div>
+                    <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container"
+                    style="margin-left: 1em;">
+                    <button type="button" class="btn btn-outline-info"
+                        (click)="updateEvaluation('pending_eval',detailedData)">OPEN ASSESSMENT</button>
+                </div>
+                </div>
                 <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em;">
                     <div *ngIf="gnralInfo.status !== statusHandler.Finalized && gnralInfo.evaluation_status !== 'Added'"
                         class="bton-container">
@@ -227,9 +245,9 @@
                     </div>
                     <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
                         style="margin-left: 1em;">
-                        <button type="button" class="btn btn-info"
+                        <button type="button" class="btn btn-green-secondary"
                             [disabled]="gnralInfo.status === statusHandler.Finalized"
-                            (click)="updateEvaluation('finalized_eval',detailedData)">CLOSE ASSESSMENT</button>
+                            (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
                     </div>
                     <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container"
                         style="margin-left: 1em;">

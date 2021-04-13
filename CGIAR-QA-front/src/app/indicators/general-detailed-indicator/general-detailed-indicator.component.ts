@@ -548,11 +548,25 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   parseGeneralStatus(status){
-    if(status === this.statusHandler.Finalized){
-      return 'closed'
+    let statusParse;
+    switch (status) {
+      case this.statusHandler.Pending:
+        statusParse = 'Pending'     
+        break;
+      case this.statusHandler.Autochecked:
+        statusParse = 'Automatically Validated'     
+        break;
+      case this.statusHandler.Complete:
+        statusParse = 'Assessed 1st round'     
+        break;
+      case this.statusHandler.Finalized:
+         statusParse = 'Assessed 2nd round'
+        break;
+      default:
+        break;
     }
 
-    return status;
+    return statusParse;
   }
 
   toggleAssessorsChat() {
