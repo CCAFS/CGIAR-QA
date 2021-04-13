@@ -1,6 +1,6 @@
 <div class="container">
     <div class="header">
-        <h4 class="chart-title title-indicator">Total comments {{total}}</h4>
+        <h4 class="chart-title title-indicator">Total comments: {{total}}</h4>
     </div>
     <div class="legend">
         <div  *ngFor="let tag of commentsLabels"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}} <strong></strong></p></div>

@@ -18,10 +18,10 @@
     </p>
     <div class="col" *ngIf="currentUser.hasOwnProperty('cycle')">
         <p>Assessment Status: <span
-                class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+                class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Assessed 1st round":"Pending"}}</span>
         </p>
         <p>Response Status: <span
-                class="text-{{(gnralInfo.response_status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.response_status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+                class="text-{{(gnralInfo.response_status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.response_status === statusHandler.Complete) ? "Answered":"Pending"}}</span>
         </p>
 
     </div>

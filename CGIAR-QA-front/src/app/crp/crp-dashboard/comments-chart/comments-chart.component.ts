@@ -19,7 +19,7 @@ export class CommentsChartComponent implements OnInit {
   commentsLabels = [
     {name:"Pending", class:"pending", value: 0},
     {name:"Accepted", class: "agree", value: 0},
-    {name:"Disagree", class: "disagree", value: 0},
+    {name:"Disagreed", class: "disagree", value: 0},
     {name:"Clarification needed", class: "clarification", value: 0},
   ]
 
