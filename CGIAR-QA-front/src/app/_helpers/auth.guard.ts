@@ -60,7 +60,7 @@ export class AuthGuard implements CanActivate {
   private validateCycle(currentUser) {
     let isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.asesor });
     if(!isAssessor){
-      isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.crp });
+      isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.crp || role === Role.admin});
     }
     console.log('validatecycle', isAssessor);
     
