@@ -149,7 +149,7 @@
   text-transform: capitalize;
 }
 .hide {
-  display: none;
+  z-index: -1;
 }
 .detail-header-container {
   display: flex;
@@ -310,7 +310,7 @@
 }
 
 .chat-container {
-  width: 700px;
+  width: 800px;
   display: grid;
   place-items: center;
   position: fixed;
@@ -328,7 +328,7 @@
 
   iframe{
     width: 100%;
-    height: 600px;
+    height: 700px;
     border:none;
     border-radius: 10px;
   }

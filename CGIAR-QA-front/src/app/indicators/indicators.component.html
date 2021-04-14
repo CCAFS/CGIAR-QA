@@ -2,7 +2,7 @@
     <i class=icon-go-back></i> Dashboard
 </a>
 <div [ngClass]="{'hide': !assessorsChat.isOpen}" class="chat-container">
-    <iframe [src]="chatRooms.policies" ></iframe>
+    <iframe [src]="chatRooms.general" ></iframe>
     <!-- <iframe *ngIf="indicatorType == 'policies'" [src]="chatRooms.policies" ></iframe> -->
     <!-- <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations" ></iframe> -->
 </div>
@@ -15,16 +15,21 @@
 </h4>
 <div class="row col indicator-header">
     <div class="text-left">
-        <div class="model-link-container" (click)="goToPDF('AR')">
+        <!-- <div class="model-link-container" (click)="goToPDF('AR')">
             <i class="icon-pdf"></i>
             <hr>
             <p>AR Template</p>
-        </div>
-        <div *ngIf="hasTemplate" class="model-link-container" (click)="goToPDF(indicatorType)">
+        </div> -->
+        <!-- <div *ngIf="!criteria_loading">
+            <h2>QUALITY ASSESSMENT CRITERIA</h2>
+            <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
+        </div> -->
+        <H5><a href="https://drive.google.com/file/d/1EnMGnzayrLoS1VT9rwIDTHlNue7NiDeN/view?usp=sharing" target="_blank">See SLOs guidance</a> <br></H5>
+        <!-- <div *ngIf="hasTemplate" class="model-link-container" (click)="goToPDF(indicatorType)">
             <i class="icon-pdf"></i>
             <hr>
             <p>Indicator Guidance</p>
-        </div>
+        </div> -->
     </div>
     <div class="text-right">
         <div *ngIf="indicatorType == 'publications'" class="circle autochecked" style="margin-left: 50px;"></div>

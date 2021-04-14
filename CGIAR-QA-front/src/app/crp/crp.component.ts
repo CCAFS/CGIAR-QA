@@ -33,6 +33,8 @@ export class CrpComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
+      console.log(this.params);
+      
       if (params.has('token')) {
         this.validateToken(this.params['params']);
       } else {

@@ -120,8 +120,7 @@ export class IndicatorsComponent implements OnInit {
       this.verifyIfOrderByStatus();
     }, 2000);
     this.chatRooms = {
-      policies: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
-      innovations: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/JGdqSO6ko?username=${this.currentUser.name}`)
+      general: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
     }
   }
 
