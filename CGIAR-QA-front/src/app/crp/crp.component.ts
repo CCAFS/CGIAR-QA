@@ -50,7 +50,7 @@ export class CrpComponent implements OnInit {
   }
 
   validateToken(params: {}) {
-    this.clearSavedData();
+    // this.clearSavedData();
     this.showSpinner(this.spinner_name)
     this.authenticationService.tokenLogin(params).subscribe(
       res => {
