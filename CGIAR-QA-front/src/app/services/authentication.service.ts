@@ -70,7 +70,7 @@ export class AuthenticationService {
 
         // this.cookiesService.setData(this.usrCookie, currentUsr);
         /** add user to tawk to **/
-        this.setLoggedUser(currentUsr);
+        // this.setLoggedUser(currentUsr);
         this.currentUserSubject.next(currentUsr);
         return currentUsr;
       }));
