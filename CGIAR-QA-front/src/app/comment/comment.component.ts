@@ -317,7 +317,7 @@ export class CommentComponent implements OnInit {
     console.log('CRP_RESPONSE',currentComment.crp_response)
     this.showSpinner(this.spinner_comment);
     this.commentService.createDataCommentReply({
-      detail: this.formData.comment.value,
+      detail: this.formData.comment.value || '',
       userId: this.currentUser.id,
       commentId: currentComment ? currentComment.id : this.currentComment.id,
       crp_approved: this.crpComment ? currentComment.crp_response : undefined,

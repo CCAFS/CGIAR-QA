@@ -208,7 +208,7 @@ class CommentController {
     }
 
     // create reply by comment
-    static createCommentReply = async (req: Request, res: Response) => {
+    static createCommentReply = async (req: Request, res: Response) => { 
 
         //Check if username and password are set
         const { detail, userId, commentId, crp_approved, approved, replyTypeId } = req.body;

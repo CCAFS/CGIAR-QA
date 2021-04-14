@@ -37,7 +37,8 @@
             *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
             <i class="icon-download-excel"></i>
         </div>
-        <a *ngIf="detailedData[0].editable_link" [href]="detailedData[0].editable_link" target="_blank">
+        <!-- TO-DO -->
+        <a *ngIf="detailedData[0].editable_link" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
             <div tooltip="{{tooltips.editable_link}}" container="body" placement="top"
                 class="btn btn-primary file-button">
                 <i class="icon-public-link"></i>
