@@ -2,9 +2,6 @@
     <iframe *ngIf="indicatorType == 'policies'" [src]="chatRooms.policies"></iframe>
     <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations"></iframe>
 </div>
-<div [ngClass]="{'hide': !assessorsChat.isOpen}" class="chat-container">
-    <iframe [src]="chatRooms.general" ></iframe>
-</div>
 <div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
     routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">

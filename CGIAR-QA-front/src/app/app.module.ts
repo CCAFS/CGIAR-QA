@@ -35,6 +35,7 @@ import { TawkToComponent } from './tawk-to/tawk-to.component';
 import { CommentComponentModule } from './comment/comment.module';
 import { SafeUrlPipe } from './pipes/safe-url.pipe';
 import { AssessorsChatComponent } from './assessors-chat/assessors-chat.component';
+import { AssessorsChatWindowComponent } from './_shared/assessors-chat-window/assessors-chat-window.component';
 
 // import { CrpComponent } from './crp/crp.component';
 
@@ -50,7 +51,8 @@ import { AssessorsChatComponent } from './assessors-chat/assessors-chat.componen
     QaCloseComponent,
     TawkToComponent,
     SafeUrlPipe,
-    AssessorsChatComponent
+    AssessorsChatComponent,
+    AssessorsChatWindowComponent
     // CustomFilterPipe,
   ],
   imports: [

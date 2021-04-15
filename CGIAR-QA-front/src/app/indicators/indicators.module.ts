@@ -14,6 +14,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { OrderModule } from 'ngx-order-pipe';
 import { CommentComponentModule } from '../comment/comment.module';
 import { SharedModule } from '../shared-module/shared-module.module';
+import { AssessorsChatWindowComponent } from '../_shared/assessors-chat-window/assessors-chat-window.component';
 // import { CustomFilterPipe } from '../pipes/custom-filter.pipe';
 // import { CommentComponent } from '../comment/comment.component';
 // import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator/general-detailed-indicator.component';

@@ -10,6 +10,7 @@ import { AlertService } from '../../services/alert.service';
 import { User } from '../../_models/user.model';
 import { Role } from '../../_models/roles.model';
 import { GeneralStatus } from '../../_models/general-status.model';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'header-bar',
@@ -24,9 +25,14 @@ export class HeaderBarComponent implements OnInit {
   currentRole = '';
   params;
 
-  isHome ;
+  isHome;
 
-  
+  chatRooms = null;
+
+  assessorsChat = {
+    isOpen: false
+  }
+
   indicatorsName = [
     { name: 'SLOs', viewname: 'qa_slo' },
     { name: 'Policies', viewname: 'qa_policies' },
@@ -39,7 +45,11 @@ export class HeaderBarComponent implements OnInit {
     // qa_outcomes: 'Outcomes',
   ]
 
-  constructor(private activeRoute: ActivatedRoute, private authenticationService: AuthenticationService, public router: Router, private indicatorService: IndicatorsService, private alertService: AlertService) {
+  constructor(private activeRoute: ActivatedRoute,
+    private authenticationService: AuthenticationService,
+    public router: Router,
+    private indicatorService: IndicatorsService,
+    private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.params = routeParams;
       this.authenticationService.currentUser.subscribe(x => {
@@ -48,7 +58,7 @@ export class HeaderBarComponent implements OnInit {
           this.currentRole = x.roles[0].description.toLowerCase()
           this.ngOnInit();
           this.getHeaderLinks();
-          this.isHome =`/dashboard/${this.currentUser}`;
+          this.isHome = `/dashboard/${this.currentUser}`;
           // this.isHome = this.router.isActive( `/dashboard/${this.currentUser}` , true)
         }
       });
@@ -56,17 +66,18 @@ export class HeaderBarComponent implements OnInit {
 
   }
 
-  getCurrentRoute(){
-    return this.router.isActive( `/dashboard/${this.currentRole}` , true);
+  getCurrentRoute() {
+    return this.router.isActive(`/dashboard/${this.currentRole}`, true);
   }
 
   ngOnInit() {
     this.indicators = this.authenticationService.userHeaders;
     console.log('NAV INDICATORS', this.indicators);
-    
+
+
     // this.getHeaderLinks();
   }
-  
+
   getIndicators() {
     console.log('NAV INDICATORS', this.indicators);
   }
@@ -123,5 +134,6 @@ export class HeaderBarComponent implements OnInit {
     this.authenticationService.logout();
     this.router.navigate(['/login']);
   }
+
 
 }
