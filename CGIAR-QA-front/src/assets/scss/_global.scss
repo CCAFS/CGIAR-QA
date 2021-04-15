@@ -159,6 +159,7 @@
   background-color: var(--color-agree);
   border-color: var(--color-agree);
   color: var(--white);
+  font-weight: $semibold;
 }
 .btn-agree.disabled,
 .btn-agree:disabled {
