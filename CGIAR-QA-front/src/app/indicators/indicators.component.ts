@@ -21,6 +21,7 @@ import { FormBuilder } from '@angular/forms';
 import { IndicatorsService } from '../services/indicators.service';
 
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
+import { EvaluationsService } from '../services/evaluations.service';
 
 @Component({
   selector: 'app-indicators',
@@ -71,6 +72,8 @@ export class IndicatorsComponent implements OnInit {
   }
 
   detailedStatus = DetailedStatus;
+  criteriaData;
+  criteria_loading = false;
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -83,6 +86,7 @@ export class IndicatorsComponent implements OnInit {
     private indicatorService: IndicatorsService,
     private sanitizer: DomSanitizer,
     // private orderPipe: OrderPipe,
+    private evaluationService: EvaluationsService,
     private titleService: Title,
     private alertService: AlertService) {
     this.activeRoute.params.subscribe(routeParams => {
@@ -96,7 +100,7 @@ export class IndicatorsComponent implements OnInit {
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
       this.getEvaluationsList(routeParams);
-
+      this.getIndicatorCriteria(`qa_${routeParams.type}`);
 
       this.btonFilterForm = this.formBuilder.group({
         radio: 'A'
@@ -107,6 +111,22 @@ export class IndicatorsComponent implements OnInit {
 
   }
 
+  getIndicatorCriteria(id) {
+    this.criteria_loading = true;
+    this.evaluationService.getCriteriaByIndicator(id).subscribe(
+      res => {
+        this.criteriaData = res.data[0];
+        console.log("CRITERIA DATA",this.criteriaData);
+        console.log("CRITERIA DATA",res.message);
+        
+        this.criteria_loading = false;
+      },
+      error => {
+        this.criteria_loading = false;
+        this.alertService.error(error);
+      }
+    )
+  }
 
 
   ngOnInit() {

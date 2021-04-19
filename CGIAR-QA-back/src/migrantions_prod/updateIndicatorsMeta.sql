@@ -21,6 +21,8 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Gender score' WHERE 
 UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Youth score' WHERE (`id` = '40');
 UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'CapDev score' WHERE (`id` = '41');
 UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Climate Change score' WHERE (`id` = '42');
+UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Narrative Evidence' WHERE (`id` = '164');
+
 -- UPDATE CRITERIAS
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Is the title informative? Does it explain what the policy is about, who has implemented it and where it has been implemented?' WHERE (`id` = '30');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Is the description concise, clear, correctly matching the policy type and appropriate for a non-specialist audience?' WHERE (`id` = '31');

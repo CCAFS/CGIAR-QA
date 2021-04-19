@@ -18,7 +18,9 @@
             <h2>QUALITY ASSESSMENT CRITERIA</h2>
             <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
         </div> -->
-        <H5><a href="https://drive.google.com/file/d/1EnMGnzayrLoS1VT9rwIDTHlNue7NiDeN/view?usp=sharing" target="_blank">See SLOs guidance</a> <br></H5>
+       
+        <div *ngIf="!criteria_loading" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
+        <!-- <H5><a [routerLink]="" (click)="goToPDF(indicatorType)">See {{returnListName(indicatorType, 'header')}} guidance</a> <br></H5> -->
         <!-- <div *ngIf="hasTemplate" class="model-link-container" (click)="goToPDF(indicatorType)">
             <i class="icon-pdf"></i>
             <hr>
@@ -43,9 +45,9 @@
 
     <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
         <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
-            uncheckable tabindex="0" role="button">Added</label>
+            uncheckable tabindex="0" role="button">Added item</label>
         <label class="btn btn-outline-danger" [class.active]="evalStatusFilter === 'Removed'" btnRadio="Removed"
-            uncheckable tabindex="0" role="button">Removed</label>
+            uncheckable tabindex="0" role="button">Removed item</label>
     </div>
 </div>
 
@@ -64,7 +66,7 @@
             </th>
             <th scope="col" *ngIf="returnedArray && returnedArray[0].brief" >
                 <div class="header-row">
-                    Brief
+                    Brief contribution
                 </div>
             </th>
             <th scope="col" [class.active]="order === 'title'" (click)="setOrder('title')">
