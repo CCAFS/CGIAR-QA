@@ -16,15 +16,17 @@ import { GeneralIndicatorName } from 'src/app/_models/general-status.model';
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
 import { SortByPipe } from 'src/app/pipes/sort-by.pipe';
+import { SafeUrlPipe } from 'src/app/pipes/safe-url.pipe';
 
 import * as moment from 'moment';
 import { FormBuilder } from '@angular/forms';
+import { IndicatorsService } from 'src/app/services/indicators.service';
 
 @Component({
   selector: 'app-indicators',
   templateUrl: './indicators.component.html',
   styleUrls: ['./indicators.component.scss'],
-  providers: [SortByPipe]
+  providers: [SortByPipe, SafeUrlPipe]
 })
 export class CRPIndicatorsComponent implements OnInit {
   indicatorType: string;
@@ -71,6 +73,7 @@ export class CRPIndicatorsComponent implements OnInit {
     private commentService: CommentService,
     private spinner: NgxSpinnerService,
     private orderPipe: SortByPipe,
+    private indicatorService: IndicatorsService,
     // private orderPipe: OrderPipe,
     private titleService: Title,
     private alertService: AlertService) {
@@ -92,6 +95,9 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
   ngOnInit() {
+    setTimeout(() => {                           //<<<---using ()=> syntax
+      this.verifyIfOrderByStatus();
+    }, 1000);
   }
 
 
@@ -99,7 +105,7 @@ export class CRPIndicatorsComponent implements OnInit {
     this.showSpinner(this.spinner_name);
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column, this.currentUser.crp.crp_id).subscribe(
       res => {
-        // console.log(res)
+        console.log(res)
         this.evaluationList = this.orderPipe.transform(res.data, 'id');
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
@@ -210,7 +216,11 @@ export class CRPIndicatorsComponent implements OnInit {
     return r;
   }
 
-  
+  verifyIfOrderByStatus() {
+    if (this.indicatorService.getOrderByStatus() != null) {
+      this.setOrder('status')
+    }
+  }
 
 
   /***

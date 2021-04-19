@@ -11,6 +11,8 @@ import { QACommentsReplies } from "@entity/CommentsReplies";
 import { RolesHandler } from "@helpers/RolesHandler";
 import { QAEvaluations } from "@entity/Evaluations";
 import { QACycle } from "@entity/Cycles";
+import { QATags } from "@entity/Tags";
+import { QAReplyType } from "@entity/ReplyType";
 
 // const vfile = require('to-vfile')
 // const retext = require('retext')
@@ -45,23 +47,26 @@ class CommentController {
             if (crp_id !== undefined && crp_id !== 'undefined') {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
-                     SELECT
+                    SELECT
                             SUM(
-                                IF (comments.crp_approved = 1, 1, 0)
-                            ) AS comments_approved,
+                                IF (comments.replyTypeId = 1, 1, 0)
+                            ) AS comments_accepted,
                             SUM(
-                                IF (comments.crp_approved = 0, 1, 0)
+                                IF (comments.replyTypeId = 2, 1, 0)
                             ) AS comments_rejected,
                             SUM(
+                                IF (comments.replyTypeId = 3, 1, 0)
+                            ) AS comments_clarification,
+                            SUM(
                                 IF (
-                                    comments.crp_approved IS NULL,
+                                    comments.replyTypeId IS NULL,
                                     1,
                                     0
                                 )
                             ) AS comments_without_answer,
                             SUM(IF(replies.userId = 47, 1, 0)) AS auto_replies_total,
                     
-                            IF(comments.crp_approved IS NULL, 'secondary', IF(comments.crp_approved = 1, 'success','danger')) AS type,
+                            IF(comments.replyTypeId IS NULL, 'secondary', IF(comments.replyTypeId = 2, 'success','danger')) AS type,
                             
                             COUNT(DISTINCT comments.id) AS 'label',
                             COUNT(DISTINCT comments.id) AS 'value',
@@ -73,8 +78,9 @@ class CommentController {
                             AND comments.detail IS NOT NULL
                             AND metaId IS NOT NULL
                             AND evaluation_status <> 'Deleted'
+                            AND evaluations.phase_year = actual_phase_year()
                             -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
-                    GROUP BY evaluations.indicator_view_name, comments.crp_approved
+                    GROUP BY evaluations.indicator_view_name, comments.replyTypeId
                     ORDER BY type DESC;
                     `,
                     { crp_id },
@@ -88,21 +94,24 @@ class CommentController {
                     `
                     SELECT
                             SUM(
-                                IF (comments.crp_approved = 1, 1, 0)
-                            ) AS comments_approved,
+                                IF (comments.replyTypeId = 1, 1, 0)
+                            ) AS comments_accepted,
                             SUM(
-                                IF (comments.crp_approved = 0, 1, 0)
+                                IF (comments.replyTypeId = 2, 1, 0)
                             ) AS comments_rejected,
                             SUM(
+                                IF (comments.replyTypeId = 3, 1, 0)
+                            ) AS comments_clarification,
+                            SUM(
                                 IF (
-                                    comments.crp_approved IS NULL,
+                                    comments.replyTypeId IS NULL,
                                     1,
                                     0
                                 )
                             ) AS comments_without_answer,
                             SUM(IF(replies.userId = 47, 1, 0)) AS auto_replies_total,
                     
-                            IF(comments.crp_approved IS NULL, 'secondary', IF(comments.crp_approved = 1, 'success','danger')) AS type,
+                            IF(comments.replyTypeId IS NULL, 'secondary', IF(comments.replyTypeId = 1, 'success','danger')) AS type,
                             
                             COUNT(DISTINCT comments.id) AS 'label',
                             COUNT(DISTINCT comments.id) AS 'value',
@@ -114,8 +123,9 @@ class CommentController {
                             AND comments.detail IS NOT NULL
                             AND metaId IS NOT NULL
                             AND evaluation_status <> 'Deleted'
+                            AND evaluations.phase_year = actual_phase_year()
                             -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
-                    GROUP BY evaluations.indicator_view_name, comments.crp_approved
+                    GROUP BY evaluations.indicator_view_name, comments.replyTypeId
                     ORDER BY type DESC;
 
                         `,
@@ -198,20 +208,23 @@ class CommentController {
     }
 
     // create reply by comment
-    static createCommentReply = async (req: Request, res: Response) => {
+    static createCommentReply = async (req: Request, res: Response) => { 
 
         //Check if username and password are set
-        const { detail, userId, commentId, crp_approved, approved } = req.body;
+        const { detail, userId, commentId, crp_approved, approved, replyTypeId } = req.body;
         // const evaluationId = req.params.id;
 
         const userRepository = getRepository(QAUsers);
         const commentReplyRepository = getRepository(QACommentsReplies);
         const commentsRepository = getRepository(QAComments);
+        const replyTypeRepository = getRepository(QAReplyType);
 
         try {
 
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
             let comment = await commentsRepository.findOneOrFail({ where: { id: commentId } });
+            let replyType = await replyTypeRepository.findOneOrFail({ where: { id: replyTypeId } });
+            comment.replyType = replyType;
             let reply = new QACommentsReplies();
             reply.detail = detail;
             reply.comment = comment;
@@ -243,7 +256,7 @@ class CommentController {
 
         try {
             let new_comment = await Util.createComment(detail, approved, userId, metaId, evaluationId);
-            if (new_comment == null)  throw new Error('Could not created comment');
+            if (new_comment == null) throw new Error('Could not created comment');
             res.status(200).send({ data: new_comment, message: 'Comment created' });
 
         } catch (error) {
@@ -252,15 +265,20 @@ class CommentController {
         }
     }
 
+
     // update comment by indicator
     static updateComment = async (req: Request, res: Response) => {
 
         //Check if username and password are set
         const { approved, is_visible, is_deleted, id, detail, userId } = req.body;
         const commentsRepository = getRepository(QAComments);
+        const tagsRepository = getRepository(QATags);
 
         try {
-            let comment_ = await commentsRepository.findOneOrFail(id);
+            let comment_ = await commentsRepository.findOneOrFail(id, { relations: ["tags"] });
+            if(is_deleted){
+                tagsRepository.remove(comment_.tags);
+            }
             comment_.approved = approved;
             comment_.is_deleted = is_deleted;
             comment_.is_visible = is_visible;
@@ -288,6 +306,7 @@ class CommentController {
         const repliesRepository = getRepository(QACommentsReplies);
 
         try {
+
             let reply_ = await repliesRepository.findOneOrFail(id, { relations: ['comment'] });
 
             reply_.is_deleted = is_deleted;
@@ -300,7 +319,7 @@ class CommentController {
                 console.log(reply_)
                 let comment = await commentsRepository.findOneOrFail(reply_.comment.id);
                 comment.crp_approved = null;
-
+                comment.replyType = null;
                 commentsRepository.save(comment);
             }
 
@@ -315,6 +334,124 @@ class CommentController {
         }
     }
 
+
+    // get total indicator tags for chart
+    static getAllIndicatorTags = async (req: Request, res: Response) => {
+        //TODO
+        const { crp_id } = req.query;
+        console.log({ crp_id });
+
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+            let tagsByIndicators;
+            if (crp_id !== 'undefined') {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT qe.indicator_view_name, tt.name as tagType, count(*) as total
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    WHERE tt.name not like "seen"
+                    AND qe.crp_id = :crp_id
+                    AND qe.phase_year = actual_phase_year()
+                    GROUP BY qe.indicator_view_name, tt.name
+                    `
+                    ,
+                    { crp_id },
+                    {}
+                );
+                tagsByIndicators = await queryRunner.connection.query(query, parameters);
+            } else {
+
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT qe.indicator_view_name, tt.name as tagType, count(*) as total
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    WHERE tt.name not like "seen"
+                    AND qe.phase_year = actual_phase_year()
+                    GROUP BY qe.indicator_view_name, tt.name;
+                    `
+                    ,
+                    {},
+                    {}
+                );
+                tagsByIndicators = await queryRunner.connection.query(query, parameters);
+
+            }
+            res.status(200).send({ data: tagsByIndicators, message: 'All tags by indicator' });
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Tags by indicators can not be retrived.", data: error });
+        }
+    }
+
+    // get all QA recent tags
+    static getFeedTags = async (req: Request, res: Response) => {
+
+        const { indicator_view_name, tagTypeId } = req.query;
+
+        let tags;
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+            if (indicator_view_name !== 'undefined' && tagTypeId !== 'undefined') {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    WHERE qe.indicator_view_name = :indicator_view_name
+                    AND tt.id = :tagTypeId
+                    ORDER BY tag.createdAt DESC`,
+                    { indicator_view_name, tagTypeId },
+                    {}
+                );
+                tags = await queryRunner.connection.query(query, parameters);
+            } else if (indicator_view_name !== 'undefined' && tagTypeId === 'undefined') {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    WHERE qe.indicator_view_name = :indicator_view_name
+                    ORDER BY tag.createdAt DESC`,
+                    { indicator_view_name },
+                    {}
+                );
+                tags = await queryRunner.connection.query(query, parameters);
+            } else {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT us.id, us.name, tt.name as tagName, tt.id as tagId, tag.createdAt, tag.updatedAt, qe.indicator_view_id, qe.indicator_view_name
+                    FROM qa_tags tag 
+                    LEFT JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                    LEFT JOIN qa_users us ON us.id = tag.userId
+                    LEFT JOIN qa_comments  qc ON qc.id = tag.commentId
+                    LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                    ORDER BY tag.createdAt DESC;`,
+                    {},
+                    {}
+                );
+                tags = await queryRunner.connection.query(query, parameters);
+            }
+
+
+            res.status(200).send({ data: tags, message: 'All new tags order by date (desc)' });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Recent tags can not be retrived.", data: error });
+        }
+    }
+
     // get comments by indicator
     static getComments = async (req: Request, res: Response) => {
         const evaluationId = req.params.evaluationId;
@@ -323,21 +460,22 @@ class CommentController {
         // const commentsRepository = getRepository(QAComments);
         let queryRunner = getConnection().createQueryBuilder();
         try {
+
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `SELECT
                 id, (
                     SELECT
-                        COUNT(DISTINCT id)
+                    COUNT(DISTINCT id)
                     FROM
-                        qa_comments_replies
+                    qa_comments_replies
                     WHERE
-                        commentId = qa_comments.id
+                    commentId = qa_comments.id
                     AND is_deleted = 0
-                ) AS replies_count
+                    ) AS replies_count
                 FROM
-                    qa_comments
+                qa_comments
                 WHERE
-                    metaId = :metaId
+                metaId = :metaId
                 AND evaluationId = :evaluationId
                 AND approved_no_comment IS NULL
                 `,
@@ -350,6 +488,18 @@ class CommentController {
             for (let index = 0; index < comments.length; index++) {
                 const comment = comments[index];
                 comment.replies = replies.find(reply => reply.id == comment.id)
+                const commentId = comment.id;
+                const [queryTags, parametersTag] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `SELECT tag.id as tag_id,tt.id as tag_type, tt.name as tag_name, us.name as user_name, us.id as userId
+                        FROM qa_tags tag 
+                        JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                        JOIN qa_users us ON us.id = tag.userId
+                        WHERE tag.commentId = :commentId;`,
+                    { commentId },
+                    {}
+                );
+
+                comment.tags = await queryRunner.connection.query(queryTags, parametersTag);
             }
             res.status(200).send({ data: comments, message: 'All comments' });
 
@@ -394,11 +544,11 @@ class CommentController {
         try {
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `SELECT
-                    *
+                *
                 FROM
-                    qa_indicators
+                qa_indicators
                 WHERE
-                    qa_indicators.id NOT IN (SELECT indicatorId FROM qa_comments_meta )`,
+                qa_indicators.id NOT IN (SELECT indicatorId FROM qa_comments_meta )`,
                 {},
                 {}
             );
@@ -502,14 +652,14 @@ class CommentController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                        comments.detail,
-                        comments.id AS comment_id,
-                        evaluations.indicator_view_id AS id,
-                        comments.updatedAt,
-                        comments.createdAt,
-                        comments.crp_approved,
-                        evaluations.crp_id,
-                        evaluations.id AS evaluation_id,
+                    comments.detail,
+                    comments.id AS comment_id,
+                    evaluations.indicator_view_id AS id,
+                    comments.updatedAt,
+                    comments.createdAt,
+                    comments.crp_approved,
+                    evaluations.crp_id,
+                    evaluations.id AS evaluation_id,
                         users.username,
                         users.email,
                         meta.display_name,
@@ -519,21 +669,21 @@ class CommentController {
                         (SELECT title FROM ${indicatorName} WHERE id = evaluations.indicator_view_id) AS indicator_title,
                         (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user,
                         (SELECT cycle_stage FROM qa_cycle WHERE id = comments.cycleId) as cycle_stage
-                    FROM
+                        FROM
                         qa_comments comments
-                    LEFT JOIN qa_users users ON users.id = comments.userId
-                    LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
-                    LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
-                    LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
-                    WHERE
+                        LEFT JOIN qa_users users ON users.id = comments.userId
+                        LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
+                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                        LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
+                        WHERE
                         comments.detail IS NOT NULL
-                    AND evaluations.indicator_view_name = :indicatorName
-                    AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
-                    AND comments.approved = 1
-                    AND comments.is_deleted = 0
-                    AND evaluations.crp_id = :crp_id
-                    ORDER BY createdAt ASC
-                    `,
+                        AND evaluations.indicator_view_name = :indicatorName
+                        AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+                        AND comments.approved = 1
+                        AND comments.is_deleted = 0
+                        AND evaluations.crp_id = :crp_id
+                        ORDER BY createdAt ASC
+                        `,
                     { crp_id, indicatorName },
                     {}
                 );
@@ -545,10 +695,10 @@ class CommentController {
                 if (currentRole !== RolesHandler.crp) {
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `
-                        SELECT
-                            comments.detail,
-                            comments.id AS comment_id,
-                            evaluations.indicator_view_id AS id,
+                                SELECT
+                                comments.detail,
+                                comments.id AS comment_id,
+                                evaluations.indicator_view_id AS id,
                             comments.updatedAt,
                             comments.createdAt,
                             comments.crp_approved,
@@ -563,21 +713,21 @@ class CommentController {
                             (SELECT title FROM ${indicatorName} WHERE id = evaluations.indicator_view_id) AS indicator_title,
                             (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user,
                             (SELECT cycle_stage FROM qa_cycle WHERE id = comments.cycleId) as cycle_stage
-                        FROM
+                            FROM
                             qa_comments comments
-                        LEFT JOIN qa_users users ON users.id = comments.userId
-                        LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
-                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
-                        LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
-                        WHERE
+                            LEFT JOIN qa_users users ON users.id = comments.userId
+                            LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
+                            LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                            LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
+                            WHERE
                             comments.detail IS NOT NULL
-                        AND evaluations.id = :evaluationId
-                        AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
-                        AND comments.approved = 1
-                        AND comments.is_visible = 1
-                        AND comments.is_deleted = 0
-                        ORDER BY createdAt ASC
-                        `,
+                            AND evaluations.id = :evaluationId
+                            AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+                            AND comments.approved = 1
+                            AND comments.is_visible = 1
+                            AND comments.is_deleted = 0
+                            ORDER BY createdAt ASC
+                            `,
                         { evaluationId },
                         {}
                     );
@@ -588,10 +738,10 @@ class CommentController {
                 else {
                     const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                         `
-                        SELECT
-                            comments.detail,
-                            comments.id AS comment_id,
-                            evaluations.indicator_view_id AS id,
+                                SELECT
+                                comments.detail,
+                                comments.id AS comment_id,
+                                evaluations.indicator_view_id AS id,
                             comments.updatedAt,
                             comments.createdAt,
                             comments.crp_approved,
@@ -606,21 +756,21 @@ class CommentController {
                             (SELECT title FROM ${indicatorName} WHERE id = evaluations.indicator_view_id) AS indicator_title,
                             (SELECT username FROM qa_users WHERE id = replies.userId) AS reply_user,
                             (SELECT cycle_stage FROM qa_cycle WHERE id = comments.cycleId) as cycle_stage
-                        FROM
+                            FROM
                             qa_comments comments
-                        LEFT JOIN qa_users users ON users.id = comments.userId
-                        LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
-                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
-                        LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
-                        WHERE
+                            LEFT JOIN qa_users users ON users.id = comments.userId
+                            LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
+                            LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                            LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
+                            WHERE
                             comments.detail IS NOT NULL
-                        AND evaluations.id = :evaluationId
-                        AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
-                        AND comments.approved = 1
-                        AND comments.is_visible = 1
-                        AND comments.is_deleted = 0
-                        ORDER BY createdAt ASC
-                        `,
+                            AND evaluations.id = :evaluationId
+                            AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+                            AND comments.approved = 1
+                            AND comments.is_visible = 1
+                            AND comments.is_deleted = 0
+                            ORDER BY createdAt ASC
+                            `,
                         { evaluationId },
                         {}
                     );
@@ -661,6 +811,7 @@ class CommentController {
     }
 
     static toggleApprovedNoComments = async (req: Request, res: Response) => {
+        //TODO
         const { evaluationId } = req.params;
         const { meta_array, userId, isAll, noComment } = req.body;
         let comments;
@@ -668,30 +819,44 @@ class CommentController {
         const userRepository = getRepository(QAUsers);
         const evaluationsRepository = getRepository(QAEvaluations);
         const commentsRepository = getRepository(QAComments);
+        const cycleRepo = getRepository(QACycle);
+
         // console.log(meta_array)
         try {
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `SELECT
-                    *
+                *
                 FROM
                     qa_comments
-                WHERE
+                    WHERE
                     evaluationId = :evaluationId
-                AND metaId IN (:meta_array)
-                AND approved_no_comment IS NOT NULL
-                `,
+                    AND metaId IN (:meta_array)
+                    AND approved_no_comment IS NOT NULL
+                    `,
                 { meta_array, evaluationId },
                 {}
             );
             comments = await queryRunner.connection.query(query, parameters);
             // console.log(comments.length, meta_array)
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by']  });
+            console.log('ASSESSORS',evaluation.assessed_by);
+            evaluation.assessed_by.push(user);
+            console.log('ASSESSORS',evaluation.assessed_by);
+            evaluationsRepository.save(evaluation);
+            let current_cycle = await cycleRepo
+                .createQueryBuilder("qa_cycle")
+                .select('*')
+                .where("DATE(qa_cycle.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+                .getRawOne();
+
             let response = [];
+
 
             for (let index = 0; index < meta_array.length; index++) {
                 let comment_ = new QAComments();
-                console.log(comments.length, comments.find(data => data.metaId == meta_array[index]))
+                // console.log(comments.length, comments.find(data => data.metaId == meta_array[index]))
                 if (comments && comments.find(data => data.metaId == meta_array[index])) {
                     let existnCommt = comments.find(data => data.metaId == meta_array[index]);
                     existnCommt.approved = noComment;
@@ -709,10 +874,15 @@ class CommentController {
                     comment_.detail = null;
                     comment_.approved_no_comment = noComment;
                     comment_.user = user;
+                    if (current_cycle == undefined) throw new Error('Could not created comment')
+                    comment_.cycle = current_cycle;
                 }
+                // console.log(comment_);
                 response.push(comment_)
             }
             let result = await commentsRepository.save(response);
+            console.log(result);
+
 
             res.status(200).send({ data: result, message: 'Comment toggle' });
 
@@ -739,75 +909,75 @@ class CommentController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                            (
-                                SELECT
-                                    acronym
-                                FROM
+                    (
+                        SELECT
+                        acronym
+                        FROM
                                     qa_crp
-                                WHERE
+                                    WHERE
                                     crp_id = evaluations.crp_id
-                            ) AS 'crp_acronym',
-                            evaluations.indicator_view_id AS 'indicator_view_id',
-                            (SELECT name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_display',
-                            (SELECT view_name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_name',
-                            ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'field_name',
-                            comments.id AS 'comment_id',
-                            (SELECT username FROM qa_users WHERE id = comments.userId) as 'assessor_username',
-                            comments.detail AS 'comment_detail',
+                                    ) AS 'crp_acronym',
+                                    evaluations.indicator_view_id AS 'indicator_view_id',
+                                    (SELECT name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_display',
+                                    (SELECT view_name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_name',
+                                    ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'field_name',
+                                    comments.id AS 'comment_id',
+                                    (SELECT username FROM qa_users WHERE id = comments.userId) as 'assessor_username',
+                                    comments.detail AS 'comment_detail',
                             ( SELECT GROUP_CONCAT(detail) FROM qa_comments_replies WHERE commentId = comments.id ) as 'crp_comment',
                             SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
                             (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle',
-                        
-                        
+                            
+                            
                             IF(comments.crp_approved IS NULL , 'Pending', IF(comments.crp_approved = 1, 'Aproved', 'Rejected')) AS 'reply_status',
-                        
-                        
-                        
-                        
+                            
+                            
+                            
+                            
                             SUM(
-                        
+                                
                                 IF (
                                     comments.crp_approved = 1,
                                     1,
                                     0
-                                )
-                            ) AS 'comment_approved',
-                            SUM(
-                        
-                                IF (
-                                    comments.crp_approved = 0,
-                                    1,
+                                    )
+                                    ) AS 'comment_approved',
+                                    SUM(
+                                        
+                                        IF (
+                                            comments.crp_approved = 0,
+                                            1,
                                     0
-                                )
+                                    )
                             ) AS 'comment_rejected',
                             SUM(
-                        
+                                
                                 IF (
                                     comments.crp_approved IS NULL,
                                     1,
                                     0
-                                )
-                            ) AS 'comment_no_answer'
+                                    )
+                                    ) AS 'comment_no_answer'
                         FROM
-                            qa_comments comments
+                        qa_comments comments
                         LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId AND evaluations.crp_id = :crp_id AND evaluations.status <> 'Deleted'
                         LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
                         WHERE
-                            comments.is_deleted = 0
+                        comments.is_deleted = 0
                         AND comments.detail IS NOT NULL
                         AND metaId IS NOT NULL
                         AND evaluation_status <> 'Deleted'
                         
                         
                         GROUP BY
-                            evaluations.crp_id,
+                        evaluations.crp_id,
                             'field_name',
                             'cycle',
                             comments.id
                         ORDER BY
-                            evaluations.crp_id,
-                            indicator_view_id;
-
+                        evaluations.crp_id,
+                        indicator_view_id;
+                        
                     `,
                     { crp_id },
                     {}
@@ -818,75 +988,75 @@ class CommentController {
 
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
-                    SELECT
-                            (
+                        SELECT
+                        (
                                 SELECT
-                                    acronym
+                                acronym
                                 FROM
-                                    qa_crp
+                                qa_crp
                                 WHERE
-                                    crp_id = evaluations.crp_id
-                            ) AS 'crp_acronym',
-                            evaluations.indicator_view_id AS 'indicator_view_id',
-                            (SELECT name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_display',
-                            (SELECT view_name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_name',( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'field_name',
-                            comments.id AS 'comment_id',
-                            (SELECT username FROM qa_users WHERE id = comments.userId) as 'assessor_username',
-                            comments.detail AS 'comment_detail',
-                            ( SELECT GROUP_CONCAT(detail) FROM qa_comments_replies WHERE commentId = comments.id ) as 'crp_comment',
-                            SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
-                            (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle',
-                        
-                        
+                                crp_id = evaluations.crp_id
+                                ) AS 'crp_acronym',
+                                evaluations.indicator_view_id AS 'indicator_view_id',
+                                (SELECT name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_display',
+                                (SELECT view_name  FROM qa_indicators WHERE id IN (( SELECT indicatorId FROM qa_indicators_meta WHERE id = comments.metaId) ) ) AS 'indicator_view_name',( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'field_name',
+                                comments.id AS 'comment_id',
+                                (SELECT username FROM qa_users WHERE id = comments.userId) as 'assessor_username',
+                                comments.detail AS 'comment_detail',
+                                ( SELECT GROUP_CONCAT(detail) FROM qa_comments_replies WHERE commentId = comments.id ) as 'crp_comment',
+                                SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
+                                (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle',
+                                
+                                
                             IF(comments.crp_approved IS NULL , 'Pending', IF(comments.crp_approved = 1, 'Aproved', 'Rejected')) AS 'reply_status',
-                        
-                        
-                        
-                        
+                            
+                            
+                            
+                            
                             SUM(
-                        
+                                
                                 IF (
                                     comments.crp_approved = 1,
                                     1,
                                     0
-                                )
-                            ) AS 'comment_approved',
-                            SUM(
-                        
-                                IF (
-                                    comments.crp_approved = 0,
-                                    1,
-                                    0
-                                )
-                            ) AS 'comment_rejected',
-                            SUM(
-                        
+                                    )
+                                    ) AS 'comment_approved',
+                                    SUM(
+                                        
+                                        IF (
+                                            comments.crp_approved = 0,
+                                            1,
+                                            0
+                                            )
+                                            ) AS 'comment_rejected',
+                                            SUM(
+                                                
                                 IF (
                                     comments.crp_approved IS NULL,
                                     1,
                                     0
-                                )
-                            ) AS 'comment_no_answer'
-                        FROM
-                            qa_comments comments
-                        LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId AND evaluations.status <> 'Deleted'
-                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
-                        WHERE
-                            comments.is_deleted = 0
+                                    )
+                                    ) AS 'comment_no_answer'
+                                    FROM
+                                    qa_comments comments
+                                    LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId AND evaluations.status <> 'Deleted'
+                                    LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
+                                    WHERE
+                                    comments.is_deleted = 0
                         AND comments.detail IS NOT NULL
                         AND metaId IS NOT NULL
                         AND evaluation_status <> 'Deleted'
                         
                         GROUP BY
-                            evaluations.crp_id,
-                            'field_name',
-                            'cycle',
-                            comments.id
+                        evaluations.crp_id,
+                        'field_name',
+                        'cycle',
+                        comments.id
                         ORDER BY
-                            evaluations.crp_id,
-                            indicator_view_id;
-
-                    `,
+                        evaluations.crp_id,
+                        indicator_view_id;
+                        
+                        `,
                     {},
                     {}
                 );
@@ -898,6 +1068,124 @@ class CommentController {
             console.log(error);
             res.status(404).json({ message: 'Comments raw data error', data: error });
         }
+    }
+
+    // create tag by comment
+    static createTag = async (req: Request, res: Response) => {
+        // approved
+        //Check if username and password are set
+        const { userId, tagTypeId, commentId } = req.body;
+
+        const tagsRepository = getRepository(QATags);
+        let tag: QATags;
+        const idAgree = await Util.getTagId(commentId, 3, userId);
+        const idNotSure = await Util.getTagId(commentId, 2, userId);
+        const idDisagree = await Util.getTagId(commentId, 4, userId);
+
+        switch (tagTypeId) {
+            case 2: //Agree
+                try {
+                    tag = await tagsRepository.findOneOrFail(idDisagree);
+                    tagsRepository.delete(idDisagree);
+                    console.log('Tag disagree deleted');
+
+                    tag = await tagsRepository.findOneOrFail(idAgree);
+                    tagsRepository.delete(idAgree);
+                    console.log('Tag not-sure deleted');
+                } catch (error) {
+                    console.log(error);
+                }
+
+                break;
+            case 3: //Agree
+                try {
+                    tag = await tagsRepository.findOneOrFail(idDisagree);
+                    tagsRepository.delete(idDisagree);
+                    console.log('Tag disagree deleted');
+
+                    tag = await tagsRepository.findOneOrFail(idNotSure);
+                    tagsRepository.delete(idNotSure);
+                    console.log('Tag not-sure deleted');
+                } catch (error) {
+                    console.log(error);
+                }
+
+                break;
+            case 4: //
+                try {
+                    tag = await tagsRepository.findOneOrFail(idAgree);
+                    tagsRepository.delete(idAgree);
+                    console.log('Tag disagree deleted');
+
+                    tag = await tagsRepository.findOneOrFail(idNotSure);
+                    tagsRepository.delete(idNotSure);
+                    console.log('Tag not-sure deleted');
+                } catch (error) {
+                    console.log(error);
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        try {
+            let new_tag = await Util.createTag(userId, tagTypeId, commentId);
+            if (new_tag == null) throw new Error('Could not created tag');
+            res.status(200).send({ data: new_tag, message: 'Tag created' });
+
+        } catch (error) {
+            // console.log(error);
+            res.status(404).json({ message: "Tag can not be created.", data: error });
+        }
+    }
+
+    static deleteTag = async (req: Request, res: Response) => {
+        //Get id from URL
+        const { id } = req.params;
+
+
+        const tagsRepository = getRepository(QATags);
+        let tag: QATags;
+        try {
+            tag = await tagsRepository.findOneOrFail(id);
+        } catch (error) {
+            res.status(400).json({ message: 'Tag not found.' });
+        }
+        tagsRepository.delete(id);
+
+        //After all send a 204 (no content, but accepted) response
+        res.status(200).json({ message: "Tag deleted sucessfully" });
+    }
+
+    static getTagId = async (req: Request, res: Response) => {
+
+        const { commentId, tagTypeId, userId } = req.params;
+
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT tag.id as tagId
+                FROM qa_tags tag 
+                JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                JOIN qa_users us ON us.id = tag.userId
+                WHERE tag.commentId = :commentId
+                AND tag.tagTypeId= :tagTypeId
+                AND tag.userId= :userId;
+                        `,
+                { commentId, tagTypeId, userId },
+                {}
+            );
+
+            let tagId = await queryRunner.connection.query(query, parameters);
+            res.status(200).send({ data: tagId, message: 'Tag id found' });
+
+        } catch (error) {
+            res.status(404).json({ message: "Tag id can not be found.", data: error });
+
+        }
+
     }
 
     //get raw comments excel
@@ -914,19 +1202,19 @@ class CommentController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                                (
-                                    SELECT
-                                                    acronym
-                                    FROM
-                                                    qa_crp
-                                    WHERE
-                                                    crp_id = evaluations.crp_id
-                            ) AS 'crp_acronym',
-                            evaluations.indicator_view_id AS 'id',
-                            
-                            comments.createdAt AS createdAt,
-                            comments.updatedAt AS updatedAt,
-                            (SELECT name FROM qa_indicators WHERE view_name = evaluations.indicator_view_name) AS 'indicator_title',
+                    (
+                        SELECT
+                        acronym
+                        FROM
+                        qa_crp
+                        WHERE
+                        crp_id = evaluations.crp_id
+                        ) AS 'crp_acronym',
+                        evaluations.indicator_view_id AS 'id',
+                        
+                        comments.createdAt AS createdAt,
+                        comments.updatedAt AS updatedAt,
+                        (SELECT name FROM qa_indicators WHERE view_name = evaluations.indicator_view_name) AS 'indicator_title',
                             evaluations.indicator_view_name AS 'indicator_view_name',
                             ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'display_name',
                             comments.id AS 'comment_id',
@@ -1188,7 +1476,7 @@ class CommentController {
         }
         let comments = await commentsRepository.find({
             where: whereClause,
-            relations: ['user', 'cycle'],
+            relations: ['user', 'cycle', 'tags', 'replyType'],
             // relations: ['user'],
             order: {
                 createdAt: "ASC"

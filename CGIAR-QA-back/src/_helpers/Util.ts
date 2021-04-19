@@ -18,6 +18,8 @@ import * as jwt from "jsonwebtoken";
 import * as excel from 'exceljs';
 import { QAComments } from "@entity/Comments";
 import { QACycle } from "@entity/Cycles";
+import { QATags } from "@entity/Tags";
+import { QATagType } from "@entity/TagType";
 // const excel = require('exceljs');
 
 
@@ -396,10 +398,11 @@ class Util {
             let meta;
             if (metaId != null)
                 meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
-
-
-
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by']  });
+            console.log('ASSESSORS',evaluation.assessed_by);
+            evaluation.assessed_by.push(user);
+            console.log('ASSESSORS',evaluation.assessed_by);
+            evaluationsRepository.save(evaluation);
             let current_cycle = await cycleRepo
                 .createQueryBuilder("qa_cycle")
                 .select('*')
@@ -423,6 +426,61 @@ class Util {
             // console.log(error)
             return null;
         }
+    }
+
+    static createTag = async ( userId, tagTypeId, commentId) => {
+        const userRepository = getRepository(QAUsers);
+        const commentsRepository = getRepository(QAComments);
+        const tagsRepository = getRepository(QATags);
+        const tagTypeRepository = getRepository(QATagType);
+
+        try {
+
+            let user = await userRepository.findOneOrFail({ where: { id: userId } });
+            let tagType = await tagTypeRepository.findOneOrFail({ where: { id: tagTypeId } });
+            let comment = await commentsRepository.findOneOrFail({ where: { id: commentId } });
+
+            let tag_ = new QATags();
+            tag_.user = user;
+            tag_.tagType = tagType;
+            tag_.comment = comment;
+
+            let new_tag = await tagsRepository.save(tag_);
+
+            return new_tag;
+        } catch (error) {
+            console.log(error)
+            return null;
+        }
+    }
+
+    static getTagId = async (commentId, tagTypeId, userId) => {
+
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT tag.id as tagId
+                FROM qa_tags tag 
+                JOIN qa_tag_type tt ON tt.id = tag.tagTypeId
+                JOIN qa_users us ON us.id = tag.userId
+                WHERE tag.commentId = :commentId
+                AND tag.tagTypeId= :tagTypeId
+                AND tag.userId= :userId;
+                        `,
+                { commentId, tagTypeId, userId},
+                {}
+            );
+
+            let tagId = await queryRunner.connection.query(query, parameters);
+            console.log('TagID' ,tagId);
+            
+            return tagId[0].tagId;
+        } catch(error) {
+            console.log(error);
+            return null;
+        }
+
     }
 
 
@@ -451,6 +509,7 @@ class Util {
                 comment_by: element['comment_by'],
                 stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
                 fp: element.hasOwnProperty('fp') ? element['fp'] : undefined,
+                brief: element.hasOwnProperty('brief') ? element['brief'] : undefined, //TODO
             });
         } else {
             response = Object.assign(response, {
@@ -471,7 +530,10 @@ class Util {
                 approved_no_comment: element['approved_no_comment'] || null,
                 public_link: element[`public_link`],
                 editable_link: element[`editable_link`],
-                meta_description: element['meta_description']
+                meta_description: element['meta_description'],
+                count_accepted_comments: element['accepted_comments'],
+                count_disagree_comments: element['disagree_comments'],
+                count_clarification_comments: element['clarification_comments'],
             });
 
         }

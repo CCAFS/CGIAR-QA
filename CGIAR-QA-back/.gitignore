@@ -6,6 +6,10 @@ tmp/
 temp/
 ./ormconfig.json
 ormconfig.json
+./ormconfig.local.json
+ormconfig.local.json
+./ormconfig.marlodev.json
+ormconfig.marlodev.json
 ./ormconfig_.json
 ormconfig_.json
 

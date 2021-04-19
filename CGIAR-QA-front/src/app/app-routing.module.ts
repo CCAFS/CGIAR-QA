@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { QaCloseComponent } from './qa-close/qa-close.component';
 import { ErrorComponent } from './error/404.component';
+import { AssessorsChatComponent } from './assessors-chat/assessors-chat.component';
 
 
 
@@ -24,6 +25,7 @@ const routes: Routes = [
   },
   { path: 'qa-close', component: QaCloseComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'assessors-chat', component: AssessorsChatComponent },
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   // otherwise redirect to home

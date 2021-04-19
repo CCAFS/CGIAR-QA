@@ -12,6 +12,7 @@ import { QACommentsMeta } from "@entity/CommentsMeta";
 import { StatusHandler } from "@helpers/StatusHandler"
 import { RolesHandler } from "@helpers/RolesHandler"
 import Util from "@helpers/Util";
+import { GeneralIndicatorName } from "@helpers/GeneralIndicatorName";
 
 
 class IndicatorsController {
@@ -323,6 +324,160 @@ class IndicatorsController {
 
 
 
+    } 
+
+      // get status of items of each indicator
+      static getItemStatusByIndicator = async (req: Request, res: Response) => {
+
+        const indicator = req.params.indicator;
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT *
+                FROM qa_indicators_meta qim
+                LEFT JOIN qa_comments qc ON qc.metaId = qim.id
+                LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+                WHERE qim.id = qc.metaId
+                AND qim.display_name  not like 'id'
+                AND qe.evaluation_status not like 'Removed'
+                AND qe.phase_year = actual_phase_year()
+                AND qe.indicator_view_name like :indicator`
+                ,
+                {indicator},
+                {}
+            );
+            let itemsByIndicator = await queryRunner.connection.query(query, parameters);
+
+            let totalByItem = {};
+
+            for (let i = 0; i < itemsByIndicator.length; i++) {
+                let elem = totalByItem[itemsByIndicator[i].display_name];      
+
+                if(!totalByItem.hasOwnProperty(itemsByIndicator[i].display_name)) totalByItem[itemsByIndicator[i].display_name] = {}
+
+                switch (itemsByIndicator[i].approved_no_comment) {
+                    case 0:
+                        totalByItem[itemsByIndicator[i].display_name]['pending'] = totalByItem[itemsByIndicator[i].display_name]['pending'] == undefined ? 1 : totalByItem[itemsByIndicator[i].display_name]['pending'] + 1;
+                        break;
+                    case 1:
+                        totalByItem[itemsByIndicator[i].display_name]['approved_without_comment'] = totalByItem[itemsByIndicator[i].display_name]['approved_without_comment'] == undefined ? 1 : totalByItem[itemsByIndicator[i].display_name]['approved_without_comment'] + 1;
+                        break;
+                        case null:
+                        totalByItem[itemsByIndicator[i].display_name]['assessment_with_comments'] = totalByItem[itemsByIndicator[i].display_name]['assessment_with_comments'] == undefined ? 1 : totalByItem[itemsByIndicator[i].display_name]['assessment_with_comments'] + 1;
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+
+            console.log(totalByItem);
+            
+
+            res.status(200).send({ data: totalByItem, message: 'All items by indicator' });
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+        }
+    }
+      static getAllItemStatusByIndicator = async (req: Request, res: Response) => {
+        let totalEvaluationsByIndicator = {
+            qa_innovations : {},
+            qa_policies : {},
+            qa_publications: {},
+            qa_oicr: {},
+            qa_melia: {},
+            qa_capdev: {},
+            qa_milestones: {},
+            qa_outcomes: {},
+            qa_slo: {}
+        };
+        const indicators = Object.keys(GeneralIndicatorName);
+
+
+
+        let qrMetas = getConnection().createQueryBuilder();
+            try {
+                const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
+                    `SELECT col_name, display_name, indicatorId, qi.view_name,
+                    (SELECT count(*) FROM qa_evaluations qe WHERE qe.indicator_view_name = qi.view_name AND qe.phase_year = actual_phase_year() AND qe.status <> 'autochecked') AS total
+                   FROM qa_indicators_meta qim
+                   LEFT JOIN qa_indicators qi ON qi.id = qim.indicatorId
+                   WHERE qim.display_name  not like 'id'
+                   AND qim.enable_comments <> 0
+                   AND qim.include_detail = 1`,
+                    {},
+                    {}
+                );
+                let allMetas  = await qrMetas.connection.query(query, parameters);
+                console.log('TOTALES',allMetas);
+
+                allMetas.forEach(meta => {
+                    totalEvaluationsByIndicator[meta.view_name][meta.display_name] = {item: meta.display_name, pending: meta.total, approved_without_comment: 0, assessment_with_comments: 0};
+                });
+            } catch(error) {
+                console.log(error);
+                res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+            }
+
+        let queryRunner = getConnection().createQueryBuilder();
+        try {
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
+                SUM(
+                   IF (approved_no_comment = 0, 1, 0)
+                   ) AS pending,
+               SUM(
+                   IF (approved_no_comment = 1, 1, 0)
+                   ) AS approved_without_comment,
+               SUM(
+                   IF (approved_no_comment is null, 1, 0)
+                   ) AS assessment_with_comments
+               FROM qa_indicators_meta qim
+               LEFT JOIN qa_comments qc ON qc.metaId = qim.id
+               LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+               WHERE qim.id = qc.metaId
+               AND qim.display_name  not like 'id'
+               AND qim.enable_comments = 1
+               AND qe.evaluation_status not like 'Removed'
+               AND qe.phase_year = actual_phase_year()
+               AND qc.is_deleted = 0
+               AND enable_comments <> 0
+               GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment`
+                ,
+                {},
+                {}
+            );
+            let allItems = await queryRunner.connection.query(query, parameters);
+            let totalByItem = {};
+            for (let i = 0; i < allItems.length; i++) {
+
+                switch (allItems[i].approved_no_comment) {
+                    case 1:
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= allItems[i].approved_without_comment;
+                        break;
+                    case null:
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= allItems[i].assessment_with_comments;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            console.log(totalEvaluationsByIndicator['qa_slo']);
+            
+            res.status(200).send({ data: totalEvaluationsByIndicator, message: 'All items by indicator' });
+
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+        }
     }
 
 }

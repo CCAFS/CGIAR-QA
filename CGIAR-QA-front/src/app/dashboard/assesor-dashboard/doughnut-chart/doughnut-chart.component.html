@@ -1,0 +1,14 @@
+<div class="container"> 
+    <div class="options">
+        <span class="legendTitle">Tags: </span>
+        <div class="legendInline">
+            <igx-legend  #legend orientation="Horizontal"></igx-legend>
+        </div>
+    </div>
+    <div class="chart">
+        <igx-doughnut-chart height="100%" width="100%" >
+            <igx-ring-series showDefaultTooltip=true [dataSource] = "data.dataset" valueMemberPath="Value" labelMemberPath="Value" [brushes]="data.brushes" [legend]="legend">
+            </igx-ring-series>
+        </igx-doughnut-chart>
+    </div>
+</div>

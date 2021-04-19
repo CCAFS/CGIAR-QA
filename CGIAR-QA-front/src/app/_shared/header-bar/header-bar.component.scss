@@ -12,10 +12,30 @@
     .upper-navbar {
       display: flex;
       justify-content: flex-end;
+      .assessors-chat{
+        background-color: #130f40;
+        padding: 7px 10px;
+        position: relative;
+        border-radius: 5px;
+        height: 5%;
+        margin: 0 10px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: column;
+        color: white;
+        font-weight: $semibold;
+        font-size: $font-sm;
+        top: -10px;
+        border: 1px solid  #130f40;
+        &:hover {
+          cursor: pointer;
+        }
+      }
       .panel {
         background-color: var(--gray-primary);
-        padding: 7px;
         position: relative;
+        padding: 7px 10px;
         border-radius: 5px;
         height: 5%;
         margin: 0 10px;
@@ -96,3 +116,53 @@
     }
   }
 }
+
+.chat-container {
+  width: 800px;
+  display: grid;
+  place-items: center;
+  position: fixed;
+  right: 2em;
+  bottom: 4em;
+  z-index:10;
+  border-radius: 10px;
+  box-shadow:
+  0 1.1px 2.2px rgba(0, 0, 0, 0.059),
+  0 2.9px 5.5px rgba(0, 0, 0, 0.084),
+  0 5.8px 11.2px rgba(0, 0, 0, 0.106),
+  0 12px 23px rgba(0, 0, 0, 0.131),
+  0 33px 63px rgba(0, 0, 0, 0.19)
+;
+
+  iframe{
+    width: 100%;
+    height: 700px;
+    border:none;
+    border-radius: 10px;
+  }
+  
+}
+
+  .hide {
+    z-index: -10;
+  }
+
+  .btn-assessors-chat {
+    position: fixed;
+    right: 2em;
+    bottom: 1em;
+    z-index: 10;
+    width: auto;
+    height: 40px;
+    background-color: #130f40;
+    font-weight: $semibold;
+    font-size: $font-sm;
+    color: white;
+    padding: 0.5em 1.5em;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    &:hover{
+      cursor: pointer;
+    }
+  }

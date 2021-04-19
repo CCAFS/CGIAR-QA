@@ -9,6 +9,8 @@ import { map } from 'rxjs/operators';
 })
 export class IndicatorsService {
 
+  orderByStatus: boolean = null;
+
   constructor(private http: HttpClient) { }
 
   // get indicators by user
@@ -22,5 +24,42 @@ export class IndicatorsService {
   //get all indicators
   getIndicators() {
     return this.http.get<any>(`${environment.apiUrl}/indicator/`);
+  }
+
+  getOrderByStatus() {
+    return this.orderByStatus;
+  }
+
+  setOrderByStatus(value: boolean) {
+    this.orderByStatus = value;
+  }
+
+  getItemStatusByIndicator(indicator_name) {
+    return this.http.get<any>(`${environment.apiUrl}/indicator/items/${indicator_name}`);
+  }
+
+  getAllItemStatusByIndicator() {
+    return this.http.get<any>(`${environment.apiUrl}/indicator/items`);
+  }
+
+  formatItemStatusByIndicator(obj) {
+    let response = [];
+    if(obj) {
+      for (const key in obj) {
+        response.push(Object.assign({item: key, approved_without_comment: 0, assessment_with_comments: 0, pending: 0}, obj[key]));
+        }
+        console.log(response);
+    }
+      
+      // console.log(response);
+      return response;
+    }
+  formatAllItemStatusByIndicator(allItems) {
+    if(allItems) {
+      for (const key in allItems) {
+        allItems[key] = Object.values(allItems[key]);
+        }
+    }
+    return allItems;
   }
 }

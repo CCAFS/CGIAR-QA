@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 
 import { QAEvaluations } from "../entity/Evaluations"
@@ -6,6 +6,8 @@ import { QACommentsReplies } from "../entity/CommentsReplies"
 import { QAIndicatorsMeta } from "../entity/IndicatorsMeta"
 import { QAUsers } from "../entity/User"
 import { QACycle } from "./Cycles";
+import { QATags } from "./Tags";
+import { QAReplyType } from "./ReplyType";
 
 @Entity()
 export class QAComments {
@@ -25,8 +27,28 @@ export class QAComments {
     @ManyToOne(type => QACycle, cycle => cycle.comments)
     cycle: QAUsers;
 
+    @ManyToOne(type => QAReplyType, replyType => replyType.comments)
+    replyType: QAReplyType;
+    
     @OneToMany(type => QACommentsReplies, comment => comment.user)
     replies: QACommentsReplies;
+
+    // @ManyToMany(() => QATags)
+    // @JoinTable({
+    //     name: "qa_comment_tags", // table name for the junction table of this relation
+    //     joinColumn: {
+    //         name: "qa_comment",
+    //         referencedColumnName: "id"
+    //     },
+    //     inverseJoinColumn: {
+    //         name: "qa_tag",
+    //         referencedColumnName: "id"
+    //     }
+    // })
+    // tags: QATags[];
+
+    @OneToMany(type => QATags, tag => tag.comment)
+    tags: QATags[];
 
     @Column({
         nullable: true
@@ -42,6 +64,7 @@ export class QAComments {
         nullable: true
     })
     crp_approved: boolean;
+
 
     @Column({
         default: true

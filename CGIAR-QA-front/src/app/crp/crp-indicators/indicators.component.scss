@@ -123,10 +123,10 @@ h2 {
   }
 }
 .circle.complete {
-  background-color: var(--green-primary);
+  background-color: var(--color-complete);
 }
 .circle.pending {
-  background-color: var(--red-primary);
+  background-color: var(--color-pending);
 }
 .circle.finalized {
   background-color: var(--blue-secondary);

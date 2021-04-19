@@ -11,7 +11,7 @@ import { Length, IsNotEmpty } from "class-validator";
     expression: `
         SELECT * FROM qa_melia_data 
         WHERE  phase_name = 'AR'
-        AND phase_year = '2019'
+        AND phase_year = actual_phase_year()
     `
 })
 

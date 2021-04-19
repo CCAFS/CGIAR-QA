@@ -2,15 +2,20 @@
   --background: #f3f1f1;
   --background-contrast: #f9f9f9;
   --white: #fff;
+  --white-gray: rgb(245, 245, 245);
   --black: #000;
+  --black-gray: #3f4446;
   --input-gray: #f2f2f2;
 
   --yellow-primary: #ffc84f;
   --yellow-secondary: #ffca30;
+  --yellow-tertiary: #ffeeb9;
+  --yellow-quaternary: #c99a0f;
   --green-primary: #2e7636;
   --green-secondary: #61b33e;
   --green-tertiary: #67be71;
   --green-tertiary: #DCECDF;
+  --green-quaternary: #f2fff5;
   --gray-primary: #E1DDDD;
   --gray-secondary: #707070;
   --gray-tertiary: #989898;
@@ -19,14 +24,32 @@
   --red-tertiary: #F1B7B7;
   --blue-primary: #0f8981;
   --blue-secondary: #17a2b8;
+  --blue-tertiarty: #03535f;
+  --blue-quaternary:rgb(168, 209, 255);
+
+  --color-pending: #f3da90;
+  --color-complete: #00958e;
+  --color-finalized: #59ed9c;
+  --color-autochecked:#a64d79ff;
+
+  --color-agree: #59ed9c;
+  --color-disagree: #ed8b84;
+  --color-not-sure:  rgb(109, 177, 255);
+  --color-clarification:  rgb(109, 177, 255);
+  --color-pending-gray:  #cfcfcf;
+
+  --color-dark-text-btn: #073763;
 }
 
 // primary font
 $primary_font: "Montserrat";
+// secondary font
+$secondary_font: "Poppins";
 // font-weight
 $thin: 100;
 $light: 300;
 $regular: 400;
+$semibold: 600;
 $bold: 700;
 $black: 900;
 // Font size

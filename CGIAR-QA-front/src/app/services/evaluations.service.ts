@@ -28,4 +28,9 @@ export class EvaluationsService {
   getCriteriaByIndicator(id) {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/indicator/${id}`)
   }
+
+  // get assessors by indicator
+  getAssessorsByEvaluation(id) {
+    return this.http.get<any>(`${environment.apiUrl}/evaluation/${id}/assessors`)
+  }
 }

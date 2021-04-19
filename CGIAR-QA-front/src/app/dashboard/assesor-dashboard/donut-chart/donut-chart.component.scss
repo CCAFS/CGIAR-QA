@@ -1,0 +1,71 @@
+
+@import "../../../..//assets/variables.scss";
+
+*{
+    margin:0;
+    padding:0;
+}
+.legend-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.legend{
+    height: auto;
+    max-height: 40px;
+    width:80%;
+    flex-wrap: wrap;
+    // background-color: black;
+    display: flex;
+
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: $font-xs;
+}
+.pie-container{
+    height:calc(100% - 40px);
+    width:100%;
+}
+
+.square{
+    width: 10px;
+    height: 10px;
+}
+.tag{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: $font-xs;
+    font-weight: $semibold;
+    width: auto;
+    margin: 0px;
+    p{
+    margin-left: 0.5em;
+    max-height: 100%;
+    width: max-content;
+
+    }
+}
+.autochecked {
+    background-color: var(--color-autochecked);
+}
+.pending {
+    background-color: var(--color-pending);
+}
+.complete {
+    background-color: var(--color-complete);
+}
+.finalized {
+    background-color: var(--color-finalized);
+}
+
+.agree {
+    background-color: var(--color-agree);
+}
+.disagree {
+    background-color: var(--color-disagree);
+}
+.clarification {
+    background-color: var(--color-clarification);
+}

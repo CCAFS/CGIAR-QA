@@ -4,7 +4,7 @@ import { ViewEntity, ViewColumn, Column } from "typeorm";
     expression: `
         SELECT * FROM qa_slo_targets_view  
         WHERE phase_name = 'AR'
-        AND phase_year = '2019'
+        AND phase_year = actual_phase_year()
     `
 })
 

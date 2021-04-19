@@ -20,8 +20,11 @@ export class QACycle {
     @Column({ nullable: true })
     cycle_name: string;
 
-    // @OneToMany(type => QAComments, comment => comment.cycle)
-    // comments: QAComments
+    @OneToMany(type => QAComments, comment => comment.cycle)
+    comments: QAComments
+
+    @Column( "decimal", { precision: 10, scale: 0 })
+    phase_year: number;
 
     @Column()
     @CreateDateColumn()

@@ -58,13 +58,14 @@
       margin: auto;
     }
     .approved-no-comment {
-      background: var(--yellow-primary);
+      background: var(--color-agree);
       border-radius: 0.3em;
       font-size: 0.5em;
       padding: 2px 5px;
-      border: var(--yellow-secondary) 2px solid;
+      border: var(--green-primary) 2px solid;
       display: block !important;
       float: right;
+      font-weight: 600;
     }
     .gnral-commnts.data-row {
       flex-direction: column;

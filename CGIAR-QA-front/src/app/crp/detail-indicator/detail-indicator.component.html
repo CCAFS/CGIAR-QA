@@ -1,7 +1,7 @@
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']" routerLink="../..">
     <i class=icon-go-back></i> {{currentType}} List
 </a>
-<div class="row criteria-container">
+<!-- <div class="row criteria-container">
     <div *ngIf="!criteria_loading">
         <h2>QUALITY ASSESSMENT CRITERIA</h2>
         <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
@@ -9,7 +9,7 @@
     <div style="margin:auto;">
         <span *ngIf="criteria_loading" class="spinner-border spinner-border-sm mr-1"></span>
     </div>
-</div>
+</div> -->
 
 <div *ngIf="detailedData && detailedData[0] " class="row detail-header-container">
     <p class="indicator-item-name">
@@ -18,10 +18,10 @@
     </p>
     <div class="col" *ngIf="currentUser.hasOwnProperty('cycle')">
         <p>Assessment Status: <span
-                class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+                class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Assessed 1st round":"Pending"}}</span>
         </p>
         <p>Response Status: <span
-                class="text-{{(gnralInfo.response_status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.response_status === statusHandler.Complete) ? "Completed":"Pending"}}</span>
+                class="text-{{(gnralInfo.response_status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.response_status === statusHandler.Complete) ? "Answered":"Pending"}}</span>
         </p>
 
     </div>
@@ -37,7 +37,8 @@
             *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
             <i class="icon-download-excel"></i>
         </div>
-        <a *ngIf="detailedData[0].editable_link" [href]="detailedData[0].editable_link" target="_blank">
+        <!-- TO-DO -->
+        <a *ngIf="detailedData[0].editable_link" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
             <div tooltip="{{tooltips.editable_link}}" container="body" placement="top"
                 class="btn btn-primary file-button">
                 <i class="icon-public-link"></i>
@@ -55,8 +56,8 @@
                     <div class="col">
                         <div class="row" style="padding: 0;">
                             <h2 [innerHTML]="detailedData[i].display_name | markdown"></h2>
-                            <div *ngIf="field.meta_description">
-                                <i [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
+                            <div >
+                                <i *ngIf="field.meta_description" [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
                                     style="height: 1.5em;"></i>
                                 <ng-template #popTemplate>
                                     <div [innerHtml]="field.meta_description"></div>

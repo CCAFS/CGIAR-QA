@@ -18,6 +18,8 @@ import { saveAs } from "file-saver";
 import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
 import { Title } from '@angular/platform-browser';
 import { WordCounterPipe } from 'src/app/pipes/word-counter.pipe';
+import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
+
 
 import * as moment from 'moment';
 
@@ -28,6 +30,7 @@ import * as moment from 'moment';
   providers: [UrlTransformPipe, WordCounterPipe]
 })
 export class GeneralDetailedIndicatorComponent implements OnInit {
+  indicatorType: string;
   currentUser: User;
   detailedData: any[];
   params: any;
@@ -51,9 +54,14 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   approveAllitems;
   general_comment_reply;
-
-  @ViewChild("commentsElem", { static: false }) private commentsElem: ElementRef;
-  @ViewChild("containerElement", { static: false }) private containerElement: ElementRef;
+  assessorsChat = {
+    isOpen: false
+  }
+  chatRooms = null;
+  assessed_by = null;
+  currentUserHasAssessed = false;
+  @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
+  @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
 
   totalChar = 6500;
 
@@ -80,11 +88,17 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     private wordCount: WordCounterPipe,
     private titleService: Title,
     private authenticationService: AuthenticationService,
-    private evaluationService: EvaluationsService) {
+    private evaluationService: EvaluationsService,
+    private sanitizer: DomSanitizer,
+    ) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
+        console.log(this.currentUser);
+        
       });
+      this.indicatorType = routeParams.type;
+
       //console.log("general detailed")
       this.generalCommentGroup = this.formBuilder.group({
         general_comment: ['', Validators.required]
@@ -112,6 +126,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.chatRooms = {
+      general: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
+    }
   }
 
   // convenience getter for easy access to form fields
@@ -148,7 +165,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let checked_row = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
     let commented_row = this.detailedData.filter(data => data.replies_count != '0').map(d => d.field_id);
     let availableData = this.detailedData.filter(data => data.enable_comments)
-    // console.log('update Eval',  commented_row, checked_row,  availableData.length)
+    // console.log('update Eval',  commented_row, checked_row,  availableData.length, this.statusHandler, this.gnralInfo, this.currentUser)
     if (this.gnralInfo.status !== this.statusHandler.Pending && this.gnralInfo.status !== this.statusHandler.Finalized && this.currentUser.hasOwnProperty('cycle')) {
     // if (this.gnralInfo.status !== this.statusHandler.Complete) {
       if ((checked_row.length + commented_row.length) == availableData.length) {
@@ -167,13 +184,15 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     if (field) {
       let noComment = (e.target.checked) ? true : false;
       field.loading = true
-
+      console.log(field.evaluation_id);
+      
 
       this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], isAll: false, userId: this.currentUser.id, noComment }, field.evaluation_id).subscribe(
         res => {
           // console.log(res);
           field.loading = false
           this.validateUpdateEvaluation();
+          this.validateAllFieldsAssessed()
         },
         error => {
           this.alertService.error(error);
@@ -215,10 +234,35 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     // console.log(selected_meta)
   }
 
+  validateAllFieldsAssessed() {
+    let allFieldsAssessed: boolean = false;
+    let statusByField = [];
+    this.formTickData.controls.forEach((value, i) => {
+      
+      statusByField.push({display_name: this.detailedData[i].display_name, value: (this.detailedData[i].replies_count != '0' || value.get('isChecked').value) ? true : false});
+    });
+    let fieldWithoutAssessed = statusByField.find(e => e.value == false);
+    // existNotAssessed = existNotAssessed.value;
+    
+    if(fieldWithoutAssessed == undefined) {
+      allFieldsAssessed = true;
+      this.gnralInfo.status_update = this.statusHandler.Complete;
+      this.updateEvaluation('status', this.detailedData)
+    } else {
+      allFieldsAssessed = false;
+    }
+    console.log(this.detailedData);
+    
+    console.log({fieldWithoutAssessed,statusByField,allFieldsAssessed});
+    
+  }
+
   getDetailedData() {
+    console.log(this.currentUser.id, this.params);
+    
     this.evaluationService.getDataEvaluation(this.currentUser.id, this.params).subscribe(
       res => {
-        console.log(res)
+        console.log('detaileedData',res)
         this.detailedData = res.data.filter(field => {
           if (typeof field.value === 'number') field.value = String(field.value)
           field.value = this.urlTransfrom.transform(field.value);
@@ -238,7 +282,20 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         }
         this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
-
+        this.evaluationService.getAssessorsByEvaluation(this.gnralInfo.evaluation_id).subscribe(
+          res => {
+            console.log(res.data[0].comment_by);
+            this.assessed_by = res.data[0].comment_by;
+            if(this.assessed_by) {
+              this.currentUserHasAssessed = this.assessed_by.indexOf(this.currentUser.username) >= 0 ? true : false;
+            }
+            
+          }, error => {
+            console.log("getAssessorsByEvaluation", error);
+            this.hideSpinner('spinner1');
+            this.alertService.error(error);
+          }
+        )
         this.hideSpinner('spinner1');
         this.tickGroup.reset();
         this.getCommentReplies();
@@ -250,6 +307,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.alertService.error(error);
       }
     )
+    
   }
 
   getCommentsExcel(evaluation) {
@@ -291,6 +349,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
       res => {
         this.criteriaData = res.data[0];
+        console.log("CRITERIA DATA",this.criteriaData);
+        console.log("CRITERIA DATA",res.message);
+        
         this.criteria_loading = false;
       },
       error => {
@@ -384,7 +445,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
     this.evaluationService.updateDataEvaluation(evaluationData, evaluationData.evaluation_id).subscribe(
       res => {
-        //console.log(res)
+        console.log(res, 'EVAL UPDATE')
         this.alertService.success(res.message);
         
         this.getDetailedData();
@@ -410,7 +471,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           avility = field.enable_assessor ?  field.enable_comments : field.enable_assessor
         }
         else{
-          avility = true;
+          avility = field.enable_assessor ?  field.enable_comments : field.enable_assessor
         }
         
         // else if (this.gnralInfo.status === this.statusHandler.Finalized){
@@ -485,11 +546,29 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   parseGeneralStatus(status){
-    if(status === this.statusHandler.Finalized){
-      return 'closed'
+    let statusParse;
+    switch (status) {
+      case this.statusHandler.Pending:
+        statusParse = 'Pending'     
+        break;
+      case this.statusHandler.Autochecked:
+        statusParse = 'Automatically Validated'     
+        break;
+      case this.statusHandler.Complete:
+        statusParse = 'Assessed 1st round'     
+        break;
+      case this.statusHandler.Finalized:
+         statusParse = 'Assessed 2nd round'
+        break;
+      default:
+        break;
     }
 
-    return status;
+    return statusParse;
+  }
+
+  toggleAssessorsChat() {
+    this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
   }
 
   /***

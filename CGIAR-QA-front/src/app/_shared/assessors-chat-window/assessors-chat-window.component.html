@@ -1,0 +1,6 @@
+<div *ngIf="currentUser && (currentRole == 'assessor' || currentRole == 'admin')">
+    <div [ngClass]="{'hide': !assessorsChat.isOpen}" class="chat-container">
+        <iframe [src]="chatRooms.general" ></iframe>
+    </div>
+    <div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
+</div>

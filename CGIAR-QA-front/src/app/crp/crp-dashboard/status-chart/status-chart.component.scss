@@ -1,0 +1,70 @@
+@import "../../../../assets/variables.scss";
+
+*{
+    margin:0;
+    padding:0;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    // padding:1em 0;
+    .header{
+        .chart-title {
+            width: auto;
+            flex: 0 1 auto;
+            margin: 0;
+            padding: 5px;
+            font-family: $secondary-font;
+            font-weight: bold;
+        }
+    }
+    .chart-container{
+        max-height: 40%;
+        max-width: 100%;
+    }
+    .title-indicator {
+        text-transform: uppercase;
+    }
+
+    .legend{
+        height: auto;
+        max-height: 40px;
+        width:100%;
+        flex-wrap: wrap;
+        // background-color: black;
+        display: flex;
+    
+        justify-content: space-evenly;
+        align-items: center;
+        font-size: $font-xs;
+        .square{
+            width: 10px;
+            height: 10px;
+        }
+        .tag{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: $font-xs;
+            font-weight: $semibold;
+            width: auto;
+            margin: 0px;
+            p{
+            margin-left: 0.5em;
+            max-height: 100%;
+            width: max-content;
+        
+            }
+        }
+
+        .pending {
+            background-color: var(--color-pending);
+        }
+        .complete {
+            background-color: var(--color-complete);
+        }
+    }
+}

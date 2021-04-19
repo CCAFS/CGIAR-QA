@@ -18,6 +18,8 @@ import { CrpDashboardComponent } from './crp-dashboard/crp-dashboard.component';
 import { CommentComponentModule } from '../comment/comment.module';
 import { SharedModule } from '../shared-module/shared-module.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { StatusChartComponent } from './crp-dashboard/status-chart/status-chart.component';
+import { CommentsChartComponent } from './crp-dashboard/comments-chart/comments-chart.component';
 
 
 
@@ -40,6 +42,6 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     NgxChartsModule,
     ChartsModule
   ],
-  declarations: [CrpComponent, CrpDashboardComponent]
+  declarations: [CrpComponent, CrpDashboardComponent, StatusChartComponent, CommentsChartComponent]
 })
 export class CrpModule { }

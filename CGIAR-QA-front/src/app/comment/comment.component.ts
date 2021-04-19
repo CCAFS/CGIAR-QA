@@ -1,7 +1,7 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, TemplateRef  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DetailedStatus } from "../_models/general-status.model"
+import { DetailedStatus, ReplyTypes } from "../_models/general-status.model"
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -13,6 +13,9 @@ import { Role } from '../_models/roles.model';
 import { CommentService } from '../services/comment.service';
 import { from } from 'rxjs';
 import { WordCounterPipe } from '../pipes/word-counter.pipe';
+import { mergeMap } from 'rxjs/operators';
+
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-comment',
@@ -32,9 +35,14 @@ export class CommentComponent implements OnInit {
   availableComment = false;
   crpComment = false;
   is_approved = false;
+  replyTypes = ReplyTypes;
+
 
   spinner_replies = 'spinner_Comment_Rply';
   spinner_comment = 'spinner_Comment';
+
+  modalRef: BsModalRef;
+  message: string;
 
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
@@ -49,9 +57,13 @@ export class CommentComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private commentService: CommentService,
     private wordCount: WordCounterPipe,
-    private spinner: NgxSpinnerService) {
+    private spinner: NgxSpinnerService,
+    private modalService: BsModalService
+    ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
+      console.log(this.currentUser.cycle_ended);
+      
     });
   }
 
@@ -80,6 +92,52 @@ export class CommentComponent implements OnInit {
     this.commentsByColReplies = [];
     this.availableComment = false;
     this.is_approved = false;
+  }
+
+
+  toggleTag({commentId, tagTypeId, newTagValue}) {
+        if (newTagValue) {
+      this.addTag(commentId, tagTypeId)
+    } else {
+      this.deleteTag(commentId, tagTypeId)
+    }
+  }
+
+  addTag(commentId, tagTypeId) {
+
+    this.showSpinner(this.spinner_comment);
+
+    this.commentService.createTag({ userId: this.currentUser.id, tagTypeId, commentId }).subscribe(
+      res => {
+        this.getItemCommentData();
+        console.log(res.message);
+        
+      },
+      error => {
+        console.log("addTag", error);
+        this.hideSpinner(this.spinner_comment);
+        this.alertService.error(error);
+      }
+    );
+  }
+
+  deleteTag(commentId, tagTypeId) {
+    this.showSpinner(this.spinner_comment);
+
+    this.commentService.getTagId({ commentId, tagTypeId, userId: this.currentUser.id }).pipe(
+      mergeMap((res) => this.commentService.deleteTag(res.data[0].tagId))
+    ).subscribe(
+      res => {
+        this.getItemCommentData();
+        console.log(res.message);
+      },
+      error => {
+        console.log("deleteTag", error);
+        this.hideSpinner(this.spinner_comment);
+        this.alertService.error(error);
+      }
+    )
+
   }
 
   addComment() {
@@ -139,6 +197,8 @@ export class CommentComponent implements OnInit {
       this.alertService.error(canUpdate.message);
       return;
     }
+    console.log(data);
+    
     data[type] = !data[type];
     delete data.user.replies;
     delete data.user.crps;
@@ -172,6 +232,8 @@ export class CommentComponent implements OnInit {
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:
             this.commentsByCol = res.data.filter(data => data.approved);
+            console.log(this.commentsByCol);
+            
             this.currentComment = this.commentsByCol.find(comment => comment.approved);
             this.crpComment = true;
             // this.commentsByCol.forEach(comment => {
@@ -186,6 +248,8 @@ export class CommentComponent implements OnInit {
             this.commentsByCol = res.data
             break;
         }
+        // console.log(this.commentsByCol);
+
         this.commentsByCol.forEach(comment => {
           if (comment.replies.replies_count != '0') {
             comment.isCollapsed = true;
@@ -199,6 +263,7 @@ export class CommentComponent implements OnInit {
         this.alertService.error(error);
       }
     )
+
   }
 
   getCommentReplies(comment) {
@@ -222,24 +287,41 @@ export class CommentComponent implements OnInit {
   }
 
 
-  answerComment(is_approved: boolean, comment: any) {
+  answerComment(is_approved: any, replyTypeId: number,comment: any) {
     comment.crp_response = is_approved;
+    comment.replyTypeId = replyTypeId;
     // this.is_approved = is_approved;
     // this.availableComment = true
   }
 
+  //ACCEPT COMMENT
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+  }
+ 
+  confirm(is_approved: any, replyTypeId: number,comment: any): void {
+    this.answerComment(true,replyTypeId, comment);
+    this.replyComment(comment);
+    this.modalRef.hide();
+  }
+ 
+  cancel(): void {
+    this.modalRef.hide();
+  }
+
   replyComment(currentComment) {
-    if (this.commentGroup.invalid || this.formData.comment.value === "") {
+    if ((this.commentGroup.invalid || this.formData.comment.value === "") && currentComment.replyTypeId != this.replyTypes.accepted  ) {
       this.alertService.error('Comment is required', false)
       return;
     }
-
+    console.log('CRP_RESPONSE',currentComment.crp_response)
     this.showSpinner(this.spinner_comment);
     this.commentService.createDataCommentReply({
-      detail: this.formData.comment.value,
+      detail: this.formData.comment.value || '',
       userId: this.currentUser.id,
       commentId: currentComment ? currentComment.id : this.currentComment.id,
       crp_approved: this.crpComment ? currentComment.crp_response : undefined,
+      replyTypeId: currentComment ? currentComment.replyTypeId : undefined
     }).subscribe(
       res => {
         this.availableComment = false;
@@ -264,6 +346,8 @@ export class CommentComponent implements OnInit {
   getWordCount(value: string) {
     return this.wordCount.transform(value);
   }
+
+  
 
   /***
   * 

@@ -1,3 +1,4 @@
+<app-assessors-chat-window></app-assessors-chat-window>
 <nav class="navbar navbar-expand header-bar" *ngIf="currentUser && !isCRP() && (router.url !== '/qa-close')">
     <div (click)="goToView('logo')" class="logo-container">
         <i class="cgiar-logo"></i>
@@ -5,7 +6,10 @@
     </div>
     <div class="row navbar-container">
         <div class="upper-navbar">
-            <div class="panel">
+            <div *ngIf="currentUser.roles[0].id != 3" (click)="goToAssessorsChat()" class="assessors-chat">
+                Assessors chat
+            </div>
+            <div (click)="getIndicators()" class="panel">
                 <p>{{currentUser.name}}</p>
                 <p>{{currentUser.email}}</p>
             </div>
@@ -18,8 +22,11 @@
             <a class=" nav-item nav-link" [routerLinkActive]="['active']" [ngClass]="{'active':getCurrentRoute()}"
                 routerLink="/dashboard/{{currentRole}}">Home</a>
             <a class="nav-item nav-link" [routerLinkActive]="['active']"
+                routerLink="/indicator/{{indicator.viewname.split('qa_')[1]}}/id"
+                *ngFor="let indicator of indicatorsName; index as i">{{indicator.name}}</a>
+            <!-- <a class="nav-item nav-link" [routerLinkActive]="['active']"
                 routerLink="/indicator/{{indicator.indicator.view_name.split('qa_')[1]}}/{{ indicator.indicator.primary_field}}"
-                *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a>
+                *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a> -->
         </div>
     </div>
 </nav>

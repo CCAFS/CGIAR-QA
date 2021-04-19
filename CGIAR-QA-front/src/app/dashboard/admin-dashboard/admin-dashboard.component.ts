@@ -10,7 +10,7 @@ import { IndicatorsService } from '../../services/indicators.service';
 
 import { User } from '../../_models/user.model';
 import { CRP } from '../../_models/crp.model';
-import { GeneralStatus, GeneralIndicatorName } from '../../_models/general-status.model';
+import { GeneralStatus, GeneralIndicatorName, TagMessage } from '../../_models/general-status.model';
 
 import { Observable, forkJoin } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -42,6 +42,58 @@ export class AdminDashboardComponent implements OnInit {
   programsForm: FormGroup;
   generalStatus = GeneralStatus;
   indicatorsName = GeneralIndicatorName;
+
+  assessorsChat = {
+    isOpen: false,
+    indicators: {
+      qa_policies: false,
+      qa_innovations: false,
+      qa_publications: false,
+      qa_oicr: false,
+      qa_melia: false,
+      qa_capdev: false,
+      qa_milestones: false,
+      qa_slo: true,
+      qa_outcomes: false,
+    }
+  }
+
+  indicator_status: string = 'indicators_status';
+
+  indicatorsNameDropdwon = [
+    { name: 'SLOs', viewname: 'qa_slo' },
+    { name: 'Policies', viewname: 'qa_policies' },
+    { name: 'OICRs', viewname: 'qa_oicr' },
+    { name: 'Innovations', viewname: 'qa_innovations' },
+    { name: 'Milestones', viewname: 'qa_milestones' },
+    { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
+    { name: 'CapDevs', viewname: 'qa_capdev' },
+    { name: 'MELIAs', viewname: 'qa_melia' },
+    // qa_outcomes: 'Outcomes',
+  ]
+
+  descriptionCharts = {
+    generalStatus: "This shows the progress of assessment of a specific indicator. ",
+    assessorsInteractions: "This presents assessors' interactions with existing comments on an item being already evaluated by other assessors. ",
+    responseToComments: "This shows the status of CRP responses to comments made by assessors during the first round.",
+    assessmentByField: "This shows the status of assessment for each field of an item.",
+  }
+
+  dataCharts = {
+    generalStatus: null,
+    assessorsInteractions: null,
+    responseToComments: null,
+    assessmentByField: null
+  }
+
+  //new props
+  tagMessages = TagMessage;
+  indicatorsTags: any;
+  selectedIndicator = 'qa_slo';
+  dataSelected: any;
+  indicatorData: any;
+  feedList: [];
+  itemStatusByIndicator = {};
 
   enableQATooltip: string = 'Enable the assessment process so Quality Assessors can start the process of providing recommendations. If this option is disabled, they cannot provide any comments.';
   enableCommentsTooltip: string = 'If this option is enabled, CRPs and PTFs will be able to see all comments provided by the Quality Assessors in MARLO and MEL; and also will be able to react to the comments.';
@@ -105,6 +157,8 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.showSpinner()
+    console.log(this.currentUser);
+
     this.loadDashData();
 
 
@@ -115,9 +169,170 @@ export class AdminDashboardComponent implements OnInit {
   }
 
 
+
   getIndicatorName(indicator: string) {
     return this.indicatorsName[indicator]
   }
+
+  actualIndicator(indicator: string) {
+    this.selectedIndicator = indicator;
+    this.dataSelected = this.dashboardData[this.selectedIndicator];
+
+    this.showSpinner();
+    this.updateDataCharts();
+    this.getFeedTags(this.selectedIndicator).subscribe(
+      res => {
+        this.feedList = res.data;
+        this.hideSpinner();
+      }
+    );
+    // console.log(this.selectedIndicator, this.dashboardData[this.selectedIndicator]); 
+  }
+
+  actualChatIndicator(indicatorName: string) {
+    for (const indicator in this.assessorsChat.indicators) {
+      if (indicator != indicatorName) {
+        this.assessorsChat.indicators[indicator] = false;
+      } else {
+        this.assessorsChat.indicators[indicator] = true;
+      }
+    }
+  }
+
+  actualStatusIndicator(data) {
+    let indicator_status = false;
+    console.log(data);
+    let i = 0;
+    if (data) {
+      for (const item of data) {
+        if (item.indicator_status == 1) indicator_status = true;
+        i++;
+        // console.log(i);
+
+      }
+    }
+    console.log('INDICATOR STATUS', indicator_status);
+
+    return indicator_status;
+  }
+
+  // NEW
+  getItemStatusByIndicator(indicator: string) {
+    if (this.itemStatusByIndicator.hasOwnProperty(indicator)) {
+      return this.itemStatusByIndicator[indicator];
+    } else {
+      return false;
+    }
+  }
+
+  getAllItemStatusByIndicator(): Observable<any> {
+    return this.indicatorService.getAllItemStatusByIndicator().pipe();
+  }
+
+
+  getAllTags(crp_id?): Observable<any> {
+    return this.commentService.getAllTags(crp_id).pipe();
+  }
+
+  getFeedTags(indicator_view_name, tagTypeId?): Observable<any> {
+    return this.commentService.getFeedTags(indicator_view_name, tagTypeId).pipe();
+  }
+
+  formatDateFeed(date: any) {
+    let formatDate = moment(date).format("dddd, MMMM Do YYYY, HH:mm");;
+    return formatDate;
+  }
+
+  formatStatusIndicatorData(data) {
+    // DEFINE COLORS WITH CSS
+    const colors = {
+      complete: 'var(--color-complete)',
+      pending: 'var(--color-pending)',
+      finalized: 'var(--color-finalized)',
+      autochecked: 'var(--color-autochecked)'
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
+    for (const item of data) {
+      if (item.status != null) {
+        dataset.push({ name: item.status, value: +item.label });
+        brushes.domain.push(colors[item.status]);
+      }
+    }
+    let finalized = dataset.find(item => item.name == 'finalized');
+    if (finalized) finalized.name = 'Assessed 2nd round';
+
+    let autochecked = dataset.find(item => item.name == 'autochecked');
+    if (autochecked) {
+      this.indicator_status = 'publications_status';
+      autochecked.name = 'Automatically validated';
+    } else {
+      this.indicator_status = 'indicator_status';
+    }
+    // console.log('DATA SELECTED', { dataset, brushes });
+
+    return { dataset, brushes };
+  }
+
+  formatCommentsIndicatorData(data) {
+    const colors = {
+      Accepted: 'var(--color-agree)',
+      Clarification: 'var(--color-clarification)',
+      Disagree: 'var(--color-disagree)',
+      Pending: 'var(--color-pending)'
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
+
+    if (data) {
+      let comments_accepted = data.find(item => item.comments_accepted != '0');
+      comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
+      if (comments_accepted) dataset.push(comments_accepted);
+
+      let comments_rejected = data.find(item => item.comments_rejected != '0');
+      comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
+      if (comments_rejected) dataset.push(comments_rejected);
+
+      let comments_clarification = data.find(item => item.comments_clarification != '0');
+      comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
+      if (comments_clarification) dataset.push(comments_clarification);
+
+      let comments_without_answer = data.find(item => item.comments_without_answer != '0');
+      comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
+      if (comments_without_answer) dataset.push(comments_without_answer);
+
+      dataset.forEach(comment => {
+        brushes.domain.push(colors[comment.name]);
+      });
+    }
+
+    return { dataset, brushes };
+  }
+
+  formatIndicatorTags() {
+
+    const tags = this.indicatorsTags[this.selectedIndicator];
+
+    const colors = {
+      agree: 'var(--color-agree)',
+      disagree: 'var(--color-disagree)',
+      notsure: 'var(--color-not-sure)'
+    }
+    let dataset = [];
+    let brushes = { domain: [] };
+    for (const tag in tags) {
+      dataset.push({ name: tag, value: tags[tag] })
+    }
+    dataset.forEach(tag => {
+      brushes.domain.push(colors[tag.name]);
+    });
+    console.log({ dataset, brushes });
+
+
+    return { dataset, brushes };
+
+  }
+
 
   isChecked(indicator, type) {
     return type === 'enableQA' ? indicator.enable_assessor : indicator.enable_crp;
@@ -183,9 +398,12 @@ export class AdminDashboardComponent implements OnInit {
     this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
     this.selectedProg = value;
     this.showSpinner()
+
     this.getAllDashData(value.crp_id).subscribe(
       res => {
         this.dashboardData = this.dashService.groupData(res.data);
+        // this.selectedIndicator = Object.keys(this.dashboardData)[1];
+        this.dataSelected = this.dashboardData[this.selectedIndicator];
         this.hideSpinner()
       },
       error => {
@@ -197,6 +415,8 @@ export class AdminDashboardComponent implements OnInit {
     this.getCommentStats(value.crp_id).subscribe(
       res => {
         this.dashboardCommentsData = this.dashService.groupData(res.data);
+        console.log('GET COMMENT STATS');
+
         // this.getRawComments(value.crp_id)
       },
       error => {
@@ -204,7 +424,27 @@ export class AdminDashboardComponent implements OnInit {
         console.log("getCommentStats", error);
         this.alertService.error(error);
       },
-    )
+    );
+
+    this.getAllItemStatusByIndicator().subscribe(
+      res => {
+        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(res.data);
+      }
+    );
+
+    this.getAllTags(value.crp_id).subscribe(
+      res => {
+        this.indicatorsTags = this.commentService.groupTags(res.data);
+      }
+    );
+
+    this.getFeedTags(this.selectedIndicator).subscribe(
+      res => {
+        this.feedList = res.data;
+      }
+    );
+
+
 
   }
 
@@ -223,12 +463,17 @@ export class AdminDashboardComponent implements OnInit {
       this.getAllCRP(),
       this.getIndicatorsByCRP(),
       this.getCommentStats(),
-      this.getCycles()
+      this.getCycles(),
+      this.getAllTags(),
+      this.getFeedTags(this.selectedIndicator),
+      this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(res => {
-      const [dashData, crps, indicatorsByCrps, commentsStats, cycleData] = res;
+      const [dashData, crps, indicatorsByCrps, commentsStats, cycleData, allTags, feedTags, assessmentByField] = res;
 
       this.dashboardData = this.dashService.groupData(dashData.data);
+      // this.selectedIndicator = Object.keys(this.dashboardData)[1];
+      this.dataSelected = this.dashboardData[this.selectedIndicator];
       // console.log(res)
 
       this.crps = crps.data;
@@ -245,12 +490,40 @@ export class AdminDashboardComponent implements OnInit {
       this.dashboardCyclesData = this.parseCycleDates(cycleData.data);
       // console.log(this.currenTcycle, this.fromDate, this.toDate)
 
+      this.indicatorsTags = this.commentService.groupTags(allTags.data);;
+
+      this.feedList = feedTags.data;
+
+      this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+      console.log('CHART 3',this.itemStatusByIndicator);
+
+      //UPDATE CHARTS
+      this.updateDataCharts();
+
       this.hideSpinner();
     }, error => {
       this.hideSpinner()
       console.log("getAllDashData", error);
       this.alertService.error(error);
     })
+
+  }
+
+  updateDataCharts() {
+    this.dataCharts.generalStatus = this.formatStatusIndicatorData(this.dataSelected);
+    this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
+    this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
+    this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
+    
+  }
+
+  updateFeedTags(tagTypeId) {
+    this.getFeedTags(this.selectedIndicator, tagTypeId).subscribe(
+      res => {
+        this.feedList = res.data;
+        this.hideSpinner();
+      }
+    )
   }
 
 
@@ -278,6 +551,7 @@ export class AdminDashboardComponent implements OnInit {
   // comments by crp
   getCommentStats(crp_id?) {
     // this.showSpinner();
+
     return this.commentService.getCommentCRPStats({ crp_id, id: null }).pipe();
   }
 
@@ -540,6 +814,10 @@ export class AdminDashboardComponent implements OnInit {
     // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
+
+  toggleAssessorsChat() {
+    this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
+  }
 
   // axisFormat(val) {
   //   if (val % 1 === 0) {

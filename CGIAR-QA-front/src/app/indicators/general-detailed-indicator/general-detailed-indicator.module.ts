@@ -17,6 +17,7 @@ import { CommentComponent } from '../../comment/comment.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { MarkdownModule } from 'ngx-markdown';
 import { CommentComponentModule } from 'src/app/comment/comment.module';
+import { AssessorsChatWindowComponent } from 'src/app/_shared/assessors-chat-window/assessors-chat-window.component';
 
 // import { CommentComponentModule } from '../../comment/comment.component.module';
 

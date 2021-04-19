@@ -33,6 +33,8 @@ export class CrpComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
+      console.log(this.params);
+      
       if (params.has('token')) {
         this.validateToken(this.params['params']);
       } else {
@@ -48,7 +50,7 @@ export class CrpComponent implements OnInit {
   }
 
   validateToken(params: {}) {
-    this.clearSavedData();
+    this.clearSavedData(); 
     this.showSpinner(this.spinner_name)
     this.authenticationService.tokenLogin(params).subscribe(
       res => {
@@ -64,7 +66,7 @@ export class CrpComponent implements OnInit {
       error => {
         console.log("validateToken", error);
         this.hideSpinner(this.spinner_name);
-        this.logout()
+        // this.logout()
         this.alertService.error(error);
       }
     )

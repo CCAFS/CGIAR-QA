@@ -45,16 +45,21 @@ h2 {
   color: #d59b1b;
 }
 
-.sub-header {
+.indicator-header {
   margin: 1em 0;
   padding: 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   .model-link-container {
     padding: 10px;
     cursor: pointer;
     background-color: var(--gray-primary);
     border-radius: 0.3em;
     height: 2em;
-    // width: 8em;
+    width: auto;
     margin-right: 2em;
     display: flex;
     i {
@@ -81,7 +86,23 @@ h2 {
     margin: 0 1em;
   }
   .text-right {
+    display: flex;
     justify-content: flex-end;
+    align-items: center;
+    width: auto;
+    p{
+      margin: 0;
+    }
+  }
+  .text-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: fit-content;
+    h5{
+      margin: 0;
+    }
   }
 }
 
@@ -118,8 +139,6 @@ h2 {
       cursor: pointer;
       color: #007bff;
       text-decoration: underline;
-      a {
-      }
       i {
         height: 0.5em;
       }
@@ -135,18 +154,21 @@ h2 {
   }
 }
 .total-items {
-  font-size: 0.9em;
+  font-size: 0.9em; 
   color: var(--gray-secondary);
   font-style: italic;
 }
 .circle.complete {
-  background-color: var(--green-primary);
+  background-color: var(--color-complete);
 }
 .circle.pending {
-  background-color: var(--red-primary);
+  background-color: var(--color-pending);
 }
 .circle.finalized {
-  background-color: var(--blue-secondary);
+  background-color: var(--color-finalized);
+}
+.circle.autochecked {
+  background-color: var(--color-autochecked);
 }
 
 .pagination-container {
@@ -157,3 +179,54 @@ h2 {
     }
   }
 }
+
+.chat-container {
+  width: 800px;
+  display: grid;
+  place-items: center;
+  position: fixed;
+  right: 2em;
+  bottom: 4em;
+  z-index:10;
+  border-radius: 10px;
+  box-shadow:
+  0 1.1px 2.2px rgba(0, 0, 0, 0.059),
+  0 2.9px 5.5px rgba(0, 0, 0, 0.084),
+  0 5.8px 11.2px rgba(0, 0, 0, 0.106),
+  0 12px 23px rgba(0, 0, 0, 0.131),
+  0 33px 63px rgba(0, 0, 0, 0.19)
+;
+
+  iframe{
+    width: 100%;
+    height: 700px;
+    border:none;
+    border-radius: 10px;
+  }
+  
+}
+
+  .hide {
+    z-index: -10;
+  }
+
+.btn-assessors-chat {
+  position: fixed;
+  right: 2em;
+  bottom: 1em;
+  z-index: 10;
+  width: auto;
+  height: 40px;
+  background-color: #130f40;
+  font-weight: $semibold;
+  font-size: $font-sm;
+  color: white;
+  padding: 0.5em 1.5em;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
