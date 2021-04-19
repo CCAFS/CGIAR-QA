@@ -333,5 +333,21 @@ export class AssessorDashboardComponent implements OnInit {
     )
   }
 
+  goToPDF(type: string) {
+    let pdf_url;
+    switch (type) {
+      case 'AR':
+        pdf_url = 'https://drive.google.com/file/d/1LjGwJ1izekFEDYX4uUsKDTLSEEyf0252/view?usp=sharing';
+        break;
+      case 'ASSESSORS_GUIDANCE':
+        pdf_url = 'https://drive.google.com/file/d/1EOdwP9MeIldTBfFziUFyv5dI3RK7LaQR/view?usp=sharing';
+        break;
+      default:
+        
+        break;
+    }
+    window.open(pdf_url, "_blank");
+  }
+
 
 }

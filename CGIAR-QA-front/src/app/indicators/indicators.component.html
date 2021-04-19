@@ -5,7 +5,7 @@
 
 <h2>{{returnListName(indicatorType, 'header')}} </h2>
 <h4 style="text-align: center;" *ngIf="currentUser.hasOwnProperty('cycle')">
-    {{(currentUser.cycle.cycle_stage > 1 ) ? currentUser.cycle.cycle_name+ ':'+ currentUser.cycle.cycle_stage: ''}}
+    {{(currentUser.cycle.cycle_stage > 1 ) ? 'QA Round' + ': '+ currentUser.cycle.cycle_stage: ''}}
 </h4>
 <div class="row col indicator-header">
     <div class="text-left">

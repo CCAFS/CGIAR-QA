@@ -3,8 +3,20 @@
 </div>
 
 <div class="asesor-dashboard row col col-xl-12">
-    <div class="row col col-xl-12">
+    <div class="row col col-xl-12 icons-header">
         <h4>Progress on Quality Assessment</h4>
+        <div class="text-left">
+            <div class="model-link-container" (click)="goToPDF('AR')">
+                <i class="icon-pdf"></i>
+                <hr>
+                <p>2020 AR Template</p>
+            </div>
+            <div  class="model-link-container" (click)="goToPDF('ASSESSORS_GUIDANCE')">
+                <i class="icon-pdf"></i>
+                <hr>
+                <p>2021 Assessor Guidance</p>
+            </div>
+        </div>
     </div>
     <div class="dashboard-container row w-100">
         <div class="card-body dashboard-container-charts col col-sm-9">
