@@ -157,7 +157,7 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.showSpinner()
-    console.log(this.currentUser);
+    console.log('USER',this.currentUser);
 
     this.loadDashData();
 

@@ -126,7 +126,8 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the justificatio
 
 -- PEER REVIEWED PAPERS
 --UPDATE CRITERIAS
-UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Combine the \"Permanent identifier DOI or Handle\" + add the criteria \"Verifiy that the link is working\" ? ' WHERE (`id` = '62');
+
+UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Permanent unique identifier or DOI', `description` = 'Verifiy that the link is working ' WHERE (`id` = '62');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Combine with \"DOI\"' WHERE (`id` = '63');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'The first available publications during the reporting year, online or printed, for which the article is available for wider audience (paid or open access). Only for the year the article was published for the first time. ' WHERE (`id` = '55');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = '' WHERE (`id` = '54');
@@ -137,6 +138,12 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `description` = '' WHERE (`id` = '58')
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = '' WHERE (`id` = '59');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = '' WHERE (`id` = '60');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = '' WHERE (`id` = '61');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '0' WHERE (`id` = '57');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '0' WHERE (`id` = '58');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '0' WHERE (`id` = '59');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '7' WHERE (`id` = '60');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '8' WHERE (`id` = '61');
+
 
 
 -- CAPDEV
