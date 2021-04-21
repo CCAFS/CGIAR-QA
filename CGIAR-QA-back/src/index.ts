@@ -40,7 +40,8 @@ createConnection()
 
         //Handle Errors
         app.use((err, req, res, next) => {
-            res.setHeader('Cross-Origin-Resource-Policy', 'same-site')
+            res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
+            res.setHeader("Content-Type", "application/json; charset=utf-8");
             handleError(err, res);
         });
         let server = app.listen(config.port, config.host, () => {

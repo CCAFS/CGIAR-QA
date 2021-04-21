@@ -66,7 +66,8 @@
                             (filterTagEvent)="updateFeedTags($event)"></app-bar-chart>
                     </div>
                 </div>
-                <div class="chart responses-to-comments-r2">
+                <div class="chart"
+                [ngClass]="{ 'responses-to-comments-r1': currentUser.cycle.cycle_stage == '1', 'responses-to-comments-r2': currentUser.cycle.cycle_stage != '1' }">
                     <div class="header-chart">
                         <h4 class="chart-title">Responses to comments</h4>
                         <i class="icon-info" [tooltip]="popTemplateChartC"></i>
@@ -79,7 +80,8 @@
                         </app-donut-chart>
                     </div>
                 </div>
-                <div class="chart assessment-by-field-r2">
+                <div class="chart"
+                [ngClass]="{ 'assessment-by-field-r1': currentUser.cycle.cycle_stage == '1', 'assessment-by-field-r2': currentUser.cycle.cycle_stage != '1' }">
                     <div class="header-chart">
                         <h4 class="chart-title">Assessment by field</h4>
                         <i class="icon-info" [tooltip]="popTemplateChartD"></i>
