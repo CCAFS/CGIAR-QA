@@ -155,6 +155,8 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Number of PhD Traine
 UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Number of PhD Trainees (men) (included into the long term trainees total)' WHERE (`id` = '119');
 UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Number of short term trainees (women)' WHERE (`id` = '120');
 UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Number of short term trainees (men)' WHERE (`id` = '121');
+INSERT INTO `marlodb`.`qa_indicators_meta` (`col_name`, `display_name`, `enable_comments`, `is_primay`, `include_general`, `include_detail`, `order`) VALUES ('evidence_link', 'Evidence', '1', '0', '1', '1', '7');
+
 -- UPDATE GENERAL GUIDANCE
 UPDATE `marlodb`.`qa_indicators` SET `qa_criteria` = '<H5><a href=\"https://drive.google.com/file/d/1hTTfTVaI5vIeLlEaXNCfdZW5dAFonuND/view\" target=\"_blank\">See Capdev guidance</a> <br></H5><br>Do the indicated numbers seem reasonable for men vs women?<br> Do the indicated numbers seem reasonable for long vs short term? ' WHERE (`id` = '6');
 

@@ -380,7 +380,7 @@ class IndicatorsController {
 
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+            res.status(404).json({ message: "Item status by indicators can not be retrived.", data: error });
         }
     }
       static getAllItemStatusByIndicator = async (req: Request, res: Response) => {
@@ -420,7 +420,7 @@ class IndicatorsController {
                 });
             } catch(error) {
                 console.log(error);
-                res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+                res.status(404).json({ message: "All items status by indicators can not be retrived.", data: error });
             }
 
         let queryRunner = getConnection().createQueryBuilder();
@@ -476,7 +476,7 @@ class IndicatorsController {
 
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+            res.status(404).json({ message: "All items by indicators can not be retrived.", data: error });
         }
     }
 

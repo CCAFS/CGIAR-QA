@@ -220,7 +220,7 @@
                     </div>
                 </div> -->
                 <!-- ROUND 2 -->
-                <div class="row" *ngIf="currentUser.cycle.cycle_stage == '1'" style="margin: 1em 0;">
+                <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em 0;">
                     <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
                         style="margin-left: 1em;">
                         <button type="button" class="btn btn-finalized"
