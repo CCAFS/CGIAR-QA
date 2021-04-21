@@ -390,12 +390,42 @@
     }
   }
 
-  // .col-progress {
-  //   button {
-  //     font-size: 0.6em;
-  //     height: 3em;
-  //   }
-  // }
+  .col-progress {
+    .mini-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1em;
+      .model-link-container {
+        padding: 10px;
+        cursor: pointer;
+        background-color: var(--gray-primary);
+        border-radius: 0.3em;
+        height: 2em;
+        width: auto;
+        margin-left: 2em;
+        display: flex;
+        i {
+          height: 1.5em;
+          margin-top: -0.35em;
+          margin-right: 0.4em;
+        }
+        p {
+          margin: 0;
+          vertical-align: middle;
+          padding: 0 0.5em;
+          font-size: 0.7em;
+        }
+        hr {
+          position: relative;
+          background: var(--gray-tertiary);
+          width: 2px;
+          height: 1.9em;
+          top: -10px;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
 
   .col-programs {
     .programs-form {
