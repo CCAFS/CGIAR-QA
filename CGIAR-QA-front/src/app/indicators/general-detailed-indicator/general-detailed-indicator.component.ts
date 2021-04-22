@@ -191,7 +191,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         res => {
           // console.log(res);
           field.loading = false
-          this.validateUpdateEvaluation();
+          // this.validateUpdateEvaluation();
           this.validateAllFieldsAssessed()
         },
         error => {
@@ -235,6 +235,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   validateAllFieldsAssessed() {
+    let initialStatus = this.gnralInfo.status;
     let allFieldsAssessed: boolean = false;
     let statusByField = [];
     this.formTickData.controls.forEach((value, i) => {
@@ -250,6 +251,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.updateEvaluation('status', this.detailedData)
     } else {
       allFieldsAssessed = false;
+      this.gnralInfo.status_update = this.statusHandler.Pending;
+      if(initialStatus != this.statusHandler.Pending) {
+        console.log({initialStatus}, this.statusHandler.Pending);
+        
+        this.updateEvaluation('status', this.detailedData)
+      }
     }
     console.log(this.detailedData);
     
@@ -416,6 +423,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   updateEvaluation(type: string, data: any) {
+    console.log('Actualizando evaluación');
+    
     let evaluationData = {
       evaluation_id: data[0].evaluation_id,
       status: data[0].status,
