@@ -132,8 +132,20 @@
         </div>
     </div>
     <div class="col col-progress">
+        <div class="row mini-header" style="padding: 0 15px;">
+            <div class="model-link-container" (click)="goToPDF('AR')">
+                <i class="icon-pdf"></i>
+                <hr>
+                <p>2020 AR Template</p>
+            </div>
+            <div class="model-link-container" (click)="goToPDF('ASSESSORS_GUIDANCE')">
+                <i class="icon-pdf"></i>
+                <hr>
+                <p>2021 Assessor Guidance</p>
+            </div></div>
         <div class="row" style="padding: 0 15px;">
             <p class="card-title col-9">Progress by Assessors</p>
+
             <button type="button" class="btn btn-success col-3" (click)="openModal(template)">Download all comments and
                 replies</button>
         </div>
@@ -189,20 +201,22 @@
                                         (filterTagEvent)="updateFeedTags($event)"></app-bar-chart>
                                 </div>
                             </div>
-                            <div class="chart responses-to-comments-r2">
-                                    <div class="header-chart">
-                                        <h4 class="chart-title">Responses to comments</h4>
-                                        <i class="icon-info" [tooltip]="popTemplateChartC"></i>
-                                        <ng-template #popTemplateChartC>
-                                            <div [innerHtml]="descriptionCharts.responseToComments"></div>
-                                        </ng-template>
-                                    </div>
+                            <div class="chart"
+                                [ngClass]="{ 'responses-to-comments-r1': currentUser.cycle.cycle_stage == '1', 'responses-to-comments-r2': currentUser.cycle.cycle_stage != '1' }">
+                                <div class="header-chart">
+                                    <h4 class="chart-title">Responses to comments</h4>
+                                    <i class="icon-info" [tooltip]="popTemplateChartC"></i>
+                                    <ng-template #popTemplateChartC>
+                                        <div [innerHtml]="descriptionCharts.responseToComments"></div>
+                                    </ng-template>
+                                </div>
                                 <div *ngIf="dashboardCommentsData[selectedIndicator]" class="chart-container">
                                     <app-donut-chart [data]="dataCharts.responseToComments" [chartName]="'comments'">
                                     </app-donut-chart>
                                 </div>
                             </div>
-                            <div class="chart assessment-by-field-r2">
+                            <div class="chart"
+                                [ngClass]="{ 'assessment-by-field-r1': currentUser.cycle.cycle_stage == '1', 'assessment-by-field-r2': currentUser.cycle.cycle_stage != '1' }">
                                 <div class="header-chart">
                                     <h4 class="chart-title">Assessment by field</h4>
                                     <i class="icon-info" [tooltip]="popTemplateChartD"></i>

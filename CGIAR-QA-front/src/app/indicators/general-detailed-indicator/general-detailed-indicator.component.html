@@ -1,8 +1,8 @@
-<div [ngClass]="{'hide': !assessorsChat.isOpen}" class="chat-container">
+<!-- <div [ngClass]="{'hide': !assessorsChat.isOpen}" class="chat-container">
     <iframe *ngIf="indicatorType == 'policies'" [src]="chatRooms.policies"></iframe>
     <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations"></iframe>
 </div>
-<div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
+<div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div> -->
 <a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
     routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
     <i class=icon-go-back></i> {{currentType}} List
@@ -223,7 +223,7 @@
                 <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em 0;">
                     <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
                         style="margin-left: 1em;">
-                        <button type="button" class="btn btn-agree"
+                        <button type="button" class="btn btn-finalized"
                             [disabled]="gnralInfo.status === statusHandler.Finalized"
                             (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
                     </div>

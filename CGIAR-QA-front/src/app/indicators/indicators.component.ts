@@ -61,9 +61,9 @@ export class IndicatorsComponent implements OnInit {
 
   notProviedText = '<No provided>'
 
-  order: string = 'id';
+  order: string = 'status';
   configTemplate: string;
-  reverse: boolean = true;
+  reverse: boolean = false;
   btonFilterForm: any;
   chatRooms = null;
 
@@ -133,7 +133,7 @@ export class IndicatorsComponent implements OnInit {
     console.log(this.indicatorType);
     
     if(this.indicatorType == 'slo') {
-      this.order = 'title';
+      this.order = 'status';
     }
     // console.log('loaded indicators')
     setTimeout(() => {                           //<<<---using ()=> syntax
@@ -152,9 +152,9 @@ export class IndicatorsComponent implements OnInit {
       res => {
         // console.log(res)
         if(this.indicatorType == 'slo') {
-          this.order = 'title';
+          this.order = 'status';
         } else {
-          this.order = 'id';
+          this.order = 'status';
         }
         this.evaluationList = this.orderPipe.transform(res.data, this.order);
         this.setOrder(this.order, this.reverse);
@@ -303,7 +303,7 @@ export class IndicatorsComponent implements OnInit {
 
     formatBrief(brief: string) {
       if(brief) {
-        return brief.split("<p>")[1].split("</p>")[0].split('<br>')[0].substring(0, 200)  + '...';
+        return brief.split("<p>")[1].split("</p>")[0].split('<br>')[0].substring(0, 200)  + '...' || brief;
       }
       return;
     }

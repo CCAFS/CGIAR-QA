@@ -167,6 +167,22 @@
   background-color: var(--color-agree);
   border-color: var(--color-agree);
 }
+.btn-finalized,
+.btn-finalized:hover,
+.btn-finalized:not(:disabled):not(.disabled).active,
+.btn-finalized:not(:disabled):not(.disabled):active,
+.show > .btn-finalized.dropdown-toggle {
+  background-color: var(--color-finalized);
+  border-color: var(--color-finalized);
+  color: var(--white);
+  font-weight: $semibold;
+}
+.btn-finalized.disabled,
+.btn-finalized:disabled {
+  color: var(--white);
+  background-color: var(--color-finalized);
+  border-color: var(--color-finalized);
+}
 
 /***
 *** Type-ahead
