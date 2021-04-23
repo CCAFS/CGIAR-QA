@@ -383,6 +383,8 @@ class IndicatorsController {
             res.status(404).json({ message: "Item status by indicators can not be retrived.", data: error });
         }
     }
+
+    //ALL
       static getAllItemStatusByIndicator = async (req: Request, res: Response) => {
         let totalEvaluationsByIndicator = {
             qa_innovations : {},
