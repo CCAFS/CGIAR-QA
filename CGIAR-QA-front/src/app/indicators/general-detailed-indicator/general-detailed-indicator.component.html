@@ -350,8 +350,9 @@
         <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
             <app-comment #comment
-                (parentFun)="showComments(fieldIndex, detailedData[fieldIndex]); validateUpdateEvaluation()"
-                (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
+                (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
+                (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"
+                (validateAllFieldsAssessed)="validateAllFieldsAssessed()" ></app-comment>
         </div>
 
     </div>

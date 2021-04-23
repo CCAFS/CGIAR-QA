@@ -235,6 +235,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   validateAllFieldsAssessed() {
+    console.log('VALIDATING AFTER COMMENT');
+    
     let initialStatus = this.gnralInfo.status;
     let allFieldsAssessed: boolean = false;
     let statusByField = [];
@@ -390,6 +392,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
+    if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
   }
 
   private getPosition(el) {

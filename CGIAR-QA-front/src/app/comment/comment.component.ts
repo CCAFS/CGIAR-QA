@@ -47,6 +47,7 @@ export class CommentComponent implements OnInit {
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
+  @Output("validateAllAssessedFields") validateAllAssessedFields: EventEmitter<any> = new EventEmitter();
   @Output("updateNumCommnts") updateNumCommnts: EventEmitter<any> = new EventEmitter();
   allRoles = Role;
 
@@ -141,7 +142,8 @@ export class CommentComponent implements OnInit {
   }
 
   addComment() {
-
+    console.log('ADDING COMMENT');
+    
     if (this.commentGroup.invalid) {
       this.alertService.error('comment is required', false)
       return;
@@ -155,8 +157,11 @@ export class CommentComponent implements OnInit {
       approved: true
     }).subscribe(
       res => {
+        console.log('COMMENT ADDED');
+        
         this.getItemCommentData()
         this.formData.comment.reset()
+        // this.validateAllAssessedFields.emit();
       },
       error => {
         console.log("getEvaluationsList", error);
