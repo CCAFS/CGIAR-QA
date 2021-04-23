@@ -24,7 +24,7 @@ export class AssessorsChatComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.chatroom = this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`);
+    this.chatroom = this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/Njt10-3wG?username=${this.currentUser.name}`);
 
   }
 

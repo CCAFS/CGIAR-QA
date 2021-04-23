@@ -241,8 +241,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     let allFieldsAssessed: boolean = false;
     let statusByField = [];
     this.formTickData.controls.forEach((value, i) => {
+      console.log(this.detailedData[i]);
       
-      statusByField.push({display_name: this.detailedData[i].display_name, value: (this.detailedData[i].replies_count != '0' || value.get('isChecked').value) ? true : false});
+      
+      statusByField.push({display_name: this.detailedData[i].display_name, value:  (this.detailedData[i].replies_count != '0' || value.get('isChecked').value || this.detailedData[i].enable_comments == false) ? true : false});
     });
     let fieldWithoutAssessed = statusByField.find(e => e.value == false);
     // existNotAssessed = existNotAssessed.value;

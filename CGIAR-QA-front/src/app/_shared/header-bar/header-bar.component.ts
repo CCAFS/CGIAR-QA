@@ -97,8 +97,7 @@ export class HeaderBarComponent implements OnInit {
   }
 
   goToAssessorsChat() {
-    this.router.navigate([`assessors-chat`]);
-
+    window.open('./assessors-chat');
   }
 
   getHeaderLinks() {
