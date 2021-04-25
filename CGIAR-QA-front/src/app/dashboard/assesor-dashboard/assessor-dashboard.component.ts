@@ -97,7 +97,7 @@ export class AssessorDashboardComponent implements OnInit {
       this.getCommentStats(),
       this.getAllTags(),
       this.getFeedTags(this.selectedIndicator),
-      this.getAllItemStatusByIndicator()
+      this.getItemStatusByIndicatorService(this.selectedIndicator)
     ]);
     responses.subscribe(
       res => {
@@ -132,10 +132,16 @@ export class AssessorDashboardComponent implements OnInit {
 
   getItemStatusByIndicator(indicator: string) {
     if (this.itemStatusByIndicator.hasOwnProperty(indicator)) {
+      console.log(this.itemStatusByIndicator[indicator]);
+       
       return this.itemStatusByIndicator[indicator];
     } else {
       return false;
     }
+  }
+  
+  getItemStatusByIndicatorService(indicator: string): Observable<any> {
+    return this.indicatorService.getItemStatusByIndicator(indicator).pipe();
   }
 
   getIndicatorName(indicator: string) {
@@ -148,13 +154,7 @@ export class AssessorDashboardComponent implements OnInit {
 
 
     this.showSpinner();
-    this.updateDataCharts();
-    this.getFeedTags(this.selectedIndicator).subscribe(
-      res => {
-        this.feedList = res.data;
-        this.hideSpinner();
-      }
-    );
+    this.updateDashboard();
   }
 
   actualStatusIndicator(data) {
@@ -241,6 +241,8 @@ export class AssessorDashboardComponent implements OnInit {
         brushes.domain.push(colors[item.status]);
       }
     }
+    let complete = dataset.find(item => item.name == 'complete');
+    if (complete) complete.name = 'Assessed 1st round';
     let finalized = dataset.find(item => item.name == 'finalized');
     if (finalized) finalized.name = 'Assessed 2nd round';
     
@@ -320,8 +322,31 @@ export class AssessorDashboardComponent implements OnInit {
   updateDataCharts() {
     this.dataCharts.generalStatus = this.formatStatusIndicatorData(this.dataSelected);
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
+    
     this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
     this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
+  }
+
+  updateDashboard() {
+    let responses = forkJoin([
+      this.getFeedTags(this.selectedIndicator),
+      this.getItemStatusByIndicatorService(this.selectedIndicator)
+    ]);
+    responses.subscribe(
+      res => {
+        const [feedTags, assessmentByField] = res;
+        //feedTags
+        this.feedList = feedTags.data;
+
+        //assessmentByField
+        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+
+        //UPDATE CHARTS
+        this.updateDataCharts();
+
+        this.hideSpinner();
+      }
+    );
   }
 
   updateFeedTags(tagTypeId) {
