@@ -469,8 +469,8 @@ class IndicatorsController {
     //ALL
     static getAllItemStatusByIndicator = async (req: Request, res: Response) => {
         let totalEvaluationsByIndicator = {
-            qa_innovations: {},
-            qa_policies: {},
+            qa_innovations : {},
+            qa_policies : {},
             qa_publications: {},
             qa_oicr: {},
             qa_melia: {},
@@ -484,56 +484,28 @@ class IndicatorsController {
 
 
         let qrMetas = getConnection().createQueryBuilder();
-        try {
-            const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
-                `SELECT col_name, display_name, indicatorId, qi.view_name,
+            try {
+                const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
+                    `SELECT col_name, display_name, indicatorId, qi.view_name,
                     (SELECT count(*) FROM qa_evaluations qe WHERE qe.indicator_view_name = qi.view_name AND qe.phase_year = actual_phase_year() AND qe.status <> 'autochecked') AS total
                    FROM qa_indicators_meta qim
                    LEFT JOIN qa_indicators qi ON qi.id = qim.indicatorId
                    WHERE qim.display_name  not like 'id'
                    AND qim.enable_comments <> 0
                    AND qim.include_detail = 1`,
-                {},
-                {}
-            );
-            let allMetas = await qrMetas.connection.query(query, parameters);
-            console.log('TOTALES', allMetas);
-            let queryRunnerNotApplicable = getConnection().createQueryBuilder();
+                    {},
+                    {}
+                );
+                let allMetas  = await qrMetas.connection.query(query, parameters);
+                console.log('TOTALES',allMetas);
 
-            for (const meta of allMetas) {
-                // let queryNotApplicable = `SELECT count(*) as count FROM ${meta.view_name} WHERE ${meta.col_name}  = "<Not applicable>"`;
-                let queryNotApplicable = `SELECT count(*) as count FROM qa_evaluations qe
-                    LEFT JOIN ${meta.view_name} qi on qe.indicator_view_id = qi.id AND qe.indicator_view_name = "${meta.view_name}"
-                    WHERE ${meta.col_name}  = "<Not applicable>" AND qe.phase_year = actual_phase_year() AND qe.status <> "autochecked";`;
-                totalEvaluationsByIndicator[meta.view_name][meta.display_name] = {
-                    item: meta.display_name,
-                    pending: meta.total, approved_without_comment: 0,
-                    assessment_with_comments: 0,
-                    notApplicable: null,
-                    queryNotApplicable: queryNotApplicable
-                };
-
-                try {
-                    const [query, parameters] = await queryRunnerNotApplicable.connection.driver.escapeQueryWithParameters(
-                        totalEvaluationsByIndicator[meta.view_name][meta.display_name]['queryNotApplicable'],
-                        {},
-                        {}
-                    );
-
-                    let notApplicableCount = await queryRunnerNotApplicable.connection.query(query, parameters);
-                    totalEvaluationsByIndicator[meta.view_name][meta.display_name]['notApplicable'] = +notApplicableCount[0].count;
-                    totalEvaluationsByIndicator[meta.view_name][meta.display_name]['pending'] -= +notApplicableCount[0].count;
-                } catch (error) {
-                    console.log(error);
-
-                }
+                allMetas.forEach(meta => {
+                    totalEvaluationsByIndicator[meta.view_name][meta.display_name] = {item: meta.display_name, pending: meta.total, approved_without_comment: 0, assessment_with_comments: 0};
+                });
+            } catch(error) {
+                console.log(error);
+                res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
             }
-
-
-        } catch (error) {
-            console.log(error);
-            res.status(404).json({ message: "All items status by indicators can not be retrived.", data: error });
-        }
 
         let queryRunner = getConnection().createQueryBuilder();
         try {
@@ -559,7 +531,7 @@ class IndicatorsController {
                AND qe.phase_year = actual_phase_year()
                AND qc.is_deleted = 0
                AND enable_comments <> 0
-               GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment;`
+               GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment`
                 ,
                 {},
                 {}
@@ -568,34 +540,27 @@ class IndicatorsController {
             let totalByItem = {};
             for (let i = 0; i < allItems.length; i++) {
 
-
-
                 switch (allItems[i].approved_no_comment) {
                     case 1:
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
-                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= +allItems[i].approved_without_comment;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= allItems[i].approved_without_comment;
                         break;
                     case null:
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
-                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= +allItems[i].assessment_with_comments;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= allItems[i].assessment_with_comments;
                         break;
                     default:
                         break;
                 }
-
-
-
-
-
             }
             console.log(totalEvaluationsByIndicator['qa_slo']);
-
+            
             res.status(200).send({ data: totalEvaluationsByIndicator, message: 'All items by indicator' });
 
 
         } catch (error) {
             console.log(error);
-            res.status(404).json({ message: "All items by indicators can not be retrived.", data: error });
+            res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
         }
     }
 
