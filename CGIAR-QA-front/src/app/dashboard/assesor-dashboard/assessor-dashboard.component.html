@@ -89,7 +89,7 @@
                             <div [innerHtml]="descriptionCharts.assessmentByField"></div>
                         </ng-template>
                     </div>
-                    <div class="chart-container" *ngIf="dataCharts.assessmentByField">
+                    <div class="chart-container" >
                         <app-line-chart [data]="dataCharts.assessmentByField"></app-line-chart>
                     </div>
                 </div>
