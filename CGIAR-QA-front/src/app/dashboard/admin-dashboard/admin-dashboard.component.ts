@@ -259,6 +259,8 @@ export class AdminDashboardComponent implements OnInit {
         brushes.domain.push(colors[item.status]);
       }
     }
+    let complete = dataset.find(item => item.name == 'complete');
+    if (complete) complete.name = 'Assessed 1st round';
     let finalized = dataset.find(item => item.name == 'finalized');
     if (finalized) finalized.name = 'Assessed 2nd round';
 
@@ -665,10 +667,10 @@ export class AdminDashboardComponent implements OnInit {
     let pdf_url;
     switch (type) {
       case 'AR':
-        pdf_url = 'https://drive.google.com/file/d/1LjGwJ1izekFEDYX4uUsKDTLSEEyf0252/view?usp=sharing';
+        pdf_url = this.currentUser.config[0]["anual_report_guideline"];
         break;
       case 'ASSESSORS_GUIDANCE':
-        pdf_url = 'https://drive.google.com/file/d/1EOdwP9MeIldTBfFziUFyv5dI3RK7LaQR/view?usp=sharing';
+        pdf_url = this.currentUser.config[0][`assessors_guideline`];
         break;
       default:
         
