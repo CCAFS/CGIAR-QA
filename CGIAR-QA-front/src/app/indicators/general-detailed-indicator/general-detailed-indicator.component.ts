@@ -394,7 +394,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
-    if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
+    // if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
   }
 
   private getPosition(el) {
@@ -423,8 +423,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     };
   }
 
-  updateNumCommnts(event, detailedData) {
-    detailedData.replies_count = event.length;
+  updateNumCommnts({length, validateFields}, detailedData, ) {
+    detailedData.replies_count = length;
+    if(validateFields) this.validateAllFieldsAssessed();
   }
 
   updateEvaluation(type: string, data: any) {

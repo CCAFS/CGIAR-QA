@@ -351,8 +351,7 @@
             class="col-sm-4 comments-container">
             <app-comment #comment
                 (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
-                (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"
-                (validateAllFieldsAssessed)="validateAllFieldsAssessed()" ></app-comment>
+                (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);" ></app-comment>
         </div>
 
     </div>
