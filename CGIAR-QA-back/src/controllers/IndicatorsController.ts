@@ -452,7 +452,7 @@ class IndicatorsController {
 
             }
             console.log(totalEvaluationsByIndicator['qa_slo']);
-            totalEvaluationsByIndicator[indicator] =  Object.values(totalEvaluationsByIndicator[indicator]);
+            // totalEvaluationsByIndicator[indicator] =  Object.values(totalEvaluationsByIndicator[indicator]);
             let result = [];
             for (const field in totalEvaluationsByIndicator[indicator]) {
                 result.push(totalEvaluationsByIndicator[indicator][field]);
