@@ -117,7 +117,7 @@ export class AssessorDashboardComponent implements OnInit {
         this.feedList = feedTags.data;
 
         //assessmentByField
-        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        this.itemStatusByIndicator = assessmentByField.data;
         console.log(this.itemStatusByIndicator);
         
 
@@ -328,7 +328,7 @@ export class AssessorDashboardComponent implements OnInit {
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
     
     this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
-    this.dataCharts.assessmentByField = this.itemStatusByIndicator[this.selectedIndicator];
+    this.dataCharts.assessmentByField = this.itemStatusByIndicator;
   }
 
   updateDashboard() {
@@ -343,7 +343,7 @@ export class AssessorDashboardComponent implements OnInit {
         this.feedList = feedTags.data;
 
         //assessmentByField
-        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        this.itemStatusByIndicator = assessmentByField.data;
 
         //UPDATE CHARTS
         this.updateDataCharts();

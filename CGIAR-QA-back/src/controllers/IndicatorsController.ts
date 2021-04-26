@@ -429,7 +429,6 @@ class IndicatorsController {
                 {}
             );
             let allItems = await queryRunner.connection.query(query, parameters);
-            let totalByItem = {};
             for (let i = 0; i < allItems.length; i++) {
 
 
@@ -453,8 +452,8 @@ class IndicatorsController {
 
             }
             console.log(totalEvaluationsByIndicator['qa_slo']);
-
-            res.status(200).send({ data: totalEvaluationsByIndicator, message: 'All items by indicator' });
+            totalEvaluationsByIndicator[indicator] =  Object.values(totalEvaluationsByIndicator[indicator]);
+            res.status(200).send({ data: totalEvaluationsByIndicator[indicator], message: 'Items by indicator' });
 
 
         } catch (error) {
