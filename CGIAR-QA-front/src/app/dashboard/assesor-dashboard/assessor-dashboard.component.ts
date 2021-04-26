@@ -118,6 +118,8 @@ export class AssessorDashboardComponent implements OnInit {
 
         //assessmentByField
         this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        console.log(this.itemStatusByIndicator);
+        
 
         //UPDATE CHARTS
         this.updateDataCharts();
@@ -131,6 +133,8 @@ export class AssessorDashboardComponent implements OnInit {
 
 
   getItemStatusByIndicator(indicator: string) {
+    console.log('ITEM STATUS',this.itemStatusByIndicator);
+    
     if (this.itemStatusByIndicator.hasOwnProperty(indicator)) {
       console.log(this.itemStatusByIndicator[indicator]);
        
@@ -324,7 +328,7 @@ export class AssessorDashboardComponent implements OnInit {
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
     
     this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
-    this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
+    this.dataCharts.assessmentByField = this.itemStatusByIndicator[this.selectedIndicator];
   }
 
   updateDashboard() {
