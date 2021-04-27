@@ -181,3 +181,15 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Is the type of activi
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'For an activity/study status marked “completed”, is there a credible explanation of progress? For an activity/study status marked “extended, cancelled or changed”, is there an appropriate explanation?' WHERE (`id` = '104');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the short narrative included in the description of activity/study highlight clearly the key points of interest for a non-specialist reader?' WHERE (`id` = '108');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Are reference(s) or link(s) to MELIA publication provided? Does it make reference to progress or changes?' WHERE (`id` = '109');
+
+
+-- ASSESSORS EMAIL
+
+UPDATE `marlodb`.`qa_users` SET `email` = 'iferino@outlook.com' WHERE (`id` = '2');
+UPDATE `marlodb`.`qa_users` SET `email` = 'palmasforest@gmail.com' WHERE (`id` = '6');
+UPDATE `marlodb`.`qa_users` SET `email` = 'g.tibayrenc@cgiar.org' WHERE (`id` = '11');
+UPDATE `marlodb`.`qa_users` SET `email` = 'm.mariani@cgiar.org' WHERE (`id` = '12');
+UPDATE `marlodb`.`qa_users` SET `email` = 'l.lamotte@cgiar.org' WHERE (`id` = '13');
+UPDATE `marlodb`.`qa_users` SET `email` = 'cristinaramoss@gmail.com' WHERE (`id` = '14');
+UPDATE `marlodb`.`qa_users` SET `email` = 'o.ezekannagha@cgiar.org' WHERE (`id` = '15');
+UPDATE `marlodb`.`qa_users` SET `email` = 's.jani@cgiar.org' WHERE (`id` = '16');

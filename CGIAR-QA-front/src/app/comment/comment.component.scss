@@ -146,3 +146,11 @@
     cursor: pointer;
   }
 }
+
+.modal-body.text-center{
+  form {
+    textarea {
+      width: 90%;
+    }
+  }
+}

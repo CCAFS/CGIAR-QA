@@ -54,7 +54,7 @@
                                         </div>
                                         <hr style="margin: 0;">
 
-                                        <p class="reply" *ngIf="comment.replyType?.id != replyTypes.accepted">
+                                        <p class="reply">
                                             {{reply.detail}}
                                         </p>
                                     </ng-container>
@@ -76,6 +76,9 @@
                                 <h5>Do you want to ACCEPT this comment?</h5>
                                 <p>Before you accept this comment, please
                                     make sure you have updated the information in MARLO/MEL</p>
+                                    <form [formGroup]="commentGroup">
+                                        <textarea maxlength="{{totalChar}}" formControlName="comment" placeholder="Leaving a comment when accepting is optional..."></textarea>
+                                    </form>
                                 <button type="button" class="btn accept" (click)="confirm(true,replyTypes.accepted, comment)">Accept</button>
                                 <button type="button" class="btn btn-white" (click)="cancel()">Cancel</button>
                             </div>
