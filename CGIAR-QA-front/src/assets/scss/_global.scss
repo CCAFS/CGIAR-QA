@@ -7,7 +7,13 @@
   content: url("~/assets/icons/edit_icon.svg");
 }
 .icon-remove {
-  content: url("~/assets/icons/remove_icon.svg");
+  content: url("~/assets/icons/remove_icon_red.svg");
+  border-radius: 5px;
+  
+  &:hover{
+    cursor: pointer;
+    border: 2px solid rgb(121, 0, 0);
+  }
 }
 .icon-save {
   content: url("~/assets/icons/save_icon.svg");
