@@ -58,7 +58,7 @@ export class CRPIndicatorsComponent implements OnInit {
 
   notProviedText = '<No provided>'
 
-  order: string = 'id';
+  order: string = 'status';
   configTemplate: string;
   reverse: boolean = false;
 
@@ -95,9 +95,9 @@ export class CRPIndicatorsComponent implements OnInit {
   }
 
   ngOnInit() {
-    setTimeout(() => {                           //<<<---using ()=> syntax
-      this.verifyIfOrderByStatus();
-    }, 1000);
+    // setTimeout(() => {                           //<<<---using ()=> syntax
+    //   this.verifyIfOrderByStatus();
+    // }, 1000);
   }
 
 
@@ -106,7 +106,7 @@ export class CRPIndicatorsComponent implements OnInit {
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column, this.currentUser.crp.crp_id).subscribe(
       res => {
         console.log(res)
-        this.evaluationList = this.orderPipe.transform(res.data, 'id');
+        this.evaluationList = this.orderPipe.transform(res.data, (this.reverse) ? 'asc' : 'desc', this.order);
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;

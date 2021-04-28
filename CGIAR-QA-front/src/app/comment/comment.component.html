@@ -48,7 +48,7 @@
                                                 <span *ngIf="comment.replyType?.id != replyTypes.accepted">ADDED BY {{reply.user.username}} </span>
                                                 <p>On {{reply.updatedAt | date: 'long'}}</p>
                                             </div>
-                                            <i style="height: 2em;" *ngIf="reply.user.id === currentUser.id "
+                                            <i style="height: 1.7em;" *ngIf="reply.user.id === currentUser.id "
                                                 (click)="updateCommentReply('is_deleted', reply)"
                                                 class="icon-remove"></i>
                                         </div>
@@ -195,6 +195,7 @@
     <div *ngIf="!availableComment && !crpComment && dataFromItem.status !== statusHandler.Finalized && currentUser.hasOwnProperty('cycle')"
         class="add-comment-container">
         <form [formGroup]="commentGroup">
+            <!-- <p><span class="textarea" role="textbox" contenteditable maxlength="{{totalChar}}" formControlName="comment"></span></p> -->
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>
         <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>
