@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 
 import { User } from './../_models/user.model';
 import { CookiesService } from './cookie-service.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -19,64 +20,68 @@ export class AuthenticationService {
   public NOT_APPLICABLE = '<Not applicable>';
   public userIndicators;
   private usrCookie = 'currentUser';
+  private crpUsrCookie = 'currentUserCRP';
   Tawk_LoadStart = new Date();
 
-  constructor(private http: HttpClient, private cookiesService: CookiesService) {
+  constructor(private http: HttpClient, private cookiesService: CookiesService, private router: Router, private activedRoute: ActivatedRoute) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem(this.usrCookie)));
-    // this.currentUserSubject = new BehaviorSubject<User>(this.cookiesService.getData(this.usrCookie));
     this.currentUser = this.currentUserSubject.asObservable();
 
   }
 
   public get currentUserValue(): User {
+
+    if (this.router.url.indexOf('crp') == 1) {
+      this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem(this.crpUsrCookie)));
+      this.currentUser = this.currentUserSubject.asObservable();
+    } else {
+      this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem(this.usrCookie)));
+      this.currentUser = this.currentUserSubject.asObservable();
+    }
+
+
     return this.currentUserSubject.value;
   }
 
   login(username, password) {
     return this.http.post<any>(`${environment.apiUrl}/auth/login`, { username, password })
       .pipe(map(user => {
-        let currentUsr = this.parseIndicators(user.data)
-        this.userIndicators = user.data;
-        delete currentUsr.password
-        this.userHeaders = user.data.indicators;
-        this.markCyclesEnd(currentUsr);
-
-
-        localStorage.setItem(this.usrCookie, JSON.stringify(currentUsr))
-
-
-        // this.cookiesService.setData(this.usrCookie, currentUsr);
-        /** add user to tawk to **/
-        this.setLoggedUser(currentUsr)
-        this.currentUserSubject.next(currentUsr);
-        return currentUsr;
+        return this.setUserLogged(user.data);
       }));
   }
 
   // TO-DO
   tokenLogin(params: {}) {
-    console.log('PARAMS TOKEN LOGIN',params);
-    
+    console.log('PARAMS TOKEN LOGIN', params);
+
     return this.http.post<any>(`${environment.apiUrl}/auth/token/login`, params)
       .pipe(map(user => {
         this.parseMultipleCRP(user.data, params['crp_id'])
-        let currentUsr = this.parseIndicators(user.data);
-        delete currentUsr.password
-        this.userHeaders = user.data.indicators;
-        this.markCyclesEnd(currentUsr);
-
-        localStorage.setItem(this.usrCookie, JSON.stringify(currentUsr))
-
-
-        // this.cookiesService.setData(this.usrCookie, currentUsr);
-        /** add user to tawk to **/
-        this.setLoggedUser(currentUsr); //This function was commented to access as CRP
-        this.currentUserSubject.next(currentUsr);
-        return currentUsr;
+        return this.setUserLogged(user.data);
       }));
   }
 
-  setLoggedUser(user) {
+  private setUserLogged(user: User) {
+
+    const cookieName = user.crp == null ? this.usrCookie : this.crpUsrCookie;
+    console.log(cookieName);
+
+    let currentUsr = this.parseIndicators(user);
+    delete currentUsr.password;
+    this.userHeaders = user.indicators;
+    this.markCyclesEnd(currentUsr);
+
+
+
+    localStorage.setItem(cookieName, JSON.stringify(currentUsr));
+
+    /** add user to tawk to **/
+    this.setLoggedUserTawkTo(currentUsr);
+    this.currentUserSubject.next(currentUsr);
+    return currentUsr;
+  }
+
+  setLoggedUserTawkTo(user) {
     if (window.hasOwnProperty('Tawk_API')) {
       if (window['Tawk_API'].isVisitorEngaged()) window['Tawk_API'].endChat();
       window['Tawk_API'].setAttributes({
@@ -157,21 +162,24 @@ export class AuthenticationService {
       });
       localStorage.setItem('indicators', JSON.stringify(user.indicators));
       console.log('Indicadores actualizados');
-      
-      // console.log(JSON.parse(localStorage.getItem('indicators')))
-      // delete user.indicators;
     }
     return user
   }
-   parseUpdateIndicators(userIndicators) {
-     
+
+  /**
+   * For assessor indicators parsing
+   * @param userIndicators 
+   * @returns 
+   */
+  parseUpdateIndicators(userIndicators) {
+
     if (userIndicators.length > 0) {
       userIndicators.forEach(element => {
         delete element.indicator.meta
       });
       localStorage.setItem('indicators', JSON.stringify(userIndicators));
       console.log('Indicadores actualizados');
-      
+
       // console.log(JSON.parse(localStorage.getItem('indicators')))
       delete userIndicators.indicators;
     }
@@ -186,8 +194,8 @@ export class AuthenticationService {
     }
   }
 
-  markCyclesEnd(user){
-    if(!user.hasOwnProperty('cycle')){
+  markCyclesEnd(user) {
+    if (!user.hasOwnProperty('cycle')) {
       user.cycle_ended = true;
     }
   }

@@ -37,7 +37,7 @@ export class StatusChartComponent implements OnInit{
   }
 
   ngOnInit() {
-    console.log(this.indicator);
+    // console.log(this.indicator);
     this.formatIndicator();
   }
   onSelect(event) {

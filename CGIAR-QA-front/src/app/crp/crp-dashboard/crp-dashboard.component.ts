@@ -122,7 +122,7 @@ export class CrpDashboardComponent implements OnInit {
     private indicatorService: IndicatorsService) {
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
-        console.log(routeParams, x)
+        // console.log(routeParams, x)
         this.currentUser = x;
         this.getEvaluationsStats();
         this.getCommentStats();
@@ -147,7 +147,7 @@ export class CrpDashboardComponent implements OnInit {
       .subscribe(
         res => {
           this.dashboardData = this.dashService.groupData(res.data);
-          console.log(this.dashboardData)
+          // console.log(this.dashboardData)
           // this.formatStatusCharts();
           // console.log('HERE', this.statusChartData)
           
@@ -169,7 +169,7 @@ export class CrpDashboardComponent implements OnInit {
         res => {
           // this.has_comments = res.data ? true : false
           this.dashboardCommentsData = this.dashService.groupData(res.data);
-          console.log(this.dashboardCommentsData);
+          // console.log(this.dashboardCommentsData);
           
           // this.dashboardCommentsData = res.data;
           // this._setCharData(res)
@@ -287,7 +287,7 @@ export class CrpDashboardComponent implements OnInit {
   }
 
   goToView(indicatorId, primary_column) {
-    console.log(indicatorId, primary_column)
+    // console.log(indicatorId, primary_column)
     this.router.navigate([`crp/indicator/${indicatorId}/${primary_column}`]);
   }
 
@@ -302,7 +302,7 @@ export class CrpDashboardComponent implements OnInit {
   }
 
   formatStatusCharts() {
-    console.log(this.dashboardData);
+    // console.log(this.dashboardData);
     const colors = {
       Answered: 'var(--color-agree)',
       pending: 'var(--color-pending)',
@@ -322,7 +322,7 @@ export class CrpDashboardComponent implements OnInit {
     // dataset.forEach(tag => {
     //   brushes.domain.push(colors[tag.name]);
     // });
-    console.log(this.statusChartData);
+    // console.log(this.statusChartData);
   }
 
   formatCommentsIndicatorData(data, indicator?) {

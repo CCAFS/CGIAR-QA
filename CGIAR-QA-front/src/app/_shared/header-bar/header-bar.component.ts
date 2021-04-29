@@ -104,7 +104,7 @@ export class HeaderBarComponent implements OnInit {
     if (this.indicators && !this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
-          // console.log("getHeaderLinks", res);
+          console.log("getHeaderLinks", res);
           this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
           this.authenticationService.userHeaders = this.indicators;
         },

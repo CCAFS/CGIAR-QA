@@ -43,7 +43,7 @@ export class CommentsChartComponent implements OnInit {
   }
   ngOnInit() {
     this.chartType = this.commentsLabels[this.chartName];
-    console.log('SWIMLANE DATA', this.data);
+    // console.log('SWIMLANE DATA', this.data);
     
     // console.log(this.chartName);
     // console.log(this.chartType);
@@ -51,7 +51,7 @@ export class CommentsChartComponent implements OnInit {
   }
 
   onSelect(data): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    // console.log('Item clicked', JSON.parse(JSON.stringify(data)));
     let status = true;
     if(data.name == 'pending') {
       status = false;
@@ -65,7 +65,7 @@ export class CommentsChartComponent implements OnInit {
   }
 
   onDeactivate(data): void {
-    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+    // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
   setLabelFormatting(c): string {   

@@ -33,7 +33,7 @@ export class CrpComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
-      console.log(this.params);
+      // console.log(this.params);
       
       if (params.has('token')) {
         this.validateToken(this.params['params']);
@@ -58,7 +58,7 @@ export class CrpComponent implements OnInit {
         this.authenticationService.currentUser.subscribe(x => {
           this.hideSpinner(this.spinner_name);
           this.currentUser = x;
-          console.log(this.currentUser)
+          // console.log(this.currentUser)
           this.router.navigate([`/crp/dashboard`])
           this.getCRPIndicators();
         })
@@ -80,7 +80,7 @@ export class CrpComponent implements OnInit {
         .subscribe(
           res => {
             this.indicators = res.data;
-            localStorage.setItem('indicators', JSON.stringify(res.data));
+            localStorage.setItem('indicatorsCRP', JSON.stringify(res.data));
             this.authenticationService.userHeaders = res.data;
             // console.log(this.indicators)
             this.hideSpinner(this.spinner_name);
