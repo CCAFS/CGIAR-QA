@@ -1,6 +1,18 @@
 <div *ngIf="currentUser && (currentRole == 'assessor' || currentRole == 'admin')">
-    <div [ngClass]="{'hide': !assessorsChat.isOpen}" class="chat-container">
+    <div [ngClass]="{'open': assessorsChat.isOpen, 'hide-tab': !assessorsChat.openTab}" class="chat-container">
+        <div class="options">
+            <div class="toggle-expand" [ngClass]="{'chat-open': assessorsChat.isOpen, 'channels-open': assessorsChat.openTab}" (click)="toggleAssessorsChat()" (mouseenter)="previewChat(true)" (mouseleave)="previewChat(false)">
+                <div class="icon-container">
+                    <i [ngClass]="{'icon-chat-message': !assessorsChat.isOpen, 'icon-close-white': assessorsChat.isOpen}" ></i>
+                </div>
+<!--                 
+                <i *ngIf="!assessorsChat.openTab" class="icon-expand-left"></i>
+                <i *ngIf="assessorsChat.openTab" class="icon-expand-right"></i> -->
+            </div>
+            <!-- <div class="toggle-expand" (click)="toggleAssessorsChat()">
+                <i class="icon-chat-message"></i>
+            </div> -->
+        </div>
         <iframe [src]="chatRooms.general" ></iframe>
     </div>
-    <div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div>
 </div>

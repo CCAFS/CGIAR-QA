@@ -13,6 +13,8 @@ export class columnsPhaseYear1613501677012 implements MigrationInterface {
     public async down(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query("ALTER TABLE `qa_cycle` DROP COLUMN `phase_year`", undefined);
         await queryRunner.query("ALTER TABLE `qa_evaluations` DROP COLUMN `phase_year`", undefined);
+
+        
     }
 
 }

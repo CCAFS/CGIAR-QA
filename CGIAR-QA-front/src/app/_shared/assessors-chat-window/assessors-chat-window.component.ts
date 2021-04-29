@@ -16,7 +16,8 @@ export class AssessorsChatWindowComponent implements OnInit {
   chatRooms = null;
 
   assessorsChat = {
-    isOpen: false
+    isOpen: false,
+    openTab: false
   }
   constructor(private sanitizer: DomSanitizer,
     private activeRoute: ActivatedRoute,
@@ -42,12 +43,35 @@ export class AssessorsChatWindowComponent implements OnInit {
     console.log('ASSESSORS CHAT');
     
     this.chatRooms = {
-      general: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
+      general: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/Njt10-3wG?username=${this.currentUser.name}`),
     }
   }
 
   toggleAssessorsChat() {
     this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
+    // this.assessorsChat.openTab = !this.assessorsChat.openTab;
+    // if(this.assessorsChat.isOpen) this.assessorsChat.openTab = false;
+  }
+  toggleChannels() {
+    this.assessorsChat.openTab = !this.assessorsChat.openTab;
+    if(!this.assessorsChat.openTab) this.assessorsChat.isOpen = false;
+    // this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
+
+    // if(this.assessorsChat.openTab) this.assessorsChat.isOpen = false;
+  }
+
+  previewChat(value) {
+    switch (value) {
+      case true:
+        this.assessorsChat.openTab = true;
+        break;
+      case false:
+        this.assessorsChat.openTab = false;
+        break;
+    
+      default:
+        break;
+    }
   }
 
 }

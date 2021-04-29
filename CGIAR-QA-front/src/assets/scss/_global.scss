@@ -15,6 +15,15 @@
     border: 2px solid rgb(121, 0, 0);
   }
 }
+.icon-chat-message {
+  content: url("~/assets/icons/message-icon.svg");
+}
+.icon-expand-right {
+  content: url("~/assets/icons/expand-right-arrow.svg");
+}
+.icon-expand-left {
+  content: url("~/assets/icons/expand-left-arrow.svg");
+}
 .icon-save {
   content: url("~/assets/icons/save_icon.svg");
 }
@@ -32,6 +41,9 @@
 }
 .icon-close {
   content: url("~/assets/icons/close_icon.svg");
+}
+.icon-close-white {
+  content: url("~/assets/icons/close-icon-white.svg");
 }
 .icon-star-gray {
   content: url("~/assets/icons/starred_comment.svg");
