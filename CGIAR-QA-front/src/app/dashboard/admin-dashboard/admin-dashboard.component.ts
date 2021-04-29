@@ -157,7 +157,7 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.showSpinner()
-    console.log('USER',this.currentUser);
+    // console.log('USER',this.currentUser);
 
     this.loadDashData();
 
@@ -201,7 +201,7 @@ export class AdminDashboardComponent implements OnInit {
 
   actualStatusIndicator(data) {
     let indicator_status = false;
-    console.log(data);
+    // console.log(data);
     let i = 0;
     if (data) {
       for (const item of data) {
@@ -328,7 +328,7 @@ export class AdminDashboardComponent implements OnInit {
     dataset.forEach(tag => {
       brushes.domain.push(colors[tag.name]);
     });
-    console.log({ dataset, brushes });
+    // console.log({ dataset, brushes });
 
 
     return { dataset, brushes };
@@ -364,7 +364,7 @@ export class AdminDashboardComponent implements OnInit {
     this.showSpinner();
     request.subscribe(
       res => {
-        console.log(res)
+        // console.log(res)
         // this.hideSpinner();
         this.loadDashData();
       },
@@ -417,13 +417,13 @@ export class AdminDashboardComponent implements OnInit {
     this.getCommentStats(value.crp_id).subscribe(
       res => {
         this.dashboardCommentsData = this.dashService.groupData(res.data);
-        console.log('GET COMMENT STATS');
+        // console.log('GET COMMENT STATS');
 
         // this.getRawComments(value.crp_id)
       },
       error => {
         this.hideSpinner()
-        console.log("getCommentStats", error);
+        // console.log("getCommentStats", error);
         this.alertService.error(error);
       },
     );
@@ -497,7 +497,7 @@ export class AdminDashboardComponent implements OnInit {
       this.feedList = feedTags.data;
 
       this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
-      console.log('CHART 3',this.itemStatusByIndicator);
+      // console.log('CHART 3',this.itemStatusByIndicator);
 
       //UPDATE CHARTS
       this.updateDataCharts();

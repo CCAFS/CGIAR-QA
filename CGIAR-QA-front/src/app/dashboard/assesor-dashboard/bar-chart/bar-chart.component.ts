@@ -47,21 +47,21 @@ export class BarChartComponent implements OnInit {
   
   }
   ngOnInit() {
-    console.log('BAR CHART', this.data);
+    // console.log('BAR CHART', this.data);
     
   }
 
   onSelect(data): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    // console.log('Item clicked', JSON.parse(JSON.stringify(data)));
     this.filterTagEvent.emit(this.tagTypesId[data.name]);
   }
 
   onActivate(data): void {
-    console.log('Activate', JSON.parse(JSON.stringify(data)));
+    // console.log('Activate', JSON.parse(JSON.stringify(data)));
   }
 
   onDeactivate(data): void {
-    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+    // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 //   onResize(event) {
 //     this.view = [event.target.innerWidth / 1.35, 400];

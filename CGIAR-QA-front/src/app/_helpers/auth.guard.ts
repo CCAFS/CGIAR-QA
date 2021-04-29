@@ -62,7 +62,7 @@ export class AuthGuard implements CanActivate {
     if(!isAssessor){
       isAssessor = currentUser.roles.map(role => { return role ? role['description'] : null }).find(role => { return role === Role.crp || role === Role.admin});
     }
-    console.log('validatecycle', isAssessor);
+    // console.log('validatecycle', isAssessor);
     
     // console.log('validateCycle',  isAdmin ? false : !currentUser.hasOwnProperty('cycle'));
     return isAssessor && !currentUser.hasOwnProperty('cycle') ? true : false;

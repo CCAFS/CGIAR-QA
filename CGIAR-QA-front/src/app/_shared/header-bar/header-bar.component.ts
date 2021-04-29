@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { AuthenticationService } from "../../services/authentication.service";
 import { IndicatorsService } from "../../services/indicators.service";
@@ -10,7 +10,9 @@ import { AlertService } from '../../services/alert.service';
 import { User } from '../../_models/user.model';
 import { Role } from '../../_models/roles.model';
 import { GeneralStatus } from '../../_models/general-status.model';
-import { DomSanitizer } from '@angular/platform-browser';
+import { filter, pairwise } from 'rxjs/operators';
+
+// import { filter, pairwise } from 'rxjs'
 
 @Component({
   selector: 'header-bar',
@@ -50,19 +52,47 @@ export class HeaderBarComponent implements OnInit {
     public router: Router,
     private indicatorService: IndicatorsService,
     private alertService: AlertService) {
-    this.activeRoute.params.subscribe(routeParams => {
-      this.params = routeParams;
-      this.authenticationService.currentUser.subscribe(x => {
-        this.currentUser = x;
-        if (x) {
-          this.currentRole = x.roles[0].description.toLowerCase()
-          this.ngOnInit();
-          this.getHeaderLinks();
-          this.isHome = `/dashboard/${this.currentUser}`;
-          // this.isHome = this.router.isActive( `/dashboard/${this.currentUser}` , true)
-        }
+
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationStart),
+      pairwise()
+    )
+      .subscribe((e: any[]) => {
+        console.log(e);
+        e.forEach(element => {
+          if (element.url != '/login') {
+            this.authenticationService.currentUser.subscribe(x => {
+              this.currentUser = x;
+              console.log(x)
+              if (x) {
+                this.currentRole = x.roles[0].description.toLowerCase()
+                this.ngOnInit();
+                this.getHeaderLinks();
+                this.isHome = `/dashboard/${this.currentUser}`;
+              }
+            },
+              err => { console.log(err) });
+          }
+        });
       });
-    })
+
+
+
+    // this.activeRoute.params.subscribe(routeParams => {
+    //   this.params = routeParams;
+    //   console.log(routeParams)
+    //   this.authenticationService.currentUser.subscribe(x => {
+    //     this.currentUser = x;
+    //     console.log(x)
+    //     if (x) {
+    //       this.currentRole = x.roles[0].description.toLowerCase()
+    //       this.ngOnInit();
+    //       this.getHeaderLinks();
+    //       this.isHome = `/dashboard/${this.currentUser}`;
+    //     }
+    //   },
+    //     err => { console.log(err) });
+    // })
 
   }
 
@@ -72,19 +102,14 @@ export class HeaderBarComponent implements OnInit {
 
   ngOnInit() {
     this.indicators = this.authenticationService.userHeaders;
-    console.log('NAV INDICATORS', this.indicators);
-
-
-    // this.getHeaderLinks();
+    // console.log('NAV INDICATORS', this.indicators);
   }
 
   getIndicators() {
-    console.log('NAV INDICATORS', this.indicators);
+    // console.log('NAV INDICATORS', this.indicators);
   }
 
   goToView(indicator: any) {
-    // //console.log(this.router.navigate(['/reload']), this.activeRoute.pathFromRoot.toString(), this.router.url.toString().indexOf('/indicator'))
-
     if (indicator === 'logo' || indicator === 'home') {
       this.router.navigate([`dashboard/${this.currentUser.roles[0].description.toLowerCase()}`]);
       return
@@ -101,6 +126,7 @@ export class HeaderBarComponent implements OnInit {
   }
 
   getHeaderLinks() {
+    console.log(this.indicators, !this.indicators.length, this.currentUser, !this.isCRP())
     if (this.indicators && !this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
@@ -119,11 +145,6 @@ export class HeaderBarComponent implements OnInit {
 
   isCRP() {
     if (this.currentUser) {
-      // let mapped_roles = this.currentUser.roles.map(role => { return role.description });
-      // let has_roles = mapped_roles.find(role_ => {
-      //   return this.allRoles.crp.indexOf(role_) > -1
-      // });
-      // return has_roles
       return this.currentUser.crp ? true : false;
     }
     return false;
