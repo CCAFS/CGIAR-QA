@@ -36,6 +36,10 @@ export class QAGeneralConfiguration {
     @Column({default:''})
     @Length(0, 200)
     anual_report_guideline: string;
+
+    @Column({default:''})
+    @Length(0, 200)
+    assessors_guideline: string;
     
     @Column({default:''})
     @Length(0, 200)

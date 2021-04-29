@@ -132,7 +132,7 @@
                 </div>
 
             </div>
-            <div class="data-row gnral-commnts">
+            <!-- <div class="data-row gnral-commnts">
                 <h2>General comments:</h2>
                 <div *ngIf="detailedData && detailedData[0].general_comment" class="col data-container">
                     <p> {{detailedData[0].general_comment}} </p>
@@ -143,7 +143,6 @@
                     <div class="general-reply-container text-area" *ngFor="let reply of general_comment_reply;">
                         <p>{{reply.detail}}</p>
                         <p><strong>Replied by</strong>: {{reply.user.username}} </p>
-                        <!-- <p>{{getCommentReplies()}}</p> -->
                     </div>
                     <div *ngIf="general_comment_reply && general_comment_reply.length == 0">
                         <form [formGroup]="generalCommentGroup" style="display: flex; margin-bottom: 2em;">
@@ -163,7 +162,7 @@
                     class="col data-container" style="    min-height: auto;">
                     No comments were provided.
                 </div>
-            </div>
+            </div> -->
 
         </div>
 

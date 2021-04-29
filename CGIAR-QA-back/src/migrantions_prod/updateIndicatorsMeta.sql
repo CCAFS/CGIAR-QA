@@ -1,7 +1,7 @@
 -- SLO TARGETS FIELDS
 
 -- UPDATE CRITERIAS
-UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the case present significant quantitative progress against the 10 SLO targets from the CGIAR SRF and use appropriate metrics which correspond to a specific target (e.g. millions of hectares, millions of smallholder farmers, x% increased yield, etc.)If the results are updated from previous years, does the brief summary clearly indicates “updated results”? ' WHERE (`id` = '150');
+UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the case present significant quantitative progress against the 10 SLO targets from the CGIAR SRF and use appropriate metrics which correspond to a specific target (e.g. millions of hectares, millions of smallholder farmers, x% increased yield, etc.)?<br><br>If the results are updated from previous years, does the brief summary clearly indicates “updated results”? ' WHERE (`id` = '150');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Is the geographical scope, with precise location, clearly indicated? ' WHERE (`id` = '166');
 -- INSERT NEW FIELDS
 INSERT INTO `marlodb`.`qa_indicators_meta` (`id`, `col_name`, `display_name`, `enable_comments`, `is_primay`, `include_general`, `include_detail`, `order`, `description`, `createdAt`, `updatedAt`, `indicatorId`) VALUES ('166', 'geographic_scope', 'Geographic scope', '1', '0', '1', '1', '4', 'Is the geographical scope, with precise location, clearly indicated? ', '2021-03-30 10:09:22.534248', '2021-03-30 10:09:22.534248', '8');
@@ -76,6 +76,10 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the justificatio
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the justification match the cross-cutting marker score?' WHERE (`id` = '95');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the justification match the cross-cutting marker score?' WHERE (`id` = '97');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the justification match the cross-cutting marker score?' WHERE (`id` = '99');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '17' WHERE (`id` = '78');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '16' WHERE (`id` = '88');
+UPDATE `marlodb`.`qa_indicators_meta` SET `enable_comments` = '0', `order` = '0' WHERE (`id` = '75');
+
 
 
 -- INNOVATIONS FIELDS 
@@ -96,6 +100,8 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'For genetic innovatio
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Is the described innovation well classified by type? ' WHERE (`id` = '11');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Is the geographic scope provided and appropriate? ' WHERE (`id` = '13');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Are the sub-IDOs correctly applied?' WHERE (`id` = '20');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '4' WHERE (`id` = '165');
+UPDATE `marlodb`.`qa_indicators_meta` SET `order` = '5' WHERE (`id` = '9');
 
 
 -- MILESTONES FIELDS
@@ -123,6 +129,8 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the cross-cuttin
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the justification match the cross-cutting marker score?' WHERE (`id` = '140');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the cross-cutting marker score match the justification provided?' WHERE (`id` = '141');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the justification match the cross-cutting marker score?' WHERE (`id` = '142');
+UPDATE `marlodb`.`qa_indicators_meta` SET `enable_comments` = '1' WHERE (`id` = '163');
+UPDATE `marlodb`.`qa_indicators_meta` SET `enable_comments` = '1' WHERE (`id` = '162');
 
 -- PEER REVIEWED PAPERS
 --UPDATE CRITERIAS
@@ -173,3 +181,15 @@ UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Is the type of activi
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'For an activity/study status marked “completed”, is there a credible explanation of progress? For an activity/study status marked “extended, cancelled or changed”, is there an appropriate explanation?' WHERE (`id` = '104');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Does the short narrative included in the description of activity/study highlight clearly the key points of interest for a non-specialist reader?' WHERE (`id` = '108');
 UPDATE `marlodb`.`qa_indicators_meta` SET `description` = 'Are reference(s) or link(s) to MELIA publication provided? Does it make reference to progress or changes?' WHERE (`id` = '109');
+
+
+-- ASSESSORS EMAIL
+
+UPDATE `marlodb`.`qa_users` SET `email` = 'iferino@outlook.com' WHERE (`id` = '2');
+UPDATE `marlodb`.`qa_users` SET `email` = 'palmasforest@gmail.com' WHERE (`id` = '6');
+UPDATE `marlodb`.`qa_users` SET `email` = 'g.tibayrenc@cgiar.org' WHERE (`id` = '11');
+UPDATE `marlodb`.`qa_users` SET `email` = 'm.mariani@cgiar.org' WHERE (`id` = '12');
+UPDATE `marlodb`.`qa_users` SET `email` = 'l.lamotte@cgiar.org' WHERE (`id` = '13');
+UPDATE `marlodb`.`qa_users` SET `email` = 'cristinaramoss@gmail.com' WHERE (`id` = '14');
+UPDATE `marlodb`.`qa_users` SET `email` = 'o.ezekannagha@cgiar.org' WHERE (`id` = '15');
+UPDATE `marlodb`.`qa_users` SET `email` = 's.jani@cgiar.org' WHERE (`id` = '16');

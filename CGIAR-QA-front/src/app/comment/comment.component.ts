@@ -47,6 +47,7 @@ export class CommentComponent implements OnInit {
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
+  @Output("validateAllFieldsAssessed") validateAllFieldsAssessed: EventEmitter<any> = new EventEmitter();
   @Output("updateNumCommnts") updateNumCommnts: EventEmitter<any> = new EventEmitter();
   allRoles = Role;
 
@@ -141,7 +142,8 @@ export class CommentComponent implements OnInit {
   }
 
   addComment() {
-
+    console.log('ADDING COMMENT');
+    // this.validateAllFieldsAssessed.emit();
     if (this.commentGroup.invalid) {
       this.alertService.error('comment is required', false)
       return;
@@ -155,8 +157,11 @@ export class CommentComponent implements OnInit {
       approved: true
     }).subscribe(
       res => {
-        this.getItemCommentData()
+        console.log('COMMENT ADDED');
+        
+        this.getItemCommentData(true)
         this.formData.comment.reset()
+        this.validateAllFieldsAssessed.emit();
       },
       error => {
         console.log("getEvaluationsList", error);
@@ -179,7 +184,7 @@ export class CommentComponent implements OnInit {
 
     this.commentService.updateDataComment(data).subscribe(
       res => {
-        this.getItemCommentData();
+        this.getItemCommentData(true);
       },
       error => {
         console.log("updateComment", error);
@@ -221,14 +226,15 @@ export class CommentComponent implements OnInit {
   }
 
 
-  getItemCommentData() {
+  getItemCommentData(validateFields? : boolean) {
 
     let params = { evaluationId: this.dataFromItem.evaluation_id, metaId: this.dataFromItem.field_id };
     this.commentService.getDataComment(params).subscribe(
       res => {
         this.hideSpinner(this.spinner_comment);
         // console.log(res)
-        this.updateNumCommnts.emit(res.data.filter(field => field.is_deleted == false));
+        this.updateNumCommnts.emit({length: res.data.filter(field => field.is_deleted == false).length, validateFields});
+       
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:
             this.commentsByCol = res.data.filter(data => data.approved);

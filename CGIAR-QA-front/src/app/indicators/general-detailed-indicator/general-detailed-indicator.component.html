@@ -127,7 +127,7 @@
                                         [innerHTML]="detailedData[i].value | markdown">
                                     </div>
                                     <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  )"
-                                        [innerHTML]="detailedData[i].value">
+                                        [innerHTML]='detailedData[i].value'>
                                     </div>
 
                                     <!-- <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'OICR' )"
@@ -294,7 +294,7 @@
 
                                     <!-- data value -->
                                     <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
-                                        [innerHTML]="detailedData[i].value | markdown">
+                                        [innerHTML]="detailedData[i].value.replace | markdown">
                                     </div>
                                     <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  )"
                                         [innerHTML]="detailedData[i].value">
@@ -350,8 +350,8 @@
         <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
             <app-comment #comment
-                (parentFun)="showComments(fieldIndex, detailedData[fieldIndex]); validateUpdateEvaluation()"
-                (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
+                (parentFun)="showComments(fieldIndex, detailedData[fieldIndex])"
+                (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);" ></app-comment>
         </div>
 
     </div>

@@ -48,13 +48,13 @@
                                                 <span *ngIf="comment.replyType?.id != replyTypes.accepted">ADDED BY {{reply.user.username}} </span>
                                                 <p>On {{reply.updatedAt | date: 'long'}}</p>
                                             </div>
-                                            <i style="height: 2em;" *ngIf="reply.user.id === currentUser.id "
+                                            <i style="height: 1.7em;" *ngIf="reply.user.id === currentUser.id "
                                                 (click)="updateCommentReply('is_deleted', reply)"
-                                                class="icon-remove btn"></i>
+                                                class="icon-remove"></i>
                                         </div>
                                         <hr style="margin: 0;">
 
-                                        <p class="reply" *ngIf="comment.replyType?.id != replyTypes.accepted">
+                                        <p class="reply">
                                             {{reply.detail}}
                                         </p>
                                     </ng-container>
@@ -76,6 +76,9 @@
                                 <h5>Do you want to ACCEPT this comment?</h5>
                                 <p>Before you accept this comment, please
                                     make sure you have updated the information in MARLO/MEL</p>
+                                    <form [formGroup]="commentGroup">
+                                        <textarea maxlength="{{totalChar}}" formControlName="comment" placeholder="Leaving a comment when accepting is optional..."></textarea>
+                                    </form>
                                 <button type="button" class="btn accept" (click)="confirm(true,replyTypes.accepted, comment)">Accept</button>
                                 <button type="button" class="btn btn-white" (click)="cancel()">Cancel</button>
                             </div>
@@ -192,6 +195,7 @@
     <div *ngIf="!availableComment && !crpComment && dataFromItem.status !== statusHandler.Finalized && currentUser.hasOwnProperty('cycle')"
         class="add-comment-container">
         <form [formGroup]="commentGroup">
+            <!-- <p><span class="textarea" role="textbox" contenteditable maxlength="{{totalChar}}" formControlName="comment"></span></p> -->
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>
         <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>

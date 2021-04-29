@@ -191,7 +191,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         res => {
           // console.log(res);
           field.loading = false
-          this.validateUpdateEvaluation();
+          // this.validateUpdateEvaluation();
           this.validateAllFieldsAssessed()
         },
         error => {
@@ -235,11 +235,16 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   validateAllFieldsAssessed() {
+    console.log('VALIDATING AFTER COMMENT');
+    
+    let initialStatus = this.gnralInfo.status;
     let allFieldsAssessed: boolean = false;
     let statusByField = [];
     this.formTickData.controls.forEach((value, i) => {
+      console.log(this.detailedData[i]);
       
-      statusByField.push({display_name: this.detailedData[i].display_name, value: (this.detailedData[i].replies_count != '0' || value.get('isChecked').value) ? true : false});
+      
+      statusByField.push({display_name: this.detailedData[i].display_name, value:  (this.detailedData[i].replies_count != '0' || value.get('isChecked').value || this.detailedData[i].enable_comments == false) ? true : false});
     });
     let fieldWithoutAssessed = statusByField.find(e => e.value == false);
     // existNotAssessed = existNotAssessed.value;
@@ -250,6 +255,12 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.updateEvaluation('status', this.detailedData)
     } else {
       allFieldsAssessed = false;
+      this.gnralInfo.status_update = this.statusHandler.Pending;
+      if(initialStatus != this.statusHandler.Pending) {
+        console.log({initialStatus}, this.statusHandler.Pending);
+        
+        this.updateEvaluation('status', this.detailedData)
+      }
     }
     console.log(this.detailedData);
     
@@ -383,6 +394,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
+    // if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
   }
 
   getPosition(el) {
@@ -411,11 +423,14 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     };
   }
 
-  updateNumCommnts(event, detailedData) {
-    detailedData.replies_count = event.length;
+  updateNumCommnts({length, validateFields}, detailedData, ) {
+    detailedData.replies_count = length;
+    if(validateFields) this.validateAllFieldsAssessed();
   }
 
   updateEvaluation(type: string, data: any) {
+    console.log('Actualizando evaluación');
+    
     let evaluationData = {
       evaluation_id: data[0].evaluation_id,
       status: data[0].status,
