@@ -26,7 +26,7 @@ export class DoughnutChartComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.data);
+    // console.log(this.data);
     // this.formatInputData();
     // console.log(this.dataset);
     
