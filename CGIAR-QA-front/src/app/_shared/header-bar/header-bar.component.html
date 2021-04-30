@@ -1,4 +1,4 @@
-<app-assessors-ch/at-window></app-assessors-chat-window>
+<app-assessors-chat-window *ngIf="currentUser"></app-assessors-chat-window>
 <nav class="navbar navbar-expand header-bar" *ngIf=" !isCRP() && (router.url !== '/qa-close' && router.url !== '/login')">
     <div (click)="goToView('logo')" class="logo-container">
         <i class="cgiar-logo"></i>
