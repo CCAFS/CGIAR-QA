@@ -3,7 +3,6 @@ import { DOCUMENT } from '@angular/common';
 import { AuthenticationService } from '../services/authentication.service';
 import { User } from '../_models/user.model';
 import { environment } from '../../environments/environment';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-tawk-to',
@@ -16,25 +15,14 @@ export class TawkToComponent implements OnInit {
   isVisibleTawk = true;
   currentUser: User;
   config = environment;
-  params;
 
-  constructor(private route: ActivatedRoute, private _renderer: Renderer2, @Inject(DOCUMENT) private _document, private authService: AuthenticationService) {
-    this.route.queryParamMap.subscribe(params => {
-      this.params = params;
-      // console.log(this.params);
+
+  constructor(private _renderer: Renderer2, @Inject(DOCUMENT) private _document, private authService: AuthenticationService) {
+    this.authService.currentUser.subscribe(x => {
+      this.currentUser = x;
+      console.log(this.currentUser);
       
-      if (params.has('token')) {
-        console.log('NO TAWK TO');
-        
-      } else {
-        this.authService.currentUser.subscribe(x => {
-          this.currentUser = x;
-          console.log(this.currentUser);
-          
-        });
-      }
     });
-
 
   }
 

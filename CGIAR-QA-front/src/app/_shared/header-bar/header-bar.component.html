@@ -29,5 +29,5 @@
                 *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a> -->
         </div>
     </div>
-    
+    <app-tawk-to *ngIf="currentUser"></app-tawk-to>
 </nav>
