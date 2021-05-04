@@ -233,7 +233,7 @@ export class CommentComponent implements OnInit {
       res => {
         this.hideSpinner(this.spinner_comment);
         // console.log(res)
-        this.updateNumCommnts.emit({length: res.data.filter(field => field.is_deleted == false).length, validateFields});
+        this.updateNumCommnts.emit({length: res.data.filter(field => field.is_deleted == false).length, replies_count: +res.data.filter(data => data.approved)[0].replies.replies_count, validateFields});
        
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:

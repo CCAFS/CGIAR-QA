@@ -124,7 +124,7 @@ export class DetailIndicatorComponent implements OnInit {
           field.value = this.urlTransfrom.transform(field.value);
           return field.value !== this.notApplicable;
         });
-        
+
         console.log(this.detailedData);
         
         // this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
@@ -263,14 +263,19 @@ export class DetailIndicatorComponent implements OnInit {
     // this.getDetailedData();
   }
 
-  updateNumCommnts(event, detailedData) {
+  updateNumCommnts({length, replies_count, validateFields}, detailedData) {
     // console.log('updateNumCommnts', event, event[0].replies.replies_count)
     //  event[0].replies.replies_count;
-    detailedData.replies_count = event.length;
-    let repls_count = 0
-    event.forEach(element => {
-      repls_count += parseInt(element.replies.replies_count)
-    });
+    console.log(detailedData);
+    
+    detailedData.replies_count = length;
+    let repls_count = 0;
+    console.log(replies_count);
+    
+    repls_count = replies_count;
+    // event.forEach(element => {
+    //   repls_count += parseInt(element.replies.replies_count)
+    // });
     detailedData.comments_replies_count = repls_count
   }
 
