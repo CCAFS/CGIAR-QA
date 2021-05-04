@@ -8,7 +8,8 @@ import { AlertService } from '../../services/alert.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName, GeneralStatus } from "../../_models/general-status.model"
+import { DetailedStatus, GeneralIndicatorName, GeneralStatus } from "../../_models/general-status.model" 
+import { crpMEL  } from "../../_models/crp.model" ;
 import { Role } from 'src/app/_models/roles.model';
 import { Title } from '@angular/platform-browser';
 import { CommentService } from 'src/app/services/comment.service';
@@ -44,6 +45,7 @@ export class DetailIndicatorComponent implements OnInit {
     crp_id: ''
   };
   statusHandler = DetailedStatus;
+  crpsMEL = crpMEL;
   generalCommentGroup: FormGroup;
   currentType = '';
 
@@ -109,6 +111,8 @@ export class DetailIndicatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.crpsMEL);
+    
   }
 
   getDetailedData() {

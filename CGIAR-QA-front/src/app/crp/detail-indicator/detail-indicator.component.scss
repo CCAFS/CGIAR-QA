@@ -11,8 +11,17 @@
   display: flex;
   justify-content: space-between;
   margin: auto 2em;
+  .buttons {
+    width: 10vw;
+    display: flex;
+    justify-content: space-between;
+  }
 }
-
+.btn-mis {
+  i{
+    max-height: 30px;
+  }
+}
 .icon-go-back {
   height: 0.8em;
 }

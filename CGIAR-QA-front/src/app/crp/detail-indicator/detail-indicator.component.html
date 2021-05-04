@@ -31,19 +31,29 @@
         </p>
     </div>
 
-    <div *ngIf="detailedData[0]">
+    <div *ngIf="detailedData[0]" class="buttons">
 
         <div style="margin-right: 1em;" tooltip="{{tooltips.download_excel}}" container="body" placement="top"
             *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
             <i class="icon-download-excel"></i>
         </div>
         <!-- TO-DO -->
-        <a *ngIf="detailedData[0].editable_link" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
+        <!-- <a *ngIf="detailedData[0].editable_link" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
             <div tooltip="{{tooltips.editable_link}}" container="body" placement="top"
                 class="btn btn-primary file-button">
-                <i class="icon-public-link"></i>
+                
+                <i class="icon-public-link"></i> 
             </div>
+        </a> -->
+        <div class="btn-mis">
+        <a *ngIf="detailedData[0].editable_link && crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
+            <i class="icon-mel"></i> 
         </a>
+        <a *ngIf="detailedData[0].editable_link && !crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
+            MARLO
+        </a>
+
+        </div>
     </div>
 </div>
 

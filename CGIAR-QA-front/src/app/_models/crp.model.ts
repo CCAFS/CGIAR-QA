@@ -17,3 +17,9 @@ export class CRP {
         this.updatedAt = new Date();
     }
 }
+
+export enum crpMEL {
+    RTB = 'RTB',
+    FISH = 'FISH',
+    GLDC = 'GLDC'
+}
