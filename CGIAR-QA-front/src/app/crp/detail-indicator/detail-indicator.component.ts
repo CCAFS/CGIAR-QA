@@ -123,7 +123,10 @@ export class DetailIndicatorComponent implements OnInit {
           if (typeof field.value === 'number') field.value = String(field.value)
           field.value = this.urlTransfrom.transform(field.value);
           return field.value !== this.notApplicable;
-        });;
+        });
+        
+        console.log(this.detailedData);
+        
         // this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
         this.gnralInfo = {
           evaluation_id: this.detailedData[0].evaluation_id,

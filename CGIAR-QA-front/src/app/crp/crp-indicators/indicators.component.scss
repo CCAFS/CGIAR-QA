@@ -125,6 +125,9 @@ h2 {
 .circle.answered {
   background-color: var(--color-answered);
 }
+.circle.complete {
+  background-color: var(--color-answered);
+}
 .circle.pending {
   background-color: var(--color-pending);
 }

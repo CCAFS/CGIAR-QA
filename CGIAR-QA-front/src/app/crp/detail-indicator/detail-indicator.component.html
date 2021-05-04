@@ -73,7 +73,7 @@
                                     <div [innerHtml]="field.meta_description"></div>
                                 </ng-template>
 
-                                <div [ngClass]="{'approved-no-comment': field.approved_no_comment == 1} "
+                                <div  [ngClass]="{'approved-no-comment': field.approved_no_comment == 1 && field.enable_comments} "
                                     style="display:none">
                                     Approved without comments
                                 </div>
