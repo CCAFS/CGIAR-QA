@@ -122,8 +122,8 @@ h2 {
     margin: auto !important;
   }
 }
-.circle.complete {
-  background-color: var(--color-complete);
+.circle.answered {
+  background-color: var(--color-answered);
 }
 .circle.pending {
   background-color: var(--color-pending);
