@@ -63,7 +63,8 @@ export class DetailIndicatorComponent implements OnInit {
   tickGroup: FormGroup;
   tooltips = {
     public_link: '',
-    editable_link: 'Click here to access the item in MARLO/MEL',
+    editable_link_marlo: 'Click here to access the item in MARLO',
+    editable_link_mel: 'Click here to access the item in MEL',
     download_excel: 'Click here to download all comments in an excel file.',
     all_approved: 'Setting this option true, will approved all items without comments.'
   }

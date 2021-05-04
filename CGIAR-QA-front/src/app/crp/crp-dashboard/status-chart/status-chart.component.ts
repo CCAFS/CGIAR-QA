@@ -12,7 +12,7 @@ export class StatusChartComponent implements OnInit{
   view: any[] = [700, 400];
 
   legendLabels = [
-    {name:"Answered", class: "complete", value: 0},
+    {name:"Answered", class: "answered", value: 0},
     {name:"Pending", class:"pending", value: 0 },
   ];
 
@@ -28,7 +28,7 @@ export class StatusChartComponent implements OnInit{
   xAxisLabel: string = 'Normalized Population';
 
   colorScheme = {
-    domain: ['var(--color-complete)', 'var(--color-pending)']
+    domain: ['var(--color-answered)', 'var(--color-pending)']
   };
 
   constructor() {

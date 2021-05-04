@@ -11,17 +11,23 @@
   display: flex;
   justify-content: space-between;
   margin: auto 2em;
+  .status {
+    display: grid;
+    place-items: center;
+  }
   .buttons {
     width: 10vw;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    align-items: center;
+    .btn-mis {
+      i{
+        max-height: 40px;
+      }
+    }
   }
 }
-.btn-mis {
-  i{
-    max-height: 30px;
-  }
-}
+
 .icon-go-back {
   height: 0.8em;
 }

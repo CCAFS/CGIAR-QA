@@ -16,7 +16,7 @@
         {{detailedData[0].crp_acronym}} / {{currentType}} /
         QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
     </p>
-    <div class="col" *ngIf="currentUser.hasOwnProperty('cycle')">
+    <div class="col status" *ngIf="currentUser.hasOwnProperty('cycle')">
         <p>Assessment Status: <span
                 class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Assessed 1st round":"Pending"}}</span>
         </p>
@@ -46,11 +46,11 @@
             </div>
         </a> -->
         <div class="btn-mis">
-        <a *ngIf="detailedData[0].editable_link && crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
+        <a tooltip="{{tooltips.editable_link_mel}}" *ngIf="detailedData[0].editable_link && crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)" href="{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
             <i class="icon-mel"></i> 
         </a>
-        <a *ngIf="detailedData[0].editable_link && !crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
-            MARLO
+        <a tooltip="{{tooltips.editable_link_marlo}}" *ngIf="detailedData[0].editable_link && !crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
+            <i class="icon-marlo"></i>            
         </a>
 
         </div>
