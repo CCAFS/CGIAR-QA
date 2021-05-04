@@ -20,29 +20,34 @@ export class TawkToComponent implements OnInit {
   constructor(private _renderer: Renderer2, @Inject(DOCUMENT) private _document, private authService: AuthenticationService) {
     this.authService.currentUser.subscribe(x => {
       this.currentUser = x;
+      console.log(this.currentUser);
+      
     });
 
   }
 
   ngOnInit() {
-    this.script.text = `var Tawk_API = Tawk_API || {},  Tawk_LoadStart = new Date();
-    (function () {
-      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-      s1.async = true;
-      s1.src = 'https://embed.tawk.to/${this.config.tawkToId}/default';
-      s1.charset = 'UTF-8';
-      s1.setAttribute('crossorigin', '*');
-      s0.parentNode.insertBefore(s1, s0);
-    })();
-    Tawk_API.visitor = {
-    name  : '',
-    email : ''
-    };`;
-    this._renderer.appendChild(this._document.body, this.script);
-    setTimeout(() => {
-      this.openChat();
-      this.setLoggedUser()
-    }, 200);
+    if(this.currentUser && this.currentUser.roles[0].id != 3) {
+
+      this.script.text = `var Tawk_API = Tawk_API || {},  Tawk_LoadStart = new Date();
+      (function () {
+        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/${this.config.tawkToId}/default';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
+      })();
+      Tawk_API.visitor = {
+      name  : '',
+      email : ''
+      };`;
+      this._renderer.appendChild(this._document.body, this.script);
+      setTimeout(() => {
+        this.openChat();
+        this.setLoggedUser()
+      }, 200);
+    }
 
   }
 
