@@ -19,6 +19,7 @@ export class CommentsChartComponent implements OnInit {
   commentsLabels = [
     {name:"Pending", class:"pending", value: 0},
     {name:"Accepted", class: "agree", value: 0},
+    {name:"Accepted with comment", class: "agree-wc", value: 0},
     {name:"Disagreed", class: "disagree", value: 0},
     {name:"Clarification needed", class: "clarification", value: 0},
   ]
@@ -33,7 +34,7 @@ export class CommentsChartComponent implements OnInit {
   gradient: boolean = false;
   showLegend: boolean = false;
   showLabels: boolean = true;
-  isDoughnut: boolean = true;
+  isDoughnut: boolean = false;
   legendPosition: string = 'below';
 
   constructor(private router: Router,

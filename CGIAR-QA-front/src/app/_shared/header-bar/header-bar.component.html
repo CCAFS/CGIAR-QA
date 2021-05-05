@@ -1,3 +1,4 @@
+
 <app-assessors-chat-window *ngIf="currentUser"></app-assessors-chat-window>
 <nav class="navbar navbar-expand header-bar" *ngIf=" !isCRP() && (router.url !== '/qa-close' && router.url !== '/login')">
     <div (click)="goToView('logo')" class="logo-container">
@@ -14,7 +15,7 @@
                 <p>{{currentUser.email}}</p>
             </div>
             <div class="log-out-panel" (click)="logout()">
-                <p>Signout</p>
+                <span><p>Signout</p></span> 
                 <i class="icon-log-out"></i>
             </div>
         </div>

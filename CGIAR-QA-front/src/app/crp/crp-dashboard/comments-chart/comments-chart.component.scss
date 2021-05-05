@@ -38,7 +38,7 @@
     .legend{
         height: auto;
         max-height: 40px;
-        width:90%;
+        width:100%;
         flex-wrap: wrap;
         // background-color: black;
         display: flex;
@@ -71,6 +71,9 @@
         }
         .agree {
             background-color: var(--color-agree);
+        }
+        .agree-wc {
+            background-color: var(--color-agree-wc);
         }
         .disagree {
             background-color: var(--color-disagree);

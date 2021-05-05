@@ -328,6 +328,7 @@ export class CrpDashboardComponent implements OnInit {
   formatCommentsIndicatorData(data, indicator?) {
     const colors = {
       Accepted: 'var(--color-agree)',
+      AcceptedWC: 'var(--color-agree-wc)',
       Clarification: 'var(--color-clarification)',
       Disagree: 'var(--color-disagree)',
       Pending: 'var(--color-pending)'
@@ -336,9 +337,13 @@ export class CrpDashboardComponent implements OnInit {
     let brushes = { domain: [] };
 
     if (data) {
-      let comments_accepted = data.find(item => item.comments_accepted != '0');
-      comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
-      if (comments_accepted) dataset.push(comments_accepted);
+      let comments_accepted_with_comment = data.find(item => item.comments_accepted_with_comment != '0');
+      comments_accepted_with_comment = comments_accepted_with_comment ? { name: 'AcceptedWC', value: +comments_accepted_with_comment.value } : null;
+      if (comments_accepted_with_comment) dataset.push(comments_accepted_with_comment);
+      
+      let comments_accepted_without_comment = data.find(item => item.comments_accepted_without_comment != '0');
+      comments_accepted_without_comment = comments_accepted_without_comment ? { name: 'Accepted', value: +comments_accepted_without_comment.value } : null;
+      if (comments_accepted_without_comment) dataset.push(comments_accepted_without_comment);
 
       let comments_rejected = data.find(item => item.comments_rejected != '0');
       comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
