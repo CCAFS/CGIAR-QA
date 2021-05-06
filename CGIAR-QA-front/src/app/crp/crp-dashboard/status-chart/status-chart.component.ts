@@ -12,7 +12,7 @@ export class StatusChartComponent implements OnInit{
   view: any[] = [700, 400];
 
   legendLabels = [
-    {name:"Answered", class: "answered", value: 0},
+    {name:"Answered / No action needed", class: "answered", value: 0},
     {name:"Pending", class:"pending", value: 0 },
   ];
   legendLabelsUI = [
@@ -52,9 +52,9 @@ export class StatusChartComponent implements OnInit{
     this.results = [{name: this.indicator[0].name, series: []}];
     this.indicator[0].series.forEach(element => {
       // this.statusChartData[indicator][element.status] = +element.value;
-      let status = element.status == 'complete' ? 'Answered' : 'Pending';
+      let status = element.status == 'complete' ? 'Answered / No action needed' : 'Pending';
       this.legendLabels.find(el => el.name == status).value = element.value;
-      this.results[0].series.push({ name: element.status == 'complete' ? 'Answered' : 'Pending', value: +element.value })  
+      this.results[0].series.push({ name: element.status == 'complete' ? 'Answered / No action needed' : 'Pending', value: +element.value })  
       
     });
     this.results[0].series.reverse();

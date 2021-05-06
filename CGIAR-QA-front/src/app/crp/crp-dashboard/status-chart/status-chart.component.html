@@ -3,7 +3,7 @@
         <h4 class="chart-title title-indicator">Status - {{total}} {{results[0].name.split('qa_')[1]}}</h4>
     </div>
     <div class="legend">
-        <div  *ngFor="let tag of legendLabelsUI"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}} <strong>{{tag.value}}</strong></p></div>
+        <div  *ngFor="let tag of legendLabels"  class="tag"> <div [ngClass]="tag.class" class="square"></div> <p>{{tag.name}} <strong>{{tag.value}}</strong></p></div>
       </div>
     <div class="chart-container">
         <ngx-charts-bar-horizontal-normalized 
