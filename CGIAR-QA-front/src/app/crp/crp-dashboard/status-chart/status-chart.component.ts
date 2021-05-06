@@ -15,6 +15,10 @@ export class StatusChartComponent implements OnInit{
     {name:"Answered", class: "answered", value: 0},
     {name:"Pending", class:"pending", value: 0 },
   ];
+  legendLabelsUI = [
+    {name:"Answered / No action needed", class: "answered", value: 0},
+    {name:"Pending", class:"pending", value: 0 },
+  ];
 
   // options
   results: any[];
