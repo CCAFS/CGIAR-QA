@@ -1,5 +1,5 @@
 
-<app-assessors-chat-window *ngIf="currentUser"></app-assessors-chat-window>
+<!-- <app-assessors-chat-window *ngIf="currentUser"></app-assessors-chat-window> -->
 <nav class="navbar navbar-expand header-bar" *ngIf=" !isCRP() && (router.url !== '/qa-close' && router.url !== '/login')">
     <div (click)="goToView('logo')" class="logo-container">
         <i class="cgiar-logo"></i>
@@ -7,9 +7,9 @@
     </div>
     <div class="row navbar-container">
         <div class="upper-navbar">
-            <div *ngIf="currentUser && currentUser.roles[0].id != 3" (click)="goToAssessorsChat()" class="assessors-chat">
+            <!-- <div *ngIf="currentUser && currentUser.roles[0].id != 3" (click)="goToAssessorsChat()" class="assessors-chat">
                 Assessors chat
-            </div>
+            </div> -->
             <div *ngIf="currentUser" (click)="getIndicators()" class="panel">
                 <p>{{currentUser.name}}</p>
                 <p>{{currentUser.email}}</p>
@@ -30,5 +30,6 @@
                 *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a> -->
         </div>
     </div>
-    <app-tawk-to *ngIf="currentUser"></app-tawk-to>
+    
 </nav>
+<app-tawk-to *ngIf="!isCRP() && (router.url !== '/qa-close' && router.url !== '/login') && currentUser"></app-tawk-to>
