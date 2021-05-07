@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class StatusChartComponent implements OnInit{
   @Input() indicator;
+  @Input() indicators;
   @Input() total;
   multi: any[];
   view: any[] = [700, 400];
@@ -58,6 +59,12 @@ export class StatusChartComponent implements OnInit{
       
     });
     this.results[0].series.reverse();
+  }
+
+  indicatorIsEnable() {
+    // console.log(this.indicator[0].name);
+    
+    return this.indicators.find(indicator => indicator.view_name == this.indicator[0].name).comment_meta.enable_crp;
   }
 
 }

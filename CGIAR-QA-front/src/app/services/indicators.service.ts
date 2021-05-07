@@ -10,7 +10,16 @@ import { map } from 'rxjs/operators';
 export class IndicatorsService {
 
   orderByStatus: boolean = null;
-
+  pageList = {
+    qa_policies: 1,
+    qa_innovations: 1,
+    qa_publications: 1,
+    qa_oicr: 1,
+    qa_melia: 1,
+    qa_capdev: 1,
+    qa_milestones: 1,
+    qa_slo: 1,
+  }
   constructor(private http: HttpClient) { }
 
   // get indicators by user
@@ -61,5 +70,13 @@ export class IndicatorsService {
         }
     }
     return allItems;
+  }
+
+  getPageList(indicator) {
+    return this.pageList[indicator];
+  }
+
+  setPageList(page, indicator) {
+    this.pageList[indicator] = page;
   }
 }

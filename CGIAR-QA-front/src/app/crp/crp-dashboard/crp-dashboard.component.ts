@@ -30,6 +30,7 @@ import { IndicatorsService } from 'src/app/services/indicators.service';
 export class CrpDashboardComponent implements OnInit {
   dashboardData: any[];
   statusNames = {complete: 0, pending: 0}
+  indicators = [];
   statusChartData = {
     qa_policies: [],
     qa_innovations: [],
@@ -135,9 +136,34 @@ export class CrpDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.indicators = JSON.parse(localStorage.getItem('indicators')) || [];
+    this.getCRPIndicators();
+    
     // this.getCommentStats();
     // console.log('crp-dashboard')
+  }
+
+  
+  getCRPIndicators() {
+
+    if (!this.indicators.length && this.currentUser) {
+      this.showSpinner(this.spinner1)
+      this.indicatorService.getIndicators()
+        .subscribe(
+          res => {
+            this.indicators = res.data;
+            // localStorage.setItem('indicatorsCRP', JSON.stringify(res.data));
+            // this.authenticationService.userHeaders = res.data;
+            console.log(this.indicators)
+            this.hideSpinner(this.spinner1);
+          },
+          error => {
+            this.hideSpinner(this.spinner1);
+            console.log("getCRPIndicators", error);
+            this.alertService.error(error);
+          }
+        );
+    }
   }
 
   getEvaluationsStats() {
@@ -372,6 +398,12 @@ export class CrpDashboardComponent implements OnInit {
   goToPendingItems(indicator: string) {
     this.indicatorService.setOrderByStatus(false);
     this.router.navigate([`crp/indicator/${indicator.split('qa_')[1]}/id`]);
+  }
+
+  indicatorIsEnable(ind) {
+    // console.log(ind);
+    
+    return this.indicators.find(indicator => indicator.view_name == ind).comment_meta.enable_crp;
   }
 
 

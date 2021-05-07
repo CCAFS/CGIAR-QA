@@ -169,7 +169,7 @@
     </thead>
     <tbody class="table-body">
         <tr
-            *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
+            *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | slice:currentPageList.startItem:currentPageList.endItem; let i = index">
             <th scope="row">
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
@@ -187,7 +187,7 @@
                     style="display:none">
                     {{item.evaluation_status}}
                 </div>
-                <a *ngIf="!item.brief" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
+                <a (click)="savePageList()" *ngIf="!item.brief" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" >
                     {{ item.title}}</a>
                     <div *ngIf="returnedArray[0].brief" class="div">{{ item.title}}</div>
             </td>
@@ -225,7 +225,8 @@
 <div *ngIf="collectionSize > 0" class="d-flex justify-content-center p-2 pagination-container">
     <pagination [rotate]="false"
         [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length"
-        [maxSize]="5" (pageChanged)="pageChanged($event)">
+        [maxSize]="5" (pageChanged)="pageChanged($event)"
+        [(ngModel)]="currentPage">
     </pagination>
 </div>
 
