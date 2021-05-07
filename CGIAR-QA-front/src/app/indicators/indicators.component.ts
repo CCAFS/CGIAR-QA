@@ -37,10 +37,11 @@ export class IndicatorsComponent implements OnInit {
   returnedArrayHasStage: boolean;
   currentUser: User;
 
-  currentPage = {
+  currentPageList = {
     startItem: 0,
     endItem: 10
   }
+  currentPage = 2;
   stageHeaderText = {
     policies: 'Level',
     oicr: 'Maturity Level',
@@ -142,6 +143,8 @@ export class IndicatorsComponent implements OnInit {
     this.chatRooms = {
       general: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
     }
+
+    this.currentPage = this.indicatorService.getPageList(`qa_${this.indicatorType}`);
   }
 
 
@@ -183,10 +186,13 @@ export class IndicatorsComponent implements OnInit {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
     // // console.log(this.evaluationList.length, this.returnedArray.length)
-    this.currentPage = {
+    this.currentPageList = {
       startItem,
       endItem
     }
+
+    console.log(this.currentPage);
+    
     this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
@@ -208,7 +214,7 @@ export class IndicatorsComponent implements OnInit {
 
     // console.log(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order)
     this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
-    // this.returnedArray = this.evaluationList.slice(this.currentPage.startItem, this.currentPage.endItem);
+    // this.returnedArray = this.evaluationList.slice(this.currentPageList.startItem, this.currentPageList.endItem);
   }
 
   filterByEvalStatus() {
@@ -291,6 +297,7 @@ export class IndicatorsComponent implements OnInit {
     return r;
   }
 
+
   verifyIfOrderByStatus() {
     if (this.indicatorService.getOrderByStatus() != null) {
       this.setOrder('status', this.indicatorService.getOrderByStatus())
@@ -306,6 +313,11 @@ export class IndicatorsComponent implements OnInit {
         return brief.split("<p>")[1].split("</p>")[0].split('<br>')[0].substring(0, 200)  + '...' || brief;
       }
       return;
+    }
+
+    savePageList(){
+      console.log(this.currentPage);
+      this.indicatorService.setPageList(this.currentPage, `qa_${this.indicatorType}`);
     }
   /***
    * 
