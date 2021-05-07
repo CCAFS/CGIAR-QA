@@ -21,6 +21,7 @@ export enum GeneralIndicatorName {
     // qa_outcomes= 'Outcomes',
 }
 
+
 export enum TagMessage {
     agree = 'agrees with a comment in',
     disagree = 'disagrees with a comment in',

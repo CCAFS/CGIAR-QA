@@ -28,6 +28,10 @@
     .title-indicator {
         text-transform: uppercase;
     }
+    .title-indicator-disabled {
+        text-transform: uppercase;
+        color: var(--gray-primary);
+    }
 
     .legend{
         height: auto;
