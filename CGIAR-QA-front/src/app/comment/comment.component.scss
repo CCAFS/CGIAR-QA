@@ -91,7 +91,7 @@
     textarea {
       width: 100%;
       border: 1px solid var(--gray-primary);
-      height: fit-content;
+      height: 8em;
     }
     button {
       margin-top: 1em;
@@ -165,6 +165,7 @@
       overflow: hidden;
       resize: both;
       min-height: 40px;
+      height: 8em;
       border: 1px solid var(--gray-primary);
       line-height: 20px;
     }
