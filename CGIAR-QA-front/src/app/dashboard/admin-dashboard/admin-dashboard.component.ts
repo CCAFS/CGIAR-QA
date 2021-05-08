@@ -399,54 +399,59 @@ export class AdminDashboardComponent implements OnInit {
   onProgramChange({ target }, value) {
     this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
     this.selectedProg = value;
-    this.showSpinner()
+    console.log(this.currenTcycle);
 
-    this.getAllDashData(value.crp_id).subscribe(
-      res => {
-        this.dashboardData = this.dashService.groupData(res.data);
-        // this.selectedIndicator = Object.keys(this.dashboardData)[1];
+    this.showSpinner();
+
+    if (this.currenTcycle.cycle_stage == "1") {
+      let responses = forkJoin([
+        this.getAllDashData(value.crp_id),
+        // this.getCommentStats(),
+        this.getAllTags(value.crp_id),
+        // this.getFeedTags(this.selectedIndicator),
+        this.getAllItemStatusByIndicator()
+      ]);
+
+      responses.subscribe(res => {
+        const [dashData, allTags, assessmentByField] = res;
+        this.dashboardData = this.dashService.groupData(dashData.data);
         this.dataSelected = this.dashboardData[this.selectedIndicator];
+        // this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+        this.indicatorsTags = this.commentService.groupTags(allTags.data);
+        // this.feedList = feedTags.data;
+        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        this.updateDataCharts();
+        this.hideSpinner();
+      }, error => {
         this.hideSpinner()
-      },
-      error => {
-        console.log("getAllDashData", error);
-        this.hideSpinner()
+        console.log("getAllDashDataByCRP", error);
         this.alertService.error(error);
-      }
-    )
-    this.getCommentStats(value.crp_id).subscribe(
-      res => {
-        this.dashboardCommentsData = this.dashService.groupData(res.data);
-        // console.log('GET COMMENT STATS');
+      });
+    } else {
+      let responses = forkJoin([
+        this.getAllDashData(value.crp_id),
+        this.getCommentStats(),
+        this.getAllTags(value.crp_id),
+        // this.getFeedTags(this.selectedIndicator),
+        this.getAllItemStatusByIndicator()
+      ]);
 
-        // this.getRawComments(value.crp_id)
-      },
-      error => {
+      responses.subscribe(res => {
+        const [dashData, commentsStats, allTags,  assessmentByField] = res;
+        this.dashboardData = this.dashService.groupData(dashData.data);
+        this.dataSelected = this.dashboardData[this.selectedIndicator];
+        this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+        this.indicatorsTags = this.commentService.groupTags(allTags.data);
+        // this.feedList = feedTags.data;
+        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        this.updateDataCharts();
+        this.hideSpinner();
+      }, error => {
         this.hideSpinner()
-        // console.log("getCommentStats", error);
+        console.log("getAllDashDataByCRP", error);
         this.alertService.error(error);
-      },
-    );
-
-    this.getAllItemStatusByIndicator().subscribe(
-      res => {
-        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(res.data);
-      }
-    );
-
-    this.getAllTags(value.crp_id).subscribe(
-      res => {
-        this.indicatorsTags = this.commentService.groupTags(res.data);
-      }
-    );
-
-    this.getFeedTags(this.selectedIndicator).subscribe(
-      res => {
-        this.feedList = res.data;
-      }
-    );
-
-
+      });
+    }
 
   }
 
@@ -516,7 +521,7 @@ export class AdminDashboardComponent implements OnInit {
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
     this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
     this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
-    
+
   }
 
   updateFeedTags(tagTypeId) {
@@ -673,7 +678,7 @@ export class AdminDashboardComponent implements OnInit {
         pdf_url = this.currentUser.config[0][`assessors_guideline`];
         break;
       default:
-        
+
         break;
     }
     window.open(pdf_url, "_blank");
