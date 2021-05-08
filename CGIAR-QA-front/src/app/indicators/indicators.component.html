@@ -188,7 +188,7 @@
                     {{item.evaluation_status}}
                 </div>
                 <a (click)="savePageList()" *ngIf="!item.brief" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" >
-                    {{ item.title}}</a>
+                    {{ fixAccent(item.title)}}</a>
                     <div *ngIf="returnedArray[0].brief" class="div">{{ item.title}}</div>
             </td>
             <td>{{ item.crp_acronym }}</td>

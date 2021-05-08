@@ -182,6 +182,10 @@ export class IndicatorsComponent implements OnInit {
     )
   }
 
+  fixAccent(value) {
+  return value.replace("´","'");
+  }
+
   pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;

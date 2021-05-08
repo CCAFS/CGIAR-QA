@@ -687,6 +687,7 @@ class CommentController {
                         AND comments.approved = 1
                         AND comments.is_deleted = 0
                         AND evaluations.crp_id = :crp_id
+                        AND evaluations.phase_year = actual_phase_year()
                         ORDER BY createdAt ASC
                         `,
                     { crp_id, indicatorName },
