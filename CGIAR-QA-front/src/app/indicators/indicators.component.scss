@@ -143,6 +143,13 @@ h2 {
         height: 0.5em;
       }
     }
+    .wos-label{
+      font-size: $font-xs;
+      font-weight: $semibold;
+      color: var(--color-autochecked);
+      font-style: oblique;
+      margin: 0;
+    }
   }
   th {
     text-align: center;

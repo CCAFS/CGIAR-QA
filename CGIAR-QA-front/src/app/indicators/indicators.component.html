@@ -212,6 +212,7 @@
                     style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
                     <li>{{ subCategory }}</li>
                 </ul>
+                <p class="wos-label" *ngIf="item.status == 'autochecked'">Validated by WoS/Scopus</p>
             </td>
             <td>
                 <div class="circle {{ item.status }}"></div>
