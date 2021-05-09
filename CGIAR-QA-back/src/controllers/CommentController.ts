@@ -1239,6 +1239,7 @@ class CommentController {
                         WHERE comments.is_deleted = 0
                         AND comments.detail IS NOT NULL
                         AND evaluations.crp_id = :crp_id
+                        AND evaluations.phase_year = actual_phase_year()
                         GROUP BY
                             evaluations.crp_id,
                             'display_name',
@@ -1288,6 +1289,7 @@ class CommentController {
                         LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
                         WHERE comments.is_deleted = 0
                         AND comments.detail IS NOT NULL
+                        AND evaluations.phase_year = actual_phase_year()
                         
                         GROUP BY
                             evaluations.crp_id,
