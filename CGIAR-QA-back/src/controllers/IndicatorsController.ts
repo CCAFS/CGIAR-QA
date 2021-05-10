@@ -452,12 +452,8 @@ class IndicatorsController {
 
             }
             console.log(totalEvaluationsByIndicator['qa_slo']);
-            // totalEvaluationsByIndicator[indicator] =  Object.values(totalEvaluationsByIndicator[indicator]);
-            let result = [];
-            for (const field in totalEvaluationsByIndicator[indicator]) {
-                result.push(totalEvaluationsByIndicator[indicator][field]);
-            }
-            res.status(200).send({ data: result, message: 'Items by indicator' });
+            totalEvaluationsByIndicator[indicator] =  Object.values(totalEvaluationsByIndicator[indicator]);
+            res.status(200).send({ data: totalEvaluationsByIndicator[indicator], message: 'Items by indicator' });
 
 
         } catch (error) {
