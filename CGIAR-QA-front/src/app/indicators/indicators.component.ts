@@ -314,7 +314,7 @@ export class IndicatorsComponent implements OnInit {
 
     formatBrief(brief: string) {
       if(brief) {
-        return brief.split("<p>")[1].split("</p>")[0].split('<br>')[0].substring(0, 200)  + '...' || brief;
+        return brief.split("<p>")[1] ? brief.split("<p>")[1].split("</p>")[0] : brief;
       }
       return;
     }
