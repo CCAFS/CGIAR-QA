@@ -150,23 +150,23 @@ h2 {
       font-style: oblique;
       margin: 0;
     }
-    // .brief-format > p{
-    //     display:inline-block;
-    //     white-space: nowrap;
-    //     overflow: hidden;
-    //     text-overflow: ellipsis;
-    //     max-width: 50ch;
+    .brief-format {
+        display:inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 50ch;
 
-    //   // border: 1px solid red;
-    //   // color: green;
-    //   // max-width: 300px;
-    // }
-    // .brief-format:has(table){
-    //     display: initial !important;
-    //     max-width: 555px !important;
-    //     overflow: initial !important;
-    //     text-overflow: initial !important;
-    //     white-space: initial !important;
+      // border: 1px solid red;
+      // color: green;
+      // max-width: 300px;
+    }
+    // .brief-format table tbody tr td p{
+    //   display:inline-block;
+    //   white-space: nowrap;
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
+    //   max-width: 50ch;
     // }
   }
   th {
