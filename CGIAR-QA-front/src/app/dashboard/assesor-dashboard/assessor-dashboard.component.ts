@@ -97,7 +97,8 @@ export class AssessorDashboardComponent implements OnInit {
       this.getCommentStats(),
       this.getAllTags(),
       this.getFeedTags(this.selectedIndicator),
-      this.getAllItemStatusByIndicator()
+      this.getItemStatusByIndicatorService(this.selectedIndicator)
+      // this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(
       res => {
@@ -117,7 +118,9 @@ export class AssessorDashboardComponent implements OnInit {
         this.feedList = feedTags.data;
 
         //assessmentByField
-        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        this.itemStatusByIndicator = assessmentByField.data;
+        console.log(this.itemStatusByIndicator);
+        
 
         //UPDATE CHARTS
         this.updateDataCharts();
@@ -146,12 +149,24 @@ export class AssessorDashboardComponent implements OnInit {
     this.selectedIndicator = indicator;
     this.dataSelected = this.dashboardData[this.selectedIndicator];
 
-
     this.showSpinner();
-    this.updateDataCharts();
-    this.getFeedTags(this.selectedIndicator).subscribe(
+
+    let responses = forkJoin([
+      this.getFeedTags(this.selectedIndicator),
+      this.getItemStatusByIndicatorService(this.selectedIndicator)
+    ]);
+    responses.subscribe(
       res => {
-        this.feedList = res.data;
+        const [feedTags, assessmentByField] = res;
+        //feedTags
+        this.feedList = feedTags.data;
+
+        //assessmentByField
+        this.itemStatusByIndicator = assessmentByField.data;
+
+        //UPDATE CHARTS
+        this.updateDataCharts();
+
         this.hideSpinner();
       }
     );
@@ -191,6 +206,11 @@ export class AssessorDashboardComponent implements OnInit {
   //Assessment by field
   getAllItemStatusByIndicator(): Observable<any> {
     return this.indicatorService.getAllItemStatusByIndicator().pipe();
+  }
+
+  //Assessment by field and by indicator
+  getItemStatusByIndicatorService(indicator: string): Observable<any> {
+    return this.indicatorService.getItemStatusByIndicator(indicator).pipe();
   }
 
   //Comments tags
@@ -323,7 +343,7 @@ export class AssessorDashboardComponent implements OnInit {
     this.dataCharts.generalStatus = this.formatStatusIndicatorData(this.dataSelected);
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
     this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
-    this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
+    this.dataCharts.assessmentByField = this.itemStatusByIndicator;
   }
 
   updateFeedTags(tagTypeId) {

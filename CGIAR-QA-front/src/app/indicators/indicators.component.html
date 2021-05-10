@@ -179,7 +179,7 @@
                     style="display:none">
                     {{item.evaluation_status}}
                 </div>
-                <a rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" [innerHtml]="item.brief || '<Not provided>'"></a>
+                <a class="brief-format" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" [innerHtml]="item.brief || '<Not provided>'"></a>
             </td>
             <td>
                 <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
