@@ -10,6 +10,7 @@ import { IndicatorsService } from 'src/app/services/indicators.service';
 export class LineChartComponent implements OnInit {
 
   @Input() data = [];
+  interval = 10;
   markersType = "Circle";
   public brushes: any = ['#59ed9cff', '#f3da90ff', '#ed8b84ff'];
   
@@ -20,7 +21,7 @@ export class LineChartComponent implements OnInit {
 
   ngOnInit() {
     // console.log('LineChartData',this.data);
-    
+    this.interval = this.data.length / 10;
   }
 
 }
