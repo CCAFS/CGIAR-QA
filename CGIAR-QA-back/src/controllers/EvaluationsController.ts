@@ -357,6 +357,7 @@ class EvaluationsController {
                 WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                 AND evaluations.indicator_view_name = :view_name
                 AND evaluations.phase_year = actual_phase_year()
+                AND evaluations.status <> 'autochecked'
                 GROUP BY
                     crp.crp_id,
                     ${levelQuery.innovations_stage}
@@ -530,6 +531,7 @@ class EvaluationsController {
                     AND evaluations.indicator_view_name = :view_name
                     AND indicator_user.userId = :user_Id
                     AND evaluations.phase_year = actual_phase_year()
+                    AND evaluations.status <> 'autochecked'
                     GROUP BY
                         crp.crp_id,
                         evaluations.id,

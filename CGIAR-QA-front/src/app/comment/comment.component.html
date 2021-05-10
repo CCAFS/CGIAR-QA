@@ -1,6 +1,6 @@
 <div class="comments-container">
     <!-- <app-on-boarding *ngIf="currentUser.roles[0].id != 3"></app-on-boarding> -->
-    <i class="icon-close" (click)="closeComments()"></i>
+    <i class="icon-close" (click)="closeComments()" style="cursor: pointer;"></i>
     <div *ngIf="commentsByCol.length && !availableComment && currentUser.hasOwnProperty('cycle')">
         <h2 class="title-section">COMMENTS ON {{dataFromItem.display_name}}</h2>
         <div class="comment-container">

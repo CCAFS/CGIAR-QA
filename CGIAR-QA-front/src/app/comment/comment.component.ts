@@ -76,11 +76,11 @@ export class CommentComponent implements OnInit {
   }
 
   updateData(data: any, params: any) {
-    // console.log(data)
+    console.log(data)
     Object.assign(this.dataFromItem, data, params)
     this.availableComment = false;
     this.showSpinner(this.spinner_comment);
-    this.getItemCommentData();
+    this.getItemCommentData(false);
   }
 
   // convenience getter for easy access to form fields
@@ -213,7 +213,7 @@ export class CommentComponent implements OnInit {
     this.commentService.updateCommentReply(data).subscribe(
       res => {
         // console.log(res)
-        this.getItemCommentData();
+        this.getItemCommentData(false);
       },
       error => {
         console.log("updateComment", error);
@@ -233,7 +233,8 @@ export class CommentComponent implements OnInit {
       res => {
         this.hideSpinner(this.spinner_comment);
         // console.log(res)
-        this.updateNumCommnts.emit({length: res.data.filter(field => field.is_deleted == false).length, replies_count: +res.data.filter(data => data.approved)[0].replies.replies_count, validateFields});
+        const replies_count = +res.data.filter(data => data.approved)[0]?  +res.data.filter(data => data.approved)[0].replies.replies_count : 0;
+        this.updateNumCommnts.emit({length: res.data.filter(field => field.is_deleted == false).length, replies_count: replies_count, validateFields});
        
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:
