@@ -64,7 +64,6 @@ export class AuthenticationService {
   private setUserLogged(user: User) {
 
     const cookieName = user.crp == null ? this.usrCookie : this.crpUsrCookie;
-    console.log(cookieName);
 
     let currentUsr = this.parseIndicators(user);
     delete currentUsr.password;

@@ -1,6 +1,6 @@
-
 <!-- <app-assessors-chat-window *ngIf="currentUser"></app-assessors-chat-window> -->
-<nav class="navbar navbar-expand header-bar" *ngIf=" !isCRP() && (router.url !== '/qa-close' && router.url !== '/login')">
+<nav class="navbar navbar-expand header-bar"
+    *ngIf=" !isCRP() && (router.url !== '/qa-close' && router.url.indexOf('/login') == -1 )">
     <div (click)="goToView('logo')" class="logo-container">
         <i class="cgiar-logo"></i>
         <h3>QA PLATFORM</h3>
@@ -15,11 +15,13 @@
                 <p>{{currentUser.email}}</p>
             </div>
             <div class="log-out-panel" (click)="logout()">
-                <span><p>Signout</p></span> 
+                <span>
+                    <p>Signout</p>
+                </span>
                 <i class="icon-log-out"></i>
             </div>
         </div>
-        <div class="nav navbar-nav "  routerLinkActive="active-link"  [routerLinkActiveOptions]="{exact: true}">
+        <div class="nav navbar-nav " routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
             <a class=" nav-item nav-link" [routerLinkActive]="['active']" [ngClass]="{'active':getCurrentRoute()}"
                 routerLink="/dashboard/{{currentRole}}">Home</a>
             <a class="nav-item nav-link" [routerLinkActive]="['active']"
@@ -30,6 +32,6 @@
                 *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}}</a> -->
         </div>
     </div>
-    
+
 </nav>
 <app-tawk-to *ngIf="!isCRP() && (router.url !== '/qa-close' && router.url !== '/login') && currentUser"></app-tawk-to>

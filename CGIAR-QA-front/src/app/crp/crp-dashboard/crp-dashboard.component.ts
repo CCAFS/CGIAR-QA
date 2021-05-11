@@ -29,7 +29,7 @@ import { IndicatorsService } from 'src/app/services/indicators.service';
 
 export class CrpDashboardComponent implements OnInit {
   dashboardData: any[];
-  statusNames = {complete: 0, pending: 0}
+  statusNames = { complete: 0, pending: 0 }
   indicators = [];
   statusChartData = {
     qa_policies: [],
@@ -137,13 +137,14 @@ export class CrpDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.indicators = JSON.parse(localStorage.getItem('indicators')) || [];
-    this.getCRPIndicators();
-    
+    if (this.indicators = [])
+      this.getCRPIndicators();
+
     // this.getCommentStats();
     // console.log('crp-dashboard')
   }
 
-  
+
   getCRPIndicators() {
 
     if (!this.indicators.length && this.currentUser) {
@@ -151,8 +152,8 @@ export class CrpDashboardComponent implements OnInit {
       this.indicatorService.getIndicators()
         .subscribe(
           res => {
-            this.indicators = res.data;
-            // localStorage.setItem('indicatorsCRP', JSON.stringify(res.data));
+            this.indicators = res.data.sort((a, b) => a.order - b.order);
+            localStorage.setItem('indicatorsCRP', JSON.stringify(this.indicators));
             // this.authenticationService.userHeaders = res.data;
             console.log(this.indicators)
             this.hideSpinner(this.spinner1);
@@ -176,7 +177,7 @@ export class CrpDashboardComponent implements OnInit {
           // console.log(this.dashboardData)
           // this.formatStatusCharts();
           // console.log('HERE', this.statusChartData)
-          
+
           this.hideSpinner(this.spinner2);
         },
         error => {
@@ -196,7 +197,7 @@ export class CrpDashboardComponent implements OnInit {
           // this.has_comments = res.data ? true : false
           this.dashboardCommentsData = this.dashService.groupData(res.data);
           // console.log(this.dashboardCommentsData);
-          
+
           // this.dashboardCommentsData = res.data;
           // this._setCharData(res)
           // Object.assign(this, { barChartLabels: res.data.label });
@@ -340,11 +341,11 @@ export class CrpDashboardComponent implements OnInit {
         const indicatorArray = this.dashboardData[indicator];
         indicatorArray.forEach(element => {
           // this.statusChartData[indicator][element.status] = +element.value;
-          this.statusChartData[indicator].push({ name: element.status == 'complete' ? 'Assessed' : element.status, value: +element.value })  
+          this.statusChartData[indicator].push({ name: element.status == 'complete' ? 'Assessed' : element.status, value: +element.value })
         });
       }
     }
-    
+
     // dataset.forEach(tag => {
     //   brushes.domain.push(colors[tag.name]);
     // });
@@ -366,7 +367,7 @@ export class CrpDashboardComponent implements OnInit {
       let comments_accepted_with_comment = data.find(item => item.comments_accepted_with_comment != '0');
       comments_accepted_with_comment = comments_accepted_with_comment ? { name: 'AcceptedWC', value: +comments_accepted_with_comment.value } : null;
       if (comments_accepted_with_comment) dataset.push(comments_accepted_with_comment);
-      
+
       let comments_accepted_without_comment = data.find(item => item.comments_accepted_without_comment != '0');
       comments_accepted_without_comment = comments_accepted_without_comment ? { name: 'Accepted', value: +comments_accepted_without_comment.value } : null;
       if (comments_accepted_without_comment) dataset.push(comments_accepted_without_comment);
@@ -382,7 +383,7 @@ export class CrpDashboardComponent implements OnInit {
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
       if (comments_without_answer) {
-        dataset.push(comments_without_answer); 
+        dataset.push(comments_without_answer);
         this.totalPendings[indicator] = +comments_without_answer.value;
       }
 
@@ -401,9 +402,7 @@ export class CrpDashboardComponent implements OnInit {
   }
 
   indicatorIsEnable(ind) {
-    // console.log(ind);
-    
-    return this.indicators.find(indicator => indicator.view_name == ind).comment_meta.enable_crp;
+    return ind ? this.indicators.find(indicator => indicator.view_name == ind).comment_meta.enable_crp : ind;
   }
 
 
