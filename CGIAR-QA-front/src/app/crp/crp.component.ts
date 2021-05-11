@@ -34,7 +34,7 @@ export class CrpComponent implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
       // console.log(this.params);
-      
+
       if (params.has('token')) {
         this.validateToken(this.params['params']);
       } else {
@@ -46,11 +46,13 @@ export class CrpComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.indicators = JSON.parse(localStorage.getItem('indicators')) || [];
+    this.indicators = JSON.parse(localStorage.getItem('indicatorsCRP')) || [];
+    // if (this.indicators = [])
+    //   this.getCRPIndicators();
   }
 
   validateToken(params: {}) {
-    this.clearSavedData(); 
+    this.clearSavedData();
     this.showSpinner(this.spinner_name)
     this.authenticationService.tokenLogin(params).subscribe(
       res => {
@@ -76,13 +78,12 @@ export class CrpComponent implements OnInit {
 
     if (!this.indicators.length && this.currentUser) {
       this.showSpinner(this.spinner_name)
-      this.indicatorService.getIndicatorsByUser(this.currentUser.id, this.currentUser.crp.crp_id)
+      this.indicatorService.getIndicators()
         .subscribe(
           res => {
-            this.indicators = res.data;
-            localStorage.setItem('indicatorsCRP', JSON.stringify(res.data));
-            this.authenticationService.userHeaders = res.data;
-            // console.log(this.indicators)
+
+            this.indicators = res.data.sort((a, b) => a.order - b.order);
+            localStorage.setItem('indicatorsCRP', JSON.stringify(this.indicators));
             this.hideSpinner(this.spinner_name);
           },
           error => {
@@ -93,6 +94,29 @@ export class CrpComponent implements OnInit {
         );
     }
   }
+
+
+  // getCRPIndicators() {
+
+  //   if (this.indicators.length == 0 && this.currentUser) {
+  //     this.showSpinner(this.spinner_name)
+  //     this.indicatorService.getIndicatorsByUser(this.currentUser.id, this.currentUser.crp.crp_id)
+  //       .subscribe(
+  //         res => {
+  //           this.indicators = res.data;
+  //           // localStorage.setItem('indicatorsCRP', JSON.stringify(res.data));
+  //           this.authenticationService.userHeaders = res.data;
+  //           console.log(this.authenticationService.userHeaders)
+  //           this.hideSpinner(this.spinner_name);
+  //         },
+  //         error => {
+  //           this.hideSpinner(this.spinner_name);
+  //           console.log("getCRPIndicators", error);
+  //           this.alertService.error(error);
+  //         }
+  //       );
+  //   }
+  // }
 
   logout() {
     this.authenticationService.logout();

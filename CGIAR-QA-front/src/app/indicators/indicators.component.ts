@@ -117,9 +117,9 @@ export class IndicatorsComponent implements OnInit {
     this.evaluationService.getCriteriaByIndicator(id).subscribe(
       res => {
         this.criteriaData = res.data[0];
-        console.log("CRITERIA DATA",this.criteriaData);
-        console.log("CRITERIA DATA",res.message);
-        
+        console.log("CRITERIA DATA", this.criteriaData);
+        console.log("CRITERIA DATA", res.message);
+
         this.criteria_loading = false;
       },
       error => {
@@ -132,8 +132,8 @@ export class IndicatorsComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.indicatorType);
-    
-    if(this.indicatorType == 'slo') {
+
+    if (this.indicatorType == 'slo') {
       this.order = 'status';
     }
     // console.log('loaded indicators')
@@ -154,7 +154,7 @@ export class IndicatorsComponent implements OnInit {
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
       res => {
         // console.log(res)
-        if(this.indicatorType == 'slo') {
+        if (this.indicatorType == 'slo') {
           this.order = 'status';
         } else {
           this.order = 'status';
@@ -183,7 +183,7 @@ export class IndicatorsComponent implements OnInit {
   }
 
   fixAccent(value) {
-  return value.replace("´","'");
+    return value ? value.replace("´", "'") : value;
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -196,7 +196,7 @@ export class IndicatorsComponent implements OnInit {
     }
 
     console.log(this.currentPage);
-    
+
     this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
     this.returnedArray = this.evaluationList.slice(startItem, endItem);
   }
@@ -240,8 +240,8 @@ export class IndicatorsComponent implements OnInit {
         break;
       default:
         pdf_url = this.currentUser.config[0][`${type}_guideline`];
-        console.log({pdf_url}, this.currentUser.config[0]);
-        
+        console.log({ pdf_url }, this.currentUser.config[0]);
+
         break;
     }
     window.open(pdf_url, "_blank");
@@ -307,22 +307,22 @@ export class IndicatorsComponent implements OnInit {
       this.setOrder('status', this.indicatorService.getOrderByStatus())
     }
   }
-  
-    toggleAssessorsChat() {
-      this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
-    }
 
-    formatBrief(brief: string) {
-      if(brief) {
-        return brief.split("<p>")[1] ? brief.split("<p>")[1].split("</p>")[0] : brief;
-      }
-      return;
-    }
+  toggleAssessorsChat() {
+    this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
+  }
 
-    savePageList(){
-      console.log(this.currentPage);
-      this.indicatorService.setPageList(this.currentPage, `qa_${this.indicatorType}`);
+  formatBrief(brief: string) {
+    if (brief) {
+      return brief.split("<p>")[1] ? brief.split("<p>")[1].split("</p>")[0] : brief;
     }
+    return;
+  }
+
+  savePageList() {
+    console.log(this.currentPage);
+    this.indicatorService.setPageList(this.currentPage, `qa_${this.indicatorType}`);
+  }
   /***
    * 
    *  Spinner 

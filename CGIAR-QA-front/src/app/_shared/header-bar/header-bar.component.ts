@@ -58,12 +58,10 @@ export class HeaderBarComponent implements OnInit {
       pairwise()
     )
       .subscribe((e: any[]) => {
-        console.log(e);
         e.forEach(element => {
           if (element.url != '/login') {
             this.authenticationService.currentUser.subscribe(x => {
               this.currentUser = x;
-              console.log(x)
               if (x) {
                 this.currentRole = x.roles[0].description.toLowerCase()
                 this.ngOnInit();
@@ -75,25 +73,6 @@ export class HeaderBarComponent implements OnInit {
           }
         });
       });
-
-
-
-    // this.activeRoute.params.subscribe(routeParams => {
-    //   this.params = routeParams;
-    //   console.log(routeParams)
-    //   this.authenticationService.currentUser.subscribe(x => {
-    //     this.currentUser = x;
-    //     console.log(x)
-    //     if (x) {
-    //       this.currentRole = x.roles[0].description.toLowerCase()
-    //       this.ngOnInit();
-    //       this.getHeaderLinks();
-    //       this.isHome = `/dashboard/${this.currentUser}`;
-    //     }
-    //   },
-    //     err => { console.log(err) });
-    // })
-
   }
 
   getCurrentRoute() {
@@ -126,7 +105,6 @@ export class HeaderBarComponent implements OnInit {
   }
 
   getHeaderLinks() {
-    console.log(this.indicators, !this.indicators.length, this.currentUser, !this.isCRP())
     if (this.indicators && !this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {

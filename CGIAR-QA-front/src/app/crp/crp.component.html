@@ -6,11 +6,11 @@
         <a class="nav-item nav-link" style="padding-bottom: 0;" [routerLinkActive]="['active']"
             routerLink="/crp/dashboard">Home</a>
         <ng-container *ngFor="let indicator of indicators; index as i">
-            <a *ngIf="indicator.enable_crp" class="nav-item nav-link" [routerLinkActive]="['active']"
+            <a *ngIf="indicator.comment_meta.enable_crp" class="nav-item nav-link" [routerLinkActive]="['active']"
                 routerLink="/crp/indicator/{{ indicator.view_name.split('qa_')[1]}}/{{ indicator.primary_field}}">
                 {{indicator.name}}
             </a>
-            <a *ngIf="!indicator.enable_crp" class="nav-item nav-link unavailable">
+            <a *ngIf="!indicator.comment_meta.enable_crp" class="nav-item nav-link unavailable">
                 {{indicator.name}}
             </a>
         </ng-container>
