@@ -653,6 +653,7 @@ class EvaluationsController {
                         LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                         WHERE ${view_name_psdo}.id = :indicatorId 
                         AND evaluations.indicator_view_name = '${view_name}'
+                        AND evaluations.phase_year = actual_phase_year()
                         ORDER BY meta.order ASC
                         `,
                     { user_Id: id, indicatorId },
@@ -714,6 +715,7 @@ class EvaluationsController {
                         LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
                         WHERE ${view_name_psdo}.id = :indicatorId 
                         AND evaluations.indicator_view_name = '${view_name}'
+                        AND evaluations.phase_year = actual_phase_year()
                         ORDER BY meta.order ASC
                         `,
                     { indicatorId },
@@ -764,6 +766,7 @@ class EvaluationsController {
                     WHERE indicator_user.userId = :user_Id
                     AND ${view_name_psdo}.id = :indicatorId
                     AND evaluations.indicator_view_name = '${view_name}'
+                    AND evaluations.phase_year = actual_phase_year()
                     ORDER BY meta.order ASC
                     `,
                     { user_Id: id, indicatorId },
