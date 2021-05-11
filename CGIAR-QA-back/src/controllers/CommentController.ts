@@ -482,6 +482,7 @@ class CommentController {
                 WHERE
                 metaId = :metaId
                 AND evaluationId = :evaluationId
+                AND phase_year = actual_phase_year()
                 AND approved_no_comment IS NULL
                 `,
                 { metaId, evaluationId },
