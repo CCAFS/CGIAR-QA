@@ -133,5 +133,33 @@ export class HeaderBarComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  /**
+   * validate current route.url to show header bar
+   */
+   headerAvailable() {
+    const urlAdd = this.router.url;
+    let r = true;
+    switch (true) {
+      case (urlAdd == '/'):
+        r = false;
+        break;
+      case urlAdd.indexOf('login') != -1:
+        r = false;
+        break;
+      case urlAdd.indexOf('crp') != -1:
+        r = false;
+        break;
+      case urlAdd.indexOf('qa-close') != -1:
+        r = false;
+        break;
+
+      default:
+        break;
+    }
+    console.log(r)
+
+    return r;
+  }
+
 
 }
