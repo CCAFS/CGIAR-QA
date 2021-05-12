@@ -276,7 +276,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         console.log('detaileedData',res)
         this.detailedData = res.data.filter(field => {
           if (typeof field.value === 'number') field.value = String(field.value)
-          if(field.value) field.value = field.value.replace("´","'");
+          if(field.value) {
+            field.value = field.value.replace("´","'");
+            field.value = field.value.replace(new RegExp('\n', 'g'), "<br />");
+          }
           field.value = this.urlTransfrom.transform(field.value);
           return field.value !== this.notApplicable;
         });

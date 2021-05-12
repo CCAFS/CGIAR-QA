@@ -1,6 +1,5 @@
 <!-- <app-assessors-chat-window *ngIf="currentUser"></app-assessors-chat-window> -->
-<nav class="navbar navbar-expand header-bar"
-    *ngIf=" !isCRP() && (router.url !== '/qa-close' && router.url.indexOf('/login') == -1 )">
+<nav class="navbar navbar-expand header-bar" *ngIf=" headerAvailable()">
     <div (click)="goToView('logo')" class="logo-container">
         <i class="cgiar-logo"></i>
         <h3>QA PLATFORM</h3>
@@ -34,4 +33,4 @@
     </div>
 
 </nav>
-<app-tawk-to *ngIf="!isCRP() && (router.url !== '/qa-close' && router.url !== '/login') && currentUser"></app-tawk-to>
+<app-tawk-to *ngIf="headerAvailable() && currentUser"></app-tawk-to>

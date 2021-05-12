@@ -155,7 +155,7 @@ h2 {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 50ch;
+        max-width: 25vw;
 
       // border: 1px solid red;
       // color: green;
@@ -255,3 +255,13 @@ h2 {
   }
 }
 
+@media (max-width:1400px) {
+  
+.table-body {
+  td {
+    .brief-format {
+      max-width: 20vw;
+    }
+  }
+}
+}

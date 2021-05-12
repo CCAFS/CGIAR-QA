@@ -79,4 +79,11 @@ export class IndicatorsService {
   setPageList(page, indicator) {
     this.pageList[indicator] = page;
   }
+
+  getPagesIndicatorList(){
+    return this.pageList;
+  }
+  setFullPageList(pages){
+    this.pageList = pages;
+  }
 }

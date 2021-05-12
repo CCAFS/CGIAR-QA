@@ -41,7 +41,16 @@ export class IndicatorsComponent implements OnInit {
     startItem: 0,
     endItem: 10
   }
-  currentPage = 2;
+  currentPage = {
+    qa_policies: 1,
+    qa_innovations: 1,
+    qa_publications: 1,
+    qa_oicr: 1,
+    qa_melia: 1,
+    qa_capdev: 1,
+    qa_milestones: 1,
+    qa_slo: 1,
+  };
   stageHeaderText = {
     policies: 'Level',
     oicr: 'Maturity Level',
@@ -50,7 +59,7 @@ export class IndicatorsComponent implements OnInit {
     publications: 'ISI',
     milestones: 'Milestone Status',
   }
-
+indicatorTypePage = null;
   maxSize = 5;
   pageSize = 4;
   collectionSize = 0;
@@ -97,9 +106,13 @@ export class IndicatorsComponent implements OnInit {
 
 
       });
+
       this.indicatorType = routeParams.type;
+      this.indicatorTypePage = null;
+
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
+
       this.getEvaluationsList(routeParams);
       this.getIndicatorCriteria(`qa_${routeParams.type}`);
 
@@ -144,7 +157,8 @@ export class IndicatorsComponent implements OnInit {
       general: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
     }
 
-    this.currentPage = this.indicatorService.getPageList(`qa_${this.indicatorType}`);
+    console.log('NEW INDICATOR');
+
   }
 
 
@@ -153,6 +167,8 @@ export class IndicatorsComponent implements OnInit {
     this.showSpinner();
     this.dashService.geListDashboardEvaluations(this.currentUser.id, `qa_${params.type}`, params.primary_column).subscribe(
       res => {
+
+        
         // console.log(res)
         if (this.indicatorType == 'slo') {
           this.order = 'status';
@@ -169,7 +185,15 @@ export class IndicatorsComponent implements OnInit {
         // console.log('RETURNED_ARRAY', this.returnedArray);
 
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
+
         this.hideSpinner();
+        setTimeout(() => {
+          this.currentPage = this.indicatorService.getPagesIndicatorList()
+          this.indicatorTypePage = (`qa_${this.indicatorType}`);
+        }, 200);
+        // this.currentPage = this.indicatorService.getPagesIndicatorList();
+        console.log('PAGES', this.currentPage);
+        console.log(`CURRENT PAGE ${this.indicatorType}`, this.currentPage);
         console.log('Spinner hided');
 
       },
@@ -321,7 +345,7 @@ export class IndicatorsComponent implements OnInit {
 
   savePageList() {
     console.log(this.currentPage);
-    this.indicatorService.setPageList(this.currentPage, `qa_${this.indicatorType}`);
+    this.indicatorService.setFullPageList(this.currentPage);
   }
   /***
    * 
