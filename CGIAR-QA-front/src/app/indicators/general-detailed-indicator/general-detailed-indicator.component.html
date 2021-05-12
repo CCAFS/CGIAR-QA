@@ -123,10 +123,10 @@
                                     </div>
 
                                     <!-- data value -->
-                                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
+                                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
                                         [innerHTML]="detailedData[i].value | markdown">
                                     </div>
-                                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  )"
+                                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  ) && detailedData[i].col_name !== 'evidence_link' "
                                         [innerHTML]='detailedData[i].value'>
                                     </div>
 
