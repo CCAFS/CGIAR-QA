@@ -156,7 +156,6 @@ export class HeaderBarComponent implements OnInit {
       default:
         break;
     }
-    console.log(r)
 
     return r;
   }
