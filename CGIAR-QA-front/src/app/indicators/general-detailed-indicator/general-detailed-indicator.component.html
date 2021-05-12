@@ -136,7 +136,7 @@
                                     <!-- <p *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link' ">
                                         {{detailedData[i].value}}</p> -->
                                     <!-- no data -->
-                                    <p *ngIf="detailedData[i].value === null" class="empty-value">Data not provided.</p>
+                                    <p *ngIf="detailedData[i].value === null || detailedData[i].value == ''" class="empty-value">Data not provided.</p>
                                     <!-- <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p> -->
 
                                 </div>
