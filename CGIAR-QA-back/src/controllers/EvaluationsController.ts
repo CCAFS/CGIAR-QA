@@ -62,9 +62,9 @@ class EvaluationsController {
             );
             // console.log( query, parameters)
             let rawData = await queryRunner.connection.query(query, parameters);
-                console.log('rawData');
-                console.log(rawData);
-                
+            console.log('rawData');
+            console.log(rawData);
+
             let response = []
             for (let index = 0; index < rawData.length; index++) {
                 const element = rawData[index];
@@ -298,14 +298,15 @@ class EvaluationsController {
 
         console.log(view_name, levelQuery.innovations_stage);
         console.log(levelQuery);
-        
+
 
         let queryRunner = getConnection().createQueryBuilder();
         try {
             const userRepository = getRepository(QAUsers);
             let user = await userRepository.findOneOrFail({ where: { id } });
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
-            if (isAdmin) {
+
+            if (isAdmin && (crp_id == null || crp_id == 'undefined')) {
                 let sql = `
                 SELECT
                     evaluations.id AS evaluation_id,
@@ -371,7 +372,6 @@ class EvaluationsController {
                 console.log('isadmin')
                 // console.log(sql)
                 let rawData = await queryRunner.connection.query(query, parameters);
-                console.log(rawData)
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
             } else if (user.crps.length > 0) {
@@ -585,7 +585,7 @@ class EvaluationsController {
                 break;
             case 'qa_milestones':
                 response.view_sql = "(SELECT status FROM qa_milestones milestones WHERE milestones.id = evaluations.indicator_view_id) AS stage, (SELECT fp FROM qa_milestones milestones WHERE milestones.id = evaluations.indicator_view_id) AS fp,"
-                // response.innovations_stage = "qa_melia.study_type,"
+            // response.innovations_stage = "qa_melia.study_type,"
             case 'qa_slo':
                 response.view_sql = "(SELECT brief_summary FROM qa_slo slo WHERE slo.id = evaluations.indicator_view_id) AS brief,"
                 // response.innovations_stage = "qa_melia.study_type,"
