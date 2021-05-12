@@ -399,9 +399,13 @@ export class AdminDashboardComponent implements OnInit {
   onProgramChange({ target }, value) {
     this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
     this.selectedProgramName = this.selectedProgramName? this.selectedProgramName : 'All';
+    let crp_id;
     if(!value){
+      this.selectedProg = 'All';
+      crp_id = null;
+    } else {
+      crp_id = value.crp_id;
       this.selectedProg = value;
-
     }
     console.log(this.selectedProg, this.currenTcycle);
 
@@ -409,9 +413,9 @@ export class AdminDashboardComponent implements OnInit {
 
     if (this.currenTcycle.cycle_stage == "1") {
       let responses = forkJoin([
-        this.getAllDashData(value.crp_id),
+        this.getAllDashData(crp_id),
         // this.getCommentStats(),
-        this.getAllTags(value.crp_id),
+        this.getAllTags(crp_id),
         // this.getFeedTags(this.selectedIndicator),
         this.getAllItemStatusByIndicator()
       ]);
@@ -433,9 +437,9 @@ export class AdminDashboardComponent implements OnInit {
       });
     } else {
       let responses = forkJoin([
-        this.getAllDashData(value.crp_id),
+        this.getAllDashData(crp_id),
         this.getCommentStats(),
-        this.getAllTags(value.crp_id),
+        this.getAllTags(crp_id),
         // this.getFeedTags(this.selectedIndicator),
         this.getAllItemStatusByIndicator()
       ]);
@@ -469,6 +473,8 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadDashData() {
+    this.showSpinner()
+
     let responses = forkJoin([
       this.getAllDashData(),
       this.getAllCRP(),
