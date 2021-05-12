@@ -7,6 +7,12 @@
         <div class="card">
             <div class="card-body">
                 <form [formGroup]="programsForm" class="programs-form btn-group-vertical">
+                    <input (change)="onProgramChange($event, undefined)" id="program-all" type="radio"
+                    class="custom-control-input" value="null" name="program"
+                    formControlName="program">
+                <label class="custom-control-label" for="program-all">
+                    All
+                </label>
                     <div class="" *ngFor="let program of crps | sortBy:'asc':'name'; let i=index ">
                         <input (change)="onProgramChange($event, program)" id="program-{{program.id}}" type="radio"
                             class="custom-control-input" value="{{program.id}}" name="program"

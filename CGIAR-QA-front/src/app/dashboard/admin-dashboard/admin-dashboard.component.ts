@@ -37,7 +37,7 @@ export class AdminDashboardComponent implements OnInit {
   dashboardCyclesData: any[];
   configurationData: any[];
   selectedProgramName: string;
-  selectedProg = {}
+  selectedProg:any = {}
   settingsForm: FormGroup;
   programsForm: FormGroup;
   generalStatus = GeneralStatus;
@@ -398,8 +398,12 @@ export class AdminDashboardComponent implements OnInit {
 
   onProgramChange({ target }, value) {
     this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
-    this.selectedProg = value;
-    console.log(this.currenTcycle);
+    this.selectedProgramName = this.selectedProgramName? this.selectedProgramName : 'All';
+    if(!value){
+      this.selectedProg = value;
+
+    }
+    console.log(this.selectedProg, this.currenTcycle);
 
     this.showSpinner();
 
