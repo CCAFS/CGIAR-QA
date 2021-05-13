@@ -266,7 +266,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     
     console.log({fieldWithoutAssessed,statusByField,allFieldsAssessed});
     
-  }
+  }  
 
   getDetailedData() {
     console.log(this.currentUser.id, this.params);
@@ -279,8 +279,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           if(field.value) {
             field.value = field.value.replace("´","'");
             field.value = field.value.replace(new RegExp('\n', 'g'), "<br />");
+            field.value = field.value.replace(new RegExp('<a', 'g'), '<a target="_blank"');
+            field.value = this.urlTransfrom.urlToAnchor(field.value);
           }
-          field.value = this.urlTransfrom.transform(field.value);
           return field.value !== this.notApplicable;
         });
         this.generalCommentGroup.patchValue({ general_comment: this.detailedData[0].general_comment });
