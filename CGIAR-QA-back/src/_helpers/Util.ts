@@ -299,7 +299,7 @@ class Util {
         }
     }
 
-    static createCommentsExcel = async (headers: Partial<excel.Column>[], rows: any[], sheetName: string): Promise<Buffer> => {
+    static createCommentsExcel = async (headers: Partial<excel.Column>[], rows: any[], sheetName: string, indicatorName: string): Promise<Buffer> => {
 
         try {
             const workbook: excel.stream.xlsx.WorkbookWriter = new excel.stream.xlsx.WorkbookWriter({});
@@ -307,6 +307,29 @@ class Util {
             sheet.columns = headers;
             for (let i = 0; i < rows.length; i++) {
                 if (rows[i]) {
+                    let col_name = rows[i].col_name;
+                    let field_value;
+                    try{
+                        let queryRunner = getConnection().createQueryBuilder();
+
+                        const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                            `SELECT
+                            clean_html_tags(${col_name}) as col_name
+                            FROM
+                            ${indicatorName} 
+                            WHERE id = ${rows[i].id}
+                            AND phase_year = actual_phase_year()                        
+                                `,
+                            { },
+                            {}
+                        );
+                    field_value = await queryRunner.connection.query(query, parameters);
+                    // field_value = JSON.parse(JSON.stringify(response[0]))[col_name];
+                    console.log(field_value);
+                            
+                    } catch(error){
+                        console.log(error);         
+                    }
                     let row = {
                         id: rows[i].id,
                         indicator_title: rows[i].indicator_title,
@@ -315,6 +338,7 @@ class Util {
                         comment: rows[i].detail,
                         user: rows[i].username,
                         field: rows[i].display_name ? rows[i].display_name : 'General Comment',
+                        value: field_value[0].col_name || '',
                         crp_approved: (rows[i].crp_approved != null) ? ((rows[i].crp_approved == 1) ? 'Yes' : 'No') : '',
                         reply: rows[i].reply,
                         user_replied: rows[i].reply_user,
@@ -349,6 +373,29 @@ class Util {
             sheet.columns = headers;
             for (let i = 0; i < rows.length; i++) {
                 if (rows[i]) {
+                    let col_name = rows[i].col_name;
+                    let field_value;
+                    try{
+                        let queryRunner = getConnection().createQueryBuilder();
+
+                        const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                            `SELECT
+                            clean_html_tags(${col_name}) as col_name
+                            FROM
+                            ${rows[i].indicator_view_name} 
+                            WHERE id = ${rows[i].id}
+                            AND phase_year = actual_phase_year()                        
+                                `,
+                            { },
+                            {}
+                        );
+                    field_value = await queryRunner.connection.query(query, parameters);
+                    // field_value = JSON.parse(JSON.stringify(response[0]))[col_name];
+                    // console.log(field_value);
+                            
+                    } catch(error){
+                        console.log(error);         
+                    }
                     let row = {
                         id: rows[i].id,
                         crp_acronym: rows[i].crp_acronym,
@@ -358,6 +405,7 @@ class Util {
                         comment: rows[i].detail,
                         assessor: rows[i].username,
                         field: rows[i].display_name ? rows[i].display_name : 'General Comment',
+                        value: field_value[0].col_name || '',
                         // crp_approved: rows[i].crp_approved,
                         crp_approved: (rows[i].crp_approved != null) ? ((rows[i].crp_approved == 1) ? 'Yes' : 'No') : '<not replied>',
                         reply: rows[i].reply,
