@@ -13,6 +13,7 @@ import { QAEvaluations } from "@entity/Evaluations";
 import { QACycle } from "@entity/Cycles";
 import { QATags } from "@entity/Tags";
 import { QAReplyType } from "@entity/ReplyType";
+const { htmlToText } = require('html-to-text');
 
 // const vfile = require('to-vfile')
 // const retext = require('retext')
@@ -668,6 +669,7 @@ class CommentController {
                         users.username,
                         users.email,
                         meta.display_name,
+                        meta.col_name,
                         replies.createdAt AS reply_createdAt,
                         replies.updatedAt AS reply_updatedAt,
                         replies.detail AS reply,
@@ -713,6 +715,7 @@ class CommentController {
                             users.username,
                             users.email,
                             meta.display_name,
+                            meta.col_name,
                             replies.createdAt AS reply_createdAt,
                             replies.updatedAt AS reply_updatedAt,
                             replies.detail AS reply,
@@ -756,6 +759,7 @@ class CommentController {
                             users.username,
                             users.email,
                             meta.display_name,
+                            meta.col_name,
                             replies.createdAt AS reply_createdAt,
                             replies.updatedAt AS reply_updatedAt,
                             replies.detail AS reply,
@@ -791,6 +795,7 @@ class CommentController {
                 { header: 'Indicator id', key: 'id' },
                 { header: 'Indicator Title', key: 'indicator_title' },
                 { header: 'Field', key: 'field' },
+                { header: 'Value', key: 'value'},
                 { header: 'User', key: 'user' },
                 { header: 'Comment', key: 'comment' },
                 { header: 'Cycle', key: 'cycle_stage' },
@@ -801,7 +806,7 @@ class CommentController {
                 { header: 'User Replied', key: 'user_replied' },
                 { header: 'Reply Date', key: 'reply_createdAt' },
                 // { header: 'Public Link', key: 'public_link' },
-            ], comments, 'comments');
+            ], comments, 'comments', indicatorName);
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             res.setHeader('Content-Disposition', `attachment; filename=${name}.xlsx`);
             res.setHeader('Content-Length', stream.length);
