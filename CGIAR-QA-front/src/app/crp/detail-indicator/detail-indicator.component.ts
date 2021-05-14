@@ -121,7 +121,12 @@ export class DetailIndicatorComponent implements OnInit {
       res => {
         this.detailedData = res.data.filter(field => {
           if (typeof field.value === 'number') field.value = String(field.value)
-          field.value = this.urlTransfrom.transform(field.value);
+          if(field.value) {
+            field.value = field.value.replace("´","'");
+            field.value = field.value.replace(new RegExp('\n', 'g'), "<br />");
+            field.value = field.value.replace(new RegExp('<a', 'g'), '<a target="_blank"');
+            field.value = this.urlTransfrom.urlToAnchor(field.value);
+          }
           return field.value !== this.notApplicable;
         });
 
