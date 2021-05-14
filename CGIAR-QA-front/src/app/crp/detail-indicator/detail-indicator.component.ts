@@ -48,7 +48,7 @@ export class DetailIndicatorComponent implements OnInit {
   crpsMEL = crpMEL;
   generalCommentGroup: FormGroup;
   currentType = '';
-
+  isCRP= true;
   general_comment_reply;
 
   approveAllitems;

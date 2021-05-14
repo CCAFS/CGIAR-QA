@@ -252,7 +252,7 @@
     </div>
     <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
         class="col-sm-4 comments-container">
-        <app-comment #comment (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null)"
+        <app-comment #comment [isCRP]="isCRP" (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null)"
             (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
     </div>
 </div>
