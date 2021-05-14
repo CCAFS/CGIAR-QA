@@ -46,6 +46,11 @@
             color: var(--color-dark-text-btn);
             white-space: normal;
           }
+          .btn-response-pending.disabled{
+            color: var(--white);
+
+          }
+
         }
       }
     }

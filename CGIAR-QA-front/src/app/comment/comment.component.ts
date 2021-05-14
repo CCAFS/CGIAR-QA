@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, TemplateRef  } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, TemplateRef, Input  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { DetailedStatus, ReplyTypes } from "../_models/general-status.model"
@@ -37,7 +37,6 @@ export class CommentComponent implements OnInit {
   is_approved = false;
   replyTypes = ReplyTypes;
 
-
   spinner_replies = 'spinner_Comment_Rply';
   spinner_comment = 'spinner_Comment';
 
@@ -46,6 +45,7 @@ export class CommentComponent implements OnInit {
 
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
+  @Input() isCRP;
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
   @Output("validateAllFieldsAssessed") validateAllFieldsAssessed: EventEmitter<any> = new EventEmitter();
   @Output("updateNumCommnts") updateNumCommnts: EventEmitter<any> = new EventEmitter();
@@ -65,6 +65,9 @@ export class CommentComponent implements OnInit {
       this.currentUser = x;
       console.log(this.currentUser.cycle_ended);
       
+      console.log(this.currentUser);
+      console.log('IS_CRP',this.isCRP);
+
     });
   }
 
@@ -73,6 +76,13 @@ export class CommentComponent implements OnInit {
       comment: ['', Validators.required]
     });
     this.dataFromItem = [];
+    console.log('IS_CRP',this.isCRP);
+
+    if(this.isCRP && this.currentUser.roles[0].description == this.allRoles.admin){
+      this.currentUser.roles.shift();
+      console.log(this.currentUser);
+      
+    }
   }
 
   updateData(data: any, params: any) {

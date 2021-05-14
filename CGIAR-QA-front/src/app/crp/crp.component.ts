@@ -61,7 +61,7 @@ export class CrpComponent implements OnInit {
           this.hideSpinner(this.spinner_name);
           this.currentUser = x;
           // console.log(this.currentUser)
-          this.router.navigate([`/crp/dashboard`])
+          if (this.indicators = [])
           this.getCRPIndicators();
         })
       },
@@ -85,6 +85,7 @@ export class CrpComponent implements OnInit {
             this.indicators = res.data.sort((a, b) => a.order - b.order);
             localStorage.setItem('indicatorsCRP', JSON.stringify(this.indicators));
             this.hideSpinner(this.spinner_name);
+          this.router.navigate([`/crp/dashboard`])
           },
           error => {
             this.hideSpinner(this.spinner_name);

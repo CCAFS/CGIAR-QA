@@ -125,6 +125,8 @@ export class CrpDashboardComponent implements OnInit {
       this.authenticationService.currentUser.subscribe(x => {
         // console.log(routeParams, x)
         this.currentUser = x;
+        console.log(this.currentUser);
+        
         this.getEvaluationsStats();
         this.getCommentStats();
       });

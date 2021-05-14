@@ -1,6 +1,6 @@
 <div class="row justify-content-center dashboard-container">
 
-    <div *ngIf="currentUser && currentUser.hasOwnProperty('cycle')" class="col col-2 col-programs crp-list-group"
+    <div *ngIf="currentUser && currentUser.hasOwnProperty('cycle') && indicators.length > 0" class="col col-2 col-programs crp-list-group"
         routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
 
         <a class="nav-item nav-link" style="padding-bottom: 0;" [routerLinkActive]="['active']"

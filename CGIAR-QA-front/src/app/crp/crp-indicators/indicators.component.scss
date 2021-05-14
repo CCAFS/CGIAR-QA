@@ -112,6 +112,17 @@ h2 {
     text-align: center;
     vertical-align: middle;
     padding: 0.75em;
+    .brief-format {
+      display:inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 25vw;
+
+    // border: 1px solid red;
+    // color: green;
+    // max-width: 300px;
+  }
   }
   th {
     text-align: center;
@@ -148,3 +159,16 @@ h2 {
   color: var(--gray-secondary);
   font-style: italic;
 }
+
+
+
+@media (max-width:1400px) {
+  
+  .table-body {
+    td {
+      .brief-format {
+        max-width: 20vw;
+      }
+    }
+  }
+  }

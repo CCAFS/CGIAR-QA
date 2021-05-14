@@ -71,6 +71,11 @@
                                 </div>
                             </div>
                         </th>
+                        <th scope="col" *ngIf="returnedArray && returnedArray[0].brief" >
+                            <div class="header-row">
+                                Brief contribution
+                            </div>
+                        </th>
                         <th scope="col" [class.active]="order === 'title'" (click)="setOrder('title')">
                             <div class="header-row">
                                 Title
@@ -139,13 +144,23 @@
                         <th scope="row">
                             QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
                         </th>
-                        <td>
+                        <td *ngIf="item.hasOwnProperty('brief') && item.brief">
                             <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
-                                class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}">
+                                class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}"
+                                style="display:none">
                                 {{item.evaluation_status}}
                             </div>
-                            <a rel="noopener noreferrer" [routerLinkActive]="['active']"
-                                routerLink="./detail/{{item.id}}"> {{ item.title }}</a>
+                            <a (click)="savePageList()"  class="brief-format" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" [innerHtml]="formatBrief(item.brief)"></a>
+                        </td>
+                        <td>
+                            <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
+                                class="evaluation-status {{ item.evaluation_status ? item.evaluation_status.toLowerCase():'' }}"
+                                style="display:none">
+                                {{item.evaluation_status}}
+                            </div>
+                            <a (click)="savePageList()" *ngIf="!item.brief" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" >
+                                {{ fixAccent(item.title)}}</a>
+                                <div *ngIf="returnedArray[0].brief" class="div">{{ item.title}}</div>
                         </td>
                         <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
                         <td *ngIf="item.hasOwnProperty('fp')">{{ (item.fp) ? item.fp: notProviedText}}</td>
