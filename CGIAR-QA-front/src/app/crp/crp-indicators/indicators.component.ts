@@ -221,6 +221,21 @@ export class CRPIndicatorsComponent implements OnInit {
       this.setOrder('status')
     }
   }
+  formatBrief(brief: string) {
+    if (brief) {
+      return brief.split("<p>")[1] ? brief.split("<p>")[1].split("</p>")[0] : brief;
+    }
+    return;
+  }
+  
+  fixAccent(value) {
+    return value ? value.replace("´", "'") : value;
+  }
+
+  savePageList() {
+    console.log(this.currentPage);
+    this.indicatorService.setFullPageList(this.currentPage);
+  }
 
 
   /***
