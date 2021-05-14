@@ -52,11 +52,11 @@ class IndicatorsController {
         try {
             const userRepository = getRepository(QAUsers);
             let user = await userRepository.findOneOrFail({ where: { id } });
-            // console.log(user)
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
-            // let isCRP = user.crp ;
-            // let isCRP = user.roles.find(x => x.description == RolesHandler.crp);
+            
             let isCRP = user.crps.length > 0 ? true : false;
+            // console.log('getIndicatorsByUser')
+            // console.log('isAdmin', isAdmin)
             if (isAdmin) {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
