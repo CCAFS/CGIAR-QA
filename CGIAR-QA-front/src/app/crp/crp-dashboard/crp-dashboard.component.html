@@ -35,7 +35,7 @@
                     <div *ngIf="dashboardCommentsData.hasOwnProperty(indicator.key)" class="total-pending">{{totalPendings[indicator.key]}}</div>
                     <div *ngIf="!dashboardCommentsData.hasOwnProperty(indicator.key)" class="total-pending">0</div>
                 <button *ngIf="indicatorIsEnable(indicator.key)" class="btn btn-primary btn-response-pending" (click)="goToPendingItems(indicator.key)" >Click here to respond pending comments</button>
-                <button *ngIf="!indicatorIsEnable(indicator.key)"class="btn btn-red-secondary btn-response-pending disabled" title="Indicator isn't enable" >Click here to respond pending comments</button>
+                <button *ngIf="!indicatorIsEnable(indicator.key)"class="btn btn-red-secondary btn-response-pending disabled" title="Indicator isn't enable" >This indicator is closed for CRPs/PTFs</button>
                 </div>
             </div>
         </div>
