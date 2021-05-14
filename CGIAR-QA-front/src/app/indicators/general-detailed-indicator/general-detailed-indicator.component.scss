@@ -244,9 +244,11 @@
       flex-direction: row;
       display: flex;
       word-wrap: break-word;
+      justify-content: space-between;
       .empty-value {
         font-style: italic;
       }
+
       h2 {
         font-size: $font-md;
         // text-transform: capitalize;
@@ -357,4 +359,16 @@
   &:hover{
     cursor: pointer;
   }
+}
+
+.field-container{
+  max-width: 100%;
+  p{
+    max-width: 60% !important;
+    a{
+      max-width: 60% !important;
+      color: yellow !important;
+    }
+  }
+
 }

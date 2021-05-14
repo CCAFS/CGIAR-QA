@@ -82,7 +82,7 @@
 
                         <ng-container *ngIf="detailedData" [formGroupName]="i">
                             <div class="data-row">
-                                <div class="col">
+                                <div class="col data">
                                     <!-- checkbox -->
                                     <div class="row field">
                                         <div class="field-title">
@@ -123,10 +123,10 @@
                                     </div>
 
                                     <!-- data value -->
-                                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
+                                    <div class="field-container" *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
                                         [innerHTML]="detailedData[i].value | markdown">
                                     </div>
-                                    <div *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  ) && detailedData[i].col_name !== 'evidence_link' "
+                                    <div class="field-container" *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  ) && detailedData[i].col_name !== 'evidence_link' "
                                         [innerHTML]='detailedData[i].value'>
                                     </div>
 
