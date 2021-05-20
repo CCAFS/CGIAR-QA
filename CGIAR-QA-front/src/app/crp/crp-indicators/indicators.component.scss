@@ -123,6 +123,20 @@ h2 {
     // color: green;
     // max-width: 300px;
   }
+  .wos-label{
+    font-size: $font-xs;
+    font-weight: $semibold;
+    color: var(--color-autochecked);
+    font-style: oblique;
+    margin: 0;
+  }
+  .assessed-by{
+    font-size: $font-xs;
+    font-weight: $semibold;
+    color: #d59b1b;
+    font-style: oblique;
+    margin: 0;
+  }
   }
   th {
     text-align: center;

@@ -128,6 +128,11 @@
                                 Export comments
                             </div>
                         </th>
+                        <th *ngIf="indicatorType == 'publications'" scope="col">
+                            <div class="header-row">
+                                Assessed by
+                            </div>
+                        </th>
                         <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status') ">
                             <div class="header-row"> QA Status
                                 <div class="order-icon" *ngIf="order === 'status'">
@@ -173,6 +178,10 @@
                                     <i class="icon-download-excel"></i>
                                 </div>
                             </a>
+                        </td>
+                        <td  *ngIf="indicatorType == 'publications'">
+                            <div *ngIf="item.assessment_status != 'autochecked'" class="assessed-by">Assessors</div>
+                            <p class="wos-label" *ngIf="item.assessment_status == 'autochecked'">Validated by WoS/Scopus</p>
                         </td>
                         <td>
                             <div class="circle {{ item.status }}"></div>

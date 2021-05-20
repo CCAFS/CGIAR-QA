@@ -29,7 +29,7 @@
                     *ngIf="!dashboardCommentsData.hasOwnProperty(indicator.key)"
                      [total]="0"
                      [data]="false">
-                    </app-comments-chart>
+                    </app-comments-chart> 
                 </div>
                 <div class="chart comments-chart" class="chart pending-responses">
                     <div *ngIf="dashboardCommentsData.hasOwnProperty(indicator.key)" class="total-pending">{{totalPendings[indicator.key]}}</div>

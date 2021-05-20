@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray, ValidatorFn, AbstractControl } from '@angular/forms';
 
@@ -62,10 +62,14 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   currentUserHasAssessed = false;
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
   @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
+  @ViewChildren('commElement') commElements: QueryList<ElementRef>;
 
   totalChar = 6500;
 
   activeCommentArr = [];
+  renderComments = false;
+  actualComment;
+
   fieldIndex: number;
   notApplicable = '';
   tickGroup: FormGroup;
@@ -389,16 +393,44 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
 
-
-  showComments(index: number, field: any, e?) {
-    if (e) {
-      let parentPos = this.getPosition(this.containerElement.nativeElement);
-      let yPosition = e.clientY - parentPos.y - (this.commentsElem.nativeElement.clientHeight / 2);
-      this.currentY = yPosition - 20
-    }
+//Emitted from comment component
+  hideComments(index: number, field: any, e?) {
     this.fieldIndex = index;
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
+    console.log('HIDE COMMENTS');
+    if(this.actualComment){
+          
+      this.actualComment.scrollIntoView({ block: 'center',  behavior: 'smooth', inline: 'nearest' });
+    }
+    // this.commentsElem.nativeElement.scrollIntoView({ behavior: "smooth"});
+    // if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
+  }
+
+  showComments(index: number, field: any, elementRef: any, e?) {
+    this.fieldIndex = index;
+    field.clicked = !field.clicked;
+    this.activeCommentArr[index] = !this.activeCommentArr[index];
+    console.log('SHOW_COMMENTS');
+
+    // this.commentsElem.nativeElement.scrollIntoView({ behavior: "smooth"});
+    if (e) {
+      setTimeout(() => {
+        let parentPos = this.getPosition(this.containerElement.nativeElement);
+        let yPosition = this.getPosition(elementRef)
+        console.log({parentPos});
+        console.log({yPosition});
+        
+        this.currentY = yPosition.y - parentPos.y;
+        this.renderComments = this.activeCommentArr[index];
+        this.actualComment = elementRef;
+        elementRef.scrollIntoView({ block: 'start',  behavior: 'smooth' });
+    
+        
+        // setTimeout(()=> {window.scrollBy({top: -10, behavior: 'smooth'})},500);
+      }, 100);
+
+    }
     // if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
   }
 
