@@ -243,8 +243,11 @@ export class CommentComponent implements OnInit {
       res => {
         this.hideSpinner(this.spinner_comment);
         // console.log(res)
-        const replies_count = +res.data.filter(data => data.approved)[0]?  +res.data.filter(data => data.approved)[0].replies.replies_count : 0;
+        const replies_count = res.data.filter(data => data.approved)[0]?  +res.data.filter(data => data.approved)[0].replies.replies_count : 0;
+        console.log({replies_count});
+        
         this.updateNumCommnts.emit({length: res.data.filter(field => field.is_deleted == false).length, replies_count: replies_count, validateFields});
+       console.log(this.currentUser.roles[0].description);
        
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:

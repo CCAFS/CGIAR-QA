@@ -281,7 +281,7 @@ export class DetailIndicatorComponent implements OnInit {
     // event.forEach(element => {
     //   repls_count += parseInt(element.replies.replies_count)
     // });
-    detailedData.comments_replies_count = repls_count
+    detailedData.comments_replies_count = repls_count;
   }
 
   updateEvaluation(type: string, data: any) {

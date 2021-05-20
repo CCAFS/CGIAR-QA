@@ -404,21 +404,6 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.actualComment.scrollIntoView({ block: 'center',  behavior: 'smooth', inline: 'nearest' });
     }
     // this.commentsElem.nativeElement.scrollIntoView({ behavior: "smooth"});
-    if (e) {
-      setTimeout(() => {
-        let parentPos = this.getPosition(this.containerElement.nativeElement);
-        let yPosition = this.getPosition(this.commentsElem.nativeElement)
-        // console.log({parentPos});
-        // console.log({yPosition});
-        
-        this.currentY = yPosition.y - parentPos.y;
-        this.renderComments = this.activeCommentArr[index];
-        console.log('SCROLLING');
-
-
-      }, 100);
-
-    }
     // if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
   }
 
@@ -440,6 +425,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.renderComments = this.activeCommentArr[index];
         this.actualComment = elementRef;
         elementRef.scrollIntoView({ block: 'start',  behavior: 'smooth' });
+    
+        
+        // setTimeout(()=> {window.scrollBy({top: -10, behavior: 'smooth'})},500);
       }, 100);
 
     }
