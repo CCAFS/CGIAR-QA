@@ -108,9 +108,9 @@
                     </div>
 
                     <!-- comments -->
-                    <div #commentsElem style="cursor: pointer;"
+                    <div #commElement style="cursor: pointer;"
                         *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
-                        (click)="showComments(i, field, $event); comment.updateData(field,params)"
+                        (click)="showComments(i, field,commElement, $event); comment.updateData(field,params)"
                         class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
                         <i *ngIf="!field.loading" class="icon-message"></i>
                         <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
@@ -214,9 +214,9 @@
                     </div>
 
                     <!-- comments -->
-                    <div #commentsElem style="cursor: pointer;"
+                    <div #commElement style="cursor: pointer;"
                         *ngIf="field.replies_count != '0'"
-                        (click)="showComments(i, field, $event); comment.updateData(field,params)"
+                        (click)="showComments(i, field, commElement, $event); comment.updateData(field,params)"
                         class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
                         <i *ngIf="!field.loading" class="icon-message"></i>
                         <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
@@ -252,7 +252,9 @@
     </div>
     <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
         class="col-sm-4 comments-container">
-        <app-comment #comment [isCRP]="isCRP" (parentFun)="showComments(fieldIndex, detailedData[fieldIndex], null)"
+             <div [ngClass]="{'hide' : !renderComments }"  class="comments-component-container">
+        <app-comment #comment [isCRP]="isCRP" (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex], null)"
             (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
-    </div>
+                 </div>
+        </div>
 </div>

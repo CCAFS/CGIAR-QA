@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -55,9 +55,12 @@ export class DetailIndicatorComponent implements OnInit {
 
   @ViewChild("commentsElem", { static: false }) private commentsElem: ElementRef;
   @ViewChild("containerElement", { static: false }) private containerElement: ElementRef;
+  @ViewChildren('commElement') commElements: QueryList<ElementRef>;
 
 
   activeCommentArr = [];
+  renderComments = false;
+  actualComment;
   fieldIndex: number;
   notApplicable = '';
   tickGroup: FormGroup;
@@ -255,19 +258,47 @@ export class DetailIndicatorComponent implements OnInit {
 
   // convenience getter for easy access to form fields
   get formData() { return this.generalCommentGroup.controls; }
+//Emitted from comment component
+hideComments(index: number, field: any, e?) {
+  this.fieldIndex = index;
+  field.clicked = !field.clicked;
+  this.activeCommentArr[index] = !this.activeCommentArr[index];
+  // this.renderComments = this.activeCommentArr[index];
 
-  showComments(index: number, field: any, e) {
-    if (e) {
-      let parentPos = this.getPosition(this.containerElement.nativeElement);
-      let yPosition = e.clientY - parentPos.y - (this.commentsElem.nativeElement.clientHeight / 2);
-      this.currentY = yPosition - 20
-    }
-    this.fieldIndex = index;
-    field.clicked = !field.clicked;
-    this.activeCommentArr[index] = !this.activeCommentArr[index];
-    // this.getDetailedData();
+  console.log('HIDE COMMENTS');
+  if(this.actualComment){
+        
+    this.actualComment.scrollIntoView({ block: 'center',  behavior: 'instant', inline: 'nearest' });
   }
+  // this.commentsElem.nativeElement.scrollIntoView({ behavior: "smooth"});
+  // if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
+}
 
+showComments(index: number, field: any, elementRef: any, e?) {
+  this.fieldIndex = index;
+  field.clicked = !field.clicked;
+  this.activeCommentArr[index] = !this.activeCommentArr[index];
+  console.log('SHOW_COMMENTS');
+
+  // this.commentsElem.nativeElement.scrollIntoView({ behavior: "smooth"});
+  if (e) {
+    setTimeout(() => {
+      let parentPos = this.getPosition(this.containerElement.nativeElement);
+      let yPosition = this.getPosition(elementRef)
+      console.log({parentPos});
+      console.log({yPosition});
+      
+      this.currentY = yPosition.y - parentPos.y;
+      this.renderComments = this.activeCommentArr[index];
+      this.actualComment = elementRef;
+      elementRef.scrollIntoView({ block: 'start',  behavior: 'smooth' });
+  
+      // setTimeout(()=> {window.scrollBy({top: -15, behavior: 'smooth'})});
+    }, 100);
+
+  }
+  // if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
+}
   updateNumCommnts({length, replies_count, validateFields}, detailedData) {
     // console.log('updateNumCommnts', event, event[0].replies.replies_count)
     //  event[0].replies.replies_count;
