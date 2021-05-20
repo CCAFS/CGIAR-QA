@@ -445,12 +445,15 @@ class EvaluationsController {
                 res.status(200).json({ data: Util.parseEvaluationsData(rawData), message: "User evaluations list" });
                 return;
             } else if (user.crps.length > 0) {
+                console.log('CRP_LIST');
+                
                 let sql = `
                     SELECT
                         evaluations.id AS evaluation_id,
                         evaluations.indicator_view_name,
                         evaluations.indicator_view_id,
                         evaluations.evaluation_status,
+                        evaluations.status as assessment_status,
                         evaluations.crp_id,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,

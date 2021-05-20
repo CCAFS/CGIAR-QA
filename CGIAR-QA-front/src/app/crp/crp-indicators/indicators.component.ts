@@ -110,6 +110,8 @@ export class CRPIndicatorsComponent implements OnInit {
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
+        console.log(this.evaluationList);
+        
         this.hideSpinner(this.spinner_name);
       },
       error => {

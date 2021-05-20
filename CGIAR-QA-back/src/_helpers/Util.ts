@@ -546,6 +546,7 @@ class Util {
             crp_acronym: element["crp_acronym"],
             crp_accepted: element["crp_accepted"],
             crp_rejected: element["crp_rejected"],
+            assessment_status: element["assessment_status"],
         }
         if (!type) {
             response = Object.assign(response, {
