@@ -68,6 +68,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   activeCommentArr = [];
   renderComments = false;
+  actualComment;
+
   fieldIndex: number;
   notApplicable = '';
   tickGroup: FormGroup;
@@ -397,7 +399,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     field.clicked = !field.clicked;
     this.activeCommentArr[index] = !this.activeCommentArr[index];
     console.log('HIDE COMMENTS');
-    
+    if(this.actualComment){
+          
+      this.actualComment.scrollIntoView({ block: 'center',  behavior: 'smooth', inline: 'nearest' });
+    }
     // this.commentsElem.nativeElement.scrollIntoView({ behavior: "smooth"});
     if (e) {
       setTimeout(() => {
@@ -408,6 +413,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         
         this.currentY = yPosition.y - parentPos.y;
         this.renderComments = this.activeCommentArr[index];
+        console.log('SCROLLING');
+
+
       }, 100);
 
     }
@@ -430,6 +438,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         
         this.currentY = yPosition.y - parentPos.y;
         this.renderComments = this.activeCommentArr[index];
+        this.actualComment = elementRef;
+        elementRef.scrollIntoView({ block: 'start',  behavior: 'smooth' });
       }, 100);
 
     }
