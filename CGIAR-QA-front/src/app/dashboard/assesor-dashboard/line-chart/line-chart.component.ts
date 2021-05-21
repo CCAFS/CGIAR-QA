@@ -11,6 +11,8 @@ export class LineChartComponent implements OnInit {
 
   @Input() data;
   @Input() total;
+  @Input() indicatorName;
+
   interval = 10;
   markersType = "Circle";
   maxY;
@@ -34,7 +36,18 @@ export class LineChartComponent implements OnInit {
 }
 
 calculateInterval() {
-  this.maxY = this.total;
+  if(this.indicatorName != 'qa_publications'){
+    this.maxY = this.total;
+  } else {
+    this.maxY = 0;
+    this.data.forEach(field => {
+      let maxComments = +field.pending;
+      console.log(maxComments);
+      
+      this.maxY = maxComments > this.maxY ? maxComments : this.maxY;
+    });
+  }
+  console.log(this.indicatorName);
   
   this.data.forEach(field => {
     let maxComments = +field.assessment_with_comments;
