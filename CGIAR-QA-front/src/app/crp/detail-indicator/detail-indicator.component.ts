@@ -268,7 +268,7 @@ hideComments(index: number, field: any, e?) {
   console.log('HIDE COMMENTS');
   if(this.actualComment){
         
-    this.actualComment.scrollIntoView({ block: 'center',  behavior: 'instant', inline: 'nearest' });
+    // this.actualComment.scrollIntoView({ block: 'center',  behavior: 'instant', inline: 'nearest' });
   }
   // this.commentsElem.nativeElement.scrollIntoView({ behavior: "smooth"});
   // if(!this.activeCommentArr[index]) this.validateAllFieldsAssessed();
@@ -291,7 +291,7 @@ showComments(index: number, field: any, elementRef: any, e?) {
       this.currentY = yPosition.y - parentPos.y;
       this.renderComments = this.activeCommentArr[index];
       this.actualComment = elementRef;
-      elementRef.scrollIntoView({ block: 'start',  behavior: 'smooth' });
+      // elementRef.scrollIntoView({ block: 'start',  behavior: 'smooth' });
   
       // setTimeout(()=> {window.scrollBy({top: -15, behavior: 'smooth'})});
     }, 100);
