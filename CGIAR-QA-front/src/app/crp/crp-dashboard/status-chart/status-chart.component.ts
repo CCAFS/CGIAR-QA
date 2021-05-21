@@ -16,10 +16,7 @@ export class StatusChartComponent implements OnInit{
     {name:"Answered / No action needed", class: "answered", value: 0},
     {name:"Pending", class:"pending", value: 0 },
   ];
-  legendLabelsUI = [
-    {name:"Answered / No action needed", class: "answered", value: 0},
-    {name:"Pending", class:"pending", value: 0 },
-  ];
+
 
   // options
   results: any[];
@@ -59,6 +56,12 @@ export class StatusChartComponent implements OnInit{
       
     });
     this.results[0].series.reverse();
+    console.log(this.results[0].series);
+    const isAllPending = this.results[0].series.find(el => el.name == 'Answered / No action needed' && el.value == 0);
+    console.log({isAllPending});
+    
+
+    if(this.results[0].series.find(el => el.name == 'Pending' && el.value == this.total)) this.colorScheme.domain.shift();
   }
 
   indicatorIsEnable() {
