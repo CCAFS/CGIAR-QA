@@ -90,7 +90,7 @@
                         </ng-template>
                     </div>
                     <div class="chart-container" *ngIf="dataCharts.assessmentByField">
-                        <app-line-chart [total]="dataSelected.total" [data]="dataCharts.assessmentByField"></app-line-chart>
+                        <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField"></app-line-chart>
                     </div>
                 </div>
                 <!-- <button class="btn btn-green-secondary">Download all comments and replies</button> -->
