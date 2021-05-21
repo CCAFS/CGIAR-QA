@@ -20,7 +20,7 @@ export class LineChartComponent implements OnInit {
    }
 
   ngOnInit() {
-    // console.log('LineChartData',this.data);
+    console.log('LineChartData',this.data);
     this.interval = this.data.length / 10;
   }
 
