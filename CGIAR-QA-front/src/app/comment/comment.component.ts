@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, TemplateRef, Input  } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, TemplateRef, Input, ViewChild, ElementRef, Renderer, Renderer2, Inject  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { DetailedStatus, ReplyTypes } from "../_models/general-status.model"
@@ -16,6 +16,7 @@ import { WordCounterPipe } from '../pipes/word-counter.pipe';
 import { mergeMap } from 'rxjs/operators';
 
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+
 
 @Component({
   selector: 'app-comment',
@@ -36,6 +37,7 @@ export class CommentComponent implements OnInit {
   crpComment = false;
   is_approved = false;
   replyTypes = ReplyTypes;
+  currentY;
 
   spinner_replies = 'spinner_Comment_Rply';
   spinner_comment = 'spinner_Comment';
@@ -49,8 +51,9 @@ export class CommentComponent implements OnInit {
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
   @Output("validateAllFieldsAssessed") validateAllFieldsAssessed: EventEmitter<any> = new EventEmitter();
   @Output("updateNumCommnts") updateNumCommnts: EventEmitter<any> = new EventEmitter();
-  allRoles = Role;
 
+  @ViewChild("commentContainer", { static: false }) private commentContainer: ElementRef;
+  allRoles = Role;
 
   constructor(
     private alertService: AlertService,
@@ -59,7 +62,8 @@ export class CommentComponent implements OnInit {
     private commentService: CommentService,
     private wordCount: WordCounterPipe,
     private spinner: NgxSpinnerService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    
     ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
@@ -315,8 +319,19 @@ export class CommentComponent implements OnInit {
   }
 
   //ACCEPT COMMENT
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+  openModal(template: TemplateRef<any>, e) {
+    console.log(e.clientY)
+    this.currentY = e.clientY;
+
+    // template.elementRef.nativeElement.style.top = `${this.currentY}px`;
+    this.modalRef = this.modalService.show(template, {class: 'pos-modal modal-sm'});
+    document.querySelector("body").style.cssText = `--position-top: ${this.currentY - 300}px`;
+    // const modal = this.elem.nativeElement.querySelector('.modal-content');
+    // console.log(modal);
+    // console.log(template.elementRef.nativeElement);
+    
+    // template.elementRef.nativeElement.style.top.px = this.currentY;
+    // this.confirmModal.nativeElement.style.top = `${this.currentY}px`;
   }
  
   confirm(is_approved: any, replyTypeId: number,comment: any): void {

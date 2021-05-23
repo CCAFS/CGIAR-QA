@@ -241,10 +241,10 @@
   height: 100%;
   .modal-content {
     position: absolute;
-    top: 50%;
+    top: 10%;
     background-color: var(--input-gray);
     .modal-body {
-      .btn {
+      .btn { 
         margin: 0 20px;
         width: 20%;
       }
@@ -541,16 +541,22 @@ body::-webkit-scrollbar-thumb
 modal-container{
   display: flex !important;
 }
-.modal-content {
-  max-width: 500px;
-  position: relative;
-  // top: -10vw;
-  h5{
-
-  }
-  p {
-    margin: 0;
-    font-size: $font-sm;
+.modal-dialog.modal-sm{
+position: absolute;
+top:var(--position-top);
+left: 40vw;
+  .modal-content {
+    max-width: 500px;
+    position: relative;
+    // top: 10vw;
+    // left: 40vw;
+    h5{
+  
+    }
+    p {
+      margin: 0;
+      font-size: $font-sm;
+    }
   }
 }
 
@@ -567,4 +573,13 @@ modal-container{
 .data-value{
   max-width: calc(100% - 7em);
 
+}
+
+.pos-modal{
+  position: absolute;
+  top:var(--position-top);
+}
+
+body{
+  --position-top: 51px;
 }

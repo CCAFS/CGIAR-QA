@@ -1,4 +1,4 @@
-<div class="comments-container">
+<div class="comments-container" >
     <!-- <app-on-boarding *ngIf="currentUser.roles[0].id != 3"></app-on-boarding> -->
     <i class="icon-close" (click)="closeComments()" style="cursor: pointer;"></i>
     <div *ngIf="commentsByCol.length && !availableComment && currentUser.hasOwnProperty('cycle')">
@@ -67,12 +67,12 @@
 
                     <div *ngIf="crpComment && comment.crp_approved === null" style="flex-direction: row;"
                         class="add-comment-container">
-                        <button type="button" class="btn accept" (click)="openModal(confirmModal)">ACCEPT</button>
+                        <button type="button" class="btn accept" (click)="openModal(confirmModal, $event)">ACCEPT</button>
                         <!-- <button type="button" class="btn btn-primary"  (click)="answerComment(true,replyTypes.accepted, comment)" >Open modal</button> -->
                         <!-- <br><br>
                         <pre class="card card-block card-header">{{message}}</pre> -->
-                        <ng-template #confirmModal style="max-width: 500px;">
-                            <div class="modal-body text-center">
+                        <ng-template #confirmModal style="max-width: 200px;" >
+                            <div class="modal-body text-center" >
                                 <h5>Do you want to ACCEPT this comment?</h5>
                                 <p>Before you accept this comment, please
                                     make sure you have updated the information in MARLO/MEL</p>
