@@ -63,12 +63,12 @@ export class CommentComponent implements OnInit {
     private wordCount: WordCounterPipe,
     private spinner: NgxSpinnerService,
     private modalService: BsModalService,
-    
+
     ) {
     this.authenticationService.currentUser.subscribe(x => {
       this.currentUser = x;
       console.log(this.currentUser.cycle_ended);
-      
+
       console.log(this.currentUser);
       console.log('IS_CRP',this.isCRP);
 
@@ -85,7 +85,7 @@ export class CommentComponent implements OnInit {
     if(this.isCRP && this.currentUser.roles[0].description == this.allRoles.admin){
       this.currentUser.roles.shift();
       console.log(this.currentUser);
-      
+
     }
   }
 
@@ -126,7 +126,7 @@ export class CommentComponent implements OnInit {
       res => {
         this.getItemCommentData();
         console.log(res.message);
-        
+
       },
       error => {
         console.log("addTag", error);
@@ -172,7 +172,7 @@ export class CommentComponent implements OnInit {
     }).subscribe(
       res => {
         console.log('COMMENT ADDED');
-        
+
         this.getItemCommentData(true)
         this.formData.comment.reset()
         this.validateAllFieldsAssessed.emit();
@@ -217,7 +217,7 @@ export class CommentComponent implements OnInit {
       return;
     }
     console.log(data);
-    
+
     data[type] = !data[type];
     delete data.user.replies;
     delete data.user.crps;
@@ -249,15 +249,15 @@ export class CommentComponent implements OnInit {
         // console.log(res)
         const replies_count = res.data.filter(data => data.approved)[0]?  +res.data.filter(data => data.approved)[0].replies.replies_count : 0;
         console.log({replies_count});
-        
+
         this.updateNumCommnts.emit({length: res.data.filter(field => field.is_deleted == false).length, replies_count: replies_count, validateFields});
        console.log(this.currentUser.roles[0].description);
-       
+
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:
             this.commentsByCol = res.data.filter(data => data.approved);
             console.log(this.commentsByCol);
-            
+
             this.currentComment = this.commentsByCol.find(comment => comment.approved);
             this.crpComment = true;
             // this.commentsByCol.forEach(comment => {
@@ -329,23 +329,26 @@ export class CommentComponent implements OnInit {
     // const modal = this.elem.nativeElement.querySelector('.modal-content');
     // console.log(modal);
     // console.log(template.elementRef.nativeElement);
-    
+
     // template.elementRef.nativeElement.style.top.px = this.currentY;
     // this.confirmModal.nativeElement.style.top = `${this.currentY}px`;
   }
- 
+
   confirm(is_approved: any, replyTypeId: number,comment: any): void {
-    this.answerComment(true,replyTypeId, comment);
+    let newReplyTypeId = this.formData.comment.value? this.replyTypes.accepted_with_comment : this.replyTypes.accepted;
+    this.answerComment(true,newReplyTypeId, comment);
     this.replyComment(comment);
     this.modalRef.hide();
   }
- 
+
   cancel(): void {
     this.modalRef.hide();
   }
 
   replyComment(currentComment) {
-    if ((this.commentGroup.invalid || this.formData.comment.value === "") && currentComment.replyTypeId != this.replyTypes.accepted  ) {
+    console.log(currentComment.replyTypeId);
+    
+    if ((this.commentGroup.invalid || this.formData.comment.value === "") && (currentComment.replyTypeId != this.replyTypes.accepted && currentComment.replyTypeId != this.replyTypes.accepted_with_comment)  ) {
       this.alertService.error('Comment is required', false)
       return;
     }
@@ -382,12 +385,12 @@ export class CommentComponent implements OnInit {
     return this.wordCount.transform(value);
   }
 
-  
+
 
   /***
-  * 
-  *  Spinner 
-  * 
+  *
+  *  Spinner
+  *
   ***/
   showSpinner(name: string) {
     // this.spinner.show();

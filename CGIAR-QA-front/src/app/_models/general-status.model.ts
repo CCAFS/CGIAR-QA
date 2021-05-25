@@ -32,5 +32,6 @@ export enum TagMessage {
 export enum ReplyTypes {
     accepted = 1,
     disagree = 2,
-    clarification = 3
+    clarification = 3,
+    accepted_with_comment
 }

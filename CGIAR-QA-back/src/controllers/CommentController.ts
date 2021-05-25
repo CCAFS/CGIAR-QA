@@ -53,7 +53,7 @@ class CommentController {
                                 IF (comments.replyTypeId = 1 AND replies.detail = '', 1, 0 )
                             ) AS comments_accepted_without_comment,
                             SUM(
-                                IF (comments.replyTypeId = 1 AND replies.detail <> '', 1, 0 )
+                                IF (comments.replyTypeId = 4 AND replies.detail <> '', 1, 0 )
                             ) AS comments_accepted_with_comment,
                             SUM(
                                 IF (comments.replyTypeId = 2, 1, 0)
@@ -100,7 +100,7 @@ class CommentController {
                         IF (comments.replyTypeId = 1 AND replies.detail = '', 1, 0 )
                     ) AS comments_accepted_without_comment,
                     SUM(
-                        IF (comments.replyTypeId = 1 AND replies.detail <> '', 1, 0 )
+                        IF (comments.replyTypeId = 4 AND replies.detail <> '', 1, 0 )
                     ) AS comments_accepted_with_comment,
                     SUM(
                         IF (comments.replyTypeId = 2, 1, 0)
