@@ -5,7 +5,7 @@
         <h2 class="title-section">COMMENTS ON {{dataFromItem.display_name}}</h2>
         <div class="comment-container">
             <ng-container *ngFor="let comment of commentsByCol">
-                <div class="comment-body {{ comment.replyType?.id === 1 ? 'approved': ''}} {{  comment.replyType?.id === 2 ? 'declined': ''}} {{  comment.replyType?.id === 3 ? 'clarification': ''}}"
+                <div class="comment-body {{ comment.replyType?.id === 1 || comment.replyType?.id === 4 ? 'approved': ''}} {{  comment.replyType?.id === 2 ? 'declined': ''}} {{  comment.replyType?.id === 3 ? 'clarification': ''}}"
                     *ngIf="!comment.is_deleted && comment.is_visible">
                     <div>
                         <div class="comment-title">
@@ -106,8 +106,10 @@
                             <form [formGroup]="commentGroup">
                                 <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
                             </form>
-                            <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>
-                            <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
+                            <div class="options-comments">
+                                <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>
+                                <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
+                            </div>
                         </div>
 
                     </div>
