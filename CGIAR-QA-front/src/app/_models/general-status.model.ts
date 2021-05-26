@@ -33,5 +33,5 @@ export enum ReplyTypes {
     accepted = 1,
     disagree = 2,
     clarification = 3,
-    accepted_with_comment
+    accepted_with_comment = 4
 }

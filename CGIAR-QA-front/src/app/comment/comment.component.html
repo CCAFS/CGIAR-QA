@@ -89,7 +89,7 @@
                             (click)="answerComment(false,replyTypes.clarification,comment)">CLARIFICATION NEEDED</button>
                     </div> 
 
-                    <div *ngIf="crpComment && comment.replies.replies_count == '0' && comment.replyTypeId != 1"
+                    <div *ngIf="crpComment && comment.replies.replies_count == '0' && comment.replyTypeId != 1 && comment.replyTypeId != 4 "
                         class="add-comment-container reply-comment"
                         [ngClass]="{'approved' : comment.replyTypeId == 1, 'declined' : comment.replyTypeId == 2, 'clarification' : comment.replyTypeId == 3}">
                         <h2 *ngIf="comment.replyTypeId != undefined && comment.replyTypeId == replyTypes.clarification" >
