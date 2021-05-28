@@ -37,7 +37,7 @@ export class AdminDashboardComponent implements OnInit {
   dashboardCyclesData: any[];
   configurationData: any[];
   selectedProgramName: string;
-  selectedProg:any = {}
+  selectedProg:any = 'All';
   settingsForm: FormGroup;
   programsForm: FormGroup;
   generalStatus = GeneralStatus;
@@ -71,6 +71,8 @@ export class AdminDashboardComponent implements OnInit {
     { name: 'MELIAs', viewname: 'qa_melia' },
     // qa_outcomes: 'Outcomes',
   ]
+
+  indicatorsAvailable;
 
   descriptionCharts = {
     generalStatus: "This shows the progress of assessment of a specific indicator. ",
@@ -153,6 +155,7 @@ export class AdminDashboardComponent implements OnInit {
       enableQA: this.formBuilder.array([], [Validators.required]),
       enableCRP: this.formBuilder.array([], [Validators.required]),
     })
+    this.indicatorsAvailable = this.indicatorsNameDropdwon;
   }
 
   ngOnInit() {
@@ -397,7 +400,9 @@ export class AdminDashboardComponent implements OnInit {
 
 
   onProgramChange({ target }, value) {
+    if(value)
     this.selectedProgramName = (value.acronym === '' || value.acronym === ' ') ? value.name : value.acronym;
+
     this.selectedProgramName = this.selectedProgramName? this.selectedProgramName : 'All';
     let crp_id;
     if(!value){
@@ -423,6 +428,13 @@ export class AdminDashboardComponent implements OnInit {
       responses.subscribe(res => {
         const [dashData, allTags, assessmentByField] = res;
         this.dashboardData = this.dashService.groupData(dashData.data);
+        console.log('DASH DATA', this.dashboardData);
+        console.log('DASH keys', Object.keys(this.dashboardData));
+        this.selectedIndicator = Object.keys(this.dashboardData)[0];
+        this.indicatorsAvailable = this.indicatorsNameDropdwon;
+        this.indicatorsAvailable = this.indicatorsAvailable.filter(ind => ind.viewname in this.dashboardData );
+        console.log('INDICATORS', this.indicatorsAvailable);
+        
         this.dataSelected = this.dashboardData[this.selectedIndicator];
         // this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
         this.indicatorsTags = this.commentService.groupTags(allTags.data);
@@ -447,6 +459,9 @@ export class AdminDashboardComponent implements OnInit {
       responses.subscribe(res => {
         const [dashData, commentsStats, allTags,  assessmentByField] = res;
         this.dashboardData = this.dashService.groupData(dashData.data);
+        console.log('DASH DATA', this.dashboardData);
+        this.selectedIndicator = Object.keys(this.dashboardData)[0];
+        
         this.dataSelected = this.dashboardData[this.selectedIndicator];
         this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
         this.indicatorsTags = this.commentService.groupTags(allTags.data);
@@ -496,7 +511,8 @@ export class AdminDashboardComponent implements OnInit {
       this.crps = crps.data;
       // this.crps.unshift(new CRP( 0, 'All', 'undefined',  '0', false ) )
       this.selectedProgramName = this.crps[0]['acronym'];
-
+      console.log('PROGRAM NAME',this.selectedProgramName);
+      
       this.configurationData = indicatorsByCrps.data;
       // console.log(this.configurationData)
 
@@ -654,10 +670,13 @@ export class AdminDashboardComponent implements OnInit {
     )
   }
 
+  //TO-DO
   downloadRawComments() {
     this.showSpinner();
     // console.log(this.selectedProg)
     let crp_id = this.selectedProg['crp_id'];
+   console.log(this.selectedProg);
+
     let filename = `QA-COMMENTS-${this.selectedProg.hasOwnProperty('acronym') && this.selectedProg['acronym'] !== 'All' ? '(' + this.selectedProg['acronym'] + ')' : ''}${moment().format('YYYYMMDD:HHmm')}`
     if (this.authenticationService.getBrowser() === 'Safari')
       filename += `.xlsx`;
