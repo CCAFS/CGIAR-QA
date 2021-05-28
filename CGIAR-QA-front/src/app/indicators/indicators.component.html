@@ -41,7 +41,7 @@
 <div class="form-group">
     <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
 </div>
-<div *ngIf="currentUser.cycle.cycle_stage > 1 " class="row" style="margin: 1em 0;">
+<div  class="row" style="margin: 1em 0;">
 
     <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
         <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"

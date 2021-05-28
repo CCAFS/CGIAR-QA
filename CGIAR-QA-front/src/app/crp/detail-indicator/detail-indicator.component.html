@@ -103,7 +103,7 @@
                             [innerHTML]="detailedData[i].value">
                         </div>
                         <!-- no data -->
-                        <p *ngIf="detailedData[i].value === null" class="empty-value">Data not provided.</p>
+                        <p *ngIf="detailedData[i].value === null ||  detailedData[i].value == ''" class="empty-value">Data not provided.</p>
 
                     </div>
 
