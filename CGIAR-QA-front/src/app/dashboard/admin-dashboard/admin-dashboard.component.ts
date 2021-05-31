@@ -70,7 +70,9 @@ export class AdminDashboardComponent implements OnInit {
     { name: 'CapDevs', viewname: 'qa_capdev' },
     { name: 'MELIAs', viewname: 'qa_melia' },
     // qa_outcomes: 'Outcomes',
-  ]
+  ];
+  
+  activeCompleteDash = true;
 
   indicatorsAvailable;
 
@@ -86,6 +88,17 @@ export class AdminDashboardComponent implements OnInit {
     assessorsInteractions: null,
     responseToComments: null,
     assessmentByField: null
+  }
+
+  totalPendings = {
+    qa_policies: 0,
+    qa_innovations: 0,
+    qa_publications: 0,
+    qa_oicr: 0,
+    qa_melia: 0,
+    qa_capdev: 0,
+    qa_milestones: 0,
+    qa_slo: 0
   }
 
   //new props
@@ -279,9 +292,10 @@ export class AdminDashboardComponent implements OnInit {
     return { dataset, brushes };
   }
 
-  formatCommentsIndicatorData(data) {
+  formatCommentsIndicatorData(data, indicator?) {
     const colors = {
       Accepted: 'var(--color-agree)',
+      AcceptedWC: 'var(--color-agree-wc)',
       Clarification: 'var(--color-clarification)',
       Disagree: 'var(--color-disagree)',
       Pending: 'var(--color-pending)'
@@ -290,9 +304,13 @@ export class AdminDashboardComponent implements OnInit {
     let brushes = { domain: [] };
 
     if (data) {
-      let comments_accepted = data.find(item => item.comments_accepted != '0');
-      comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
-      if (comments_accepted) dataset.push(comments_accepted);
+      let comments_accepted_with_comment = data.find(item => item.comments_accepted_with_comment != '0');
+      comments_accepted_with_comment = comments_accepted_with_comment ? { name: 'AcceptedWC', value: +comments_accepted_with_comment.value } : null;
+      if (comments_accepted_with_comment) dataset.push(comments_accepted_with_comment);
+
+      let comments_accepted_without_comment = data.find(item => item.comments_accepted_without_comment != '0');
+      comments_accepted_without_comment = comments_accepted_without_comment ? { name: 'Accepted', value: +comments_accepted_without_comment.value } : null;
+      if (comments_accepted_without_comment) dataset.push(comments_accepted_without_comment);
 
       let comments_rejected = data.find(item => item.comments_rejected != '0');
       comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
@@ -304,7 +322,10 @@ export class AdminDashboardComponent implements OnInit {
 
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
-      if (comments_without_answer) dataset.push(comments_without_answer);
+      if (comments_without_answer) {
+        dataset.push(comments_without_answer);
+        this.totalPendings[indicator] = +comments_without_answer.value;
+      }
 
       dataset.forEach(comment => {
         brushes.domain.push(colors[comment.name]);
@@ -419,14 +440,14 @@ export class AdminDashboardComponent implements OnInit {
     if (this.currenTcycle.cycle_stage == "1") {
       let responses = forkJoin([
         this.getAllDashData(crp_id),
-        // this.getCommentStats(),
+        this.getCommentStats(crp_id),
         this.getAllTags(crp_id),
         // this.getFeedTags(this.selectedIndicator),
         this.getAllItemStatusByIndicator()
       ]);
 
       responses.subscribe(res => {
-        const [dashData, allTags, assessmentByField] = res;
+        const [dashData, commentsStats, allTags, assessmentByField] = res;
         this.dashboardData = this.dashService.groupData(dashData.data);
         console.log('DASH DATA', this.dashboardData);
         console.log('DASH keys', Object.keys(this.dashboardData));
@@ -435,8 +456,14 @@ export class AdminDashboardComponent implements OnInit {
         this.indicatorsAvailable = this.indicatorsAvailable.filter(ind => ind.viewname in this.dashboardData );
         console.log('INDICATORS', this.indicatorsAvailable);
         
+        
         this.dataSelected = this.dashboardData[this.selectedIndicator];
-        // this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+
+        this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+        console.log('RESPONSES',commentsStats.data);
+        console.log('RESPONSES', this.dashboardCommentsData);
+        
+
         this.indicatorsTags = this.commentService.groupTags(allTags.data);
         // this.feedList = feedTags.data;
         this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
@@ -450,7 +477,7 @@ export class AdminDashboardComponent implements OnInit {
     } else {
       let responses = forkJoin([
         this.getAllDashData(crp_id),
-        this.getCommentStats(),
+        this.getCommentStats(crp_id),
         this.getAllTags(crp_id),
         // this.getFeedTags(this.selectedIndicator),
         this.getAllItemStatusByIndicator()
@@ -545,7 +572,7 @@ export class AdminDashboardComponent implements OnInit {
   updateDataCharts() {
     this.dataCharts.generalStatus = this.formatStatusIndicatorData(this.dataSelected);
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
-    this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator]);
+    this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator], this.selectedIndicator);
     this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
 
   }

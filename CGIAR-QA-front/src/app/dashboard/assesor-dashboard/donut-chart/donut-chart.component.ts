@@ -30,8 +30,10 @@ export class DonutChartComponent implements OnInit {
   comments: [
     {name:"Pending", class:"pending" },
     {name:"Accepted", class: "agree"},
+    {name:"Accepted with comment", class: "agree-wc"},
     {name:"Disagree", class: "disagree"},
     {name:"Clarification needed", class: "clarification"},
+    
   ]};
 
   public chartType: any;
