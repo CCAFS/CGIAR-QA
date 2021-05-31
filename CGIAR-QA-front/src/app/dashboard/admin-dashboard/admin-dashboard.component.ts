@@ -245,6 +245,11 @@ export class AdminDashboardComponent implements OnInit {
     return this.indicatorService.getAllItemStatusByIndicator().pipe();
   }
 
+    //Assessment by field and by indicator
+    getItemStatusByIndicatorService(indicator: string): Observable<any> {
+      return this.indicatorService.getItemStatusByIndicator(indicator).pipe();
+    }
+
 
   getAllTags(crp_id?): Observable<any> {
     return this.commentService.getAllTags(crp_id).pipe();
@@ -443,7 +448,8 @@ export class AdminDashboardComponent implements OnInit {
         this.getCommentStats(crp_id),
         this.getAllTags(crp_id),
         // this.getFeedTags(this.selectedIndicator),
-        this.getAllItemStatusByIndicator()
+        // this.getAllItemStatusByIndicator()
+        this.getItemStatusByIndicatorService(this.selectedIndicator)
       ]);
 
       responses.subscribe(res => {
@@ -466,7 +472,9 @@ export class AdminDashboardComponent implements OnInit {
 
         this.indicatorsTags = this.commentService.groupTags(allTags.data);
         // this.feedList = feedTags.data;
-        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        this.itemStatusByIndicator = assessmentByField.data;
+
+        // this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
         this.updateDataCharts();
         this.hideSpinner();
       }, error => {
@@ -480,7 +488,8 @@ export class AdminDashboardComponent implements OnInit {
         this.getCommentStats(crp_id),
         this.getAllTags(crp_id),
         // this.getFeedTags(this.selectedIndicator),
-        this.getAllItemStatusByIndicator()
+        // this.getAllItemStatusByIndicator()
+        this.getItemStatusByIndicatorService(this.selectedIndicator)
       ]);
 
       responses.subscribe(res => {
@@ -493,7 +502,9 @@ export class AdminDashboardComponent implements OnInit {
         this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
         this.indicatorsTags = this.commentService.groupTags(allTags.data);
         // this.feedList = feedTags.data;
-        this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+        this.itemStatusByIndicator = assessmentByField.data;
+
+        // this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
         this.updateDataCharts();
         this.hideSpinner();
       }, error => {
@@ -525,7 +536,7 @@ export class AdminDashboardComponent implements OnInit {
       this.getCycles(),
       this.getAllTags(),
       this.getFeedTags(this.selectedIndicator),
-      this.getAllItemStatusByIndicator()
+      this.getItemStatusByIndicatorService(this.selectedIndicator)
     ]);
     responses.subscribe(res => {
       const [dashData, crps, indicatorsByCrps, commentsStats, cycleData, allTags, feedTags, assessmentByField] = res;
@@ -554,7 +565,9 @@ export class AdminDashboardComponent implements OnInit {
 
       this.feedList = feedTags.data;
 
-      this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
+      this.itemStatusByIndicator = assessmentByField.data;
+
+      // this.itemStatusByIndicator = this.indicatorService.formatAllItemStatusByIndicator(assessmentByField.data);
       // console.log('CHART 3',this.itemStatusByIndicator);
 
       //UPDATE CHARTS
@@ -573,7 +586,9 @@ export class AdminDashboardComponent implements OnInit {
     this.dataCharts.generalStatus = this.formatStatusIndicatorData(this.dataSelected);
     this.dataCharts.assessorsInteractions = this.formatIndicatorTags();
     this.dataCharts.responseToComments = this.formatCommentsIndicatorData(this.dashboardCommentsData[this.selectedIndicator], this.selectedIndicator);
-    this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
+    this.dataCharts.assessmentByField = this.itemStatusByIndicator;
+
+    // this.dataCharts.assessmentByField = this.getItemStatusByIndicator(this.selectedIndicator);
 
   }
 

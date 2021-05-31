@@ -230,7 +230,7 @@
                                         <div [innerHtml]="descriptionCharts.assessmentByField"></div>
                                     </ng-template>
                                 </div>
-                                <div class="chart-container" *ngIf="getItemStatusByIndicator(selectedIndicator)">
+                                <div class="chart-container" *ngIf="dataCharts.assessmentByField"> 
                                     <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField"></app-line-chart>
                                 </div>
                             </div>
