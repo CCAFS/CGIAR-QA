@@ -680,7 +680,7 @@ class CommentController {
                         qa_comments comments
                         LEFT JOIN qa_users users ON users.id = comments.userId
                         LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
-                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
                         LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
                         WHERE
                         comments.detail IS NOT NULL
@@ -688,7 +688,6 @@ class CommentController {
                         AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                         AND comments.approved = 1
                         AND comments.is_deleted = 0
-                        AND replies.is_deleted = 0
                         AND evaluations.crp_id = :crp_id
                         AND evaluations.phase_year = actual_phase_year()
                         ORDER BY createdAt ASC
@@ -727,7 +726,7 @@ class CommentController {
                             qa_comments comments
                             LEFT JOIN qa_users users ON users.id = comments.userId
                             LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
-                            LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                            LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
                             LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
                             WHERE
                             comments.detail IS NOT NULL
@@ -736,7 +735,6 @@ class CommentController {
                             AND comments.approved = 1
                             AND comments.is_visible = 1
                             AND comments.is_deleted = 0
-                            AND replies.is_deleted = 0
                             ORDER BY createdAt ASC
                             `,
                         { evaluationId },
@@ -772,7 +770,7 @@ class CommentController {
                             qa_comments comments
                             LEFT JOIN qa_users users ON users.id = comments.userId
                             LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId
-                            LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id
+                            LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
                             LEFT JOIN qa_indicators_meta meta ON meta.id = comments.metaId
                             WHERE
                             comments.detail IS NOT NULL
@@ -781,7 +779,6 @@ class CommentController {
                             AND comments.approved = 1
                             AND comments.is_visible = 1
                             AND comments.is_deleted = 0
-                            AND replies.is_deleted = 0
                             ORDER BY createdAt ASC
                             `,
                         { evaluationId },
