@@ -29,7 +29,7 @@ export class UrlTransformPipe implements PipeTransform {
 
   urlToAnchor(value) {
     if(value.indexOf('<a') == -1 && value && typeof value == 'string') {      
-      var urlRegex = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+      var urlRegex = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!():,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
       return value.replace(urlRegex, function(url) {
         return '<a target="_blank" href="' + url + '">' + url + '</a>';
       });
