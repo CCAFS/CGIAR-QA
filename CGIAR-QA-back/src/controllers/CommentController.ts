@@ -70,7 +70,7 @@ class CommentController {
                             ) AS comments_without_answer,
                             SUM(IF(replies.userId = 47, 1, 0)) AS auto_replies_total,
                     
-                            IF(comments.replyTypeId IS NULL, 'secondary', IF(comments.replyTypeId = 2, 'success','danger')) AS type,
+                            IF(comments.replyTypeId IS NULL, 'secondary', IF(comments.replyTypeId in(1,4), 'success','danger')) AS type,
                             
                             COUNT(DISTINCT comments.id) AS 'label',
                             COUNT(DISTINCT comments.id) AS 'value',
@@ -117,7 +117,7 @@ class CommentController {
                     ) AS comments_without_answer,
                     SUM(IF(replies.userId = 47, 1, 0)) AS auto_replies_total,
             
-                    IF(comments.replyTypeId IS NULL, 'secondary', IF(comments.replyTypeId = 1, 'success','danger')) AS type,
+                    IF(comments.replyTypeId IS NULL, 'secondary', IF(comments.replyTypeId in(1,4), 'success','danger')) AS type,
                     
                     COUNT(DISTINCT comments.id) AS 'label',
                     COUNT(DISTINCT comments.id) AS 'value',
@@ -1265,47 +1265,47 @@ class CommentController {
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     `
                     SELECT
-                        (
-                            SELECT
-                                acronym
-                            FROM
-                                qa_crp
-                            WHERE
-                                crp_id = evaluations.crp_id
-                        ) AS 'crp_acronym',
-                        evaluations.indicator_view_id AS 'id',
-                        
-                        comments.createdAt AS createdAt,
-                        comments.updatedAt AS updatedAt,
-                        (SELECT name FROM qa_indicators WHERE view_name = evaluations.indicator_view_name) AS 'indicator_title',
-                        evaluations.indicator_view_name AS 'indicator_view_name',
-                        ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'display_name',
-                        ( SELECT col_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'col_name',
-                        comments.id AS 'comment_id',
-                        (SELECT username FROM qa_users WHERE id = comments.userId) as 'username',
-                        comments.detail AS 'detail',
-                        IFNULL(( SELECT GROUP_CONCAT(detail SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id ),'<not replied>') as 'reply',
-                        IFNULL(( SELECT  GROUP_CONCAT( (SELECT username from qa_users WHERE id = userId) SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id),'<not replied>') AS user_replied,
-                        IFNULL(( SELECT  GROUP_CONCAT( createdAt SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id),'<not replied>') AS reply_createdAt,
-                        SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
-                        (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle_stage',
-                        comments.crp_approved AS crp_approved
+                    (
+                        SELECT
+                            acronym
                         FROM
-                            qa_comments comments
-                        LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId AND evaluations.status <> 'Deleted'
-                        LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
-                        WHERE comments.is_deleted = 0
-                        AND comments.detail IS NOT NULL
-                        AND evaluations.phase_year = actual_phase_year()
-                        
-                        GROUP BY
-                            evaluations.crp_id,
-                            'display_name',
-                            'cycle_stage',
-                            comments.id
-                            ORDER BY
-                            evaluations.crp_id,
-                            indicator_view_id;
+                            qa_crp
+                        WHERE
+                            crp_id = evaluations.crp_id
+                    ) AS 'crp_acronym',
+                    evaluations.indicator_view_id AS 'id',
+                    
+                    comments.createdAt AS createdAt,
+                    comments.updatedAt AS updatedAt,
+                    (SELECT name FROM qa_indicators WHERE view_name = evaluations.indicator_view_name) AS 'indicator_title',
+                    evaluations.indicator_view_name AS 'indicator_view_name',
+                    ( SELECT display_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'display_name',
+                    ( SELECT col_name FROM qa_indicators_meta WHERE id = comments.metaId) AS 'col_name',
+                    comments.id AS 'comment_id',
+                    (SELECT username FROM qa_users WHERE id = comments.userId) as 'username',
+                    comments.detail AS 'detail',
+                    IFNULL(( SELECT GROUP_CONCAT(detail SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id and qa_comments_replies.is_deleted = 0),'<not replied>') as 'reply',
+                    IFNULL(( SELECT  GROUP_CONCAT( (SELECT username from qa_users WHERE id = userId) SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id and qa_comments_replies.is_deleted = 0),'<not replied>') AS user_replied,
+                    IFNULL(( SELECT  GROUP_CONCAT( createdAt SEPARATOR '\n') FROM qa_comments_replies WHERE commentId = comments.id and qa_comments_replies.is_deleted = 0),'<not replied>') AS reply_createdAt,
+                    SUM(IF(replies.userId = 47, 1, 0)) AS 'comment_auto_replied',
+                    (SELECT cycle_stage from qa_cycle WHERE id = comments.cycleId) as 'cycle_stage',
+                    comments.crp_approved AS crp_approved
+                    FROM
+                        qa_comments comments
+                    LEFT JOIN qa_evaluations evaluations ON evaluations.id = comments.evaluationId AND evaluations.status <> 'Deleted'
+                    LEFT JOIN qa_comments_replies replies ON replies.commentId = comments.id AND replies.is_deleted = 0
+                    WHERE comments.is_deleted = 0
+                    AND comments.detail IS NOT NULL
+                    AND evaluations.phase_year = actual_phase_year()
+                    
+                    GROUP BY
+                        evaluations.crp_id,
+                        'display_name',
+                        'cycle_stage',
+                        comments.id
+                        ORDER BY
+                        evaluations.crp_id,
+                        indicator_view_id;
                     `,
                     {},
                     {}
