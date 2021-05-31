@@ -688,6 +688,7 @@ class CommentController {
                         AND (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
                         AND comments.approved = 1
                         AND comments.is_deleted = 0
+                        AND replies.is_deleted = 0
                         AND evaluations.crp_id = :crp_id
                         AND evaluations.phase_year = actual_phase_year()
                         ORDER BY createdAt ASC
@@ -735,6 +736,7 @@ class CommentController {
                             AND comments.approved = 1
                             AND comments.is_visible = 1
                             AND comments.is_deleted = 0
+                            AND replies.is_deleted = 0
                             ORDER BY createdAt ASC
                             `,
                         { evaluationId },
@@ -779,6 +781,7 @@ class CommentController {
                             AND comments.approved = 1
                             AND comments.is_visible = 1
                             AND comments.is_deleted = 0
+                            AND replies.is_deleted = 0
                             ORDER BY createdAt ASC
                             `,
                         { evaluationId },
