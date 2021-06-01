@@ -195,10 +195,23 @@ export class AdminDashboardComponent implements OnInit {
     this.dataSelected = this.dashboardData[this.selectedIndicator];
 
     this.showSpinner();
-    this.updateDataCharts();
-    this.getFeedTags(this.selectedIndicator).subscribe(
+
+    let responses = forkJoin([
+      this.getFeedTags(this.selectedIndicator),
+      this.getItemStatusByIndicatorService(this.selectedIndicator)
+    ]);
+    responses.subscribe(
       res => {
-        this.feedList = res.data;
+        const [feedTags, assessmentByField] = res;
+        //feedTags
+        this.feedList = feedTags.data;
+
+        //assessmentByField
+        this.itemStatusByIndicator = assessmentByField.data;
+
+        //UPDATE CHARTS
+        this.updateDataCharts();
+
         this.hideSpinner();
       }
     );

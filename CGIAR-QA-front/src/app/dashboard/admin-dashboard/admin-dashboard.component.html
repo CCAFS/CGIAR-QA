@@ -225,21 +225,15 @@
                                 [ngClass]="{ 'assessment-by-field-r2': currentUser.cycle.cycle_stage == true || activeCompleteDash}">
                                 <div class="header-chart">
                                     <h4 class="chart-title">Assessment by field</h4>
-                                    <div (click)="openChart(template, $event)">View in full screen</div>
+                                    <div class="link-fs" (click)="openChart(chartD, $event)">View in full screen</div>
                                     <i class="icon-info" [tooltip]="popTemplateChartD"></i>
                                     <ng-template #popTemplateChartD>
                                         <div [innerHtml]="descriptionCharts.assessmentByField"></div>
                                     </ng-template>
-                                    <ng-template #chartD style="max-width: 1800px;" >
-                                        <div class="modal-body text-center" >
-                                            <div class="chart-modal-container" *ngIf="dataCharts.assessmentByField"> 
-                                                <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField"></app-line-chart>
-                                            </div>
-                                        </div>
-                                    </ng-template>
+
                                 </div>
                                 <div class="chart-container" *ngIf="dataCharts.assessmentByField"> 
-                                    <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField"></app-line-chart>
+                                    <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField" [isModal]=false></app-line-chart>
                                 </div>
                             </div>
                             <!-- <button class="btn btn-green-secondary">Download all comments and replies</button> -->
@@ -367,6 +361,19 @@
                     </div>
 
                 </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #chartD style="max-width: 1800px;" >
+        <div class="options-modal">
+            <button type="button" class="close pull-right" (click)="modalRef.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div  class="modal-content  modal-lg" >
+            <div class="chart-modal-container" *ngIf="dataCharts.assessmentByField"> 
+                <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField" [isModal]=true></app-line-chart>
             </div>
         </div>
     </ng-template>
