@@ -919,6 +919,21 @@ export class AdminDashboardComponent implements OnInit {
   //   }
   // }
 
+  openChart(template: TemplateRef<any>, e) {
+    // console.log(e.clientY)
+
+
+    // template.elementRef.nativeElement.style.top = `${this.currentY}px`;
+    this.modalRef = this.modalService.show(template, {class: 'modal-xl'});
+
+    // const modal = this.elem.nativeElement.querySelector('.modal-content');
+    // console.log(modal);
+    // console.log(template.elementRef.nativeElement);
+
+    // template.elementRef.nativeElement.style.top.px = this.currentY;
+    // this.confirmModal.nativeElement.style.top = `${this.currentY}px`;
+  }
+
 
 
 

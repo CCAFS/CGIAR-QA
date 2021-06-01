@@ -385,6 +385,7 @@ class IndicatorsController {
 
                     let notApplicableCount = await queryRunnerNotApplicable.connection.query(query, parameters);
                     totalEvaluationsByIndicator[meta.view_name][meta.display_name]['notApplicable'] = +notApplicableCount[0].count;
+
                     totalEvaluationsByIndicator[meta.view_name][meta.display_name]['pending'] -= +notApplicableCount[0].count;
                 } catch (error) {
                     console.log(error);
@@ -411,7 +412,8 @@ class IndicatorsController {
                    ) AS approved_without_comment,
                SUM(
                    IF (approved_no_comment is null, 1, 0)
-                   ) AS assessment_with_comments
+                   ) AS assessment_with_comments,
+                   count(distinct qe.id) as comments_distribution
                FROM qa_indicators_meta qim
                LEFT JOIN qa_comments qc ON qc.metaId = qim.id
                LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
@@ -440,7 +442,7 @@ class IndicatorsController {
                         break;
                     case null:
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
-                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= +allItems[i].assessment_with_comments;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= +allItems[i].comments_distribution;
                         break;
                     default:
                         break;

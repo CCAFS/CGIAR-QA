@@ -225,9 +225,17 @@
                                 [ngClass]="{ 'assessment-by-field-r2': currentUser.cycle.cycle_stage == true || activeCompleteDash}">
                                 <div class="header-chart">
                                     <h4 class="chart-title">Assessment by field</h4>
+                                    <div (click)="openChart(template, $event)">View in full screen</div>
                                     <i class="icon-info" [tooltip]="popTemplateChartD"></i>
                                     <ng-template #popTemplateChartD>
                                         <div [innerHtml]="descriptionCharts.assessmentByField"></div>
+                                    </ng-template>
+                                    <ng-template #chartD style="max-width: 1800px;" >
+                                        <div class="modal-body text-center" >
+                                            <div class="chart-modal-container" *ngIf="dataCharts.assessmentByField"> 
+                                                <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField"></app-line-chart>
+                                            </div>
+                                        </div>
                                     </ng-template>
                                 </div>
                                 <div class="chart-container" *ngIf="dataCharts.assessmentByField"> 
