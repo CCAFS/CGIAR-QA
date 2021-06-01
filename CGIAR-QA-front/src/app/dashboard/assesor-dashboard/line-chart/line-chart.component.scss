@@ -24,6 +24,7 @@
     width: 100%;
 }
 
+
 .options {
     margin-top: 0px;
     padding-top: 0px;
@@ -140,3 +141,19 @@ select {
     display: inline-block;
     /* background: orange; */
 }
+
+.container-modal {
+    height: 90vh;
+    width: 95vw;
+    padding: 5em;
+}
+.chart-modal {
+    flex: 1;
+    height: 80%;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    padding-left: 0px;
+    width: 80%;
+}
+

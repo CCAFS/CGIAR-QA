@@ -12,6 +12,7 @@ export class LineChartComponent implements OnInit {
   @Input() data;
   @Input() total;
   @Input() indicatorName;
+  @Input() isModal;
 
   interval = 10;
   markersType = "Circle";

@@ -195,10 +195,23 @@ export class AdminDashboardComponent implements OnInit {
     this.dataSelected = this.dashboardData[this.selectedIndicator];
 
     this.showSpinner();
-    this.updateDataCharts();
-    this.getFeedTags(this.selectedIndicator).subscribe(
+
+    let responses = forkJoin([
+      this.getFeedTags(this.selectedIndicator),
+      this.getItemStatusByIndicatorService(this.selectedIndicator)
+    ]);
+    responses.subscribe(
       res => {
-        this.feedList = res.data;
+        const [feedTags, assessmentByField] = res;
+        //feedTags
+        this.feedList = feedTags.data;
+
+        //assessmentByField
+        this.itemStatusByIndicator = assessmentByField.data;
+
+        //UPDATE CHARTS
+        this.updateDataCharts();
+
         this.hideSpinner();
       }
     );
@@ -918,6 +931,21 @@ export class AdminDashboardComponent implements OnInit {
   //     return '';
   //   }
   // }
+
+  openChart(template: TemplateRef<any>, e) {
+    // console.log(e.clientY)
+
+
+    // template.elementRef.nativeElement.style.top = `${this.currentY}px`;
+    this.modalRef = this.modalService.show(template, {class: 'modal-xl'});
+
+    // const modal = this.elem.nativeElement.querySelector('.modal-content');
+    // console.log(modal);
+    // console.log(template.elementRef.nativeElement);
+
+    // template.elementRef.nativeElement.style.top.px = this.currentY;
+    // this.confirmModal.nativeElement.style.top = `${this.currentY}px`;
+  }
 
 
 
