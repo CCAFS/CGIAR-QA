@@ -437,11 +437,11 @@ class IndicatorsController {
 
                 switch (allItems[i].approved_no_comment) {
                     case 1:
-                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = allItems[i].approved_without_comment;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['approved_without_comment'] = +allItems[i].approved_without_comment;
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= +allItems[i].approved_without_comment;
                         break;
                     case null:
-                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = allItems[i].assessment_with_comments;
+                        totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['assessment_with_comments'] = +allItems[i].assessment_with_comments;
                         totalEvaluationsByIndicator[allItems[i].indicator_view_name][allItems[i].display_name]['pending'] -= +allItems[i].comments_distribution;
                         break;
                     default:

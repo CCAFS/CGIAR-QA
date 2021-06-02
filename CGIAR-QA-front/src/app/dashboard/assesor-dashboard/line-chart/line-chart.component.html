@@ -25,7 +25,7 @@
 
 </div>
 
-<div class="container-modal" *ngIf="isModal">
+<!-- <div class="container-modal" *ngIf="isModal">
     <div class="options">
         <span class="legendTitle">Tags: </span>
         <div class="legendInline">
@@ -49,5 +49,40 @@
             </igx-spline-series>
         </igx-data-chart> 
     </div>
+
+</div> -->
+<div class="container-modal-bar" *ngIf="isModal">
+    <div class="container sample">
+        <div class="options vertical">
+            <!-- <span id="legendTitle">Electricity Production from Renewables</span>
+            <igx-legend #legend orientation="Horizontal"></igx-legend> -->
+        </div>
+        <div class="container">
+            <igx-data-chart height="100%" width="100%" isVerticalZoomEnabled="false"
+                isHorizontalZoomEnabled="false"  brushes="#f3da90,#59ed9c, #ff8200">
+                <igx-category-x-axis #xAxis [dataSource]="data" label="item" gap="0.2"></igx-category-x-axis>
+                <igx-numeric-y-axis #yAxis minimumValue="0" [maximumValue]="maxY + 5" ></igx-numeric-y-axis>
+    
+                <igx-stacked-column-series [xAxis]="xAxis" [yAxis]="yAxis" [dataSource]="data" showDefaultTooltip="true"
+                    areaFillOpacity="1"  >
+                    <igx-stacked-fragment-series markerBrush="white" markerOutline="Transparent" valueMemberPath="pending" title="Pending"></igx-stacked-fragment-series>
+                    <igx-stacked-fragment-series markerBrush="white" markerOutline="#59ed9c" valueMemberPath="approved_without_comment" title="Approved without comment"></igx-stacked-fragment-series>
+                    <igx-stacked-fragment-series markerBrush="white" markerOutline="#ff8200"valueMemberPath="assessment_with_comments" title="Assessment with comments"></igx-stacked-fragment-series>
+                </igx-stacked-column-series>
+    
+                <igx-point-series [xAxis]="xAxis" [yAxis]="yAxis" [dataSource]="data" valueMemberPath="PendingMarker"
+                    [markerTemplate]="getMarker()">
+                </igx-point-series>
+                <igx-point-series [xAxis]="xAxis" [yAxis]="yAxis" [dataSource]="data" valueMemberPath="ApprovedMarker"
+                    [markerTemplate]="getMarker()"></igx-point-series>
+                <igx-point-series [xAxis]="xAxis" [yAxis]="yAxis" [dataSource]="data" valueMemberPath="CommentMarker"
+                    [markerTemplate]="getMarker()"></igx-point-series>
+                <igx-callout-layer [dataSource]="calloutDataSource" xMemberPath="X" yMemberPath="Y" labelMemberPath="Label"
+                    calloutBackground="Transparent" calloutLeaderBrush="Transparent" calloutTextColor="Black">
+                </igx-callout-layer>
+            </igx-data-chart>
+        </div>
+    </div>
+    
 
 </div>
