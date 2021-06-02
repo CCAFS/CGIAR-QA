@@ -279,9 +279,16 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       res => {
         console.log('detaileedData',res)
         this.detailedData = res.data.filter(field => {
+          console.log(field.value);
           if (typeof field.value === 'number') field.value = String(field.value)
           if(field.value) {
             field.value = field.value.replace("´","'");
+            if(field.value.includes('<table>')){
+              field.value = field.value.replace(new RegExp('<p>', 'g'), "");
+              field.value = field.value.replace(new RegExp('</p>', 'g'), " ");
+              field.value = field.value.replace(new RegExp('<td>', 'g'), `<td><p class="p-styles">`);
+              field.value = field.value.replace(new RegExp('</td>', 'g'), "</p></td>");
+            }
             field.value = field.value.replace(new RegExp('\n', 'g'), "<br />");
             field.value = field.value.replace(new RegExp('<a', 'g'), '<a target="_blank"');
             field.value = this.urlTransfrom.urlToAnchor(field.value);

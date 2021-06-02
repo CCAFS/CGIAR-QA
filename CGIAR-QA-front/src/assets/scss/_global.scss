@@ -580,6 +580,15 @@ left: 40vw;
   top:var(--position-top);
 }
 
+.p-styles {
+  text-align: justify;
+  width: 98%;
+  font-size: 0.98em;
+  line-height: 1.5em;
+  word-wrap: break-word;
+}
+
 body{
   --position-top: 51px;
 }
+
