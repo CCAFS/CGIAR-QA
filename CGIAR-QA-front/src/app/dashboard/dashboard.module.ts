@@ -27,6 +27,9 @@ import {
     IgxDataChartInteractivityModule,
     IgxDataChartVerticalCategoryCoreModule,
     IgxDataChartVerticalCategoryModule,
+	IgxDataChartStackedModule,
+	IgxStackedFragmentSeriesModule,
+	IgxDataChartAnnotationModule
     
 } from "igniteui-angular-charts";
 
@@ -60,7 +63,10 @@ import { GoogleChartsModule } from 'angular-google-charts';
         IgxLegendModule,
         IgxDataChartInteractivityModule,
         IgxDataChartVerticalCategoryCoreModule,
-		IgxDataChartVerticalCategoryModule,
+        IgxDataChartVerticalCategoryModule,
+        IgxDataChartStackedModule,
+        IgxStackedFragmentSeriesModule,
+        IgxDataChartAnnotationModule,
         NgbModule
     ],
     declarations: [AssessorDashboardComponent, AdminDashboardComponent, DashBoardComponent, BarChartComponent, DoughnutChartComponent, LineChartComponent, DonutChartComponent
