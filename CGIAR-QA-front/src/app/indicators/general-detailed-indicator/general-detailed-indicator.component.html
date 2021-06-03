@@ -64,6 +64,17 @@
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div *ngIf="currentUser.hasOwnProperty('cycle')">
                 <div class="col data-container">
+                    <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin:0; margin-bottom: 2em;">
+                        <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container">
+                            <button type="button" class="btn btn-finalized"
+                                [disabled]="gnralInfo.status === statusHandler.Finalized"
+                                (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
+                        </div>
+                        <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container">
+                        <button type="button" class="btn btn-outline-info"
+                            (click)="updateEvaluation('complete_eval',detailedData)">OPEN ASSESSMENT</button>
+                    </div>
+                    </div>
                     <div class="assessment-info select-all"
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
@@ -220,19 +231,7 @@
                     </div>
                 </div> -->
                 <!-- ROUND 2 -->
-                <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em 0;">
-                    <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
-                        style="margin-left: 1em;">
-                        <button type="button" class="btn btn-finalized"
-                            [disabled]="gnralInfo.status === statusHandler.Finalized"
-                            (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
-                    </div>
-                    <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container"
-                    style="margin-left: 1em;">
-                    <button type="button" class="btn btn-outline-info"
-                        (click)="updateEvaluation('complete_eval',detailedData)">OPEN ASSESSMENT</button>
-                </div>
-                </div>
+
                 <!-- <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em;">
                     <div *ngIf="gnralInfo.status !== statusHandler.Finalized && gnralInfo.evaluation_status !== 'Added'"
                         class="bton-container">
