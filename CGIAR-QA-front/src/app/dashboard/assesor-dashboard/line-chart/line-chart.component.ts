@@ -19,6 +19,7 @@ export class LineChartComponent implements OnInit {
   maxY;
   public brushes: any = ['#59ed9cff', '#f3da90ff', '#ed8b84ff'];
   public calloutDataSource : any[];
+  toggleChart = true;
     
     constructor(private indicatorService: IndicatorsService) {
 
@@ -35,9 +36,9 @@ export class LineChartComponent implements OnInit {
     for (let i = 0; i < this.data.length; i++) {
         const info = this.data[i];
 
-        info.USAMarker = info.pending / 2;
-        info.EuropeMarker = info.pending + (info.approved_without_comment / 2);
-        info.ChinaMarker = info.pending + info.approved_without_comment + (info.assessment_with_comments / 2);
+        info.PendingMarker = info.pending == 0? null : info.pending / 2;
+        info.ApprovedMarker = info.approved_without_comment == 0? null: info.pending + (info.approved_without_comment / 2);
+        info.CommentMarker = info.assessment_with_comments == 0? null: info.pending + info.approved_without_comment + (info.assessment_with_comments / 2);
         info.Sum = info.pending + info.approved_without_comment + info.assessment_with_comments;
 
         this.calloutDataSource.push({ X: i, Y: info.Sum, Label: info.Sum.toString()});
@@ -75,7 +76,7 @@ calculateInterval() {
 }
 
 public getMarker() : any {
-  let style = { text: "white" };
+  let style = { text: "black" };
   const size = 12;
 
   return {
@@ -107,7 +108,7 @@ public getMarker() : any {
               case "ApprovedMarker":
                   value = item.approved_without_comment;
                   break;
-              case "CommentMarkes":
+              case "CommentMarker":
                   value = item.assessment_with_comments;
                   break;
           }
@@ -141,6 +142,9 @@ public getMarker() : any {
 
       }
   }
+}
+switchCharts(){
+  this.toggleChart = !this.toggleChart;
 }
 
 }
