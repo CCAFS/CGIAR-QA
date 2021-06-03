@@ -195,12 +195,12 @@ export class AdminDashboardComponent implements OnInit {
   actualIndicator(indicator: string) {
     this.selectedIndicator = indicator;
     this.dataSelected = this.dashboardData[this.selectedIndicator];
-
+    let crp_id = this.selectedProg.crp_id ? this.selectedProg.crp_id : undefined;
     this.showSpinner();
 
     let responses = forkJoin([
       this.getFeedTags(this.selectedIndicator),
-      this.getItemStatusByIndicatorService(this.selectedIndicator)
+      this.getItemStatusByIndicatorService(this.selectedIndicator, crp_id)
     ]);
     responses.subscribe(
       res => {
