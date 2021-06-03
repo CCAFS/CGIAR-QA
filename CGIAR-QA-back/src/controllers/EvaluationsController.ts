@@ -356,7 +356,7 @@ class EvaluationsController {
 
     }
 
-    // get evaluations LIST by user
+    // get evaluations LIST by user - List of indicators
     static getListEvaluationsDash = async (req: Request, res: Response) => {
         //Get the ID from the url
         const id = req.params.id;
@@ -401,9 +401,14 @@ class EvaluationsController {
                         AND detail IS NOT NULL
                         AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                     ) AS comments_count,
-
                     (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
-                    NOT NULL AND is_deleted = 0 AND is_visible = 1 AND crp_approved = 1) AS comments_accepted_count,
+                    NOT NULL AND is_deleted = 0 AND is_visible = 1 AND replyTypeId = 1) AS comments_accepted_count,
+                    (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                    NOT NULL AND is_deleted = 0 AND is_visible = 1 AND replyTypeId = 4) AS comments_accepted_with_comment_count,
+					(SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                    NOT NULL AND is_deleted = 0 AND is_visible = 1 AND replyTypeId = 2) AS comments_disagreed_count,
+                    (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                    NOT NULL AND is_deleted = 0 AND is_visible = 1 AND replyTypeId = 3) AS comments_clarification_count,
 
 
                     ( SELECT COUNT(id) FROM qa_comments_replies WHERE commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL	AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) AND is_deleted = 0 ) AS comments_replies_count,

@@ -18,7 +18,7 @@
             <h2>QUALITY ASSESSMENT CRITERIA</h2>
             <div style="padding-left: 2em;" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
         </div> -->
-       
+
         <div *ngIf="!criteria_loading" [innerHTML]="criteriaData.qa_criteria | markdown"></div>
         <!-- <H5><a [routerLink]="" (click)="goToPDF(indicatorType)">See {{returnListName(indicatorType, 'header')}} guidance</a> <br></H5> -->
         <!-- <div *ngIf="hasTemplate" class="model-link-container" (click)="goToPDF(indicatorType)">
@@ -41,7 +41,7 @@
 <div class="form-group">
     <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
 </div>
-<div  class="row" style="margin: 1em 0;">
+<div class="row" style="margin: 1em 0;">
 
     <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
         <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </th>
-            <th scope="col" *ngIf="returnedArray && returnedArray[0].brief" >
+            <th scope="col" *ngIf="returnedArray && returnedArray[0].brief">
                 <div class="header-row">
                     Brief contribution
                 </div>
@@ -89,7 +89,7 @@
             </th>
             <th *ngIf="returnedArray && returnedArrayHasStage" scope="col" [class.active]="order === 'stage'"
                 (click)="setOrder('stage')">
-                <div class="header-row"> 
+                <div class="header-row">
                     {{stageHeaderText[indicatorType]}}
                     <div class="order-icon" *ngIf="order === 'stage'">
                         <span [hidden]="reverse">▼</span>
@@ -118,7 +118,7 @@
                 </div>
             </th>
             <!-- Do not show Replies count & accepted comments columns -->
-            <th *ngIf="returnedArray && returnedArray[0].comments_replies_count" scope="col"
+            <!-- <th *ngIf="returnedArray && returnedArray[0].comments_replies_count && currentUser.cycle.cycle_stage == 2" scope="col"
                 [class.active]="order === 'comments_replies_count'" (click)="setOrder('comments_replies_count')">
                 <div class="header-row">
                     Replies count
@@ -128,13 +128,38 @@
                         <span [hidden]="!reverse">▲</span>
                     </div>
                 </div>
-            </th>
-            <th *ngIf="returnedArray && returnedArray[0].comments_accepted_count" scope="col"
-                [class.active]="order === 'comments_accepted_count'" (click)="setOrder('comments_accepted_count')">
+            </th> -->
+            <th *ngIf="returnedArray && returnedArray[0].comments_accepted_with_comment_count && currentUser.cycle.cycle_stage == 2"
+                scope="col" [class.active]="order === 'comments_accepted_with_comment_count'"
+                (click)="setOrder('comments_accepted_with_comment_count')">
                 <div class="header-row">
-                    Accepted comments
-                    {{returnedArray[0].comments_accepted_count}}
-                    <div class="order-icon" *ngIf="order === 'comments_accepted_count'">
+                    Accepted w. comment
+                    {{returnedArray[0].comments_accepted_with_comment_count}}
+                    <div class="order-icon" *ngIf="order === 'comments_accepted_with_comment_count'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
+            <th *ngIf="returnedArray && returnedArray[0].comments_disagreed_count && currentUser.cycle.cycle_stage == 2"
+                scope="col" [class.active]="order === 'comments_disagreed_count'"
+                (click)="setOrder('comments_disagreed_count')">
+                <div class="header-row">
+                    Disagreed
+                    {{returnedArray[0].comments_disagreed_count}}
+                    <div class="order-icon" *ngIf="order === 'comments_disagreed_count'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
+            <th *ngIf="returnedArray && returnedArray[0].comments_clarification_count && currentUser.cycle.cycle_stage == 2"
+                scope="col" [class.active]="order === 'comments_clarification_count'"
+                (click)="setOrder('comments_clarification_count')">
+                <div class="header-row">
+                    Clarification needed
+                    {{returnedArray[0].comments_clarification_count}}
+                    <div class="order-icon" *ngIf="order === 'comments_clarification_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
                     </div>
@@ -179,7 +204,9 @@
                     style="display:none">
                     {{item.evaluation_status}}
                 </div>
-                <a (click)="savePageList()"  class="brief-format" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" [innerHtml]="formatBrief(item.brief)"></a>
+                <a (click)="savePageList()" class="brief-format" rel="noopener noreferrer"
+                    [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}"
+                    [innerHtml]="formatBrief(item.brief)"></a>
             </td>
             <td>
                 <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
@@ -187,18 +214,22 @@
                     style="display:none">
                     {{item.evaluation_status}}
                 </div>
-                <a (click)="savePageList()" *ngIf="!item.brief" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" >
+                <a (click)="savePageList()" *ngIf="!item.brief" rel="noopener noreferrer"
+                    [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
                     {{ fixAccent(item.title)}}</a>
-                    <div *ngIf="returnedArray[0].brief" class="div">{{ item.title}}</div>
+                <div *ngIf="returnedArray[0].brief" class="div">{{ item.title}}</div>
             </td>
             <td>{{ item.crp_acronym }}</td>
             <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
             <td *ngIf="item.hasOwnProperty('fp')">{{ (item.fp) ? item.fp: notProviedText}}</td>
             <td>{{ item.comments_count }}</td>
-            <td *ngIf="item.hasOwnProperty('comments_replies_count')">
-                {{ (item.comments_replies_count) ? item.comments_replies_count: 0}}</td>
-            <td *ngIf="item.hasOwnProperty('comments_accepted_count')">
-                {{ (item.comments_accepted_count) ? item.comments_accepted_count: 0}}</td>
+            <td
+                *ngIf="item.hasOwnProperty('comments_accepted_with_comment_count') && currentUser.cycle.cycle_stage == 2">
+                {{ (item.comments_accepted_with_comment_count) ? item.comments_accepted_with_comment_count: 0}}</td>
+            <td *ngIf="item.hasOwnProperty('comments_disagreed_count') && currentUser.cycle.cycle_stage == 2">
+                {{ (item.comments_disagreed_count) ? item.comments_disagreed_count: 0}}</td>
+            <td *ngIf="item.hasOwnProperty('comments_clarification_count') && currentUser.cycle.cycle_stage == 2">
+                {{ (item.comments_clarification_count) ? item.comments_clarification_count: 0}}</td>
             <td *ngIf="item" (click)="exportComments(item)">
                 <a target="_blank">
                     <div tooltip="Comment in excel format" container="body" placement="top"
@@ -207,8 +238,8 @@
                     </div>
                 </a>
             </td>
-            <td >
-                <ul  *ngFor="let subCategory of item.comment_by?.split(',')"
+            <td>
+                <ul *ngFor="let subCategory of item.comment_by?.split(',')"
                     style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
                     <li>{{ subCategory }}</li>
                 </ul>
@@ -226,8 +257,7 @@
 <div *ngIf="collectionSize > 0" class="d-flex justify-content-center p-2 pagination-container">
     <pagination [rotate]="false"
         [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length"
-        [maxSize]="5" (pageChanged)="pageChanged($event)"
-        [(ngModel)]="currentPage[indicatorTypePage]">
+        [maxSize]="5" (pageChanged)="pageChanged($event)" [(ngModel)]="currentPage[indicatorTypePage]">
     </pagination>
 </div>
 
