@@ -586,6 +586,7 @@ class Util {
                 count_accepted_comments: element['accepted_comments'],
                 count_disagree_comments: element['disagree_comments'],
                 count_clarification_comments: element['clarification_comments'],
+                count_accepted_with_comments: element['accepted_with_comments'],
             });
 
         }

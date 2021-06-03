@@ -104,6 +104,7 @@
                                             <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked "
                                                 [innerHTML]="detailedData[i].display_name | markdown">
                                             </h2>
+                                            
 
                                             <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                                 {{detailedData[i].display_name}}</h2> -->
@@ -120,6 +121,10 @@
                                             <div [ngClass]="{'comment-accepted reply-tag': detailedData[i].count_accepted_comments > 0} "
                                                 style="display:none">
                                                 Accepted
+                                            </div>
+                                            <div [ngClass]="{'comment-accepted-with-comment reply-tag': detailedData[i].count_accepted_with_comments > 0} "
+                                                style="display:none">
+                                                Accepted with comment
                                             </div>
                                             <div [ngClass]="{'comment-clarification reply-tag': detailedData[i].count_clarification_comments > 0} "
                                                 style="display:none">
@@ -279,6 +284,10 @@
                                                 style="display:none">
                                                 Accepted
                                             </div>
+                                            <div [ngClass]="{'comment-accepted-with-comment reply-tag': detailedData[i].count_accepted_with_comments > 0} "
+                                                style="display:none">
+                                                Accepted with comment
+                                            </div>
                                             <div [ngClass]="{'comment-clarification reply-tag': detailedData[i].count_clarification_comments > 0} "
                                                 style="display:none">
                                                 Clarification needed
@@ -299,7 +308,7 @@
                                         [innerHTML]="detailedData[i].value">
                                     </div>
                                     <!-- no data -->
-                                    <p *ngIf="detailedData[i].value === null" class="empty-value">Data not provided.</p>
+                                    <p *ngIf="detailedData[i].value === null || detailedData[i].value == ''" class="empty-value">Data not provided.</p>
 
                                 </div>
 

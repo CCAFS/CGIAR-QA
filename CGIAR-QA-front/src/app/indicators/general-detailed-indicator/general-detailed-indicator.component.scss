@@ -118,6 +118,11 @@
   background: var(--color-agree);
   border: var(--green-primary) 2px solid;
 }
+.comment-accepted-with-comment {
+  background: var(--color-agree-wc);
+  border: #005004 2px solid;
+  color:white;
+}
 .comment-disagree {
   background: var(--color-disagree);
   border: var(--red-secondary) 2px solid;
