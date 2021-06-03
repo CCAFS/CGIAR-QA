@@ -43,8 +43,8 @@ export class IndicatorsService {
     this.orderByStatus = value;
   }
 
-  getItemStatusByIndicator(indicator_name) {
-    return this.http.get<any>(`${environment.apiUrl}/indicator/items/${indicator_name}`);
+  getItemStatusByIndicator(indicator_name, crp_id?) {
+    return this.http.get<any>(`${environment.apiUrl}/indicator/items/${indicator_name}?crp_id=${crp_id}`);
   }
 
   getAllItemStatusByIndicator() {
