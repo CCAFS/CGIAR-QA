@@ -139,6 +139,8 @@ export class AdminDashboardComponent implements OnInit {
   toDate: NgbDate | null;
   currenTcycle;
 
+  isRound2 = true;
+
   constructor(private formBuilder: FormBuilder,
     private dashService: DashboardService,
     private modalService: BsModalService,
@@ -561,7 +563,8 @@ export class AdminDashboardComponent implements OnInit {
 
       this.crps = crps.data;
       // this.crps.unshift(new CRP( 0, 'All', 'undefined',  '0', false ) )
-      this.selectedProgramName = this.crps[0]['acronym'];
+      // this.selectedProgramName = this.crps[0]['acronym'];
+      this.selectedProgramName = 'All';
       console.log('PROGRAM NAME',this.selectedProgramName);
       
       this.configurationData = indicatorsByCrps.data;
