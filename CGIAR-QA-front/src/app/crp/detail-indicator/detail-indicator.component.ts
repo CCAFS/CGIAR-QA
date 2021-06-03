@@ -126,7 +126,15 @@ export class DetailIndicatorComponent implements OnInit {
           if (typeof field.value === 'number') field.value = String(field.value)
           if(field.value) {
             field.value = field.value.replace("´","'");
-            field.value = field.value.replace(new RegExp('\n', 'g'), "<br />");
+            if(field.value.includes('<table>')){
+              field.value = field.value.replace(new RegExp('<p>', 'g'), "");
+              field.value = field.value.replace(new RegExp('</p>', 'g'), " ");
+              field.value = field.value.replace(new RegExp('<td>', 'g'), `<td><p class="p-styles">`);
+              field.value = field.value.replace(new RegExp('</td>', 'g'), "</p></td>");
+              field.value = field.value.replace(new RegExp('\n', 'g'), " ");
+            } else{
+              field.value = field.value.replace(new RegExp('\n', 'g'), "<br />");
+            }
             field.value = field.value.replace(new RegExp('<a', 'g'), '<a target="_blank"');
             field.value = this.urlTransfrom.urlToAnchor(field.value);
           }
