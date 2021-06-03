@@ -330,6 +330,7 @@ class IndicatorsController {
     static getItemStatusByIndicator = async (req: Request, res: Response) => {
 
         const indicator = req.params.indicator;
+        const crp_id = req.query.crp_id;
         let totalEvaluationsByIndicator = {
             qa_innovations: {},
             qa_policies: {},
@@ -347,15 +348,30 @@ class IndicatorsController {
 
         let qrMetas = getConnection().createQueryBuilder();
         try {
-            const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
-                `SELECT col_name, display_name, indicatorId, qi.view_name,
+            let queryMetas = '';
+                if(crp_id != undefined && crp_id != 'undefined') {
+                    queryMetas = `SELECT col_name, display_name, indicatorId, qi.view_name,
+                    (SELECT count(*) FROM qa_evaluations qe WHERE qe.indicator_view_name = qi.view_name AND qe.phase_year = actual_phase_year() AND qe.status <> 'autochecked' AND qe.crp_id = '${crp_id}') AS total
+                   FROM qa_indicators_meta qim
+                   LEFT JOIN qa_indicators qi ON qi.id = qim.indicatorId
+                   WHERE qim.display_name  not like 'id'
+                   AND qim.enable_comments <> 0
+                   AND qim.include_detail = 1
+                   AND qi.view_name like :indicator`;
+                   console.log('query with crp_id', {queryMetas});
+                } else {
+                    queryMetas = `SELECT col_name, display_name, indicatorId, qi.view_name,
                     (SELECT count(*) FROM qa_evaluations qe WHERE qe.indicator_view_name = qi.view_name AND qe.phase_year = actual_phase_year() AND qe.status <> 'autochecked') AS total
                    FROM qa_indicators_meta qim
                    LEFT JOIN qa_indicators qi ON qi.id = qim.indicatorId
                    WHERE qim.display_name  not like 'id'
                    AND qim.enable_comments <> 0
                    AND qim.include_detail = 1
-                   AND qi.view_name like :indicator`,
+                   AND qi.view_name like :indicator`;
+                }
+                
+            const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
+                queryMetas,
                 {indicator},
                 {}
             );
@@ -367,7 +383,12 @@ class IndicatorsController {
                 // let queryNotApplicable = `SELECT count(*) as count FROM ${meta.view_name} WHERE ${meta.col_name}  = "<Not applicable>"`;
                 let queryNotApplicable = `SELECT count(*) as count FROM qa_evaluations qe
                     LEFT JOIN ${meta.view_name} qi on qe.indicator_view_id = qi.id AND qe.indicator_view_name = "${meta.view_name}"
-                    WHERE ${meta.col_name}  = "<Not applicable>" AND qe.phase_year = actual_phase_year() AND qe.status <> "autochecked";`;
+                    WHERE ${meta.col_name}  = "<Not applicable>" AND qe.phase_year = actual_phase_year() AND qe.status <> "autochecked" `;
+                
+                    if(crp_id != undefined && crp_id != 'undefined'){
+                        queryNotApplicable += `AND qe.crp_id = '${crp_id}'`
+                    }
+
                 totalEvaluationsByIndicator[meta.view_name][meta.display_name] = {
                     item: meta.display_name,
                     pending: meta.total, approved_without_comment: 0,
@@ -401,9 +422,34 @@ class IndicatorsController {
 
         let queryRunner = getConnection().createQueryBuilder();
         try {
-
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
+            let queryAssessmentByField = '';
+            if(crp_id != undefined && crp_id != 'undefined'){
+                queryAssessmentByField =                 `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
+                SUM(
+                   IF (approved_no_comment = 0, 1, 0)
+                   ) AS pending,
+               SUM(
+                   IF (approved_no_comment = 1, 1, 0)
+                   ) AS approved_without_comment,
+               SUM(
+                   IF (approved_no_comment is null, 1, 0)
+                   ) AS assessment_with_comments,
+                   count(distinct qe.id) as comments_distribution
+               FROM qa_indicators_meta qim
+               LEFT JOIN qa_comments qc ON qc.metaId = qim.id
+               LEFT JOIN qa_evaluations qe ON qe.id = qc.evaluationId
+               WHERE qim.id = qc.metaId
+               AND qim.display_name  not like 'id'
+               AND qim.enable_comments = 1
+               AND qe.evaluation_status not like 'Removed'
+               AND qe.phase_year = actual_phase_year()
+               AND qe.indicator_view_name like :indicator
+               AND qc.is_deleted = 0
+               AND enable_comments <> 0
+               AND qe.crp_id = :crp_id
+               GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment;`
+            } else {
+                queryAssessmentByField =   `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
                 SUM(
                    IF (approved_no_comment = 0, 1, 0)
                    ) AS pending,
@@ -426,9 +472,9 @@ class IndicatorsController {
                AND qc.is_deleted = 0
                AND enable_comments <> 0
                GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment;`
-                ,
-                {indicator},
-                {}
+            }
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+            queryAssessmentByField,{indicator, crp_id}, {}
             );
             let allItems = await queryRunner.connection.query(query, parameters);
             for (let i = 0; i < allItems.length; i++) {

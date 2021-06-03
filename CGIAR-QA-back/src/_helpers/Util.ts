@@ -537,6 +537,9 @@ class Util {
         var response = {
             comments_replies_count: element["comments_replies_count"],
             comments_accepted_count: element["comments_accepted_count"],
+            comments_accepted_with_comment_count: element["comments_accepted_with_comment_count"],
+            comments_disagreed_count: element["comments_disagreed_count"],
+            comments_clarification_count: element["comments_clarification_count"],
             comments_count: element["comments_count"],
             evaluation_id: element["evaluation_id"],
             status: element["evaluations_status"],
@@ -583,6 +586,7 @@ class Util {
                 count_accepted_comments: element['accepted_comments'],
                 count_disagree_comments: element['disagree_comments'],
                 count_clarification_comments: element['clarification_comments'],
+                count_accepted_with_comments: element['accepted_with_comments'],
             });
 
         }

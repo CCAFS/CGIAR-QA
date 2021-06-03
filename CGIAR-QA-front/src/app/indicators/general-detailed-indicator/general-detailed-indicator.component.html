@@ -64,6 +64,17 @@
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div *ngIf="currentUser.hasOwnProperty('cycle')">
                 <div class="col data-container">
+                    <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin:0; margin-bottom: 2em;">
+                        <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container">
+                            <button type="button" class="btn btn-finalized"
+                                [disabled]="gnralInfo.status === statusHandler.Finalized"
+                                (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
+                        </div>
+                        <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container">
+                        <button type="button" class="btn btn-outline-info"
+                            (click)="updateEvaluation('complete_eval',detailedData)">OPEN ASSESSMENT</button>
+                    </div>
+                    </div>
                     <div class="assessment-info select-all"
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
@@ -93,6 +104,7 @@
                                             <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked "
                                                 [innerHTML]="detailedData[i].display_name | markdown">
                                             </h2>
+                                            
 
                                             <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                                 {{detailedData[i].display_name}}</h2> -->
@@ -109,6 +121,10 @@
                                             <div [ngClass]="{'comment-accepted reply-tag': detailedData[i].count_accepted_comments > 0} "
                                                 style="display:none">
                                                 Accepted
+                                            </div>
+                                            <div [ngClass]="{'comment-accepted-with-comment reply-tag': detailedData[i].count_accepted_with_comments > 0} "
+                                                style="display:none">
+                                                Accepted with comment
                                             </div>
                                             <div [ngClass]="{'comment-clarification reply-tag': detailedData[i].count_clarification_comments > 0} "
                                                 style="display:none">
@@ -220,19 +236,7 @@
                     </div>
                 </div> -->
                 <!-- ROUND 2 -->
-                <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em 0;">
-                    <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container"
-                        style="margin-left: 1em;">
-                        <button type="button" class="btn btn-finalized"
-                            [disabled]="gnralInfo.status === statusHandler.Finalized"
-                            (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
-                    </div>
-                    <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container"
-                    style="margin-left: 1em;">
-                    <button type="button" class="btn btn-outline-info"
-                        (click)="updateEvaluation('complete_eval',detailedData)">OPEN ASSESSMENT</button>
-                </div>
-                </div>
+
                 <!-- <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin: 1em;">
                     <div *ngIf="gnralInfo.status !== statusHandler.Finalized && gnralInfo.evaluation_status !== 'Added'"
                         class="bton-container">
@@ -280,6 +284,10 @@
                                                 style="display:none">
                                                 Accepted
                                             </div>
+                                            <div [ngClass]="{'comment-accepted-with-comment reply-tag': detailedData[i].count_accepted_with_comments > 0} "
+                                                style="display:none">
+                                                Accepted with comment
+                                            </div>
                                             <div [ngClass]="{'comment-clarification reply-tag': detailedData[i].count_clarification_comments > 0} "
                                                 style="display:none">
                                                 Clarification needed
@@ -300,7 +308,7 @@
                                         [innerHTML]="detailedData[i].value">
                                     </div>
                                     <!-- no data -->
-                                    <p *ngIf="detailedData[i].value === null" class="empty-value">Data not provided.</p>
+                                    <p *ngIf="detailedData[i].value === null || detailedData[i].value == ''" class="empty-value">Data not provided.</p>
 
                                 </div>
 

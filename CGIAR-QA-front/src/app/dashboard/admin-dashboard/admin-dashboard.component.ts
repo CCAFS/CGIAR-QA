@@ -195,12 +195,12 @@ export class AdminDashboardComponent implements OnInit {
   actualIndicator(indicator: string) {
     this.selectedIndicator = indicator;
     this.dataSelected = this.dashboardData[this.selectedIndicator];
-
+    let crp_id = this.selectedProg.crp_id ? this.selectedProg.crp_id : undefined;
     this.showSpinner();
 
     let responses = forkJoin([
       this.getFeedTags(this.selectedIndicator),
-      this.getItemStatusByIndicatorService(this.selectedIndicator)
+      this.getItemStatusByIndicatorService(this.selectedIndicator, crp_id)
     ]);
     responses.subscribe(
       res => {
@@ -261,8 +261,8 @@ export class AdminDashboardComponent implements OnInit {
   }
 
     //Assessment by field and by indicator
-    getItemStatusByIndicatorService(indicator: string): Observable<any> {
-      return this.indicatorService.getItemStatusByIndicator(indicator).pipe();
+    getItemStatusByIndicatorService(indicator: string, crp_id? : string): Observable<any> {
+      return this.indicatorService.getItemStatusByIndicator(indicator, crp_id).pipe();
     }
 
 
@@ -464,7 +464,7 @@ export class AdminDashboardComponent implements OnInit {
         this.getAllTags(crp_id),
         // this.getFeedTags(this.selectedIndicator),
         // this.getAllItemStatusByIndicator()
-        this.getItemStatusByIndicatorService(this.selectedIndicator)
+        this.getItemStatusByIndicatorService(this.selectedIndicator,crp_id)
       ]);
 
       responses.subscribe(res => {
@@ -504,7 +504,7 @@ export class AdminDashboardComponent implements OnInit {
         this.getAllTags(crp_id),
         // this.getFeedTags(this.selectedIndicator),
         // this.getAllItemStatusByIndicator()
-        this.getItemStatusByIndicatorService(this.selectedIndicator)
+        this.getItemStatusByIndicatorService(this.selectedIndicator, crp_id)
       ]);
 
       responses.subscribe(res => {
