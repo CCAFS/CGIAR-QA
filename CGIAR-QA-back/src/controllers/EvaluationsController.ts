@@ -344,7 +344,7 @@ class EvaluationsController {
                     order: element['indicator_order']
                 })
 
-            }
+            } 
             // console.log(response)
             let result = Util.groupBy(response, 'indicator_view_name');
             // res.status(200).json({ data: rawData, message: "All evaluations" });
@@ -708,7 +708,7 @@ class EvaluationsController {
                             meta.include_detail AS meta_include_detail,
                             meta.is_primay AS meta_is_primay,
                             evaluations.id AS evaluation_id,
-                            evaluations.evaluation_status AS evaluation_status,
+                            evaluations.evaluation_status AS evaluation_status, 
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
                             evaluations.status AS evaluations_status,

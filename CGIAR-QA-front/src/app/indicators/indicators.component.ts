@@ -150,9 +150,12 @@ indicatorTypePage = null;
       this.order = 'status';
     }
     // console.log('loaded indicators')
-    setTimeout(() => {                           //<<<---using ()=> syntax
-      this.verifyIfOrderByStatus();
-    }, 2000);
+    // setTimeout(() => {                           //<<<---using ()=> syntax
+    //   this.verifyIfOrderByStatus();
+    //   this.verifyIfOrderByAcceptedWC();
+    //   this.verifyIfOrderByDisagree();
+    //   this.verifyIfOrderByClarification();
+    // }, 5000);
     this.chatRooms = {
       general: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
     }
@@ -176,20 +179,24 @@ indicatorTypePage = null;
           this.order = 'status';
         }
         this.evaluationList = this.orderPipe.transform(res.data, this.order);
-        this.setOrder(this.order, this.reverse);
         console.log('LISTA', this.evaluationList);
-
+        
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         this.returnedArrayHasStage = this.returnedArray.find(e => e.stage != null)
         // console.log('RETURNED_ARRAY', this.returnedArray);
-
+        
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
-
+        
         this.hideSpinner();
         setTimeout(() => {
           this.currentPage = this.indicatorService.getPagesIndicatorList()
           this.indicatorTypePage = (`qa_${this.indicatorType}`);
+          this.verifyIfOrderByStatus();
+          this.verifyIfOrderByAcceptedWC();
+          this.verifyIfOrderByDisagree();
+          this.verifyIfOrderByClarification();
+          // this.setOrder(this.order, this.reverse);
         }, 200);
         // this.currentPage = this.indicatorService.getPagesIndicatorList();
         console.log('PAGES', this.currentPage);
@@ -327,8 +334,33 @@ indicatorTypePage = null;
 
 
   verifyIfOrderByStatus() {
-    if (this.indicatorService.getOrderByStatus() != null) {
+    if (this.indicatorService.getOrderByStatus() !== null) {
       this.setOrder('status', this.indicatorService.getOrderByStatus())
+    } else{
+      console.log('NOT STATUS');
+      
+    }
+  }
+  verifyIfOrderByAcceptedWC() {
+    if (this.indicatorService.getOrderByAcceptedWC() !== null) {
+      this.setOrder('comments_accepted_with_comment_count', this.indicatorService.getOrderByAcceptedWC())
+      
+    } else {
+      console.log('NOT AWC');
+    }
+  }
+  verifyIfOrderByDisagree() {
+    if (this.indicatorService.getOrderByDisagree() !== null) {
+      this.setOrder('comments_disagreed_count', this.indicatorService.getOrderByDisagree())
+    }else {
+      console.log('Comments disagreed');
+    }
+  }
+  verifyIfOrderByClarification() {
+    if (this.indicatorService.getOrderByClarification() !== null) {
+      this.setOrder('comments_clarification_count', this.indicatorService.getOrderByClarification())
+    } else {
+      console.log('Comments clarification');
     }
   }
 

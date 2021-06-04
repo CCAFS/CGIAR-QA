@@ -534,6 +534,12 @@ class Util {
 
     private static formatResponse = (element, type) => {
         let field = element["meta_col_name"];
+        let value = '';
+        if(element[`${field}`] == '<Not applicable>' && element["replies_count"] > 0) {
+            value = ' ';
+        }else {
+            value = element[`${field}`];
+        }
         var response = {
             comments_replies_count: element["comments_replies_count"],
             comments_accepted_count: element["comments_accepted_count"],
@@ -569,7 +575,7 @@ class Util {
                 col_name: element["meta_col_name"],
                 display_name: element["meta_display_name"],
                 display_type: DisplayTypeHandler.Paragraph,
-                value: element[`${field}`],
+                value: value,
                 field_id: element["meta_id"],
                 // evaluation_id: element["evaluation_id"],
                 general_comment: element["general_comment"],
@@ -583,6 +589,7 @@ class Util {
                 public_link: element[`public_link`],
                 editable_link: element[`editable_link`],
                 meta_description: element['meta_description'],
+                comments_count: element["comments_count"],
                 count_accepted_comments: element['accepted_comments'],
                 count_disagree_comments: element['disagree_comments'],
                 count_clarification_comments: element['clarification_comments'],

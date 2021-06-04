@@ -64,12 +64,27 @@ export class DonutChartComponent implements OnInit {
   }
 
   onSelect(data): void {
-    // console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
     let status = true;
-    if(data.name == 'pending') {
-      status = false;
+    switch (data.name) {
+      case 'pending':
+        status = false;
+        this.indicatorService.setOrderByStatus(status);
+      case 'AcceptedWC':
+        status = false;
+        this.indicatorService.setOrderByAccpetedWC(status);
+      case 'Clarification':
+        status = false;
+        this.indicatorService.setOrderByClarification(status);
+      case 'Disagree':
+        status = false;
+        this.indicatorService.setOrderByDisagree(status);
+        break;
+    
+      default:
+        break;
     }
-    this.indicatorService.setOrderByStatus(status);
+
     this.router.navigate([`/indicator/${this.selectedIndicator.split('qa_')[1]}/id`]);
   }
 

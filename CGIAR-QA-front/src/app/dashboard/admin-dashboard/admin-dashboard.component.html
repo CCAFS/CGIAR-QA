@@ -190,7 +190,7 @@
                                 </div>
                                 <div class="chart-container">
                                     <app-donut-chart *ngIf="dataSelected" [data]="dataCharts.generalStatus"
-                                        [chartName]="indicator_status" [selectedIndicator]="selectedIndicator">
+                                        [chartName]="indicator_status" [selectedIndicator]="selectedIndicator" >
                                     </app-donut-chart>
                                 </div>
                             </div>
@@ -217,7 +217,7 @@
                                     </ng-template>
                                 </div>
                                 <div *ngIf="dashboardCommentsData[selectedIndicator]" class="chart-container">
-                                    <app-donut-chart [data]="dataCharts.responseToComments" [chartName]="'comments'">
+                                    <app-donut-chart [data]="dataCharts.responseToComments" [chartName]="'comments'" [selectedIndicator]="selectedIndicator">
                                     </app-donut-chart>
                                 </div>
                             </div>

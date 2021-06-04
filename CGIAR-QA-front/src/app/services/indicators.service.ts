@@ -10,6 +10,9 @@ import { map } from 'rxjs/operators';
 export class IndicatorsService {
 
   orderByStatus: boolean = null;
+  orderByAcceptedWC: boolean = null;
+  orderByDisagree: boolean = null;
+  orderByClarification: boolean = null;
   pageList = {
     qa_policies: 1,
     qa_innovations: 1,
@@ -38,9 +41,40 @@ export class IndicatorsService {
   getOrderByStatus() {
     return this.orderByStatus;
   }
+  getOrderByAcceptedWC() {
+    return this.orderByAcceptedWC;
+  }
+  getOrderByDisagree() {
+    return this.orderByDisagree;
+  }
+  getOrderByClarification() {
+    return this.orderByClarification;
+  }
 
   setOrderByStatus(value: boolean) {
     this.orderByStatus = value;
+    this.orderByAcceptedWC = null;
+    this.orderByDisagree = null;
+    this.orderByClarification = null;
+
+  }
+  setOrderByAccpetedWC(value: boolean) {
+    this.orderByAcceptedWC = value;
+    this.orderByStatus = null;
+    this.orderByDisagree = null;
+    this.orderByClarification = null;
+  }
+  setOrderByDisagree(value: boolean) {
+    this.orderByDisagree = value;
+    this.orderByAcceptedWC = null;
+    this.orderByStatus = null;
+    this.orderByClarification = null;
+  }
+  setOrderByClarification(value: boolean) {
+    this.orderByClarification = value;
+    this.orderByDisagree = null;
+    this.orderByAcceptedWC = null;
+    this.orderByStatus = null;
   }
 
   getItemStatusByIndicator(indicator_name, crp_id?) {
@@ -53,21 +87,21 @@ export class IndicatorsService {
 
   formatItemStatusByIndicator(obj) {
     let response = [];
-    if(obj) {
+    if (obj) {
       for (const key in obj) {
-        response.push(Object.assign({item: key, approved_without_comment: 0, assessment_with_comments: 0, pending: 0}, obj[key]));
-        }
-        console.log(response);
+        response.push(Object.assign({ item: key, approved_without_comment: 0, assessment_with_comments: 0, pending: 0 }, obj[key]));
+      }
+      console.log(response);
     }
-      
-      // console.log(response);
-      return response;
-    }
+
+    // console.log(response);
+    return response;
+  }
   formatAllItemStatusByIndicator(allItems) {
-    if(allItems) {
+    if (allItems) {
       for (const key in allItems) {
         allItems[key] = Object.values(allItems[key]);
-        }
+      }
     }
     return allItems;
   }
@@ -80,10 +114,10 @@ export class IndicatorsService {
     this.pageList[indicator] = page;
   }
 
-  getPagesIndicatorList(){
+  getPagesIndicatorList() {
     return this.pageList;
   }
-  setFullPageList(pages){
+  setFullPageList(pages) {
     this.pageList = pages;
   }
 }
