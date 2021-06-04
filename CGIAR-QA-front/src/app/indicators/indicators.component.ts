@@ -352,6 +352,8 @@ indicatorTypePage = null;
   verifyIfOrderByDisagree() {
     if (this.indicatorService.getOrderByDisagree() !== null) {
       this.setOrder('comments_disagreed_count', this.indicatorService.getOrderByDisagree())
+      console.log('ORDERED BY DISAGREED');
+      
     }else {
       console.log('Comments disagreed');
     }
@@ -359,8 +361,10 @@ indicatorTypePage = null;
   verifyIfOrderByClarification() {
     if (this.indicatorService.getOrderByClarification() !== null) {
       this.setOrder('comments_clarification_count', this.indicatorService.getOrderByClarification())
+      console.log('NOT ORDERED BY CLARIFICATION');
+
     } else {
-      console.log('Comments clarification');
+      console.log('NOT Comments clarification');
     }
   }
 

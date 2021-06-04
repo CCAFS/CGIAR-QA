@@ -69,15 +69,25 @@ export class DonutChartComponent implements OnInit {
     switch (data.name) {
       case 'pending':
         status = false;
+        console.log('Click on Pending');        
         this.indicatorService.setOrderByStatus(status);
+        break;
+
       case 'AcceptedWC':
         status = false;
+        console.log('Click on AcceptedWC');        
         this.indicatorService.setOrderByAccpetedWC(status);
+        break;
+
       case 'Clarification':
         status = false;
+        console.log('Click on Clarification');        
         this.indicatorService.setOrderByClarification(status);
+        break;
+
       case 'Disagree':
         status = false;
+        console.log('Click on Disagree');        
         this.indicatorService.setOrderByDisagree(status);
         break;
     
