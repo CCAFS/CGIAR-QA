@@ -170,10 +170,19 @@
                     Export comments
                 </div>
             </th>
-            <th scope="col" [class.active]="order === 'comment_by'" (click)="setOrder('comment_by')">
+            <th *ngIf="currentUser.cycle.cycle_stage != 2" scope="col" [class.active]="order === 'comment_by'" (click)="setOrder('comment_by')">
                 <div class="header-row">
                     Assessed By
                     <div class="order-icon" *ngIf="order === 'comment_by'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
+            <th *ngIf="currentUser.cycle.cycle_stage == 2" scope="col" [class.active]="order === 'assessed_r2'" (click)="setOrder('assessed_r2')">
+                <div class="header-row">
+                    Assessed (Round 2) By
+                    <div class="order-icon" *ngIf="order === 'assessed_r2'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
                     </div>
@@ -235,8 +244,15 @@
                     </div>
                 </a>
             </td>
-            <td>
+            <td *ngIf="currentUser.cycle.cycle_stage != 2">
                 <ul *ngFor="let subCategory of item.comment_by?.split(',')"
+                    style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
+                    <li>{{ subCategory }}</li>
+                </ul>
+                <p class="wos-label" *ngIf="item.status == 'autochecked'">Validated by WoS/Scopus</p>
+            </td>
+            <td *ngIf="currentUser.cycle.cycle_stage == 2">
+                <ul *ngFor="let subCategory of item.assessed_r2?.split(',')"
                     style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
                     <li>{{ subCategory }}</li>
                 </ul>

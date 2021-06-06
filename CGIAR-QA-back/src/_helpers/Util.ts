@@ -565,6 +565,7 @@ class Util {
                 display_name: element["meta_display_name"],
                 title: element['title'],
                 comment_by: element['comment_by'],
+                assessed_r2: element['assessed_r2'],
                 stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
                 fp: element.hasOwnProperty('fp') ? element['fp'] : undefined,
                 brief: element.hasOwnProperty('brief') ? element['brief'] : undefined, //TODO

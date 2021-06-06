@@ -58,7 +58,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     isOpen: false
   }
   chatRooms = null;
-  assessed_by = null;
+  assessed_by_r1 = null;
+  assessed_by_r2 = null;
   currentUserHasAssessed = false;
   @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
   @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
@@ -188,7 +189,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     if (field) {
       let noComment = (e.target.checked) ? true : false;
       field.loading = true
-      console.log(field.evaluation_id);
+      console.log('HI',field.evaluation_id);
       
 
       this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], isAll: false, userId: this.currentUser.id, noComment }, field.evaluation_id).subscribe(
@@ -314,9 +315,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.evaluationService.getAssessorsByEvaluation(this.gnralInfo.evaluation_id).subscribe(
           res => {
             console.log(res.data[0].comment_by);
-            this.assessed_by = res.data[0].comment_by;
-            if(this.assessed_by) {
-              this.currentUserHasAssessed = this.assessed_by.indexOf(this.currentUser.username) >= 0 ? true : false;
+            this.assessed_by_r1 = res.data[0].assessed_r1;
+            this.assessed_by_r2 = res.data[0].assessed_r2;
+            if(this.assessed_by_r1) {
+              this.currentUserHasAssessed = this.assessed_by_r1.indexOf(this.currentUser.username) >= 0 ? true : false;
             }
             
           }, error => {

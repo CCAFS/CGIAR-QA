@@ -8,11 +8,12 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class IndicatorsService {
-
-  orderByStatus: boolean = null;
-  orderByAcceptedWC: boolean = null;
-  orderByDisagree: boolean = null;
-  orderByClarification: boolean = null;
+  allOrderTypes = {
+    orderByStatus: null,
+    orderByAcceptedWC: null,
+    orderByDisagree: null,
+    orderByClarification: null,
+  }
   pageList = {
     qa_policies: 1,
     qa_innovations: 1,
@@ -37,44 +38,46 @@ export class IndicatorsService {
   getIndicators() {
     return this.http.get<any>(`${environment.apiUrl}/indicator/`);
   }
-
+  getCurrentOrder() {
+    for (const key in this.allOrderTypes) {
+      if(this.allOrderTypes[key] != null)
+      return {type: key, value: this.allOrderTypes[key]};
+    }
+    return {type: null, value: null};
+  }
   getOrderByStatus() {
-    return this.orderByStatus;
+    return this.allOrderTypes['orderByStatus'];
   }
   getOrderByAcceptedWC() {
-    return this.orderByAcceptedWC;
+    return this.allOrderTypes['orderByAcceptedWC'];
   }
   getOrderByDisagree() {
-    return this.orderByDisagree;
+    return this.allOrderTypes['orderByDisagree'];
   }
   getOrderByClarification() {
-    return this.orderByClarification;
+    return this.allOrderTypes['orderByClarification'];
   }
 
+  cleanAllOrders() {
+    for (const key in this.allOrderTypes) {
+      this.allOrderTypes[key] = null;
+    }
+  }
   setOrderByStatus(value: boolean) {
-    this.orderByStatus = value;
-    this.orderByAcceptedWC = null;
-    this.orderByDisagree = null;
-    this.orderByClarification = null;
-
+    this.cleanAllOrders();
+    this.allOrderTypes['orderByStatus'] = value;
   }
   setOrderByAccpetedWC(value: boolean) {
-    this.orderByAcceptedWC = value;
-    this.orderByStatus = null;
-    this.orderByDisagree = null;
-    this.orderByClarification = null;
+    this.cleanAllOrders();
+    this.allOrderTypes['orderByAcceptedWC'] = value;
   }
   setOrderByDisagree(value: boolean) {
-    this.orderByDisagree = value;
-    this.orderByAcceptedWC = null;
-    this.orderByStatus = null;
-    this.orderByClarification = null;
+    this.cleanAllOrders();
+    this.allOrderTypes['orderByDisagree'] = value;
   }
   setOrderByClarification(value: boolean) {
-    this.orderByClarification = value;
-    this.orderByDisagree = null;
-    this.orderByAcceptedWC = null;
-    this.orderByStatus = null;
+    this.cleanAllOrders();
+    this.allOrderTypes['orderByClarification'] = value;
   }
 
   getItemStatusByIndicator(indicator_name, crp_id?) {

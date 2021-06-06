@@ -192,10 +192,8 @@ indicatorTypePage = null;
         setTimeout(() => {
           this.currentPage = this.indicatorService.getPagesIndicatorList()
           this.indicatorTypePage = (`qa_${this.indicatorType}`);
-          this.verifyIfOrderByStatus();
-          this.verifyIfOrderByAcceptedWC();
-          this.verifyIfOrderByDisagree();
-          this.verifyIfOrderByClarification();
+          if(!this.verifyOrder())this.setOrder(this.order, this.reverse);
+          this.indicatorService.cleanAllOrders();
           // this.setOrder(this.order, this.reverse);
         }, 200);
         // this.currentPage = this.indicatorService.getPagesIndicatorList();
@@ -332,41 +330,32 @@ indicatorTypePage = null;
     return r;
   }
 
+  verifyOrder() {
+    let currentOrder = this.indicatorService.getCurrentOrder();
 
-  verifyIfOrderByStatus() {
-    if (this.indicatorService.getOrderByStatus() !== null) {
-      this.setOrder('status', this.indicatorService.getOrderByStatus())
-    } else{
-      console.log('NOT STATUS');
+    switch (currentOrder.type) {
+      case 'orderByAcceptedWC':
+      this.setOrder('comments_accepted_with_comment_count',currentOrder.value);
+      return true;
       
+      case 'orderByDisagree':
+      this.setOrder('comments_disagreed_count', currentOrder.value);
+      return true;
+      
+      case 'orderByClarification':
+      this.setOrder('comments_clarification_count', currentOrder.value);
+      return true;
+      
+      case 'orderByStatus':
+      this.setOrder('status', currentOrder.value);
+      return true;
+      
+      default:
+        return false;
     }
   }
-  verifyIfOrderByAcceptedWC() {
-    if (this.indicatorService.getOrderByAcceptedWC() !== null) {
-      this.setOrder('comments_accepted_with_comment_count', this.indicatorService.getOrderByAcceptedWC())
-      
-    } else {
-      console.log('NOT AWC');
-    }
-  }
-  verifyIfOrderByDisagree() {
-    if (this.indicatorService.getOrderByDisagree() !== null) {
-      this.setOrder('comments_disagreed_count', this.indicatorService.getOrderByDisagree())
-      console.log('ORDERED BY DISAGREED');
-      
-    }else {
-      console.log('Comments disagreed');
-    }
-  }
-  verifyIfOrderByClarification() {
-    if (this.indicatorService.getOrderByClarification() !== null) {
-      this.setOrder('comments_clarification_count', this.indicatorService.getOrderByClarification())
-      console.log('NOT ORDERED BY CLARIFICATION');
 
-    } else {
-      console.log('NOT Comments clarification');
-    }
-  }
+
 
   toggleAssessorsChat() {
     this.assessorsChat.isOpen = !this.assessorsChat.isOpen;

@@ -64,7 +64,7 @@
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div *ngIf="currentUser.hasOwnProperty('cycle')">
                 <div class="col data-container">
-                    <div class="row" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin:0; margin-bottom: 2em;">
+                    <div class="row assessment-info-r2" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin:0; margin-bottom: 2em;">
                         <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container">
                             <button type="button" class="btn btn-finalized"
                                 [disabled]="gnralInfo.status === statusHandler.Finalized"
@@ -73,6 +73,10 @@
                         <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container">
                         <button type="button" class="btn btn-outline-info"
                             (click)="updateEvaluation('complete_eval',detailedData)">OPEN ASSESSMENT</button>
+                    </div>
+                    <div class="right-side">
+                        <p *ngIf="assessed_by_r1"> <strong>Assessed (Round 1) by: </strong> {{assessed_by_r1}}</p>
+                        <p *ngIf="assessed_by_r2"> <strong>Assessed (Round 2) by: </strong> {{assessed_by_r2}}</p>
                     </div>
                     </div>
                     <div class="assessment-info select-all"
@@ -86,7 +90,7 @@
                                 assessment</button>
                         </div>
                         <div class="right-side">
-                            <p *ngIf="assessed_by"> <strong>Assessed by: </strong> {{assessed_by}}</p>
+                            <p *ngIf="assessed_by_r1"> <strong>Assessed by: </strong> {{assessed_by_r1}}</p>
                         </div>
                     </div>
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
