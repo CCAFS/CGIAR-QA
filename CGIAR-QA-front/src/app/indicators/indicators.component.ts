@@ -150,9 +150,12 @@ indicatorTypePage = null;
       this.order = 'status';
     }
     // console.log('loaded indicators')
-    setTimeout(() => {                           //<<<---using ()=> syntax
-      this.verifyIfOrderByStatus();
-    }, 2000);
+    // setTimeout(() => {                           //<<<---using ()=> syntax
+    //   this.verifyIfOrderByStatus();
+    //   this.verifyIfOrderByAcceptedWC();
+    //   this.verifyIfOrderByDisagree();
+    //   this.verifyIfOrderByClarification();
+    // }, 5000);
     this.chatRooms = {
       general: this.sanitizer.bypassSecurityTrustResourceUrl(`https://deadsimplechat.com/am16H1Vlj?username=${this.currentUser.name}`),
     }
@@ -176,20 +179,22 @@ indicatorTypePage = null;
           this.order = 'status';
         }
         this.evaluationList = this.orderPipe.transform(res.data, this.order);
-        this.setOrder(this.order, this.reverse);
         console.log('LISTA', this.evaluationList);
-
+        
         this.collectionSize = this.evaluationList.length;
         this.returnedArray = this.evaluationList.slice(0, 10);
         this.returnedArrayHasStage = this.returnedArray.find(e => e.stage != null)
         // console.log('RETURNED_ARRAY', this.returnedArray);
-
+        
         this.hasTemplate = this.currentUser.config[0][`${params.type}_guideline`] ? true : false;
-
+        
         this.hideSpinner();
         setTimeout(() => {
           this.currentPage = this.indicatorService.getPagesIndicatorList()
           this.indicatorTypePage = (`qa_${this.indicatorType}`);
+          if(!this.verifyOrder())this.setOrder(this.order, this.reverse);
+          this.indicatorService.cleanAllOrders();
+          // this.setOrder(this.order, this.reverse);
         }, 200);
         // this.currentPage = this.indicatorService.getPagesIndicatorList();
         console.log('PAGES', this.currentPage);
@@ -242,6 +247,11 @@ indicatorTypePage = null;
 
     // console.log(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order)
     this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
+    window.scroll({
+      top: 150, 
+      left: 0, 
+      behavior: 'smooth'
+    });
     // this.returnedArray = this.evaluationList.slice(this.currentPageList.startItem, this.currentPageList.endItem);
   }
 
@@ -325,12 +335,32 @@ indicatorTypePage = null;
     return r;
   }
 
+  verifyOrder() {
+    let currentOrder = this.indicatorService.getCurrentOrder();
 
-  verifyIfOrderByStatus() {
-    if (this.indicatorService.getOrderByStatus() != null) {
-      this.setOrder('status', this.indicatorService.getOrderByStatus())
+    switch (currentOrder.type) {
+      case 'orderByAcceptedWC':
+      this.setOrder('comments_accepted_with_comment_count',currentOrder.value);
+      return true;
+      
+      case 'orderByDisagree':
+      this.setOrder('comments_disagreed_count', currentOrder.value);
+      return true;
+      
+      case 'orderByClarification':
+      this.setOrder('comments_clarification_count', currentOrder.value);
+      return true;
+      
+      case 'orderByStatus':
+      this.setOrder('status', currentOrder.value);
+      return true;
+      
+      default:
+        return false;
     }
   }
+
+
 
   toggleAssessorsChat() {
     this.assessorsChat.isOpen = !this.assessorsChat.isOpen;

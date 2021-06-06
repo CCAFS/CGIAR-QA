@@ -64,13 +64,49 @@ export class DonutChartComponent implements OnInit {
   }
 
   onSelect(data): void {
-    // console.log('Item clicked', JSON.parse(JSON.stringify(data)));
-    let status = true;
-    if(data.name == 'pending') {
-      status = false;
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    let status = null;
+    switch (data.name) {
+      case 'pending':
+        status = false;
+        console.log('Click on Pending');        
+        this.indicatorService.setOrderByStatus(status);
+        break;
+      case 'Assessed 1st round':
+        status = false;
+        console.log('Click on Assessed 1st round');        
+        this.indicatorService.setOrderByStatus(status);
+        break;
+      case 'Assessed 2nd round':
+        status = true;
+        console.log('Click on Assessed 2nd round');        
+        this.indicatorService.setOrderByStatus(status);
+        break;
+
+      case 'AcceptedWC':
+        status = false;
+        console.log('Click on AcceptedWC');        
+        this.indicatorService.setOrderByAccpetedWC(status);
+        break;
+
+      case 'Clarification':
+        status = false;
+        console.log('Click on Clarification');        
+        this.indicatorService.setOrderByClarification(status);
+        break;
+
+      case 'Disagree':
+        status = false;
+        console.log('Click on Disagree');        
+        this.indicatorService.setOrderByDisagree(status);
+        break;
+    
+      default:
+        break;
     }
-    this.indicatorService.setOrderByStatus(status);
-    this.router.navigate([`/indicator/${this.selectedIndicator.split('qa_')[1]}/id`]);
+if(status != null) {
+  this.router.navigate([`/indicator/${this.selectedIndicator.split('qa_')[1]}/id`]);
+}
   }
 
   onActivate(data): void {

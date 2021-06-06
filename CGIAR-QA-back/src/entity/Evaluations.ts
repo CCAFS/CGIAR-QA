@@ -58,4 +58,8 @@ export class QAEvaluations {
     @ManyToMany(() => QAUsers)
     @JoinTable()
     assessed_by: QAUsers[];
+
+    @ManyToMany(() => QAUsers)
+    @JoinTable()
+    assessed_by_second_round: QAUsers[];
 }

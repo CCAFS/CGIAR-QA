@@ -19,7 +19,7 @@ export class LineChartComponent implements OnInit {
   maxY;
   public brushes: any = ['#59ed9cff', '#f3da90ff', '#ed8b84ff'];
   public calloutDataSource : any[];
-  toggleChart = true;
+  toggleChart = false;
     
     constructor(private indicatorService: IndicatorsService) {
 

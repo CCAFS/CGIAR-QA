@@ -110,7 +110,9 @@
 
 
             <th scope="col" [class.active]="order === 'comments_count'" (click)="setOrder('comments_count')">
-                <div class="header-row"> Comments
+                <div class="header-row">
+                    Comments
+                    <div class="flag">2nd round</div>
                     <div class="order-icon" *ngIf="order === 'comments_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
@@ -133,7 +135,8 @@
                 scope="col" [class.active]="order === 'comments_accepted_with_comment_count'"
                 (click)="setOrder('comments_accepted_with_comment_count')">
                 <div class="header-row">
-                    Accepted w. comment
+                    Accepted <div class="legend-xs">w. comment</div>
+                    <div class="flag">CRP Reply</div>
                     <div class="order-icon" *ngIf="order === 'comments_accepted_with_comment_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
@@ -145,6 +148,7 @@
                 (click)="setOrder('comments_disagreed_count')">
                 <div class="header-row">
                     Disagreed
+                    <div class="flag">CRP Reply</div>
                     <div class="order-icon" *ngIf="order === 'comments_disagreed_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
@@ -156,6 +160,7 @@
                 (click)="setOrder('comments_clarification_count')">
                 <div class="header-row">
                     Clarification needed
+                    <div class="flag">CRP Reply</div>
                     <div class="order-icon" *ngIf="order === 'comments_clarification_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
@@ -170,10 +175,20 @@
                     Export comments
                 </div>
             </th>
-            <th scope="col" [class.active]="order === 'comment_by'" (click)="setOrder('comment_by')">
+            <th *ngIf="currentUser.cycle.cycle_stage != 2" scope="col" [class.active]="order === 'comment_by'" (click)="setOrder('comment_by')">
                 <div class="header-row">
                     Assessed By
                     <div class="order-icon" *ngIf="order === 'comment_by'">
+                        <span [hidden]="reverse">▼</span>
+                        <span [hidden]="!reverse">▲</span>
+                    </div>
+                </div>
+            </th>
+            <th *ngIf="currentUser.cycle.cycle_stage == 2" scope="col" [class.active]="order === 'assessed_r2'" (click)="setOrder('assessed_r2')">
+                <div class="header-row">
+                    Assessed By
+                    <div class="flag">2nd round</div>
+                    <div class="order-icon" *ngIf="order === 'assessed_r2'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
                     </div>
@@ -235,8 +250,15 @@
                     </div>
                 </a>
             </td>
-            <td>
+            <td *ngIf="currentUser.cycle.cycle_stage != 2">
                 <ul *ngFor="let subCategory of item.comment_by?.split(',')"
+                    style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
+                    <li>{{ subCategory }}</li>
+                </ul>
+                <p class="wos-label" *ngIf="item.status == 'autochecked'">Validated by WoS/Scopus</p>
+            </td>
+            <td *ngIf="currentUser.cycle.cycle_stage == 2">
+                <ul *ngFor="let subCategory of item.assessed_r2?.split(',')"
                     style="padding-inline-start: 1em; margin-bottom: 0.2rem;">
                     <li>{{ subCategory }}</li>
                 </ul>

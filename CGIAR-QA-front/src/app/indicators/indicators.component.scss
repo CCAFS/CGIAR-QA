@@ -114,10 +114,36 @@ h2 {
       padding: 0.75em;
       text-transform: uppercase;
       cursor: pointer;
+      .flag {
+        padding: 0.3em 0.5em;
+        background-color: #0094c2;
+        border: 2px solid #005772;
+        border-radius: 4px;
+        color: white;
+        font-size: 8px;
+        width: max-content;
+
+        // align-self: flex-start;
+      }
       .header-row {
         display: flex;
-        flex-direction: row;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        .flag {
+          padding: 0.3em 0.5em;
+          background-color: #0094c2;
+          border: 2px solid #005772;
+          border-radius: 4px;
+          color: white;
+          font-size: 8px;
+          width: max-content;
+
+          // align-self: flex-start;
+        }
+        .legend-xs{
+          font-size: $font-xs;
+        }
         .order-icon {
           margin-left: 1em;
         }
@@ -155,7 +181,7 @@ h2 {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 25vw;
+        max-width: 20vw;
 
       // border: 1px solid red;
       // color: green;
@@ -255,12 +281,12 @@ h2 {
   }
 }
 
-@media (max-width:1400px) {
+@media (max-width:1550px) {
   
 .table-body {
   td {
     .brief-format {
-      max-width: 20vw;
+      max-width: 15vw;
     }
   }
 }

@@ -344,7 +344,7 @@ class EvaluationsController {
                     order: element['indicator_order']
                 })
 
-            }
+            } 
             // console.log(response)
             let result = Util.groupBy(response, 'indicator_view_name');
             // res.status(200).json({ data: rawData, message: "All evaluations" });
@@ -424,7 +424,16 @@ class EvaluationsController {
                             LEFT JOIN qa_users users ON users.id = qea.qaUsersId
                         WHERE
                             qea.qaEvaluationsId = evaluations.id
-                    ) comment_by
+                    ) comment_by,
+                    (
+                        SELECT
+                        group_concat(DISTINCT users2.username)
+                        FROM
+                        qa_evaluations_assessed_by_second_round_qa_users qea2
+                            LEFT JOIN qa_users users2 ON users2.id = qea2.qaUsersId
+                        WHERE
+                            qea2.qaEvaluationsId = evaluations.id
+                    ) assessed_r2
                 FROM
                     qa_evaluations evaluations
                 LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
@@ -578,6 +587,14 @@ class EvaluationsController {
                             AND detail IS NOT NULL
                             AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
                         ) AS comments_count,
+                        (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                        NOT NULL AND is_deleted = 0 AND is_visible = 1 AND replyTypeId = 1) AS comments_accepted_count,
+                        (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                        NOT NULL AND is_deleted = 0 AND is_visible = 1 AND replyTypeId = 4) AS comments_accepted_with_comment_count,
+                        (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                        NOT NULL AND is_deleted = 0 AND is_visible = 1 AND replyTypeId = 2) AS comments_disagreed_count,
+                        (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
+                        NOT NULL AND is_deleted = 0 AND is_visible = 1 AND replyTypeId = 3) AS comments_clarification_count,
 
 
                         (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id AND approved_no_comment IS NULL AND metaId IS
@@ -598,7 +615,16 @@ class EvaluationsController {
                                 LEFT JOIN qa_users users ON users.id = qea.qaUsersId
                             WHERE
                                 qea.qaEvaluationsId = evaluations.id
-                        ) comment_by
+                        ) comment_by,
+                        (
+                            SELECT
+                            group_concat(DISTINCT users2.username)
+                            FROM
+                            qa_evaluations_assessed_by_second_round_qa_users qea2
+                                LEFT JOIN qa_users users2 ON users2.id = qea2.qaUsersId
+                            WHERE
+                                qea2.qaEvaluationsId = evaluations.id
+                        ) assessed_r2
                     FROM
                         qa_evaluations evaluations
                     LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
@@ -708,7 +734,7 @@ class EvaluationsController {
                             meta.include_detail AS meta_include_detail,
                             meta.is_primay AS meta_is_primay,
                             evaluations.id AS evaluation_id,
-                            evaluations.evaluation_status AS evaluation_status,
+                            evaluations.evaluation_status AS evaluation_status, 
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
                             evaluations.status AS evaluations_status,
@@ -872,9 +898,15 @@ class EvaluationsController {
         const { general_comments, status } = req.body;
         const evaluationsRepository = getRepository(QAEvaluations);
         let queryRunner = getConnection().createQueryBuilder();
+        const userRepository = getRepository(QAUsers);
+        let user = await userRepository.findOneOrFail({ where: { id: userId } });
+        console.log('EnteredService UpdateEvaluation', {user});
+        
         // console.log({ general_comments, status }, id)
         try {
-            let evaluation = await evaluationsRepository.findOneOrFail(id);
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: id }, relations: ['assessed_by', 'assessed_by_second_round']  });
+            console.log('Got the Evaluation', evaluation);
+
             // evaluation.general_comments = general_comments;
             evaluation.status = status;
             if (status === StatusHandler.Finalized) {
@@ -887,6 +919,9 @@ class EvaluationsController {
                     { view_name: evaluation.indicator_view_name },
                     {}
                 );
+                evaluation.assessed_by_second_round.push(user);
+            console.log('Pushed user', evaluation);
+
                 let metaId = await queryRunner.connection.query(query, parameters);
                 let comment = await Util.createComment(null, true, userId, metaId[0].id, evaluation.id);
             }
@@ -984,13 +1019,16 @@ class EvaluationsController {
         try {
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `
-                    SELECT
-                    group_concat(DISTINCT users.username) as comment_by
-                    FROM
-                        qa_evaluations_assessed_by_qa_users qea
-                        LEFT JOIN qa_users users ON users.id = qea.qaUsersId
-                    WHERE
-                        qea.qaEvaluationsId = :evaluationId       
+                SELECT
+                group_concat(DISTINCT users.username separator ', ') as assessed_r1,
+                (SELECT group_concat(DISTINCT users2.username separator ', ') FROM
+                qa_evaluations_assessed_by_second_round_qa_users qea2
+                LEFT JOIN qa_users users2 ON users2.id = qea2.qaUsersId
+                WHERE qea2.qaEvaluationsId = qea.qaEvaluationsId ) as assessed_r2
+                FROM
+                qa_evaluations_assessed_by_qa_users qea
+                LEFT JOIN qa_users users ON users.id = qea.qaUsersId
+                WHERE qea.qaEvaluationsId = :evaluationId       
                        `,
                 { evaluationId },
                 {}

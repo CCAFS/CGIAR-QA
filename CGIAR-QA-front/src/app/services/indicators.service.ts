@@ -8,8 +8,12 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class IndicatorsService {
-
-  orderByStatus: boolean = null;
+  allOrderTypes = {
+    orderByStatus: null,
+    orderByAcceptedWC: null,
+    orderByDisagree: null,
+    orderByClarification: null,
+  }
   pageList = {
     qa_policies: 1,
     qa_innovations: 1,
@@ -34,13 +38,46 @@ export class IndicatorsService {
   getIndicators() {
     return this.http.get<any>(`${environment.apiUrl}/indicator/`);
   }
-
+  getCurrentOrder() {
+    for (const key in this.allOrderTypes) {
+      if(this.allOrderTypes[key] != null)
+      return {type: key, value: this.allOrderTypes[key]};
+    }
+    return {type: null, value: null};
+  }
   getOrderByStatus() {
-    return this.orderByStatus;
+    return this.allOrderTypes['orderByStatus'];
+  }
+  getOrderByAcceptedWC() {
+    return this.allOrderTypes['orderByAcceptedWC'];
+  }
+  getOrderByDisagree() {
+    return this.allOrderTypes['orderByDisagree'];
+  }
+  getOrderByClarification() {
+    return this.allOrderTypes['orderByClarification'];
   }
 
+  cleanAllOrders() {
+    for (const key in this.allOrderTypes) {
+      this.allOrderTypes[key] = null;
+    }
+  }
   setOrderByStatus(value: boolean) {
-    this.orderByStatus = value;
+    this.cleanAllOrders();
+    this.allOrderTypes['orderByStatus'] = value;
+  }
+  setOrderByAccpetedWC(value: boolean) {
+    this.cleanAllOrders();
+    this.allOrderTypes['orderByAcceptedWC'] = value;
+  }
+  setOrderByDisagree(value: boolean) {
+    this.cleanAllOrders();
+    this.allOrderTypes['orderByDisagree'] = value;
+  }
+  setOrderByClarification(value: boolean) {
+    this.cleanAllOrders();
+    this.allOrderTypes['orderByClarification'] = value;
   }
 
   getItemStatusByIndicator(indicator_name, crp_id?) {
@@ -53,21 +90,21 @@ export class IndicatorsService {
 
   formatItemStatusByIndicator(obj) {
     let response = [];
-    if(obj) {
+    if (obj) {
       for (const key in obj) {
-        response.push(Object.assign({item: key, approved_without_comment: 0, assessment_with_comments: 0, pending: 0}, obj[key]));
-        }
-        console.log(response);
+        response.push(Object.assign({ item: key, approved_without_comment: 0, assessment_with_comments: 0, pending: 0 }, obj[key]));
+      }
+      console.log(response);
     }
-      
-      // console.log(response);
-      return response;
-    }
+
+    // console.log(response);
+    return response;
+  }
   formatAllItemStatusByIndicator(allItems) {
-    if(allItems) {
+    if (allItems) {
       for (const key in allItems) {
         allItems[key] = Object.values(allItems[key]);
-        }
+      }
     }
     return allItems;
   }
@@ -80,10 +117,10 @@ export class IndicatorsService {
     this.pageList[indicator] = page;
   }
 
-  getPagesIndicatorList(){
+  getPagesIndicatorList() {
     return this.pageList;
   }
-  setFullPageList(pages){
+  setFullPageList(pages) {
     this.pageList = pages;
   }
 }
