@@ -73,12 +73,12 @@ export class DonutChartComponent implements OnInit {
         this.indicatorService.setOrderByStatus(status);
         break;
       case 'Assessed 1st round':
-        status = false;
+        status = true;
         console.log('Click on Assessed 1st round');        
         this.indicatorService.setOrderByStatus(status);
         break;
       case 'Assessed 2nd round':
-        status = true;
+        status = false;
         console.log('Click on Assessed 2nd round');        
         this.indicatorService.setOrderByStatus(status);
         break;
