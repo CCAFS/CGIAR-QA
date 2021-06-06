@@ -247,6 +247,11 @@ indicatorTypePage = null;
 
     // console.log(this.evaluationList, (this.reverse) ? 'asc':'desc', this.order)
     this.evaluationList = this.orderPipe.transform(this.evaluationList, (this.reverse) ? 'asc' : 'desc', this.order);
+    window.scroll({
+      top: 150, 
+      left: 0, 
+      behavior: 'smooth'
+    });
     // this.returnedArray = this.evaluationList.slice(this.currentPageList.startItem, this.currentPageList.endItem);
   }
 

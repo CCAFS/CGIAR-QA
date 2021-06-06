@@ -1,3 +1,4 @@
+@import "./../../../../assets/variables.scss";
 .container {
     display: flex;
     flex-flow: column;
@@ -145,7 +146,7 @@ select {
 .container-modal {
     height: 90vh;
     width: 95vw;
-    padding: 5em;
+    padding: 1.5em;
 }
 .chart-modal {
     flex: 1;
@@ -161,10 +162,27 @@ select {
 .container-modal-bar {
     height: 85vh;
     width: 80vw;
-    // padding: 5em;
+    padding: 1.5em;
 }
  
 .link{
     color: cornflowerblue;
     cursor: pointer;
+}
+
+i{
+    min-width: 20px;
+    max-width: 20px;
+}
+
+#legendTitle{
+    font-weight: $semibold;
+    margin-bottom: 3em;
+    &:hover{
+        cursor: pointer;
+    }
+    i{
+        min-width: 20px;
+        max-width: 20px;
+    }
 }

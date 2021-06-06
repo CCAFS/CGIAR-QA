@@ -900,10 +900,13 @@ class EvaluationsController {
         let queryRunner = getConnection().createQueryBuilder();
         const userRepository = getRepository(QAUsers);
         let user = await userRepository.findOneOrFail({ where: { id: userId } });
-
+        console.log('EnteredService UpdateEvaluation', {user});
+        
         // console.log({ general_comments, status }, id)
         try {
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: id }, relations: ['assessed_by', 'assessed_by_second_round']  });
+            console.log('Got the Evaluation', evaluation);
+
             // evaluation.general_comments = general_comments;
             evaluation.status = status;
             if (status === StatusHandler.Finalized) {
@@ -917,6 +920,8 @@ class EvaluationsController {
                     {}
                 );
                 evaluation.assessed_by_second_round.push(user);
+            console.log('Pushed user', evaluation);
+
                 let metaId = await queryRunner.connection.query(query, parameters);
                 let comment = await Util.createComment(null, true, userId, metaId[0].id, evaluation.id);
             }

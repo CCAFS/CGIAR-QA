@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -15,6 +15,7 @@ import { CommentService } from 'src/app/services/comment.service';
 import { IndicatorsService } from 'src/app/services/indicators.service';
 import { UsersService } from 'src/app/services/users.service';
 import { forkJoin, Observable } from 'rxjs';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-assessor-dashboard',
@@ -23,6 +24,7 @@ import { forkJoin, Observable } from 'rxjs';
 })
 export class AssessorDashboardComponent implements OnInit {
 
+  modalRef: BsModalRef;
   currentUser: User;
   dashboardData: any[];
   dashboardCommentsData: any[];
@@ -65,6 +67,7 @@ export class AssessorDashboardComponent implements OnInit {
 
   constructor(private dashService: DashboardService,
     private authenticationService: AuthenticationService,
+    private modalService: BsModalService,
     private indicatorService: IndicatorsService,
     private usersService: UsersService,
     private spinner: NgxSpinnerService,
@@ -369,6 +372,9 @@ export class AssessorDashboardComponent implements OnInit {
         break;
     }
     window.open(pdf_url, "_blank");
+  }
+  openChart(template: TemplateRef<any>, e) {
+    this.modalRef = this.modalService.show(template, {class: 'modal-xl'});
   }
 
 
