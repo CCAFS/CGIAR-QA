@@ -314,9 +314,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
         this.evaluationService.getAssessorsByEvaluation(this.gnralInfo.evaluation_id).subscribe(
           res => {
-            console.log(res.data[0].comment_by);
-            this.assessed_by_r1 = res.data[0].assessed_r1;
-            this.assessed_by_r2 = res.data[0].assessed_r2;
+            console.log(res.data[0]);
+            this.assessed_by_r1 = res.data.assessed_r1;
+            this.assessed_by_r2 = res.data.assessed_r2;
             if(this.assessed_by_r1) {
               this.currentUserHasAssessed = this.assessed_by_r1.indexOf(this.currentUser.username) >= 0 ? true : false;
             }

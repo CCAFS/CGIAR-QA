@@ -1019,22 +1019,34 @@ class EvaluationsController {
         try {
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `
-                SELECT
-                group_concat(DISTINCT users.username separator ', ') as assessed_r1,
-                (SELECT group_concat(DISTINCT users2.username separator ', ') FROM
-                qa_evaluations_assessed_by_second_round_qa_users qea2
-                LEFT JOIN qa_users users2 ON users2.id = qea2.qaUsersId
-                WHERE qea2.qaEvaluationsId = qea.qaEvaluationsId ) as assessed_r2
+                SELECT     group_concat(DISTINCT users.username separator ', ') as assessed_r1
                 FROM
                 qa_evaluations_assessed_by_qa_users qea
                 LEFT JOIN qa_users users ON users.id = qea.qaUsersId
-                WHERE qea.qaEvaluationsId = :evaluationId       
+                WHERE qea.qaEvaluationsId = :evaluationId;         
                        `,
                 { evaluationId },
                 {}
             );
-            let assessorByEval = await queryRunner.connection.query(query, parameters);
-            res.status(200).json({ data: assessorByEval, message: `Assessors in  evaluation ${evaluationId}` });
+            let assessorByEvalR1 = await queryRunner.connection.query(query, parameters);
+
+            const [query2, parameters2] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                `
+                SELECT group_concat(DISTINCT users2.username separator ', ') as assessed_r2 FROM
+                qa_evaluations_assessed_by_second_round_qa_users qea2
+                LEFT JOIN qa_users users2 ON users2.id = qea2.qaUsersId
+                WHERE qea2.qaEvaluationsId = :evaluationId;         
+                       `,
+                { evaluationId },
+                {}
+            );
+            
+            let assessorByEvalR2 = await queryRunner.connection.query(query2, parameters2);
+            console.log({assessorByEvalR2});
+            const response = {assessed_r1: assessorByEvalR1[0].assessed_r1, assessed_r2: assessorByEvalR2[0].assessed_r2}
+            console.log(response);
+            
+            res.status(200).json({ data: response, message: `Assessors in  evaluation ${evaluationId}` });
 
         } catch (error) {
             console.log(error);

@@ -446,17 +446,24 @@ class Util {
             let meta;
             if (metaId != null)
                 meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by']  });
-            console.log('ASSESSORS',evaluation.assessed_by);
-            evaluation.assessed_by.push(user);
-            console.log('ASSESSORS',evaluation.assessed_by);
-            evaluationsRepository.save(evaluation);
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by', 'assessed_by_second_round']  });
+
             let current_cycle = await cycleRepo
                 .createQueryBuilder("qa_cycle")
                 .select('*')
                 .where("DATE(qa_cycle.start_date) <= CURDATE()")
                 .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
                 .getRawOne();
+            
+            
+                if(current_cycle.id == 1) {
+                    evaluation.assessed_by.push(user);
+                console.log('ASSESSORS',evaluation.assessed_by);
+
+                } else {
+                    evaluation.assessed_by_second_round.push(user);
+                }
+                evaluationsRepository.save(evaluation);
 
             console.log(current_cycle == undefined)
             if (current_cycle == undefined) throw new Error('Could not created comment')
