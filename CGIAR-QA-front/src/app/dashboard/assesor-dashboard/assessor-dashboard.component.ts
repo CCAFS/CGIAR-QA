@@ -52,6 +52,17 @@ export class AssessorDashboardComponent implements OnInit {
     responseToComments: null,
     assessmentByField: null
   }
+  totalPendings = {
+    qa_policies: 0,
+    qa_innovations: 0,
+    qa_publications: 0,
+    qa_oicr: 0,
+    qa_melia: 0,
+    qa_capdev: 0,
+    qa_milestones: 0,
+    qa_slo: 0
+  }
+
 
   indicatorsNameDropdwon = [
     { name: 'SLOs', viewname: 'qa_slo' },
@@ -113,6 +124,8 @@ export class AssessorDashboardComponent implements OnInit {
 
         //commentsStats
         this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+        console.log('COUNT COMMENTS',this.dashboardCommentsData);
+        
 
         //allTags
         this.indicatorsTags = this.commentService.groupTags(allTags.data);;
@@ -282,9 +295,10 @@ export class AssessorDashboardComponent implements OnInit {
   }
 
 
-  formatCommentsIndicatorData(data) {
+  formatCommentsIndicatorData(data, indicator?) {
     const colors = {
       Accepted: 'var(--color-agree)',
+      AcceptedWC: 'var(--color-agree-wc)',
       Clarification: 'var(--color-clarification)',
       Disagree: 'var(--color-disagree)',
       Pending: 'var(--color-pending)'
@@ -293,9 +307,13 @@ export class AssessorDashboardComponent implements OnInit {
     let brushes = { domain: [] };
 
     if (data) {
-      let comments_accepted = data.find(item => item.comments_accepted != '0');
-      comments_accepted = comments_accepted ? { name: 'Accepted', value: +comments_accepted.value } : null;
-      if (comments_accepted) dataset.push(comments_accepted);
+      let comments_accepted_with_comment = data.find(item => item.comments_accepted_with_comment != '0');
+      comments_accepted_with_comment = comments_accepted_with_comment ? { name: 'AcceptedWC', value: +comments_accepted_with_comment.value } : null;
+      if (comments_accepted_with_comment) dataset.push(comments_accepted_with_comment);
+
+      let comments_accepted_without_comment = data.find(item => item.comments_accepted_without_comment != '0');
+      comments_accepted_without_comment = comments_accepted_without_comment ? { name: 'Accepted', value: +comments_accepted_without_comment.value } : null;
+      if (comments_accepted_without_comment) dataset.push(comments_accepted_without_comment);
 
       let comments_rejected = data.find(item => item.comments_rejected != '0');
       comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
@@ -307,13 +325,15 @@ export class AssessorDashboardComponent implements OnInit {
 
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
-      if (comments_without_answer) dataset.push(comments_without_answer);
+      if (comments_without_answer) {
+        dataset.push(comments_without_answer);
+        this.totalPendings[indicator] = +comments_without_answer.value;
+      }
 
       dataset.forEach(comment => {
         brushes.domain.push(colors[comment.name]);
       });
     }
-
 
     return { dataset, brushes };
   }

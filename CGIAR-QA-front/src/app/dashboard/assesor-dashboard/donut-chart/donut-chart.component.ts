@@ -56,8 +56,7 @@ export class DonutChartComponent implements OnInit {
   }
   ngOnInit() {
     this.chartType = this.legendLabels[this.chartName];
-    // console.log('SWIMLANE DATA', this.data);
-    
+    console.log('PIE CHART DATA', this.data);
     // console.log(this.chartName);
     // console.log(this.chartType);
     

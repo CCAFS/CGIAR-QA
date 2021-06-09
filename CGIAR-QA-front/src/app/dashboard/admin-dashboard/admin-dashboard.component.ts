@@ -353,7 +353,7 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     return { dataset, brushes };
-  }
+  } 
 
   formatIndicatorTags() {
 
