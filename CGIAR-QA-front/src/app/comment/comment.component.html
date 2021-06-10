@@ -85,7 +85,7 @@
                         </ng-template>
                         <button type="button" class="btn disagree"
                             (click)="answerComment(false,replyTypes.disagree,comment)">DISAGREE</button>
-                        <button type="button" class="btn request-clarification"
+                        <button *ngIf="currentUser.cycle.cycle_stage == '1'" type="button" class="btn request-clarification"
                             (click)="answerComment(false,replyTypes.clarification,comment)">CLARIFICATION NEEDED</button>
                     </div> 
 
