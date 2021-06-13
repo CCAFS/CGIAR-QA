@@ -81,5 +81,8 @@
         .clarification {
             background-color: var(--color-clarification);
         }
+        .discarded {
+            background-color: var(--color-pending-gray);
+        }
     }
 }

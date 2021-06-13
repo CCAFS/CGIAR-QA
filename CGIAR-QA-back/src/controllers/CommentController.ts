@@ -62,6 +62,9 @@ class CommentController {
                                 IF (comments.replyTypeId = 3, 1, 0)
                             ) AS comments_clarification,
                             SUM(
+                                IF (comments.replyTypeId = 5, 1, 0)
+                            ) AS comments_discarded,
+                            SUM(
                                 IF (
                                     comments.replyTypeId IS NULL,
                                     1,
@@ -108,6 +111,9 @@ class CommentController {
                     SUM(
                         IF (comments.replyTypeId = 3, 1, 0)
                     ) AS comments_clarification,
+                    SUM(
+                        IF (comments.replyTypeId = 5, 1, 0)
+                    ) AS comments_discarded,
                     SUM(
                         IF (
                             comments.replyTypeId IS NULL,
