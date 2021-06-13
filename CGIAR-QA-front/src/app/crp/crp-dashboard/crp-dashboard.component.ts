@@ -172,7 +172,7 @@ export class CrpDashboardComponent implements OnInit {
   getEvaluationsStats() {
     this.showSpinner(this.spinner2);
     // this.commentService.getCommentCRPStats({ crp_id: this.currentUser.crp.crp_id })
-    this.dashService.getAllDashboardEvaluations(this.currentUser.crp.crp_id)
+    this.dashService.getAllDashboardEvaluationsByCRP(this.currentUser.crp.crp_id)
       .subscribe(
         res => {
           this.dashboardData = this.dashService.groupData(res.data);
@@ -360,10 +360,12 @@ export class CrpDashboardComponent implements OnInit {
       AcceptedWC: 'var(--color-agree-wc)',
       Clarification: 'var(--color-clarification)',
       Disagree: 'var(--color-disagree)',
-      Pending: 'var(--color-pending)'
+      Discarded: 'var(--color-pending-gray)',
+      Pending: 'var(--color-pending)',
     }
     let dataset = [];
     let brushes = { domain: [] };
+// console.log('CRP_REPLIES',data);
 
     if (data) {
       let comments_accepted_with_comment = data.find(item => item.comments_accepted_with_comment != '0');
@@ -382,8 +384,13 @@ export class CrpDashboardComponent implements OnInit {
       comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
       if (comments_clarification) dataset.push(comments_clarification);
 
+      let comments_discarded = data.find(item => item.comments_discarded != '0');
+      comments_discarded = comments_discarded ? { name: 'Discarded', value: +comments_discarded.value } : null;
+      if (comments_discarded) dataset.push(comments_discarded);
+
       let comments_without_answer = data.find(item => item.comments_without_answer != '0');
       comments_without_answer = comments_without_answer ? { name: 'Pending', value: +comments_without_answer.value } : null;
+
       if (comments_without_answer) {
         dataset.push(comments_without_answer);
         this.totalPendings[indicator] = +comments_without_answer.value;

@@ -512,6 +512,11 @@ export class AdminDashboardComponent implements OnInit {
         this.dashboardData = this.dashService.groupData(dashData.data);
         console.log('DASH DATA', this.dashboardData);
         this.selectedIndicator = Object.keys(this.dashboardData)[0];
+        console.log('DASH DATA', this.selectedIndicator);
+        this.indicatorsAvailable = this.indicatorsNameDropdwon;
+        this.indicatorsAvailable = this.indicatorsAvailable.filter(ind => ind.viewname in this.dashboardData );
+        console.log('INDICATORS', this.indicatorsAvailable);
+        
         
         this.dataSelected = this.dashboardData[this.selectedIndicator];
         this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);

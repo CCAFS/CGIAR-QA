@@ -27,6 +27,8 @@ const router = Router();
 
 // get evaluations all
 router.get("/", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], EvaluationsController.getAllEvaluationsDash);
+// get evaluations all
+router.get("/status/crp", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.crp])], EvaluationsController.getAllEvaluationsDashByCRP);
 
 // get evaluations by user
 router.get("/:id([0-9]+)", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], EvaluationsController.getEvaluationsDash);

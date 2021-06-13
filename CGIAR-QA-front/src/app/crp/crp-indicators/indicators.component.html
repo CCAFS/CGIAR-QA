@@ -8,7 +8,7 @@
             <h2>{{returnListName(indicatorType, 'header')}} </h2>
             <h4 style="text-align: center;"
                 *ngIf="currentUser.hasOwnProperty('cycle') && !currentUser.hasOwnProperty('cycle_ended')">
-                {{(currentUser.cycle.cycle_stage > 1 ) ? currentUser.cycle.cycle_name+ ':'+ currentUser.cycle.cycle_stage: ''}}
+                {{(currentUser.cycle.cycle_stage > 1 ) ? 'QA Round' + ': '+ currentUser.cycle.cycle_stage: ''}}
             </h4>
             <h4 style="margin: 1em auto; text-align: center;"
                 *ngIf="currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">

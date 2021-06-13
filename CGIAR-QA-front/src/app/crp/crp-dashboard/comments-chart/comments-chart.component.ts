@@ -16,13 +16,23 @@ export class CommentsChartComponent implements OnInit {
 
   myData;
  
-  commentsLabels = [
-    {name:"Pending", class:"pending", value: 0},
-    {name:"Accepted", class: "agree", value: 0},
-    {name:"Accepted with comment", class: "agree-wc", value: 0},
-    {name:"Disagreed", class: "disagree", value: 0},
-    {name:"Clarification needed", class: "clarification", value: 0},
-  ]
+  legendLabels = {
+    commentsLabels : [
+      {name:"Pending", class:"pending", value: 0},
+      {name:"Accepted", class: "agree", value: 0},
+      {name:"Accepted with comment", class: "agree-wc", value: 0},
+      {name:"Disagreed", class: "disagree", value: 0},
+      {name:"Clarification needed", class: "clarification", value: 0},
+    ],
+    commentsLabelsPublications : [
+      {name:"Pending", class:"pending", value: 0},
+      {name:"Accepted", class: "agree", value: 0},
+      {name:"Accepted with comment", class: "agree-wc", value: 0},
+      {name:"Disagreed", class: "disagree", value: 0},
+      {name:"Clarification needed", class: "clarification", value: 0},
+      {name:"Discarded by QA", class: "discarded", value: 0},
+    ],
+  }
 
   public chartType: any;
   public doughnutChartData: any[] = [[350, 450, 100]];
@@ -43,10 +53,15 @@ export class CommentsChartComponent implements OnInit {
 
   }
   ngOnInit() {
-    this.chartType = this.commentsLabels[this.chartName];
+    if(this.chartName == 'qa_publications'){
+      this.chartType = 'commentsLabelsPublications';
+    } else {
+      this.chartType = 'commentsLabels';
+    }
     // console.log('SWIMLANE DATA', this.data);
     
-    // console.log(this.chartName);
+    console.log(this.chartName);
+    console.log(this.data);
     // console.log(this.chartType);
     
   }
