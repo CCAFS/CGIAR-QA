@@ -194,7 +194,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
       this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], isAll: false, userId: this.currentUser.id, noComment }, field.evaluation_id).subscribe(
         res => {
-          // console.log(res);
+          console.log(res);
           field.loading = false
           // this.validateUpdateEvaluation();
           this.validateAllFieldsAssessed()

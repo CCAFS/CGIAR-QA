@@ -530,7 +530,7 @@ class Util {
             let tagId = await queryRunner.connection.query(query, parameters);
             console.log('TagID' ,tagId);
             
-            return tagId[0].tagId;
+            return tagId[0].tagId || [];
         } catch(error) {
             console.log(error);
             return null;

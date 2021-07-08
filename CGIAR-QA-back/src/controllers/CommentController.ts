@@ -1101,57 +1101,18 @@ class CommentController {
         const { userId, tagTypeId, commentId } = req.body;
 
         const tagsRepository = getRepository(QATags);
-        let tag: QATags;
-        const idAgree = await Util.getTagId(commentId, 3, userId);
-        const idNotSure = await Util.getTagId(commentId, 2, userId);
-        const idDisagree = await Util.getTagId(commentId, 4, userId);
 
-        switch (tagTypeId) {
-            case 2: //Agree
-                try {
-                    tag = await tagsRepository.findOneOrFail(idDisagree);
-                    tagsRepository.delete(idDisagree);
-                    console.log('Tag disagree deleted');
-
-                    tag = await tagsRepository.findOneOrFail(idAgree);
-                    tagsRepository.delete(idAgree);
-                    console.log('Tag not-sure deleted');
-                } catch (error) {
-                    console.log(error);
-                }
-
-                break;
-            case 3: //Agree
-                try {
-                    tag = await tagsRepository.findOneOrFail(idDisagree);
-                    tagsRepository.delete(idDisagree);
-                    console.log('Tag disagree deleted');
-
-                    tag = await tagsRepository.findOneOrFail(idNotSure);
-                    tagsRepository.delete(idNotSure);
-                    console.log('Tag not-sure deleted');
-                } catch (error) {
-                    console.log(error);
-                }
-
-                break;
-            case 4: //
-                try {
-                    tag = await tagsRepository.findOneOrFail(idAgree);
-                    tagsRepository.delete(idAgree);
-                    console.log('Tag disagree deleted');
-
-                    tag = await tagsRepository.findOneOrFail(idNotSure);
-                    tagsRepository.delete(idNotSure);
-                    console.log('Tag not-sure deleted');
-                } catch (error) {
-                    console.log(error);
-                }
-                break;
-
-            default:
-                break;
-        }
+        let tag = await tagsRepository.findOne({
+            where: [
+              { commentId: commentId, userId: userId },
+            ]
+          });
+          console.log(tag);
+          if(tag) {
+              tagsRepository.remove(tag);
+              console.log(`Tag deleted`);
+          } else console.log(`The user hasn't previous tag for this comment`);
+        
 
         try {
             let new_tag = await Util.createTag(userId, tagTypeId, commentId);

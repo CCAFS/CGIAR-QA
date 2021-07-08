@@ -109,7 +109,7 @@
 
                     <!-- comments -->
                     <div #commElement style="cursor: pointer;"
-                        *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null "
+                        *ngIf="validateCommentAvility(field,true) && field.approved_no_comment == null && field.replies_count != '0'"
                         (click)="showComments(i, field,commElement, $event); comment.updateData(field,params)"
                         class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
                         <i *ngIf="!field.loading" class="icon-message"></i>
