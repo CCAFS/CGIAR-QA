@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, TemplateRef, Input, ViewChild, ElementRef, Renderer, Renderer2, Inject  } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, TemplateRef, Input, ViewChild, ElementRef, Renderer2, Inject  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { DetailedStatus, ReplyTypes } from "../_models/general-status.model"
