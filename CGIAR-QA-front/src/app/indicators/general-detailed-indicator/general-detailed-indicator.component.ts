@@ -61,8 +61,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   assessed_by_r1 = null;
   assessed_by_r2 = null;
   currentUserHasAssessed = false;
-  @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
-  @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
+  @ViewChild("commentsElem") commentsElem: ElementRef;
+  @ViewChild("containerElement") containerElement: ElementRef;
   @ViewChildren('commElement') commElements: QueryList<ElementRef>;
 
   totalChar = 6500;

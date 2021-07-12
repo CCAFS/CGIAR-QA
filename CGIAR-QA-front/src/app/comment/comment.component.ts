@@ -52,7 +52,7 @@ export class CommentComponent implements OnInit {
   @Output("validateAllFieldsAssessed") validateAllFieldsAssessed: EventEmitter<any> = new EventEmitter();
   @Output("updateNumCommnts") updateNumCommnts: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild("commentContainer", { static: false }) private commentContainer: ElementRef;
+  @ViewChild("commentContainer") private commentContainer: ElementRef;
   allRoles = Role;
 
   constructor(

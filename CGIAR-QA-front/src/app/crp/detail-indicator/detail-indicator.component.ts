@@ -53,8 +53,8 @@ export class DetailIndicatorComponent implements OnInit {
 
   approveAllitems;
 
-  @ViewChild("commentsElem", { static: false }) private commentsElem: ElementRef;
-  @ViewChild("containerElement", { static: false }) private containerElement: ElementRef;
+  @ViewChild("commentsElem") private commentsElem: ElementRef;
+  @ViewChild("containerElement") private containerElement: ElementRef;
   @ViewChildren('commElement') commElements: QueryList<ElementRef>;
 
 

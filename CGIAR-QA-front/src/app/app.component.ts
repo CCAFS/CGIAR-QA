@@ -15,7 +15,7 @@ export class AppComponent {
   env = environment;
   isModalShown = false;
 
-  @ViewChild('autoShownModal', { static: false }) autoShownModal: ModalDirective;
+  @ViewChild('autoShownModal') autoShownModal: ModalDirective;
 
   constructor(public router: Router) {
     const isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
