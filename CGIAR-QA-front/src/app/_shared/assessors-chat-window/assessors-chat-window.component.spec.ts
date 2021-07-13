@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AssessorsChatWindowComponent } from './assessors-chat-window.component';
 
@@ -6,7 +6,7 @@ describe('AssessorsChatWindowComponent', () => {
   let component: AssessorsChatWindowComponent;
   let fixture: ComponentFixture<AssessorsChatWindowComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AssessorsChatWindowComponent ]
     })
