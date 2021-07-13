@@ -595,7 +595,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.commentService.getDataCommentReply(params).subscribe(
       res => {
         this.hideSpinner('spinner1');
-        console.log(res)
+        console.log(res, 'REPLIES')
         // comment.loaded_replies = res.data;
         this.general_comment_reply = res.data;
       },

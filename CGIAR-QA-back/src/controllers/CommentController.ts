@@ -524,26 +524,33 @@ class CommentController {
 
     // get comments replies
     static getCommentsReplies = async (req: Request, res: Response) => {
+        console.log('COMMENT_ID: ',req.params);
         const commentId = req.params.commentId;
-
+        
         // let queryRunner = getConnection().createQueryBuilder();
-        try {
-            let replies = await getRepository(QACommentsReplies).find(
-                {
-                    where: [{
-                        comment: commentId,
-                        is_deleted: Not(1)
-                    }],
-                    relations: ['user'],
-                    order: {
-                        createdAt: "ASC"
+        if(commentId != undefined && commentId != null) {
+            try {
+                let replies = await getRepository(QACommentsReplies).find(
+                    {
+                        where: [{
+                            comment: commentId,
+                            is_deleted: Not(1)
+                        }],
+                        relations: ['user'],
+                        order: {
+                            createdAt: "ASC"
+                        }
                     }
-                }
-            )
-            res.status(200).send({ data: replies, message: 'All comments replies' });
-        } catch (error) {
-            console.log(error);
-            res.status(404).json({ message: "Comment can not be retrived.", data: error });
+                )
+                res.status(200).send({ data: replies, message: 'All comments replies' });
+            } catch (error) {
+                console.log(error);
+                res.status(404).json({ message: "Comment can not be retrived.", data: error });
+            }
+        } else {
+            console.log('CRASHED');
+
+            res.status(404).json({ message: "Comment can not be retrieved. Comment ID not provided", data: null });
         }
     }
 
