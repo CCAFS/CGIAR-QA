@@ -383,12 +383,7 @@ indicatorTypePage = null;
    * 
    ***/
   showSpinner() {
-    this.spinner.show(undefined,
-      {
-        fullScreen: true,
-        type: "ball-clip-rotate-multiple"
-      }
-    );
+    this.spinner.show();
   }
   hideSpinner() {
     this.spinner.hide();

@@ -37,7 +37,6 @@ import { BarChartComponent } from './assesor-dashboard/bar-chart/bar-chart.compo
 import { DoughnutChartComponent } from './assesor-dashboard/doughnut-chart/doughnut-chart.component';
 import { DonutChartComponent } from './assesor-dashboard/donut-chart/donut-chart.component';
 import { LineChartComponent } from './assesor-dashboard/line-chart/line-chart.component';
-import { GoogleChartsModule } from 'angular-google-charts';
 
 @NgModule({
     imports: [
@@ -54,7 +53,6 @@ import { GoogleChartsModule } from 'angular-google-charts';
         SharedModule,
         NgxChartsModule,
         ChartsModule,
-        GoogleChartsModule,
         IgxDoughnutChartModule,
         IgxPieChartModule,
         IgxRingSeriesModule,
