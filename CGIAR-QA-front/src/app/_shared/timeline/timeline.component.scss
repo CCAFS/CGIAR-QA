@@ -1,0 +1,87 @@
+@import "../../../assets/variables.scss";
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+
+
+.timeline-container{
+    padding: 4em 1em;
+    width: 100%;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: whitesmoke;
+    h1, h3 {
+        font-family: 'Poppins';
+    }
+    h1{
+        letter-spacing: 10px;
+    }
+    header{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .line{
+        width: 80%;
+        height: 8px;
+        border-radius: 5px;
+        background-color: var(--yellow-primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .event{
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background-color: white;
+            border: 4px solid var(--color-not-sure);
+            cursor: pointer;
+            position: relative;
+
+            &:hover{
+                transform: scale(1.3);
+                transition: all ease 0.2s;
+            }
+            .info-event{
+                position: absolute;
+                width: max-content;
+                height: 80px;
+                top: -6em;
+                left: -100px;
+                border-radius: 5px;
+                // border: 1px solid var(--gray-secondary);
+                padding: 1em;
+                h2{
+                    font-size: $font-md;
+                    font-weight: $semibold;
+                    color: var(--color-not-sure);
+                    font-family: 'Poppins';
+                }
+                p{
+                    font-family: 'Montserrat';
+                    font-size: $font-xs;
+                }
+            }
+        }
+    }
+}
+footer{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    .next-batch{
+        width: auto;
+        display: flex;
+        p{
+            font-family: 'Poppins';
+            font-size: $font-sm;
+        }
+    }
+}

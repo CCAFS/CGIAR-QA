@@ -424,4 +424,9 @@ export class CommentComponent implements OnInit {
     return response;
   }
 
+  setCommentValue(event, value: string){
+    event.preventDefault();
+    this.commentGroup.controls.comment.setValue(value); 
+  }
+
 }

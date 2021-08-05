@@ -52,7 +52,8 @@ import { AssessorsChatWindowComponent } from './_shared/assessors-chat-window/as
     TawkToComponent,
     SafeUrlPipe,
     AssessorsChatComponent,
-    AssessorsChatWindowComponent
+    AssessorsChatWindowComponent,
+    
     // CustomFilterPipe,
   ],
   imports: [
