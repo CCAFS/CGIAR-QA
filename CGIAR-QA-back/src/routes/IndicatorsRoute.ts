@@ -50,5 +50,10 @@ router.get("/items/:indicator", [checkJwt, checkRole([RolesHandler.admin, RolesH
 // get ALL item status by indicator
 router.get("/items", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], IndicatorsController.getAllItemStatusByIndicator);
 
+// get ALL item status by indicator and CRP for MIS
 router.get("/:id([0-9]+)/crp/:crp_id/items", IndicatorsController.getItemListStatusMIS);
+
+// get item status by indicator and CRP for MIS
+router.get("/:id([0-9]+)/crp/:crp_id/item/:item_id", IndicatorsController.getItemStatusMIS);
+
 export default router;
