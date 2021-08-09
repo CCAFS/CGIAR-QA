@@ -9,7 +9,9 @@
     "build": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "docker:build": "docker build -t qacgiarfront .",
+    "docker:run": "docker run --name qacgiarclient -d -p 3300:80 qacgiarfront"
   },
   "private": true,
   "dependencies": {

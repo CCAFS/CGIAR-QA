@@ -39,7 +39,9 @@
       "start-dev": "set debug=* && npx tsnd --respawn --transpileOnly ./src/index.ts --host=172.22.33.55 --disable-host-check",
       "prod": "tsc && node ./build/index.js",
       "migration": "ts-node ./node_modules/typeorm/cli.js migration:run",
-      "synch": "ts-node ./node_modules/typeorm/cli.js schema:sync"
+      "synch": "ts-node ./node_modules/typeorm/cli.js schema:sync",
+      "docker:build": "docker build -t qacgiarback .",
+      "docker:run": "docker run -dti --name qacgiarapi -p 3000:3300 qacgiarback"
    },
    "_moduleAliases": {
       "@root": ".",
