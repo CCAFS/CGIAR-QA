@@ -6,3 +6,10 @@ export enum StatusHandler {
     // Open = 'open',
     // Reopen = 'reopen',
 }
+
+export enum StatusHandlerMIS {
+    complete = 'complete',
+    pending = 'pending',
+    finalized = 'quality_assessed',
+    autochecked = 'automatically_validated'
+}

@@ -9,7 +9,7 @@ import { QAEvaluations } from "@entity/Evaluations";
 import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 import { QACommentsMeta } from "@entity/CommentsMeta";
 
-import { StatusHandler } from "@helpers/StatusHandler"
+import { StatusHandlerMIS } from "@helpers/StatusHandler"
 import { RolesHandler } from "@helpers/RolesHandler"
 import Util from "@helpers/Util";
 import { GeneralIndicatorName } from "@helpers/GeneralIndicatorName";
@@ -633,7 +633,7 @@ class IndicatorsController {
                 indicator_name: e.indicator_view_name.split('qa_')[1],
                 id: e.indicator_view_id,
                 crp_id: e.crp_id,
-                assessment_status: e.status,
+                assessment_status: StatusHandlerMIS[e.status],
                 updatedAt: e.updatedAt
             })
             );
@@ -670,11 +670,11 @@ class IndicatorsController {
                 indicator_name: item.indicator_view_name.split('qa_')[1],
                 id: item.indicator_view_id,
                 crp_id: item.crp_id,
-                assessment_status: item.status,
+                assessment_status: StatusHandlerMIS[item.status],
                 updatedAt: item.updatedAt
             }
 
-            res.status(200).send({ data: data, message: `List of ${indicator_view_name[0].view_name.split('qa_')[1]} indicator items` })
+            res.status(200).send({ data: data, message: `Item ${data.id} of  ${indicator_view_name[0].view_name.split('qa_')[1]} indicator.` })
         } catch (error) {
             res.status(404).json({ message: "Items for MIS cannot be retrieved", data: error })
         }
