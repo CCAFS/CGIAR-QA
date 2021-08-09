@@ -610,6 +610,8 @@ class IndicatorsController {
 
     static getItemListStatusMIS = async (req: Request, res: Response) => {
         const { crp_id, id } = req.params;
+
+        // Annual Report year
         const { AR } = req.query;
 
         const indicatorRepository = getRepository(QAIndicators);
@@ -628,7 +630,7 @@ class IndicatorsController {
                 });
 
             const data = evaluations.map(e => ({
-                indicator_name: e.indicator_view_name,
+                indicator_name: e.indicator_view_name.split('qa_')[1],
                 id: e.indicator_view_id,
                 crp_id: e.crp_id,
                 assessment_status: e.status,
@@ -645,29 +647,32 @@ class IndicatorsController {
     static getItemStatusMIS = async (req: Request, res: Response) => {
         const { crp_id, id, item_id } = req.params;
 
+        // Annual Report year
+        const { AR } = req.query;
+
         const indicatorRepository = getRepository(QAIndicators);
         const evaluationsRepository = getRepository(QAEvaluations);
         try {
             const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
-            const evaluations = await evaluationsRepository.find(
+            const item = await evaluationsRepository.findOne(
                 {
                     where: {
                         indicator_view_name: indicator_view_name[0].view_name,
                         indicator_view_id: item_id,
                         crp_id,
-                        evaluation_status: Not('Removed')
+                        evaluation_status: Not('Removed'),
+                        phase_year: AR
                     },
                     select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt']
                 });
 
-            const data = evaluations.map(e => ({
-                indicator_name: e.indicator_view_name,
-                id: e.indicator_view_id,
-                crp_id: e.crp_id,
-                assessment_status: e.status,
-                updatedAt: e.updatedAt
-            })
-            );
+            const data = {
+                indicator_name: item.indicator_view_name.split('qa_')[1],
+                id: item.indicator_view_id,
+                crp_id: item.crp_id,
+                assessment_status: item.status,
+                updatedAt: item.updatedAt
+            }
 
             res.status(200).send({ data: data, message: `List of ${indicator_view_name[0].view_name.split('qa_')[1]} indicator items` })
         } catch (error) {
