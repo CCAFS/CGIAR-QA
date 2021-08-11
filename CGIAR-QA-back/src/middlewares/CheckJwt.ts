@@ -3,6 +3,7 @@ import * as jwt from "jsonwebtoken";
 import config from "@config/config";
 import AuthController from "@controllers/AuthController";
 import Util from "@helpers/Util";
+import { BaseError } from "@helpers/BaseError";
 const { ErrorHandler } = require("@helpers/ErrorHandler")
 
 export const checkJwt = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +26,7 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction) 
             // basic auth token creation
             const email = cre.split(':')[0];
             const password = cre.split(':')[1];
-            console.log({password});
+        
             
             const { token } = await Util.login(email, password);
             // get token
@@ -36,11 +37,10 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction) 
         jwtPayload = <any>jwt.verify(token_, config.jwtSecret);
         res.locals.jwtPayload = jwtPayload;
     } catch (error) {
-        console.log("checkJwt erorr")
-        console.log({error})
+        console.log("checkJwt erorr", error)
         //If token is not valid, respond with 401 (unauthorized)
-
-        return res.status(401).json(error);
+        // error = new BaseError(error.name, 401, error.description, false);
+        return res.status(error.httpCode).json(error.description);
     }
 
     //The token is valid for ``config.jwtTime``

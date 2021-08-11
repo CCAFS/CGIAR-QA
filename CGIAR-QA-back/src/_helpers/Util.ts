@@ -23,6 +23,8 @@ import { QACycle } from "@entity/Cycles";
 import { QATags } from "@entity/Tags";
 import { QATagType } from "@entity/TagType";
 import AuthController from "@controllers/AuthController";
+import { BaseError } from "./BaseError";
+import { HttpStatusCode } from "./Constants";
 // const excel = require('exceljs');
 
 
@@ -36,7 +38,6 @@ class Util {
     
     static login = async (username:string, password:string) => {
         let user;
-        try {
             //Get user from database
             const userRepository = getRepository(QAUsers);
             const grnlConfg = getRepository(QAGeneralConfiguration);
@@ -59,7 +60,12 @@ class Util {
 
             } else if (!(username && password)) {
                 // res.status(404).json({ message: 'Missing required email and password fields.' })
-                throw new ErrorHandler(404, 'Missing required email and password fields.')
+                throw new BaseError(
+                    'NOT FOUND',
+                    HttpStatusCode.NOT_FOUND,
+                    'Missing required email and password fields.',
+                    true
+                );
             } else {
                 user = await userRepository.findOneOrFail({
                     where: [
@@ -69,7 +75,12 @@ class Util {
                 });
             }
             if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp) && user.roles.map(role => { return role.description }).find(r => r === RolesHandler.assesor)) {
-                throw new ErrorHandler(401, 'Unauthorized')
+                throw new BaseError(
+                    'UNAUTHORIZED',
+                    HttpStatusCode.UNAUTHORIZED,
+                    'User unauthorized',
+                    true
+                );
             }
             // get general config by user role
             let generalConfig = await grnlConfg
@@ -90,8 +101,13 @@ class Util {
                 
             //Check if encrypted password match
             if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
-                console.log(`Password does not match: User_password: ${user.password} param:${password}`);
-                throw new ErrorHandler(401, 'Password does not match')
+                console.log(`Password does not match.`);
+                throw new BaseError(
+                    'NOT FOUND',
+                    HttpStatusCode.NOT_FOUND,
+                    'User password incorrect.',
+                    true
+                );
                 
             }
 
@@ -110,11 +126,6 @@ class Util {
             delete user.replies;
             //Send the jwt in the response
             return user;
-        } catch (error) {
-            console.log(error)
-            throw new Error(error);
-
-        }
     }
 
     static getType(status, isCrp?) {
