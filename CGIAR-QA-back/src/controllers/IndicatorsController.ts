@@ -644,6 +644,22 @@ class IndicatorsController {
         }
 
     }
+
+/**
+ * @api {get} /indicator/:indicator_id/crp/:smo_code/items?AR=:year Request User information
+ * @apiName getItemStatusMIS
+ * @apiGroup Indicators
+ *
+ * @apiParam {Number} indicator_id
+ * @apiParam {String} smo_code
+ * @apiParam {String} year
+ * 
+ * @apiSuccess {String} indicator_name Name of the indicator.
+ * @apiSuccess {String} id  Item ID.
+ * @apiSuccess {String} crp_id CRP ID.
+ * @apiSuccess {String} assessment_status Item Status in QA Platform
+ * @apiSuccess {Datetime} updatedAt last date of item update.
+ */
     static getItemStatusMIS = async (req: Request, res: Response) => {
         const { crp_id, id, item_id } = req.params;
 

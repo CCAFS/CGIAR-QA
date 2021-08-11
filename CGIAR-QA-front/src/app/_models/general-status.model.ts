@@ -21,6 +21,16 @@ export enum GeneralIndicatorName {
     // qa_outcomes= 'Outcomes',
 }
 
+export enum IndicatorsID {
+    innovations = 1,
+    policies = 2,
+    publications= 3,
+    oicr= 4,
+    melia= 5,
+    capdev= 6,
+    milestones= 7,
+    slo= 8,
+}
 
 export enum TagMessage {
     agree = 'agrees with a comment in',
