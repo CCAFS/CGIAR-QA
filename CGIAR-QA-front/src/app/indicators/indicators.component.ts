@@ -11,7 +11,7 @@ import { CommentService } from "../services/comment.service";
 import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName } from '../_models/general-status.model';
+import { DetailedStatus, GeneralIndicatorName, StatusIcon } from '../_models/general-status.model';
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
 import { SortByPipe } from '../pipes/sort-by.pipe';
@@ -22,7 +22,6 @@ import { IndicatorsService } from '../services/indicators.service';
 
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { EvaluationsService } from '../services/evaluations.service';
-
 @Component({
   selector: 'app-indicators',
   templateUrl: './indicators.component.html',
@@ -82,8 +81,10 @@ indicatorTypePage = null;
   }
 
   detailedStatus = DetailedStatus;
+  statusIcon = StatusIcon;
   criteriaData;
   criteria_loading = false;
+
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,

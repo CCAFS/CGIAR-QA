@@ -270,7 +270,7 @@
                 <p class="wos-label" *ngIf="item.status == 'autochecked'">Validated by WoS/Scopus</p>
             </td>
             <td>
-                <div class="circle {{ item.status }}"></div>
+                <i class="icon-{{ statusIcon[item.status] }}"></i>
             </td>
         </tr>
     </tbody>

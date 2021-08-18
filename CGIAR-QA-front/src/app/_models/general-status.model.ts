@@ -46,3 +46,10 @@ export enum ReplyTypes {
     accepted_with_comment = 4,
     discarded = 5
 }
+
+export enum StatusIcon {
+    pending = 'pending',
+    complete = 'in-progress',
+    finalized = 'quality-assessed',
+    autochecked = 'autochecked'
+}

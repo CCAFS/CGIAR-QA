@@ -205,6 +205,7 @@ h2 {
     vertical-align: middle;
     padding: 0.75em;
   }
+
   .circle {
     margin: auto !important;
   }
@@ -226,7 +227,9 @@ h2 {
 .circle.autochecked {
   background-color: var(--color-autochecked);
 }
-
+i{
+  width: 32px;
+}
 .pagination-container {
   pagination {
     .pagination {
