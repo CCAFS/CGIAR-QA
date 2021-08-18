@@ -3,6 +3,19 @@
 /***
 *** ICONS
 ***/
+
+//ICONS STATUS
+
+.icon-quality-assessed {
+  content: url("~/assets/icons/quality-assessed-icon.svg");
+}
+.icon-in-progress {
+  content: url("~/assets/icons/in-progress-icon.svg");
+}
+.icon-pending {
+  content: url("~/assets/icons/pending-icon.svg");
+}
+
 .icon-edit {
   content: url("~/assets/icons/edit_icon.svg");
 }

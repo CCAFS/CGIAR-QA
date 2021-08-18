@@ -30,12 +30,17 @@
     <div class="text-right">
         <div *ngIf="indicatorType == 'publications'" class="circle autochecked" style="margin-left: 50px;"></div>
         <p *ngIf="indicatorType == 'publications'">Automatically validated</p>
-        <div class="circle pending" style="margin-left: 50px;"></div>
+        <i class="icon-pending"></i>
+        <!-- <div class="circle pending" style="margin-left: 50px;"></div> -->
         <p>Pending</p>
-        <div class="circle complete" style="margin-left: 50px;"></div>
-        <p>Assessed 1st round</p>
-        <div class="circle finalized" style="margin-left: 50px;"></div>
-        <p>Assessed 2nd round</p>
+
+        <i class="icon-in-progress"></i>
+        <!-- <div class="circle complete" style="margin-left: 50px;"></div> -->
+        <p>In progress</p>
+
+        <i class="icon-quality-assessed"></i>
+        <!-- <div class="circle finalized" style="margin-left: 50px;"></div> -->
+        <p>Quality Assessed</p>
     </div>
 </div>
 <div class="form-group">
