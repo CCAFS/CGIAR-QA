@@ -10,7 +10,7 @@ import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName, GeneralStatus } from "../../_models/general-status.model"
+import { DetailedStatus, GeneralIndicatorName, GeneralStatus, StatusNames } from "../../_models/general-status.model"
 import { Role } from "../../_models/roles.model"
 import { CommentService } from 'src/app/services/comment.service';
 
@@ -49,6 +49,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     crp_id: ''
   };
   statusHandler = DetailedStatus;
+  statusNames = StatusNames;
   generalCommentGroup: FormGroup;
   currentType = '';
 
@@ -216,7 +217,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.formTickData.controls.map((value, i) => (this.detailedData[i].replies_count == '0') ? value.get('isChecked').setValue(true) : value.get('isChecked'));
       selected_meta = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
       noComment = true;
-      this.gnralInfo.status_update = this.statusHandler.Complete;
+      this.gnralInfo.status_update = this.statusHandler.Finalized;
     } else {
       this.formTickData.controls.map(value => value.get('isChecked').setValue(false));
       selected_meta = this.detailedData.filter((data, i) => (!this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
@@ -256,7 +257,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     
     if(fieldWithoutAssessed == undefined) {
       allFieldsAssessed = true;
-      this.gnralInfo.status_update = this.statusHandler.Complete;
+      this.gnralInfo.status_update = this.statusHandler.Finalized;
       this.updateEvaluation('status', this.detailedData)
     } else {
       allFieldsAssessed = false;

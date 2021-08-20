@@ -207,7 +207,11 @@
       justify-content: space-between;
       align-items: center;
       .left-side {
-
+        .btn-progress{
+          background-color: var(--color-clarification);
+          font-weight: $semibold;
+          color: white;
+        }
       }
 
       .right-side {

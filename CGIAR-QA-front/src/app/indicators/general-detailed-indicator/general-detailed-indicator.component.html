@@ -32,8 +32,8 @@
     <p *ngIf="currentUser.hasOwnProperty('cycle')">Status:
         <strong>
             <span
-                [ngClass]=" {'text-assessed-r1': gnralInfo.status === statusHandler.Complete, 'text-danger':gnralInfo.status === statusHandler.Pending, 'text-assessed-r2': gnralInfo.status === statusHandler.Finalized, 'text-autochecked': gnralInfo.status === statusHandler.Autochecked} ">
-                {{parseGeneralStatus(gnralInfo.status)}}
+                [ngClass]=" {'text-in-progress': gnralInfo.status === statusHandler.Complete, 'text-pending':gnralInfo.status === statusHandler.Pending, 'text-quality-assessed': gnralInfo.status === statusHandler.Finalized, 'text-autochecked': gnralInfo.status === statusHandler.Autochecked} ">
+                {{statusNames[gnralInfo.status]}}
             </span>
         </strong>
     </p>
@@ -82,9 +82,10 @@
                     <div class="assessment-info select-all"
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
+                            <button type="button" *ngIf="gnralInfo.status != 'complete'" (click)="updateEvaluation('complete_eval',detailedData)"
+                                class="btn btn-progress">Set assessment in progress</button>
                             <button type="button" (click)="onChangeSelectAll(approveAllitems)"
-                                class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate/Invalidate
-                                assessment</button>
+                                class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate / Invalidate assessment</button>
                             <button *ngIf="!approveAllitems && !currentUserHasAssessed" type="button"
                                 (click)="onChangeSelectAll(true)" class="btn btn-agree">Agree with previous
                                 assessment</button>

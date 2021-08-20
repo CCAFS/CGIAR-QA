@@ -594,6 +594,15 @@ left: 40vw;
 .text-assessed-r2 {
   color: var(--color-finalized);
 }
+.text-in-progress {
+  color: var(--color-in-progress);
+}
+.text-quality-assessed {
+  color: var(--color-agree);
+}
+.text-pending {
+  color: var(--yellow-secondary);
+}
 
 .data-value{
   max-width: calc(100% - 7em);
