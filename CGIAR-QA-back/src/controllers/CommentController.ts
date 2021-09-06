@@ -834,8 +834,9 @@ class CommentController {
 
     }
 
+    
     static toggleApprovedNoComments = async (req: Request, res: Response) => {
-        //TODO
+        //TODO - Improve performance
         const { evaluationId } = req.params;
         const { meta_array, userId, isAll, noComment } = req.body;
         let comments;
@@ -862,8 +863,13 @@ class CommentController {
             );
             comments = await queryRunner.connection.query(query, parameters);
             // console.log(comments.length, meta_array)
+            console.log(comments)
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
+            console.log(user);
+            
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by', 'assessed_by_second_round']  });
+            console.log(evaluation);
+            
             let current_cycle = await cycleRepo
             .createQueryBuilder("qa_cycle")
             .select('*')
@@ -881,6 +887,7 @@ class CommentController {
             // evaluation.assessed_by.push(user);
             console.log('ASSESSORS',evaluation.assessed_by);
             evaluationsRepository.save(evaluation);
+            console.log('evaluations saved');
             
             let response = [];
 
@@ -912,7 +919,7 @@ class CommentController {
                 response.push(comment_)
             }
             let result = await commentsRepository.save(response);
-            console.log(result);
+            console.log({result});
 
 
             res.status(200).send({ data: result, message: 'Comment toggle' });
