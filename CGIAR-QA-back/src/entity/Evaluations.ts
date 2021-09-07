@@ -62,4 +62,10 @@ export class QAEvaluations {
     @ManyToMany(() => QAUsers)
     @JoinTable()
     assessed_by_second_round: QAUsers[];
+
+    @Column({
+		type: 'datetime',
+		default: () => 'NOW()'
+	})
+    batchDate: Date;
 }
