@@ -403,6 +403,7 @@ class EvaluationsController {
                     evaluations.indicator_view_id,
                     evaluations.evaluation_status,
                     evaluations.crp_id,
+                    evaluations.batchDate as submission_date,
                     crp.acronym AS crp_acronym,
                     crp.name AS crp_name,
                     (
@@ -487,6 +488,7 @@ class EvaluationsController {
                         evaluations.evaluation_status,
                         evaluations.status as assessment_status,
                         evaluations.crp_id,
+                        evaluations.batchDate as submission_date,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
                         (
@@ -589,6 +591,7 @@ class EvaluationsController {
                         evaluations.indicator_view_id,
                         evaluations.evaluation_status,
                         evaluations.crp_id,
+                        evaluations.batchDate as submission_date,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
                         (
