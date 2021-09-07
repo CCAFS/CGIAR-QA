@@ -182,6 +182,11 @@
                     Export comments
                 </div>
             </th>
+            <th scope="col">
+                <div class="header-row">
+                    Submission date
+                </div>
+            </th>
             <th *ngIf="currentUser.cycle.cycle_stage != 2" scope="col" [class.active]="order === 'comment_by'" (click)="setOrder('comment_by')">
                 <div class="header-row">
                     Assessed By
@@ -249,13 +254,16 @@
                 {{ (item.comments_disagreed_count) ? item.comments_disagreed_count: 0}}</td>
             <td *ngIf="item.hasOwnProperty('comments_clarification_count') && currentUser.cycle.cycle_stage == 2">
                 {{ (item.comments_clarification_count) ? item.comments_clarification_count: 0}}</td>
-            <td *ngIf="item" (click)="exportComments(item)">
-                <a target="_blank">
-                    <div tooltip="Comment in excel format" container="body" placement="top"
+                <td *ngIf="item" (click)="exportComments(item)">
+                    <a target="_blank">
+                        <div tooltip="Comment in excel format" container="body" placement="top"
                         class="btn btn-primary file-button">
                         <i class="icon-download-excel"></i>
                     </div>
                 </a>
+            </td>
+            <td>
+                {{item.submission_date}}
             </td>
             <td *ngIf="currentUser.cycle.cycle_stage != 2">
                 <ul *ngFor="let subCategory of item.comment_by?.split(',')"
