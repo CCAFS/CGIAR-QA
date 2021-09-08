@@ -1,5 +1,10 @@
 @import "../../assets/variables.scss";
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
 h2 {
   text-align: center;
   margin: 1em;
@@ -13,6 +18,49 @@ h2 {
   padding-top: 0;
   margin-bottom: 2em;
   text-transform: capitalize;
+}
+
+.filters-container{
+  display: flex;
+  gap: 2em;
+  padding: 2em 1em;
+  background-color: var(--input-gray);
+  border-radius: 6px;
+  margin-bottom: 1em;
+  // font-size: $font-sm;
+  .date-filter{
+    position: relative;
+    span{
+      position: absolute;
+      top: -1.5em;
+      left: 1em;
+      font-size: $font-xs;
+      font-weight: $semibold;
+    }
+    input{
+      height: 1em;
+      width: 1em;
+      cursor: pointer;
+    }
+    padding: 0 1em;
+    display: flex;
+    gap: 2em;
+    justify-content: space-between;
+    align-items: center;
+    // width: 30%;
+    width: auto;
+
+    height: auto;
+    // border: 1px solid blue;
+  }
+  .removed-filter{
+    .removed-inactive{
+      background-color: #fff;
+    }
+  }
+  .form-group{
+    flex: auto;
+  }
 }
 
 .evaluation-status {

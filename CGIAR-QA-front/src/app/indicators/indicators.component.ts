@@ -85,7 +85,11 @@ indicatorTypePage = null;
   criteriaData;
   criteria_loading = false;
 
-
+  submission_dates = [
+    {date: "May 7, 2021", id: 1},
+    {date: "Sep 7, 2021", id: 2},
+    {date: "Nov 7, 2021", id: 3},
+  ]
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
