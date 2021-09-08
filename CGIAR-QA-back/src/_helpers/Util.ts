@@ -25,6 +25,7 @@ import { QATagType } from "@entity/TagType";
 import AuthController from "@controllers/AuthController";
 import { BaseError } from "./BaseError";
 import { HttpStatusCode } from "./Constants";
+import moment from "moment";
 // const excel = require('exceljs');
 
 
@@ -670,7 +671,7 @@ class Util {
                 title: element['title'],
                 comment_by: element['comment_by'],
                 assessed_r2: element['assessed_r2'],
-                submission_date: element['submission_date'],
+                submission_date: moment(element['submission_date']).format('ll'), // Sep 8, 2021
                 stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
                 fp: element.hasOwnProperty('fp') ? element['fp'] : undefined,
                 brief: element.hasOwnProperty('brief') ? element['brief'] : undefined, //TODO
