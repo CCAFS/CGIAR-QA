@@ -80,8 +80,8 @@ export class QAComments {
     // @IsNotEmpty({ message: 'Permission is required' })
     detail: string;
 
-    @Column()
-    original_field:string;
+    @Column({ nullable: true, type: 'longtext' })
+    original_field: string;
 
     @Column()
     @CreateDateColumn()
