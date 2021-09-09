@@ -9,6 +9,9 @@ export class DateFilterPipe implements PipeTransform {
     if (!items) return [];
     if (!selectedDates) return items;
     selectedDates = selectedDates.filter(sd => sd.checked); // Array of dates checked
+    console.log({selectedDates});
+    
+    if(selectedDates.length == 0) return items; // Return all items if there are no checked dates
     selectedDates = selectedDates.map(sd => sd.date.toLowerCase()); // Array of strings(dates) to lowerCase
     return this.matchDate(items, selectedDates, key);
   }

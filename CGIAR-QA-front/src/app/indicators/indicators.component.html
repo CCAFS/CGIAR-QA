@@ -4,9 +4,9 @@
 
 
 <h2>{{returnListName(indicatorType, 'header')}} </h2>
-<h4 style="text-align: center;" *ngIf="currentUser.hasOwnProperty('cycle')">
+<!-- <h4 style="text-align: center;" *ngIf="currentUser.hasOwnProperty('cycle')">
     {{'QA Round' + ': '+ currentUser.cycle.cycle_stage}}
-</h4>
+</h4> -->
 
 <div class="row col indicator-header">
     <div class="text-left">
@@ -50,7 +50,7 @@
     <div class="date-filter">
         <span>Filter by submission</span>
         <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" (change)="onDateChange($event,sub.id)">
+            <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked" (change)="onDateChange($event,sub.id)">
             <label class="form-check-label" for="inlineCheckbox{{sub.id}}">{{sub.date}}</label>
           </div>
     </div>
@@ -141,7 +141,7 @@
             <th scope="col" [class.active]="order === 'comments_count'" (click)="setOrder('comments_count')">
                 <div class="header-row">
                     Comments
-                    <div class="flag">2nd round</div>
+                    <div *ngIf="currentUser.cycle.cycle_stage == 2" class="flag">2nd round</div>
                     <div class="order-icon" *ngIf="order === 'comments_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
