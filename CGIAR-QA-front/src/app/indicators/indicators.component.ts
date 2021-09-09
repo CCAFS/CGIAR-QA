@@ -85,10 +85,10 @@ indicatorTypePage = null;
   criteriaData;
   criteria_loading = false;
 
-  submission_dates = [
-    {date: "May 7, 2021", id: 1},
-    {date: "Sep 7, 2021", id: 2},
-    {date: "Nov 7, 2021", id: 3},
+  submission_dates: any[] = [
+    {date: "May 7, 2021", id: 1, checked: true},
+    {date: "Sep 7, 2021", id: 2, checked: false},
+    {date: "Nov 7, 2021", id: 3, checked: false},
   ]
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -381,6 +381,14 @@ indicatorTypePage = null;
   savePageList() {
     console.log(this.currentPage);
     this.indicatorService.setFullPageList(this.currentPage);
+  }
+
+  onDateChange(e, subDate) {
+    if(subDate) {
+      console.log(e.target.checked, e.target.value);
+      const foundIndex = this.submission_dates.findIndex(sd => sd.date == e.target.value);
+      this.submission_dates[foundIndex]['checked'] = e.target.checked;
+    }
   }
   /***
    * 
