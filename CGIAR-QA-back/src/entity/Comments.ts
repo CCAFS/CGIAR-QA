@@ -81,6 +81,9 @@ export class QAComments {
     detail: string;
 
     @Column()
+    original_field:string;
+
+    @Column()
     @CreateDateColumn()
     createdAt: Date;
 

@@ -365,6 +365,7 @@
             <div [ngClass]="{'hide' : !renderComments }"  class="comments-component-container">
 
                 <app-comment  [isCRP]="false" #comment
+                [original_field]="detailedData[fieldIndex].value"
                     (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
                     (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);" ></app-comment>
             </div>

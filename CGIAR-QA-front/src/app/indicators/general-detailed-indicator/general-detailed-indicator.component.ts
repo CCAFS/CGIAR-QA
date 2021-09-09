@@ -83,6 +83,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   criteriaData;
   criteria_loading = false;
+  original_field: string = '';
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,

@@ -47,6 +47,7 @@ export class CommentComponent implements OnInit {
 
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
+  @Input() original_field;
   @Input() isCRP;
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
   @Output("validateAllFieldsAssessed") validateAllFieldsAssessed: EventEmitter<any> = new EventEmitter();
@@ -168,7 +169,8 @@ export class CommentComponent implements OnInit {
       userId: this.currentUser.id,
       evaluationId: this.dataFromItem.evaluation_id,
       metaId: this.dataFromItem.field_id,
-      approved: true
+      approved: true,
+      original_field: this.original_field
     }).subscribe(
       res => {
         console.log('COMMENT ADDED');
