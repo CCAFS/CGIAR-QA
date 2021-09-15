@@ -48,6 +48,7 @@ export class CommentComponent implements OnInit {
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
   @Input() original_field;
+  @Input() userIsLeader: boolean;
   @Input() isCRP;
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
   @Output("validateAllFieldsAssessed") validateAllFieldsAssessed: EventEmitter<any> = new EventEmitter();

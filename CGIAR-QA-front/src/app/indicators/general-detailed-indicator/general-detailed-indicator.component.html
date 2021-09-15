@@ -378,7 +378,7 @@
             class="col-sm-4 comments-container">
             <div [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
 
-                <app-comment [isCRP]="false" #comment (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
+                <app-comment [isCRP]="false" [userIsLeader]="isLeadAssessor" #comment (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
                     (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);"></app-comment>
             </div>
         </div>

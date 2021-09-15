@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                             <div>
-                                <i *ngIf="(comment.user.id === currentUser.id || currentUser.roles[0].description === allRoles.admin) && comment.replies.replies_count == '0' && !crpComment "
+                                <i *ngIf="(comment.user.id === currentUser.id || currentUser.roles[0].description === allRoles.admin || userIsLeader) && comment.replies.replies_count == '0' && !crpComment "
                                     (click)="updateComment('is_deleted', comment)" class="icon-remove"></i>
                             </div>
                         </div>
