@@ -114,6 +114,35 @@
   margin-left: 2em;
 }
 
+.original-field {
+  color: blue;
+  font-size: $font-xs;
+  font-weight: $semibold;
+  font-style: italic;
+  margin-top: 0;
+  &:hover{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+.hide{
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 300ms, opacity 300ms;
+}
+.show {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 300ms;
+}
+.original-field-container {
+  background-color: #cfeaf3;
+  padding: 1em;
+  margin-bottom: 0.5em;
+  border-radius: 5px;
+
+}
+
 .comment-accepted {
   background: var(--color-agree);
   border: var(--green-primary) 2px solid;

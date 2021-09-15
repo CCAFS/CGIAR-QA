@@ -52,6 +52,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   statusNames = StatusNames;
   generalCommentGroup: FormGroup;
   currentType = '';
+  isLeadAssessor: boolean;
 
   approveAllitems;
   general_comment_reply;
@@ -84,7 +85,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   criteriaData;
   criteria_loading = false;
   original_field: string = '';
-
+  hideOriginalField = true;
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private urlTransfrom: UrlTransformPipe,
@@ -119,6 +120,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
       this.params = routeParams;
       this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
+      this.isLeadAssessor = this.verifyIsLeadAssessor();
       this.tooltips.public_link = `Click here to see more information about this  ${this.params.type}.`
       this.showSpinner('spinner1')
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
@@ -630,6 +632,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     }
 
     return statusParse;
+  }
+
+  verifyIsLeadAssessor() {
+    return this.currentUser.indicators.find(el => (el.indicator.name == this.currentType && el.isLeader)) ? true : false;
   }
 
   toggleAssessorsChat() {
