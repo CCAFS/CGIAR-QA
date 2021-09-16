@@ -189,17 +189,26 @@ export class CommentComponent implements OnInit {
 
   }
 
-  updateComment(type, data) {
+  updateComment(type, data: any) {
     let canUpdate = this.validComment(type, data)
     if (!canUpdate.is_valid) {
       this.alertService.error(canUpdate.message);
       return;
     }
     data[type] = !data[type];
+    console.log({data});
+     let params = { 
+       approved: data.approved,
+       is_visible: data.is_visible,
+       is_deleted: data.is_deleted,
+       id: data.id,
+       detail: data.detail,
+       userId: data.user.id 
+     }
     // console.log(data)
     this.showSpinner(this.spinner_comment);
 
-    this.commentService.updateDataComment(data).subscribe(
+    this.commentService.updateDataComment(params).subscribe(
       res => {
         this.getItemCommentData(true);
       },
