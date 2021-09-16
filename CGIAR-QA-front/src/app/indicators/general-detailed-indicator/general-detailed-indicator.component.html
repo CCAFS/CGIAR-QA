@@ -3,10 +3,13 @@
     <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations"></iframe>
 </div>
 <div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div> -->
-<a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
-    routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
-    <i class=icon-go-back></i> {{currentType}} List
-</a>
+<div class="row link-header">
+    <a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
+        routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
+        <i class=icon-go-back></i> {{currentType}} List
+    </a>
+    <span *ngIf="isLeadAssessor" class="badge badge-blue">Lead assessor</span>
+</div>
 <!-- <div class="row criteria-container">
     <div *ngIf="!criteria_loading">
         <h2>QUALITY ASSESSMENT CRITERIA</h2>
@@ -145,9 +148,12 @@
                                         </div>
 
                                     </div>
-                                    <span *ngIf="hideOriginalField" class="original-field" (click)="hideOriginalField = !hideOriginalField">Show original value</span>
-                                    <span *ngIf="!hideOriginalField" class="original-field" (click)="hideOriginalField = !hideOriginalField">Hide original value</span>
-                                    <div class="field-container original-field-container" [ngClass]="{'hide':hideOriginalField , 'show':!hideOriginalField}">
+                                    <span *ngIf="hideOriginalField" class="original-field"
+                                        (click)="hideOriginalField = !hideOriginalField">Show original value</span>
+                                    <span *ngIf="!hideOriginalField" class="original-field"
+                                        (click)="hideOriginalField = !hideOriginalField">Hide original value</span>
+                                    <div class="field-container original-field-container"
+                                        [ngClass]="{'hide':hideOriginalField , 'show':!hideOriginalField}">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce erat arcu,
                                         vehicula eu arcu eget, porttitor congue tellus. Morbi id metus vel lacus
                                         vestibulum varius. Nulla id felis nec risus mollis egestas sit amet in tellus.
@@ -378,7 +384,8 @@
             class="col-sm-4 comments-container">
             <div [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
 
-                <app-comment [isCRP]="false" [userIsLeader]="isLeadAssessor" #comment (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
+                <app-comment [isCRP]="false" [userIsLeader]="isLeadAssessor" #comment
+                    (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
                     (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);"></app-comment>
             </div>
         </div>
