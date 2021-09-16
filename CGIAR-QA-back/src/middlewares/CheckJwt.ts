@@ -37,9 +37,9 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction) 
         jwtPayload = <any>jwt.verify(token_, config.jwtSecret);
         res.locals.jwtPayload = jwtPayload;
     } catch (error) {
-        console.log("checkJwt erorr", error)
+        // console.log("checkJwt erorr", error)
         //If token is not valid, respond with 401 (unauthorized)
-        // error = new BaseError(error.name, 401, error.description, false);
+        error = new BaseError(error.name, 401, error.description, false);
         return res.status(error.httpCode).json(error.description);
     }
 
