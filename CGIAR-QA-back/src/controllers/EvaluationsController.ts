@@ -869,6 +869,7 @@ class EvaluationsController {
                         evaluations.evaluation_status AS evaluation_status,
                         crp.name AS crp_name,
                         crp.acronym AS crp_acronym,
+                        qc.original_field,
                         evaluations.status AS evaluations_status,
                     ( SELECT enable_assessor FROM qa_comments_meta WHERE indicatorId = indicator_user.indicatorId ) AS enable_assessor,
                     ( SELECT id FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_id,
@@ -891,6 +892,7 @@ class EvaluationsController {
                     LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
                     LEFT JOIN qa_indicators_meta meta ON meta.indicatorId = indicators.id
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                    LEFT JOIN qa_comments qc ON qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND approved_no_comment IS NULL
                     WHERE indicator_user.userId = :user_Id
                     AND ${view_name_psdo}.id = :indicatorId
                     AND evaluations.indicator_view_name = '${view_name}'

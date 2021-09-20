@@ -148,15 +148,14 @@
                                         </div>
 
                                     </div>
-                                    <span *ngIf="hideOriginalField" class="original-field"
-                                        (click)="hideOriginalField = !hideOriginalField">Show original value</span>
-                                    <span *ngIf="!hideOriginalField" class="original-field"
-                                        (click)="hideOriginalField = !hideOriginalField">Hide original value</span>
+
+                                    <span *ngIf="detailedData[i].hide_original_field && detailedData[i].original_field != null" class="original-field"
+                                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Show original value</span>
+                                    <span *ngIf="!detailedData[i].hide_original_field && detailedData[i].original_field != null" class="original-field"
+                                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide original value</span>
                                     <div class="field-container original-field-container"
-                                        [ngClass]="{'hide':hideOriginalField , 'show':!hideOriginalField}">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce erat arcu,
-                                        vehicula eu arcu eget, porttitor congue tellus. Morbi id metus vel lacus
-                                        vestibulum varius. Nulla id felis nec risus mollis egestas sit amet in tellus.
+                                        [ngClass]="{'hide':detailedData[i].hide_original_field , 'show':!detailedData[i].hide_original_field}">
+                                        {{detailedData[i].original_field}}
                                     </div>
                                     <!-- data value -->
                                     <div class="field-container"
@@ -384,7 +383,7 @@
             class="col-sm-4 comments-container">
             <div [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
 
-                <app-comment [isCRP]="false" [userIsLeader]="isLeadAssessor" #comment
+                <app-comment [isCRP]="false" [userIsLeader]="isLeadAssessor" [original_field]="detailedData[fieldIndex]?.value || null" #comment
                     (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
                     (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);"></app-comment>
             </div>

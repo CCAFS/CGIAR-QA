@@ -532,7 +532,7 @@ class Util {
 
     }
 
-    static createComment = async (detail, approved, userId, metaId, evaluationId) => {
+    static createComment = async (detail, approved, userId, metaId, evaluationId, original_field) => {
         const userRepository = getRepository(QAUsers);
         const metaRepository = getRepository(QAIndicatorsMeta);
         const evaluationsRepository = getRepository(QAEvaluations);
@@ -572,6 +572,8 @@ class Util {
             comment_.evaluation = evaluation;
             comment_.user = user;
             comment_.cycle = current_cycle;
+            if(original_field)
+            comment_.original_field = original_field;
             let new_comment = await commentsRepository.save(comment_);
 
             return new_comment;
@@ -701,6 +703,8 @@ class Util {
                 count_disagree_comments: element['disagree_comments'],
                 count_clarification_comments: element['clarification_comments'],
                 count_accepted_with_comments: element['accepted_with_comments'],
+                original_field: element['original_field'],
+                hide_original_field: true,
             });
 
         }

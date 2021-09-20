@@ -165,6 +165,8 @@ export class CommentComponent implements OnInit {
       return;
     }
     this.showSpinner(this.spinner_comment);
+    console.log(this.original_field);
+    
     this.commentService.createDataComment({
       detail: this.formData.comment.value,
       userId: this.currentUser.id,
@@ -203,7 +205,7 @@ export class CommentComponent implements OnInit {
        is_deleted: data.is_deleted,
        id: data.id,
        detail: data.detail,
-       userId: data.user.id 
+       userId: data.user.id,
      }
     // console.log(data)
     this.showSpinner(this.spinner_comment);
