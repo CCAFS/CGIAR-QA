@@ -115,7 +115,7 @@
 }
 
 .original-field {
-  color: blue;
+  color: #0233bb;
   font-size: $font-xs;
   font-weight: $semibold;
   font-style: italic;
@@ -140,7 +140,8 @@
   padding: 1em;
   margin-bottom: 0.5em;
   border-radius: 5px;
-
+  font-style: italic;
+  font-size: $font-xs;
 }
 
 .comment-accepted {
