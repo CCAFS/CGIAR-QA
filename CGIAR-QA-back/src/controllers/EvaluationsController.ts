@@ -114,7 +114,7 @@ class EvaluationsController {
 
                 if (user.roles[0].description === RolesHandler.admin) {
                     // CRP DEFINED && ADMIN
-                   sqlQuery = `
+                    sqlQuery = `
                 SELECT
                         evaluations.crp_id AS crp_id,
                         evaluations.indicator_view_name AS indicator_view_name,
@@ -148,7 +148,7 @@ class EvaluationsController {
                 `
 
                 }
-                
+
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sqlQuery,
                     {},
@@ -208,7 +208,7 @@ class EvaluationsController {
                     order: element['indicator_order']
                 })
 
-            } 
+            }
             // console.log(response)
             let result = Util.groupBy(response, 'indicator_view_name');
             // res.status(200).json({ data: rawData, message: "All evaluations" });
@@ -237,8 +237,8 @@ class EvaluationsController {
             if (crp_id !== undefined && crp_id !== "undefined") {
 
                 let sqlQuery = '';
-                     // In this query evaluation.status depends on count comments vs count replies
-                     sqlQuery = `SELECT
+                // In this query evaluation.status depends on count comments vs count replies
+                sqlQuery = `SELECT
                      evaluations.crp_id AS crp_id,
                      evaluations.indicator_view_name AS indicator_view_name,
                      indicator.primary_field AS primary_field,
@@ -302,7 +302,7 @@ class EvaluationsController {
              ORDER BY
                      indicator.order ASC,
                      evaluations_status DESC`;
-                
+
                 const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                     sqlQuery,
                     {},
@@ -362,7 +362,7 @@ class EvaluationsController {
                     order: element['indicator_order']
                 })
 
-            } 
+            }
             // console.log(response)
             let result = Util.groupBy(response, 'indicator_view_name');
             // res.status(200).json({ data: rawData, message: "All evaluations" });
@@ -479,7 +479,7 @@ class EvaluationsController {
                 return;
             } else if (user.crps.length > 0) {
                 console.log('CRP_LIST');
-                
+
                 let sql = `
                     SELECT
                         evaluations.id AS evaluation_id,
@@ -758,6 +758,7 @@ class EvaluationsController {
                             evaluations.evaluation_status AS evaluation_status, 
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
+                            qc.original_field,
                             evaluations.status AS evaluations_status,
                         ( SELECT enable_assessor FROM qa_comments_meta WHERE indicatorId = indicators.id ) AS enable_assessor,
                         ( SELECT id FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_id,
@@ -777,6 +778,7 @@ class EvaluationsController {
                         LEFT JOIN qa_indicators indicators ON indicators.view_name = '${view_name}'
                         LEFT JOIN qa_indicators_meta meta ON meta.indicatorId = indicators.id
                         LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                        LEFT JOIN qa_comments qc ON qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND approved_no_comment IS NULL
                         WHERE ${view_name_psdo}.id = :indicatorId 
                         AND evaluations.indicator_view_name = '${view_name}'
                         AND evaluations.phase_year = actual_phase_year()
@@ -923,11 +925,11 @@ class EvaluationsController {
         let queryRunner = getConnection().createQueryBuilder();
         const userRepository = getRepository(QAUsers);
         let user = await userRepository.findOneOrFail({ where: { id: userId } });
-        console.log('EnteredService UpdateEvaluation', {user});
-        
+        console.log('EnteredService UpdateEvaluation', { user });
+
         // console.log({ general_comments, status }, id)
         try {
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: id }, relations: ['assessed_by', 'assessed_by_second_round']  });
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: id }, relations: ['assessed_by', 'assessed_by_second_round'] });
             console.log('Got the Evaluation', evaluation);
 
             // evaluation.general_comments = general_comments;
@@ -943,7 +945,7 @@ class EvaluationsController {
                     {}
                 );
                 evaluation.assessed_by_second_round.push(user);
-            console.log('Pushed user', evaluation);
+                console.log('Pushed user', evaluation);
 
                 let metaId = await queryRunner.connection.query(query, parameters);
                 let comment = await Util.createComment(null, true, userId, metaId[0].id, evaluation.id);
@@ -1063,12 +1065,12 @@ class EvaluationsController {
                 { evaluationId },
                 {}
             );
-            
+
             let assessorByEvalR2 = await queryRunner.connection.query(query2, parameters2);
-            console.log({assessorByEvalR2});
-            const response = {assessed_r1: assessorByEvalR1[0].assessed_r1, assessed_r2: assessorByEvalR2[0].assessed_r2}
+            console.log({ assessorByEvalR2 });
+            const response = { assessed_r1: assessorByEvalR1[0].assessed_r1, assessed_r2: assessorByEvalR2[0].assessed_r2 }
             console.log(response);
-            
+
             res.status(200).json({ data: response, message: `Assessors in  evaluation ${evaluationId}` });
 
         } catch (error) {
