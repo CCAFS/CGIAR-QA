@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="assessment-info select-all"
-                        *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
+                        *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData.length > 0 && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
                             <button type="button" *ngIf="gnralInfo.status != 'complete'"
                                 (click)="updateEvaluation('complete_eval',detailedData)" class="btn btn-progress">Set
@@ -153,9 +153,8 @@
                                         (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Show original value</span>
                                     <span *ngIf="!detailedData[i].hide_original_field && detailedData[i].original_field != null" class="original-field"
                                         (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide original value</span>
-                                    <div class="field-container original-field-container"
-                                        [ngClass]="{'hide':detailedData[i].hide_original_field , 'show':!detailedData[i].hide_original_field}">
-                                        {{detailedData[i].original_field}}
+                                    <div class="field-container original-field-container" *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation]>
+                                    {{detailedData[i].original_field}}
                                     </div>
                                     <!-- data value -->
                                     <div class="field-container"
@@ -379,11 +378,11 @@
 
         </div>
 
-        <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex]}" [style.top.px]="currentY"
+        <div  [ngClass]="{'hide' : !activeCommentArr[fieldIndex]}" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
-            <div [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
+            <div  [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
 
-                <app-comment [isCRP]="false" [userIsLeader]="isLeadAssessor" [original_field]="detailedData[fieldIndex]?.value || null" #comment
+                <app-comment  [isCRP]="false" [userIsLeader]="isLeadAssessor" [original_field]="detailedData[fieldIndex]?.value || null" #comment
                     (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
                     (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);"></app-comment>
             </div>

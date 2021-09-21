@@ -55,6 +55,8 @@ class IndicatorsController {
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
 
             let isCRP = user.crps.length > 0 ? true : false;
+            console.log({user});
+            
             // console.log('getIndicatorsByUser')
             // console.log('isAdmin', isAdmin)
             if (isAdmin) {

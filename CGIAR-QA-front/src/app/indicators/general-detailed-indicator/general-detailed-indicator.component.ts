@@ -22,17 +22,55 @@ import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 
 
 import * as moment from 'moment';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-general-detailed-indicator',
   templateUrl: './general-detailed-indicator.component.html',
   styleUrls: ['./general-detailed-indicator.component.scss'],
-  providers: [UrlTransformPipe, WordCounterPipe]
+  providers: [UrlTransformPipe, WordCounterPipe],
+  animations: [
+    trigger(
+      'inOutAnimation', 
+      [
+        transition(
+          ':enter', 
+          [
+            style({
+            backgroundColor: '#cfeaf3',
+            padding: '1em',
+            marginBottom: '0.5em',
+            borderRadius: '5px',
+            fontStyle: 'italic',
+            fontSize: '$font-xs',
+            opacity: 0 }),
+            animate('0.5s ease-out', 
+                    style({opacity: 1 }))
+          ]
+        ),
+        transition(
+          ':leave', 
+          [
+            style({
+              backgroundColor: '#cfeaf3',
+              padding: '1em',
+              marginBottom: '0.5em',
+              borderRadius: '5px',
+              fontStyle: 'italic',
+              fontSize: '$font-xs',
+              opacity: 1 }),
+            animate('0.1s ease-in', 
+                    style({ opacity: 0 }))
+          ]
+        )
+      ]
+    )
+  ]
 })
 export class GeneralDetailedIndicatorComponent implements OnInit {
   indicatorType: string;
   currentUser: User;
-  detailedData: any[];
+  detailedData: any[] = [];
   params: any;
   spinner1 = 'spinner1';
   spinner2 = 'spinner2';
