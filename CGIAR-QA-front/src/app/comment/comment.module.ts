@@ -13,7 +13,8 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { TagsBarComponent } from './tags-bar/tags-bar.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { OnBoardingComponent } from './on-boarding/on-boarding.component';
+import { OnBoardingComponent } from './on-boarding/on-boarding.component'
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';;
 
 @NgModule({
   declarations: [CommentComponent, TagsBarComponent, OnBoardingComponent],
@@ -26,11 +27,13 @@ import { OnBoardingComponent } from './on-boarding/on-boarding.component';
     PaginationModule.forRoot(),
     TooltipModule.forRoot(),
     CarouselModule.forRoot(),
+    BsDropdownModule.forRoot(),
     NgxSpinnerModule,
     OrderModule,
     ReactiveFormsModule,
     FormsModule,
-    Ng2SearchPipeModule,],
+    Ng2SearchPipeModule,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CommentComponentModule { }

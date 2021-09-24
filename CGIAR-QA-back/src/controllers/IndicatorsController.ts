@@ -1,5 +1,5 @@
 import { Request, Response, response } from "express";
-import { getRepository, createQueryBuilder, getConnection } from "typeorm";
+import { getRepository, createQueryBuilder, getConnection, Not } from "typeorm";
 import { validate } from "class-validator";
 
 import { QAUsers } from "@entity/User";
@@ -9,7 +9,7 @@ import { QAEvaluations } from "@entity/Evaluations";
 import { QAIndicatorsMeta } from "@entity/IndicatorsMeta";
 import { QACommentsMeta } from "@entity/CommentsMeta";
 
-import { StatusHandler } from "@helpers/StatusHandler"
+import { StatusHandlerMIS } from "@helpers/StatusHandler"
 import { RolesHandler } from "@helpers/RolesHandler"
 import Util from "@helpers/Util";
 import { GeneralIndicatorName } from "@helpers/GeneralIndicatorName";
@@ -53,8 +53,10 @@ class IndicatorsController {
             const userRepository = getRepository(QAUsers);
             let user = await userRepository.findOneOrFail({ where: { id } });
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
-            
+
             let isCRP = user.crps.length > 0 ? true : false;
+            console.log({user});
+            
             // console.log('getIndicatorsByUser')
             // console.log('isAdmin', isAdmin)
             if (isAdmin) {
@@ -349,8 +351,8 @@ class IndicatorsController {
         let qrMetas = getConnection().createQueryBuilder();
         try {
             let queryMetas = '';
-                if(crp_id != undefined && crp_id != 'undefined') {
-                    queryMetas = `SELECT col_name, display_name, indicatorId, qi.view_name,
+            if (crp_id != undefined && crp_id != 'undefined') {
+                queryMetas = `SELECT col_name, display_name, indicatorId, qi.view_name,
                     (SELECT count(*) FROM qa_evaluations qe WHERE qe.indicator_view_name = qi.view_name AND qe.phase_year = actual_phase_year() AND qe.status <> 'autochecked' AND qe.crp_id = '${crp_id}') AS total
                    FROM qa_indicators_meta qim
                    LEFT JOIN qa_indicators qi ON qi.id = qim.indicatorId
@@ -358,9 +360,9 @@ class IndicatorsController {
                    AND qim.enable_comments <> 0
                    AND qim.include_detail = 1
                    AND qi.view_name like :indicator`;
-                   console.log('query with crp_id', {queryMetas});
-                } else {
-                    queryMetas = `SELECT col_name, display_name, indicatorId, qi.view_name,
+                console.log('query with crp_id', { queryMetas });
+            } else {
+                queryMetas = `SELECT col_name, display_name, indicatorId, qi.view_name,
                     (SELECT count(*) FROM qa_evaluations qe WHERE qe.indicator_view_name = qi.view_name AND qe.phase_year = actual_phase_year() AND qe.status <> 'autochecked') AS total
                    FROM qa_indicators_meta qim
                    LEFT JOIN qa_indicators qi ON qi.id = qim.indicatorId
@@ -368,11 +370,11 @@ class IndicatorsController {
                    AND qim.enable_comments <> 0
                    AND qim.include_detail = 1
                    AND qi.view_name like :indicator`;
-                }
-                
+            }
+
             const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
                 queryMetas,
-                {indicator},
+                { indicator },
                 {}
             );
             let allMetas = await qrMetas.connection.query(query, parameters);
@@ -384,10 +386,10 @@ class IndicatorsController {
                 let queryNotApplicable = `SELECT count(*) as count FROM qa_evaluations qe
                     LEFT JOIN ${meta.view_name} qi on qe.indicator_view_id = qi.id AND qe.indicator_view_name = "${meta.view_name}"
                     WHERE ${meta.col_name}  = "<Not applicable>" AND qe.phase_year = actual_phase_year() AND qe.status <> "autochecked" `;
-                
-                    if(crp_id != undefined && crp_id != 'undefined'){
-                        queryNotApplicable += `AND qe.crp_id = '${crp_id}'`
-                    }
+
+                if (crp_id != undefined && crp_id != 'undefined') {
+                    queryNotApplicable += `AND qe.crp_id = '${crp_id}'`
+                }
 
                 totalEvaluationsByIndicator[meta.view_name][meta.display_name] = {
                     item: meta.display_name,
@@ -423,8 +425,8 @@ class IndicatorsController {
         let queryRunner = getConnection().createQueryBuilder();
         try {
             let queryAssessmentByField = '';
-            if(crp_id != undefined && crp_id != 'undefined'){
-                queryAssessmentByField =                 `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
+            if (crp_id != undefined && crp_id != 'undefined') {
+                queryAssessmentByField = `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
                 SUM(
                    IF (approved_no_comment = 0, 1, 0)
                    ) AS pending,
@@ -449,7 +451,7 @@ class IndicatorsController {
                AND qe.crp_id = :crp_id
                GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment;`
             } else {
-                queryAssessmentByField =   `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
+                queryAssessmentByField = `SELECT display_name, col_name, approved_no_comment, indicator_view_name,
                 SUM(
                    IF (approved_no_comment = 0, 1, 0)
                    ) AS pending,
@@ -474,7 +476,7 @@ class IndicatorsController {
                GROUP BY display_name, col_name, approved_no_comment, indicator_view_name, approved_no_comment;`
             }
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-            queryAssessmentByField,{indicator, crp_id}, {}
+                queryAssessmentByField, { indicator, crp_id }, {}
             );
             let allItems = await queryRunner.connection.query(query, parameters);
             for (let i = 0; i < allItems.length; i++) {
@@ -500,7 +502,7 @@ class IndicatorsController {
 
             }
             console.log(totalEvaluationsByIndicator['qa_slo']);
-            totalEvaluationsByIndicator[indicator] =  Object.values(totalEvaluationsByIndicator[indicator]);
+            totalEvaluationsByIndicator[indicator] = Object.values(totalEvaluationsByIndicator[indicator]);
             res.status(200).send({ data: totalEvaluationsByIndicator[indicator], message: 'Items by indicator' });
 
 
@@ -513,8 +515,8 @@ class IndicatorsController {
     //ALL
     static getAllItemStatusByIndicator = async (req: Request, res: Response) => {
         let totalEvaluationsByIndicator = {
-            qa_innovations : {},
-            qa_policies : {},
+            qa_innovations: {},
+            qa_policies: {},
             qa_publications: {},
             qa_oicr: {},
             qa_melia: {},
@@ -528,28 +530,28 @@ class IndicatorsController {
 
 
         let qrMetas = getConnection().createQueryBuilder();
-            try {
-                const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
-                    `SELECT col_name, display_name, indicatorId, qi.view_name,
+        try {
+            const [query, parameters] = await qrMetas.connection.driver.escapeQueryWithParameters(
+                `SELECT col_name, display_name, indicatorId, qi.view_name,
                     (SELECT count(*) FROM qa_evaluations qe WHERE qe.indicator_view_name = qi.view_name AND qe.phase_year = actual_phase_year() AND qe.status <> 'autochecked') AS total
                    FROM qa_indicators_meta qim
                    LEFT JOIN qa_indicators qi ON qi.id = qim.indicatorId
                    WHERE qim.display_name  not like 'id'
                    AND qim.enable_comments <> 0
                    AND qim.include_detail = 1`,
-                    {},
-                    {}
-                );
-                let allMetas  = await qrMetas.connection.query(query, parameters);
-                console.log('TOTALES',allMetas);
+                {},
+                {}
+            );
+            let allMetas = await qrMetas.connection.query(query, parameters);
+            console.log('TOTALES', allMetas);
 
-                allMetas.forEach(meta => {
-                    totalEvaluationsByIndicator[meta.view_name][meta.display_name] = {item: meta.display_name, pending: meta.total, approved_without_comment: 0, assessment_with_comments: 0};
-                });
-            } catch(error) {
-                console.log(error);
-                res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
-            }
+            allMetas.forEach(meta => {
+                totalEvaluationsByIndicator[meta.view_name][meta.display_name] = { item: meta.display_name, pending: meta.total, approved_without_comment: 0, assessment_with_comments: 0 };
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
+        }
 
         let queryRunner = getConnection().createQueryBuilder();
         try {
@@ -598,7 +600,7 @@ class IndicatorsController {
                 }
             }
             console.log(totalEvaluationsByIndicator['qa_slo']);
-            
+
             res.status(200).send({ data: totalEvaluationsByIndicator, message: 'All items by indicator' });
 
 
@@ -606,6 +608,95 @@ class IndicatorsController {
             console.log(error);
             res.status(404).json({ message: "items by indicators can not be retrived.", data: error });
         }
+    }
+
+    static getItemListStatusMIS = async (req: Request, res: Response) => {
+        const { crp_id, id } = req.params;
+
+        // Annual Report year
+        const { AR } = req.query;
+
+        const indicatorRepository = getRepository(QAIndicators);
+        const evaluationsRepository = getRepository(QAEvaluations);
+        try {
+            const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
+            const evaluations = await evaluationsRepository.find(
+                {
+                    where: {
+                        indicator_view_name: indicator_view_name[0].view_name,
+                        crp_id,
+                        evaluation_status: Not('Removed'),
+                        phase_year: AR
+                    },
+                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt']
+                });
+
+            const data = evaluations.map(e => ({
+                indicator_name: e.indicator_view_name.split('qa_')[1],
+                id: e.indicator_view_id,
+                crp_id: e.crp_id,
+                assessment_status: StatusHandlerMIS[e.status],
+                updatedAt: e.updatedAt
+            })
+            );
+
+            res.status(200).send({ data: data, message: `List of ${indicator_view_name[0].view_name.split('qa_')[1]} indicator items` })
+        } catch (error) {
+            res.status(404).json({ message: "Items for MIS cannot be retrieved", data: error })
+        }
+
+    }
+
+/**
+ * @api {get} /indicator/:indicator_id/crp/:smo_code/items?AR=:year Request User information
+ * @apiName getItemStatusMIS
+ * @apiGroup Indicators
+ *
+ * @apiParam {Number} indicator_id
+ * @apiParam {String} smo_code
+ * @apiParam {String} year
+ * 
+ * @apiSuccess {String} indicator_name Name of the indicator.
+ * @apiSuccess {String} id  Item ID.
+ * @apiSuccess {String} crp_id CRP ID.
+ * @apiSuccess {String} assessment_status Item Status in QA Platform
+ * @apiSuccess {Datetime} updatedAt last date of item update.
+ */
+    static getItemStatusMIS = async (req: Request, res: Response) => {
+        const { crp_id, id, item_id } = req.params;
+
+        // Annual Report year
+        const { AR } = req.query;
+
+        const indicatorRepository = getRepository(QAIndicators);
+        const evaluationsRepository = getRepository(QAEvaluations);
+        try {
+            const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
+            const item = await evaluationsRepository.findOne(
+                {
+                    where: {
+                        indicator_view_name: indicator_view_name[0].view_name,
+                        indicator_view_id: item_id,
+                        crp_id,
+                        evaluation_status: Not('Removed'),
+                        phase_year: AR
+                    },
+                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt']
+                });
+
+            const data = {
+                indicator_name: item.indicator_view_name.split('qa_')[1],
+                id: item.indicator_view_id,
+                crp_id: item.crp_id,
+                assessment_status: StatusHandlerMIS[item.status],
+                updatedAt: item.updatedAt
+            }
+
+            res.status(200).send({ data: data, message: `Item ${data.id} of  ${indicator_view_name[0].view_name.split('qa_')[1]} indicator.` })
+        } catch (error) {
+            res.status(404).json({ message: "Items for MIS cannot be retrieved", data: error })
+        }
+
     }
 
 }

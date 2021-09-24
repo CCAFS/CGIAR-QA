@@ -11,7 +11,7 @@ import { CommentService } from "../services/comment.service";
 import { AlertService } from '../services/alert.service';
 
 import { User } from '../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName } from '../_models/general-status.model';
+import { DetailedStatus, GeneralIndicatorName, StatusIcon } from '../_models/general-status.model';
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
 import { SortByPipe } from '../pipes/sort-by.pipe';
@@ -22,7 +22,6 @@ import { IndicatorsService } from '../services/indicators.service';
 
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { EvaluationsService } from '../services/evaluations.service';
-
 @Component({
   selector: 'app-indicators',
   templateUrl: './indicators.component.html',
@@ -82,9 +81,15 @@ indicatorTypePage = null;
   }
 
   detailedStatus = DetailedStatus;
+  statusIcon = StatusIcon;
   criteriaData;
   criteria_loading = false;
 
+  submission_dates: any[] = [
+    {date: "May 7, 2021", id: 1, checked: true},
+    {date: "Sep 7, 2021", id: 2, checked: false},
+    {date: "Nov 7, 2021", id: 3, checked: false},
+  ]
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
@@ -377,18 +382,21 @@ indicatorTypePage = null;
     console.log(this.currentPage);
     this.indicatorService.setFullPageList(this.currentPage);
   }
+
+  onDateChange(e, subDate) {
+    if(subDate) {
+      console.log(e.target.checked, e.target.value);
+      const foundIndex = this.submission_dates.findIndex(sd => sd.date == e.target.value);
+      this.submission_dates[foundIndex]['checked'] = e.target.checked;
+    }
+  }
   /***
    * 
    *  Spinner 
    * 
    ***/
   showSpinner() {
-    this.spinner.show(undefined,
-      {
-        fullScreen: true,
-        type: "ball-clip-rotate-multiple"
-      }
-    );
+    this.spinner.show();
   }
   hideSpinner() {
     this.spinner.hide();

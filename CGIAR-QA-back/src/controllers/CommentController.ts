@@ -264,10 +264,10 @@ class CommentController {
     static createComment = async (req: Request, res: Response) => {
         // approved
         //Check if username and password are set
-        const { detail, approved, userId, metaId, evaluationId } = req.body;
+        const { detail, approved, userId, metaId, evaluationId, original_field } = req.body;
 
         try {
-            let new_comment = await Util.createComment(detail, approved, userId, metaId, evaluationId);
+            let new_comment = await Util.createComment(detail, approved, userId, metaId, evaluationId, original_field);
             if (new_comment == null) throw new Error('Could not created comment');
             res.status(200).send({ data: new_comment, message: 'Comment created' });
 
@@ -298,6 +298,7 @@ class CommentController {
                 comment_.detail = detail;
             if (userId)
                 comment_.user = userId;
+
 
 
             let updated_comment = await commentsRepository.save(comment_);
@@ -524,26 +525,33 @@ class CommentController {
 
     // get comments replies
     static getCommentsReplies = async (req: Request, res: Response) => {
+        console.log('COMMENT_ID: ',req.params);
         const commentId = req.params.commentId;
-
+        
         // let queryRunner = getConnection().createQueryBuilder();
-        try {
-            let replies = await getRepository(QACommentsReplies).find(
-                {
-                    where: [{
-                        comment: commentId,
-                        is_deleted: Not(1)
-                    }],
-                    relations: ['user'],
-                    order: {
-                        createdAt: "ASC"
+        if(commentId != undefined && commentId != null) {
+            try {
+                let replies = await getRepository(QACommentsReplies).find(
+                    {
+                        where: [{
+                            comment: commentId,
+                            is_deleted: Not(1)
+                        }],
+                        relations: ['user'],
+                        order: {
+                            createdAt: "ASC"
+                        }
                     }
-                }
-            )
-            res.status(200).send({ data: replies, message: 'All comments replies' });
-        } catch (error) {
-            console.log(error);
-            res.status(404).json({ message: "Comment can not be retrived.", data: error });
+                )
+                res.status(200).send({ data: replies, message: 'All comments replies' });
+            } catch (error) {
+                console.log(error);
+                res.status(404).json({ message: "Comment can not be retrived.", data: error });
+            }
+        } else {
+            console.log('CRASHED');
+
+            res.status(404).json({ message: "Comment can not be retrieved. Comment ID not provided", data: null });
         }
     }
 
@@ -827,8 +835,9 @@ class CommentController {
 
     }
 
+    
     static toggleApprovedNoComments = async (req: Request, res: Response) => {
-        //TODO
+        //TODO - Improve performance
         const { evaluationId } = req.params;
         const { meta_array, userId, isAll, noComment } = req.body;
         let comments;
@@ -855,8 +864,13 @@ class CommentController {
             );
             comments = await queryRunner.connection.query(query, parameters);
             // console.log(comments.length, meta_array)
+            console.log(comments)
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
+            console.log(user);
+            
             let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by', 'assessed_by_second_round']  });
+            console.log(evaluation);
+            
             let current_cycle = await cycleRepo
             .createQueryBuilder("qa_cycle")
             .select('*')
@@ -874,6 +888,7 @@ class CommentController {
             // evaluation.assessed_by.push(user);
             console.log('ASSESSORS',evaluation.assessed_by);
             evaluationsRepository.save(evaluation);
+            console.log('evaluations saved');
             
             let response = [];
 
@@ -905,7 +920,7 @@ class CommentController {
                 response.push(comment_)
             }
             let result = await commentsRepository.save(response);
-            console.log(result);
+            console.log({result});
 
 
             res.status(200).send({ data: result, message: 'Comment toggle' });
@@ -1101,57 +1116,18 @@ class CommentController {
         const { userId, tagTypeId, commentId } = req.body;
 
         const tagsRepository = getRepository(QATags);
-        let tag: QATags;
-        const idAgree = await Util.getTagId(commentId, 3, userId);
-        const idNotSure = await Util.getTagId(commentId, 2, userId);
-        const idDisagree = await Util.getTagId(commentId, 4, userId);
 
-        switch (tagTypeId) {
-            case 2: //Agree
-                try {
-                    tag = await tagsRepository.findOneOrFail(idDisagree);
-                    tagsRepository.delete(idDisagree);
-                    console.log('Tag disagree deleted');
-
-                    tag = await tagsRepository.findOneOrFail(idAgree);
-                    tagsRepository.delete(idAgree);
-                    console.log('Tag not-sure deleted');
-                } catch (error) {
-                    console.log(error);
-                }
-
-                break;
-            case 3: //Agree
-                try {
-                    tag = await tagsRepository.findOneOrFail(idDisagree);
-                    tagsRepository.delete(idDisagree);
-                    console.log('Tag disagree deleted');
-
-                    tag = await tagsRepository.findOneOrFail(idNotSure);
-                    tagsRepository.delete(idNotSure);
-                    console.log('Tag not-sure deleted');
-                } catch (error) {
-                    console.log(error);
-                }
-
-                break;
-            case 4: //
-                try {
-                    tag = await tagsRepository.findOneOrFail(idAgree);
-                    tagsRepository.delete(idAgree);
-                    console.log('Tag disagree deleted');
-
-                    tag = await tagsRepository.findOneOrFail(idNotSure);
-                    tagsRepository.delete(idNotSure);
-                    console.log('Tag not-sure deleted');
-                } catch (error) {
-                    console.log(error);
-                }
-                break;
-
-            default:
-                break;
-        }
+        let tag = await tagsRepository.findOne({
+            where: [
+              { commentId: commentId, userId: userId },
+            ]
+          });
+          console.log(tag);
+          if(tag) {
+              tagsRepository.remove(tag);
+              console.log(`Tag deleted`);
+          } else console.log(`The user hasn't previous tag for this comment`);
+        
 
         try {
             let new_tag = await Util.createTag(userId, tagTypeId, commentId);

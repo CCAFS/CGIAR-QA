@@ -48,5 +48,12 @@ router.patch("/:id([0-9]+)/user", [checkJwt, checkRole([RolesHandler.admin])], C
 router.get("/items/:indicator", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], IndicatorsController.getItemStatusByIndicator); 
 
 // get ALL item status by indicator
-router.get("/items", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], IndicatorsController.getAllItemStatusByIndicator); 
+router.get("/items", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], IndicatorsController.getAllItemStatusByIndicator);
+
+// get ALL item status by indicator and CRP for MIS
+router.get("/:id([0-9]+)/crp/:crp_id/items", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.getItemListStatusMIS);
+
+// get item status by indicator and CRP for MIS
+router.get("/:id([0-9]+)/crp/:crp_id/item/:item_id", [checkJwt, checkRole([RolesHandler.admin])], IndicatorsController.getItemStatusMIS);
+
 export default router;

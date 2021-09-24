@@ -27,17 +27,17 @@ import {
     IgxDataChartInteractivityModule,
     IgxDataChartVerticalCategoryCoreModule,
     IgxDataChartVerticalCategoryModule,
-	IgxDataChartStackedModule,
-	IgxStackedFragmentSeriesModule,
-	IgxDataChartAnnotationModule
-    
+    IgxDataChartStackedModule,
+    IgxStackedFragmentSeriesModule,
+    IgxDataChartAnnotationModule
+
 } from "igniteui-angular-charts";
 
 import { BarChartComponent } from './assesor-dashboard/bar-chart/bar-chart.component';
 import { DoughnutChartComponent } from './assesor-dashboard/doughnut-chart/doughnut-chart.component';
 import { DonutChartComponent } from './assesor-dashboard/donut-chart/donut-chart.component';
 import { LineChartComponent } from './assesor-dashboard/line-chart/line-chart.component';
-import { GoogleChartsModule } from 'angular-google-charts';
+import { TimelineComponent } from '../_shared/timeline/timeline.component';
 
 @NgModule({
     imports: [
@@ -54,7 +54,6 @@ import { GoogleChartsModule } from 'angular-google-charts';
         SharedModule,
         NgxChartsModule,
         ChartsModule,
-        GoogleChartsModule,
         IgxDoughnutChartModule,
         IgxPieChartModule,
         IgxRingSeriesModule,
@@ -69,9 +68,17 @@ import { GoogleChartsModule } from 'angular-google-charts';
         IgxDataChartAnnotationModule,
         NgbModule
     ],
-    declarations: [AssessorDashboardComponent, AdminDashboardComponent, DashBoardComponent, BarChartComponent, DoughnutChartComponent, LineChartComponent, DonutChartComponent
+    declarations: [
+        AssessorDashboardComponent,
+        AdminDashboardComponent, 
+        DashBoardComponent,
+        BarChartComponent, 
+        DoughnutChartComponent,
+        LineChartComponent, 
+        DonutChartComponent,
+        TimelineComponent
     ],
-    providers:[ThemeService]
+    providers: [ThemeService]
 
 })
 export class DashboardModule { }

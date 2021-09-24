@@ -179,10 +179,20 @@
       border: 1px solid var(--gray-primary);
       line-height: 20px;
     }
+
     
     .textarea[contenteditable]:empty::before {
       content: "Placeholder still possible";
       color: gray;
+    }
+  }
+  footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: max-content;
+    button{
+      margin: 0;
     }
   }
 }

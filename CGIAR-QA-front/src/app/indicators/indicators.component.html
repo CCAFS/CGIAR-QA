@@ -4,9 +4,10 @@
 
 
 <h2>{{returnListName(indicatorType, 'header')}} </h2>
-<h4 style="text-align: center;" *ngIf="currentUser.hasOwnProperty('cycle')">
+<!-- <h4 style="text-align: center;" *ngIf="currentUser.hasOwnProperty('cycle')">
     {{'QA Round' + ': '+ currentUser.cycle.cycle_stage}}
-</h4>
+</h4> -->
+
 <div class="row col indicator-header">
     <div class="text-left">
         <!-- <div class="model-link-container" (click)="goToPDF('AR')">
@@ -28,28 +29,56 @@
         </div> -->
     </div>
     <div class="text-right">
-        <div *ngIf="indicatorType == 'publications'" class="circle autochecked" style="margin-left: 50px;"></div>
+        <!-- <div *ngIf="indicatorType == 'publications'" class="circle autochecked" style="margin-left: 50px;"></div> -->
+        <i *ngIf="indicatorType == 'publications'" class="icon-autochecked"></i>
         <p *ngIf="indicatorType == 'publications'">Automatically validated</p>
-        <div class="circle pending" style="margin-left: 50px;"></div>
+
+        <i class="icon-pending"></i>
+        <!-- <div class="circle pending" style="margin-left: 50px;"></div> -->
         <p>Pending</p>
-        <div class="circle complete" style="margin-left: 50px;"></div>
-        <p>Assessed 1st round</p>
-        <div class="circle finalized" style="margin-left: 50px;"></div>
-        <p>Assessed 2nd round</p>
+
+        <i class="icon-in-progress"></i>
+        <!-- <div class="circle complete" style="margin-left: 50px;"></div> -->
+        <p>In progress</p>
+
+        <i class="icon-quality-assessed"></i>
+        <!-- <div class="circle finalized" style="margin-left: 50px;"></div> -->
+        <p>Quality Assessed</p>
     </div>
 </div>
-<div class="form-group">
+<div class="row filters-container">
+    <div class="date-filter">
+        <span>Filter by submission</span>
+        <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked" (change)="onDateChange($event,sub.id)">
+            <label class="form-check-label" for="inlineCheckbox{{sub.id}}">{{sub.date}}</label>
+          </div>
+    </div>
+    <div class="removed-filter">
+        <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
+            <!-- <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
+                uncheckable tabindex="0" role="button">Added item</label> -->
+            <label class="btn btn-outline-danger"  [class.active]="evalStatusFilter === 'Removed'" btnRadio="Removed"
+                uncheckable tabindex="0" role="button">Removed items</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
+    </div>
+</div>
+
+<!-- <div class="form-group">
     <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
 </div>
 <div class="row" style="margin: 1em 0;">
-
+ 
     <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
         <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
             uncheckable tabindex="0" role="button">Added item</label>
         <label class="btn btn-outline-danger" [class.active]="evalStatusFilter === 'Removed'" btnRadio="Removed"
-            uncheckable tabindex="0" role="button">Removed item</label>
+            uncheckable tabindex="0" role="button">Removed items</label>
     </div>
-</div>
+</div> -->
 
 
 <table class="table table-bordered" *ngIf="collectionSize != 0">
@@ -112,7 +141,7 @@
             <th scope="col" [class.active]="order === 'comments_count'" (click)="setOrder('comments_count')">
                 <div class="header-row">
                     Comments
-                    <div class="flag">2nd round</div>
+                    <div *ngIf="currentUser.cycle.cycle_stage == 2" class="flag">2nd round</div>
                     <div class="order-icon" *ngIf="order === 'comments_count'">
                         <span [hidden]="reverse">▼</span>
                         <span [hidden]="!reverse">▲</span>
@@ -175,6 +204,11 @@
                     Export comments
                 </div>
             </th>
+            <th scope="col">
+                <div class="header-row">
+                    Submission date
+                </div>
+            </th>
             <th *ngIf="currentUser.cycle.cycle_stage != 2" scope="col" [class.active]="order === 'comment_by'" (click)="setOrder('comment_by')">
                 <div class="header-row">
                     Assessed By
@@ -206,7 +240,7 @@
     </thead>
     <tbody class="table-body">
         <tr
-            *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | slice:currentPageList.startItem:currentPageList.endItem; let i = index">
+            *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | slice:currentPageList.startItem:currentPageList.endItem | dateFilter:submission_dates:'submission_date' ; let i = index">
             <th scope="row">
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
@@ -242,13 +276,16 @@
                 {{ (item.comments_disagreed_count) ? item.comments_disagreed_count: 0}}</td>
             <td *ngIf="item.hasOwnProperty('comments_clarification_count') && currentUser.cycle.cycle_stage == 2">
                 {{ (item.comments_clarification_count) ? item.comments_clarification_count: 0}}</td>
-            <td *ngIf="item" (click)="exportComments(item)">
-                <a target="_blank">
-                    <div tooltip="Comment in excel format" container="body" placement="top"
+                <td *ngIf="item" (click)="exportComments(item)">
+                    <a target="_blank">
+                        <div tooltip="Comment in excel format" container="body" placement="top"
                         class="btn btn-primary file-button">
                         <i class="icon-download-excel"></i>
                     </div>
                 </a>
+            </td>
+            <td>
+                {{item.submission_date}}
             </td>
             <td *ngIf="currentUser.cycle.cycle_stage != 2">
                 <ul *ngFor="let subCategory of item.comment_by?.split(',')"
@@ -265,7 +302,7 @@
                 <p class="wos-label" *ngIf="item.status == 'autochecked'">Validated by WoS/Scopus</p>
             </td>
             <td>
-                <div class="circle {{ item.status }}"></div>
+                <i class="icon-{{ statusIcon[item.status] }} status-icon"></i>
             </td>
         </tr>
     </tbody>
@@ -286,5 +323,4 @@
 
 
 <!-- Loading Spinner -->
-<ngx-spinner>
-</ngx-spinner>
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" color = "#fff" size = "default" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>

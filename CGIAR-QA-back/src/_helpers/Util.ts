@@ -1,5 +1,7 @@
 
 import { StatusHandler } from "@helpers/StatusHandler";
+const { ErrorHandler } = require("@helpers/ErrorHandler")
+
 import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
 import { RolesHandler } from "@helpers/RolesHandler";
 import { getRepository, getConnection, createQueryBuilder, In } from "typeorm";
@@ -20,6 +22,10 @@ import { QAComments } from "@entity/Comments";
 import { QACycle } from "@entity/Cycles";
 import { QATags } from "@entity/Tags";
 import { QATagType } from "@entity/TagType";
+import AuthController from "@controllers/AuthController";
+import { BaseError } from "./BaseError";
+import { HttpStatusCode } from "./Constants";
+import moment from "moment";
 // const excel = require('exceljs');
 
 
@@ -30,6 +36,98 @@ class Util {
      *  INTERNAL FUNCTIONS
      * 
      ***/
+    
+    static login = async (username:string, password:string) => {
+        let user;
+            //Get user from database
+            const userRepository = getRepository(QAUsers);
+            const grnlConfg = getRepository(QAGeneralConfiguration);
+            const cycleRepo = getRepository(QACycle);
+
+            username = username.trim().toLowerCase();
+
+            let marlo_user = await userRepository.findOne({
+                where: [
+                    { email: username, is_marlo: 1 },
+                    { username, is_marlo: 1 },
+                ]
+            });
+
+            // console.log(marlo_user, username, password)
+            if (marlo_user) {
+                let is_marlo = await AuthController.validateAD(marlo_user, password);
+                if (is_marlo)
+                    user = marlo_user;
+
+            } else if (!(username && password)) {
+                // res.status(404).json({ message: 'Missing required email and password fields.' })
+                throw new BaseError(
+                    'NOT FOUND',
+                    HttpStatusCode.NOT_FOUND,
+                    'Missing required email and password fields.',
+                    true
+                );
+            } else {
+                user = await userRepository.findOneOrFail({
+                    where: [
+                        { username },
+                        { email: username }
+                    ]
+                });
+            }
+            if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp) && user.roles.map(role => { return role.description }).find(r => r === RolesHandler.assesor)) {
+                throw new BaseError(
+                    'UNAUTHORIZED',
+                    HttpStatusCode.UNAUTHORIZED,
+                    'User unauthorized',
+                    true
+                );
+            }
+            // get general config by user role
+            let generalConfig = await grnlConfg
+                .createQueryBuilder("qa_general_config")
+                .select('*')
+                .where(`roleId IN (${user.roles.map(role => { return role.id })})`)
+                .andWhere("DATE(qa_general_config.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
+                .getRawMany();
+
+            let current_cycle = await cycleRepo
+                .createQueryBuilder("qa_cycle")
+                .select('*')
+                .where("DATE(qa_cycle.start_date) <= CURDATE()")
+                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+                //.getSql();
+                .getRawOne();
+                
+            //Check if encrypted password match
+            if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
+                console.log(`Password does not match.`);
+                throw new BaseError(
+                    'NOT FOUND',
+                    HttpStatusCode.NOT_FOUND,
+                    'User password incorrect.',
+                    true
+                );
+                
+            }
+
+            //Sing JWT, valid for ``config.jwtTime`` 
+            const token = jwt.sign(
+                { userId: user.id, username: user.username },
+                config_.jwtSecret,
+                { expiresIn: config_.jwtTime }
+            );
+
+            user["token"] = token;
+            user["config"] = generalConfig;
+            user['cycle'] = current_cycle;
+            // console.log(current_cycle)
+            delete user.password;
+            delete user.replies;
+            //Send the jwt in the response
+            return user;
+    }
 
     static getType(status, isCrp?) {
         let res = ""
@@ -434,7 +532,7 @@ class Util {
 
     }
 
-    static createComment = async (detail, approved, userId, metaId, evaluationId) => {
+    static createComment = async (detail, approved, userId, metaId, evaluationId, original_field) => {
         const userRepository = getRepository(QAUsers);
         const metaRepository = getRepository(QAIndicatorsMeta);
         const evaluationsRepository = getRepository(QAEvaluations);
@@ -474,6 +572,8 @@ class Util {
             comment_.evaluation = evaluation;
             comment_.user = user;
             comment_.cycle = current_cycle;
+            if(original_field)
+            comment_.original_field = original_field;
             let new_comment = await commentsRepository.save(comment_);
 
             return new_comment;
@@ -530,7 +630,7 @@ class Util {
             let tagId = await queryRunner.connection.query(query, parameters);
             console.log('TagID' ,tagId);
             
-            return tagId[0].tagId;
+            return tagId[0].tagId || [];
         } catch(error) {
             console.log(error);
             return null;
@@ -573,6 +673,7 @@ class Util {
                 title: element['title'],
                 comment_by: element['comment_by'],
                 assessed_r2: element['assessed_r2'],
+                submission_date: moment(element['submission_date']).format('ll'), // Sep 8, 2021
                 stage: element.hasOwnProperty('stage') ? element['stage'] : undefined,
                 fp: element.hasOwnProperty('fp') ? element['fp'] : undefined,
                 brief: element.hasOwnProperty('brief') ? element['brief'] : undefined, //TODO
@@ -602,6 +703,8 @@ class Util {
                 count_disagree_comments: element['disagree_comments'],
                 count_clarification_comments: element['clarification_comments'],
                 count_accepted_with_comments: element['accepted_with_comments'],
+                original_field: element['original_field'],
+                hide_original_field: true,
             });
 
         }

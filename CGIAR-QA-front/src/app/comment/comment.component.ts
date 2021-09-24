@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, TemplateRef, Input, ViewChild, ElementRef, Renderer, Renderer2, Inject  } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, TemplateRef, Input, ViewChild, ElementRef, Renderer2, Inject  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { DetailedStatus, ReplyTypes } from "../_models/general-status.model"
@@ -47,12 +47,14 @@ export class CommentComponent implements OnInit {
 
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
+  @Input() original_field;
+  @Input() userIsLeader: boolean;
   @Input() isCRP;
   @Output("parentFun") parentFun: EventEmitter<any> = new EventEmitter();
   @Output("validateAllFieldsAssessed") validateAllFieldsAssessed: EventEmitter<any> = new EventEmitter();
   @Output("updateNumCommnts") updateNumCommnts: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild("commentContainer", { static: false }) private commentContainer: ElementRef;
+  @ViewChild("commentContainer") private commentContainer: ElementRef;
   allRoles = Role;
 
   constructor(
@@ -163,12 +165,15 @@ export class CommentComponent implements OnInit {
       return;
     }
     this.showSpinner(this.spinner_comment);
+    console.log(this.original_field);
+    
     this.commentService.createDataComment({
       detail: this.formData.comment.value,
       userId: this.currentUser.id,
       evaluationId: this.dataFromItem.evaluation_id,
       metaId: this.dataFromItem.field_id,
-      approved: true
+      approved: true,
+      original_field: this.original_field
     }).subscribe(
       res => {
         console.log('COMMENT ADDED');
@@ -186,17 +191,26 @@ export class CommentComponent implements OnInit {
 
   }
 
-  updateComment(type, data) {
+  updateComment(type, data: any) {
     let canUpdate = this.validComment(type, data)
     if (!canUpdate.is_valid) {
       this.alertService.error(canUpdate.message);
       return;
     }
     data[type] = !data[type];
+    console.log({data});
+     let params = { 
+       approved: data.approved,
+       is_visible: data.is_visible,
+       is_deleted: data.is_deleted,
+       id: data.id,
+       detail: data.detail,
+       userId: data.user.id,
+     }
     // console.log(data)
     this.showSpinner(this.spinner_comment);
 
-    this.commentService.updateDataComment(data).subscribe(
+    this.commentService.updateDataComment(params).subscribe(
       res => {
         this.getItemCommentData(true);
       },
@@ -422,6 +436,11 @@ export class CommentComponent implements OnInit {
     }
 
     return response;
+  }
+
+  setCommentValue(event, value: string){
+    event.preventDefault();
+    this.commentGroup.controls.comment.setValue(value); 
   }
 
 }

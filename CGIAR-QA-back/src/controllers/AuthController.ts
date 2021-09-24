@@ -16,88 +16,16 @@ const { ErrorHandler } = require("@helpers/ErrorHandler")
 
 class AuthController {
     static login = async (req: Request, res: Response, next: NextFunction) => {
-
+        const { username, password } = req.body;
         try {
-            //Check if username and password are set
-            let { username, password } = req.body;
-            //Get user from database
-            const userRepository = getRepository(QAUsers);
-            const grnlConfg = getRepository(QAGeneralConfiguration);
-            const cycleRepo = getRepository(QACycle);
-
-            username = username.trim().toLowerCase();
-
-            let marlo_user = await userRepository.findOne({
-                where: [
-                    { email: username, is_marlo: 1 },
-                    { username, is_marlo: 1 },
-                ]
-            });
-
-            // console.log(marlo_user, username, password)
-            let user: QAUsers;
-            if (marlo_user) {
-                let is_marlo = await AuthController.validateAD(marlo_user, password);
-                if (is_marlo)
-                    user = marlo_user;
-
-            } else if (!(username && password)) {
-                res.status(404).json({ message: 'Missing required email and password fields.' })
-                // throw new ErrorHandler(404, 'Missing required email and password fields.')
-            } else {
-                user = await userRepository.findOneOrFail({
-                    where: [
-                        { username },
-                        { email: username }
-                    ]
-                });
-            }
-            if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp) && user.roles.map(role => { return role.description }).find(r => r === RolesHandler.assesor)) {
-                res.status(401).json({ message: 'Unauthorized' })
-                return
-            }
-            // get general config by user role
-            let generalConfig = await grnlConfg
-                .createQueryBuilder("qa_general_config")
-                .select('*')
-                .where(`roleId IN (${user.roles.map(role => { return role.id })})`)
-                .andWhere("DATE(qa_general_config.start_date) <= CURDATE()")
-                .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
-                .getRawMany();
-
-            let current_cycle = await cycleRepo
-                .createQueryBuilder("qa_cycle")
-                .select('*')
-                .where("DATE(qa_cycle.start_date) <= CURDATE()")
-                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
-                //.getSql();
-                .getRawOne();
-                
-            //Check if encrypted password match
-            if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
-                res.status(401).json({ message: 'Password does not match.' });
-            }
-
-            //Sing JWT, valid for ``config.jwtTime`` 
-            const token = jwt.sign(
-                { userId: user.id, username: user.username },
-                config_.jwtSecret,
-                { expiresIn: config_.jwtTime }
-            );
-
-            user["token"] = token;
-            user["config"] = generalConfig;
-            user['cycle'] = current_cycle;
-            // console.log(current_cycle)
-            delete user.password;
-            delete user.replies;
-            //Send the jwt in the response
-            res.status(200).json({ data: user })
-
+            const user = await Util.login(username, password);
+            res.status(200).json({ data: user })
         } catch (error) {
-            console.log(error)
-            res.status(400).json(error);
+            console.log(error);
+
+            return res.status(400).json(error);
         }
+
 
     };
 

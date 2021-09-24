@@ -29,6 +29,7 @@
 
   --color-pending: #f3da90;
   --color-complete: #59ed9c;
+  --color-in-progress:  #6db1ff ;
   --color-finalized: #00958e;
   --color-answered: #00958e;
   // --color-finalized: #59ed9c;
@@ -39,7 +40,7 @@
   --color-agree-wc: #268b50;
   --color-disagree: #ed8b84;
   --color-not-sure:  rgb(109, 177, 255);
-  --color-clarification:  rgb(109, 177, 255);
+  --color-clarification:  #6db1ff ;
   --color-pending-gray:  #cfcfcf;
 
   --color-dark-text-btn: #073763;
@@ -71,3 +72,4 @@ $size-sm: 10px;
 $size-md: 20px;
 $size-25: 25px;
 $size-lg: 30px;
+$badge-blue: #43bccd;

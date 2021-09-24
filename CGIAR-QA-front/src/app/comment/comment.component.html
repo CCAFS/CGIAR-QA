@@ -1,4 +1,4 @@
-<div class="comments-container" >
+<div class="comments-container">
     <!-- <app-on-boarding *ngIf="currentUser.roles[0].id != 3"></app-on-boarding> -->
     <i class="icon-close" (click)="closeComments()" style="cursor: pointer;"></i>
     <div *ngIf="commentsByCol.length && !availableComment && currentUser.hasOwnProperty('cycle')">
@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                             <div>
-                                <i *ngIf="(comment.user.id === currentUser.id || currentUser.roles[0].description === allRoles.admin) && comment.replies.replies_count == '0' && !crpComment "
+                                <i *ngIf="(comment.user.id === currentUser.id || currentUser.roles[0].description === allRoles.admin || userIsLeader) && comment.replies.replies_count == '0' && !crpComment "
                                     (click)="updateComment('is_deleted', comment)" class="icon-remove"></i>
                             </div>
                         </div>
@@ -42,10 +42,12 @@
 
                                         <div class="comment-title">
                                             <div style="flex-direction: column;">
-                                                <p class="reply accept-msg" *ngIf="comment.replyType?.id == replyTypes.accepted">
+                                                <p class="reply accept-msg"
+                                                    *ngIf="comment.replyType?.id == replyTypes.accepted">
                                                     ACCEPTED BY {{reply.user.username}}
                                                 </p>
-                                                <span *ngIf="comment.replyType?.id != replyTypes.accepted">ADDED BY {{reply.user.username}} </span>
+                                                <span *ngIf="comment.replyType?.id != replyTypes.accepted">ADDED BY
+                                                    {{reply.user.username}} </span>
                                                 <p>On {{reply.updatedAt | date: 'long'}}</p>
                                             </div>
                                             <i style="height: 1.7em;" *ngIf="reply.user.id === currentUser.id "
@@ -67,32 +69,38 @@
 
                     <div *ngIf="crpComment && comment.crp_approved === null" style="flex-direction: row;"
                         class="add-comment-container">
-                        <button type="button" class="btn accept" (click)="openModal(confirmModal, $event)">ACCEPT</button>
+                        <button type="button" class="btn accept"
+                            (click)="openModal(confirmModal, $event)">ACCEPT</button>
                         <!-- <button type="button" class="btn btn-primary"  (click)="answerComment(true,replyTypes.accepted, comment)" >Open modal</button> -->
                         <!-- <br><br>
                         <pre class="card card-block card-header">{{message}}</pre> -->
-                        <ng-template #confirmModal style="max-width: 200px;" >
-                            <div class="modal-body text-center" >
+                        <ng-template #confirmModal style="max-width: 200px;">
+                            <div class="modal-body text-center">
                                 <h5>Do you want to ACCEPT this comment?</h5>
                                 <p>Before you accept this comment, please
                                     make sure you have updated the information in MARLO/MEL</p>
-                                    <form [formGroup]="commentGroup">
-                                        <textarea maxlength="{{totalChar}}" formControlName="comment" placeholder="Leaving a comment when accepting is optional..."></textarea>
-                                    </form>
-                                <button type="button" class="btn accept" (click)="confirm(true,replyTypes.accepted, comment)">Accept</button>
+                                <form [formGroup]="commentGroup">
+                                    <textarea maxlength="{{totalChar}}" formControlName="comment"
+                                        placeholder="Leaving a comment when accepting is optional..."></textarea>
+                                </form>
+                                <button type="button" class="btn accept"
+                                    (click)="confirm(true,replyTypes.accepted, comment)">Accept</button>
                                 <button type="button" class="btn btn-white" (click)="cancel()">Cancel</button>
                             </div>
                         </ng-template>
                         <button type="button" class="btn disagree"
                             (click)="answerComment(false,replyTypes.disagree,comment)">DISAGREE</button>
-                        <button *ngIf="currentUser.cycle.cycle_stage == '1'" type="button" class="btn request-clarification"
-                            (click)="answerComment(false,replyTypes.clarification,comment)">CLARIFICATION NEEDED</button>
-                    </div> 
+
+                        <button  type="button"
+                            class="btn request-clarification"
+                            (click)="answerComment(false,replyTypes.clarification,comment)">CLARIFICATION
+                            NEEDED</button>
+                    </div>
 
                     <div *ngIf="crpComment && comment.replies.replies_count == '0' && comment.replyTypeId != 1 && comment.replyTypeId != 4 "
                         class="add-comment-container reply-comment"
                         [ngClass]="{'approved' : comment.replyTypeId == 1, 'declined' : comment.replyTypeId == 2, 'clarification' : comment.replyTypeId == 3}">
-                        <h2 *ngIf="comment.replyTypeId != undefined && comment.replyTypeId == replyTypes.clarification" >
+                        <h2 *ngIf="comment.replyTypeId != undefined && comment.replyTypeId == replyTypes.clarification">
                             REQUEST {{replyTypes[comment.replyTypeId]}} ABOUT COMMENT
                         </h2>
                         <h2 *ngIf="comment.replyTypeId != undefined && comment.replyTypeId == replyTypes.disagree">
@@ -108,7 +116,8 @@
                             </form>
                             <div class="options-comments">
                                 <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>
-                                <button type="button" class="btn btn-primary" (click)="replyComment(comment)">ADD</button>
+                                <button type="button" class="btn btn-primary"
+                                    (click)="replyComment(comment)">ADD</button>
                             </div>
                         </div>
 
@@ -123,7 +132,8 @@
 
     </div>
     <!-- VIEW ONLY -->
-    <div *ngIf="commentsByCol.length && !availableComment && (!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended)">
+    <div
+        *ngIf="commentsByCol.length && !availableComment && (!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended)">
         <h2>COMMENTS ON {{dataFromItem.display_name}}</h2>
         <div class="comment-container">
             <ng-container *ngFor="let comment of commentsByCol">
@@ -161,10 +171,12 @@
 
                                         <div class="comment-title">
                                             <div style="flex-direction: column;">
-                                                <p class="reply accept-msg" *ngIf="comment.replyType?.id == replyTypes.accepted">
+                                                <p class="reply accept-msg"
+                                                    *ngIf="comment.replyType?.id == replyTypes.accepted">
                                                     ACCEPTED BY {{reply.user.username}}
                                                 </p>
-                                                <span *ngIf="comment.replyType?.id == replyTypes.accepted">ADDED BY {{reply.user.username}} </span>
+                                                <span *ngIf="comment.replyType?.id == replyTypes.accepted">ADDED BY
+                                                    {{reply.user.username}} </span>
                                                 <p>On {{reply.updatedAt | date: 'long'}}</p>
                                             </div>
                                             <i style="height: 2em;" *ngIf="reply.user.id === currentUser.id "
@@ -200,8 +212,28 @@
             <!-- <p><span class="textarea" role="textbox" contenteditable maxlength="{{totalChar}}" formControlName="comment"></span></p> -->
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>
-        <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>
-        <button type="button" class="btn btn-primary" (click)="addComment()">ADD</button>
+        <div class="btn-group w-100" dropdown>
+            <button id="button-animated" dropdownToggle type="button" class="btn btn-primary dropdown-toggle w-100"
+                aria-controls="dropdown-animated">
+                Quick comment <span class="caret"></span>
+            </button>
+            <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
+                aria-labelledby="button-animated">
+                <li  role="menuitem">
+                    <a class="dropdown-item" (click)="setCommentValue($event,'Please, avoid acronyms.')" href="#">Please, avoid acronyms.</a>
+                </li>
+                <li  role="menuitem">
+                    <a class="dropdown-item" (click)="setCommentValue($event,'Link is not working, please fix it.')" href="#">Link is not working, please fix it.</a>
+                </li>
+                <li  role="menuitem">
+                    <a class="dropdown-item" (click)="setCommentValue($event,'Another comment...')" href="#">Another comment...</a>
+                </li>
+            </ul>
+        </div>
+        <footer>
+            <span class="wordCount">{{ getWordCount(formData.comment.value) }} / 1000 words</span>
+            <button type="button" class="btn btn-agree" (click)="addComment()">ADD</button>
+        </footer>
 
     </div>
     <ngx-spinner [name]="spinner_comment" [fullScreen]="false">

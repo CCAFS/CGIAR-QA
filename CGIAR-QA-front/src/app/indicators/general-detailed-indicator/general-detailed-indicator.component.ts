@@ -10,7 +10,7 @@ import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName, GeneralStatus } from "../../_models/general-status.model"
+import { DetailedStatus, GeneralIndicatorName, GeneralStatus, StatusNames } from "../../_models/general-status.model"
 import { Role } from "../../_models/roles.model"
 import { CommentService } from 'src/app/services/comment.service';
 
@@ -22,17 +22,55 @@ import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 
 
 import * as moment from 'moment';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-general-detailed-indicator',
   templateUrl: './general-detailed-indicator.component.html',
   styleUrls: ['./general-detailed-indicator.component.scss'],
-  providers: [UrlTransformPipe, WordCounterPipe]
+  providers: [UrlTransformPipe, WordCounterPipe],
+  animations: [
+    trigger(
+      'inOutAnimation', 
+      [
+        transition(
+          ':enter', 
+          [
+            style({
+            backgroundColor: '#cfeaf3',
+            padding: '1em',
+            marginBottom: '0.5em',
+            borderRadius: '5px',
+            fontStyle: 'italic',
+            fontSize: '$font-xs',
+            opacity: 0 }),
+            animate('0.5s ease-out', 
+                    style({opacity: 1 }))
+          ]
+        ),
+        transition(
+          ':leave', 
+          [
+            style({
+              backgroundColor: '#cfeaf3',
+              padding: '1em',
+              marginBottom: '0.5em',
+              borderRadius: '5px',
+              fontStyle: 'italic',
+              fontSize: '$font-xs',
+              opacity: 1 }),
+            animate('0.1s ease-in', 
+                    style({ opacity: 0 }))
+          ]
+        )
+      ]
+    )
+  ]
 })
 export class GeneralDetailedIndicatorComponent implements OnInit {
   indicatorType: string;
   currentUser: User;
-  detailedData: any[];
+  detailedData: any[] = [];
   params: any;
   spinner1 = 'spinner1';
   spinner2 = 'spinner2';
@@ -49,8 +87,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     crp_id: ''
   };
   statusHandler = DetailedStatus;
+  statusNames = StatusNames;
   generalCommentGroup: FormGroup;
   currentType = '';
+  isLeadAssessor: boolean;
 
   approveAllitems;
   general_comment_reply;
@@ -61,8 +101,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   assessed_by_r1 = null;
   assessed_by_r2 = null;
   currentUserHasAssessed = false;
-  @ViewChild("commentsElem", { static: false }) commentsElem: ElementRef;
-  @ViewChild("containerElement", { static: false }) containerElement: ElementRef;
+  @ViewChild("commentsElem") commentsElem: ElementRef;
+  @ViewChild("containerElement") containerElement: ElementRef;
   @ViewChildren('commElement') commElements: QueryList<ElementRef>;
 
   totalChar = 6500;
@@ -82,7 +122,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   criteriaData;
   criteria_loading = false;
-
+  original_field: string = '';
+  hideOriginalField = true;
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private urlTransfrom: UrlTransformPipe,
@@ -117,6 +158,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
       this.params = routeParams;
       this.currentType = GeneralIndicatorName[`qa_${this.params.type}`];
+      this.isLeadAssessor = this.verifyIsLeadAssessor();
       this.tooltips.public_link = `Click here to see more information about this  ${this.params.type}.`
       this.showSpinner('spinner1')
       this.notApplicable = this.authenticationService.NOT_APPLICABLE;
@@ -194,7 +236,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
       this.commentService.toggleApprovedNoComments({ meta_array: [field.field_id], isAll: false, userId: this.currentUser.id, noComment }, field.evaluation_id).subscribe(
         res => {
-          // console.log(res);
+          console.log(res);
           field.loading = false
           // this.validateUpdateEvaluation();
           this.validateAllFieldsAssessed()
@@ -216,7 +258,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       this.formTickData.controls.map((value, i) => (this.detailedData[i].replies_count == '0') ? value.get('isChecked').setValue(true) : value.get('isChecked'));
       selected_meta = this.detailedData.filter((data, i) => (this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
       noComment = true;
-      this.gnralInfo.status_update = this.statusHandler.Complete;
+      this.gnralInfo.status_update = this.statusHandler.Finalized;
     } else {
       this.formTickData.controls.map(value => value.get('isChecked').setValue(false));
       selected_meta = this.detailedData.filter((data, i) => (!this.formTickData.controls[i].value.isChecked) ? data : undefined).map(d => d.field_id)
@@ -256,7 +298,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     
     if(fieldWithoutAssessed == undefined) {
       allFieldsAssessed = true;
-      this.gnralInfo.status_update = this.statusHandler.Complete;
+      this.gnralInfo.status_update = this.statusHandler.Finalized;
       this.updateEvaluation('status', this.detailedData)
     } else {
       allFieldsAssessed = false;
@@ -595,7 +637,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.commentService.getDataCommentReply(params).subscribe(
       res => {
         this.hideSpinner('spinner1');
-        console.log(res)
+        console.log(res, 'REPLIES')
         // comment.loaded_replies = res.data;
         this.general_comment_reply = res.data;
       },
@@ -628,6 +670,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     }
 
     return statusParse;
+  }
+
+  verifyIsLeadAssessor() {
+    return this.currentUser.indicators.find(el => (el.indicator.name == this.currentType && el.isLeader)) ? true : false;
   }
 
   toggleAssessorsChat() {

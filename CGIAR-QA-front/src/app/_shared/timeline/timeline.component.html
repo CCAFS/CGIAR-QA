@@ -1,0 +1,39 @@
+<div class="timeline-container">
+    <!-- <p>timeline works!</p>
+    <div>{{batches[0].startDateAssessors}}</div> -->
+    <header>
+        <h1>TIMELINE</h1>
+        <h3>QA 2021</h3>
+    </header>
+    <div class="line">
+        <div class="event">
+            <div class="info-event shadow-sm p-3 mb-5 bg-white rounded">
+                <h2>{{batches[0].startDateAssessors}}</h2>
+                <p>QA Platform opens for assessors</p>
+            </div>
+        </div>
+        <div class="event">
+            <div class="info-event shadow-sm p-3 mb-5 bg-white rounded">
+                <h2>{{batches[0].endDateAssessors}}</h2>
+                <p>QA Platform closes for assessors</p>
+            </div>
+        </div>
+        <div class="event">
+            <div class="info-event shadow-sm p-3 mb-5 bg-white rounded">
+                <h2>{{batches[0].startDateCRP}}</h2>
+                <p>QA Platform opens for CRPs/PTFs</p>
+            </div>
+        </div>
+        <div class="event">
+            <div class="info-event shadow-sm p-3 mb-5 bg-white rounded">
+                <h2>{{batches[0].endDateCRP}}</h2>
+                <p>QA Platform closes for CRPs/PTFs</p>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="shadow-sm p-3 mb-5 bg-white rounded">
+    <div class="next-batch">
+        <p><strong>Next batch: </strong>{{batches[0].nextBatch}}</p>
+    </div>
+</footer>

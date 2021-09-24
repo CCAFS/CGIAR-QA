@@ -85,7 +85,7 @@ export class CrpDashboardComponent implements OnInit {
   spinner1 = 'spinner1';
   spinner2 = 'spinner2';
 
-  @ViewChild('crpChart', { static: false }) private crpChart: BaseChartDirective;
+  @ViewChild('crpChart') private crpChart: BaseChartDirective;
 
   // @ViewChild('crpChart', { static: true })
   // crpChart: BaseChartDirective;

@@ -22,7 +22,7 @@ export class QAEvaluations {
         default: StatusHandler.Pending
     })
     status: StatusHandler;
-    
+
     @Column({
         type: "enum",
         enum: EvaluationStatusHandler,
@@ -50,9 +50,9 @@ export class QAEvaluations {
     updatedAt: Date;
 
     @OneToMany(type => QAComments, comment => comment.evaluation)
-    comments:QAComments;
+    comments: QAComments;
 
-    @Column( "decimal", { precision: 10, scale: 0 })
+    @Column("decimal", { precision: 10, scale: 0 })
     phase_year: number;
 
     @ManyToMany(() => QAUsers)
@@ -62,4 +62,12 @@ export class QAEvaluations {
     @ManyToMany(() => QAUsers)
     @JoinTable()
     assessed_by_second_round: QAUsers[];
+
+    @Column(
+        {
+            type: 'datetime',
+            default: () => 'NOW()'
+        }
+    )
+    batchDate: Date;
 }

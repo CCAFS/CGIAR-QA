@@ -130,7 +130,7 @@
       .activate-messages-container.active {
         background-color: var(--yellow-primary);
         i {
-          content: url("~/assets/icons/comment_icon_inactive.svg");
+          content: url("./../../../assets/icons/comment_icon_inactive.svg");
         }
         .replies-count {
           // background-color: var(--red-primary);

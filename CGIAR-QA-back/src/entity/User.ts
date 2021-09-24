@@ -64,7 +64,7 @@ export class QAUsers {
     @OneToMany(type => QAComments, comment => comment.user)
     comments: QAComments
 
-    @OneToMany(type => QACommentsReplies, reply => reply.user, { eager: true })
+    @OneToMany(type => QACommentsReplies, reply => reply.user)
     replies: QACommentsReplies
 
     @OneToMany(type => QATags, tag => tag.tagType)

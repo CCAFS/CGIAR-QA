@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { QaCloseComponent } from './qa-close.component';
 
@@ -6,7 +6,7 @@ describe('QaCloseComponent', () => {
   let component: QaCloseComponent;
   let fixture: ComponentFixture<QaCloseComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ QaCloseComponent ]
     })

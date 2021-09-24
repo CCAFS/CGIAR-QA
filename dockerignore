@@ -1,0 +1,8 @@
+docs
+node_modules
+npm-debug.log
+/CGIAR-QA-back/src
+/CGIAR-QA-back/node_modules
+/CGIAR-QA-back/docs
+# Cache used by TypeScript's incremental build
+*.tsbuildinfo

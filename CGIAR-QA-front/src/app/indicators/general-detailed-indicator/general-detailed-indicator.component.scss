@@ -114,6 +114,38 @@
   margin-left: 2em;
 }
 
+.original-field {
+  color: #0233bb;
+  font-size: $font-xs;
+  font-weight: $semibold;
+  font-style: italic;
+  margin-top: 0;
+  &:hover{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+.hide{
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 300ms, opacity 300ms;
+}
+.show {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 300ms;
+}
+.original-field-container {
+  background-color: #cfeaf3;
+  padding: 1em;
+  margin-bottom: 0.5em;
+  border-radius: 5px;
+  font-style: italic;
+  font-size: $font-xs;
+  max-width: 100%;
+
+}
+
 .comment-accepted {
   background: var(--color-agree);
   border: var(--green-primary) 2px solid;
@@ -156,10 +188,30 @@
 .hide {
   z-index: -1;
 }
+.link-header {
+  display: flex;
+  justify-content: space-between;
+  margin: auto 1em;
+
+}
+.badge.badge-blue {
+  // margin: auto 1.6em;
+  // display: inline-block;
+  height: min-content;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background-color: lighten($badge-blue, 40%);
+  color: $badge-blue;
+  border-color: $badge-blue;
+}
 .detail-header-container {
   display: flex;
   justify-content: space-between;
   margin: auto 1.6em;
+
   .evaluation-status {
     border-radius: 0.3em;
     padding: 2px 5px;
@@ -207,7 +259,11 @@
       justify-content: space-between;
       align-items: center;
       .left-side {
-
+        .btn-progress{
+          background-color: var(--color-clarification);
+          font-weight: $semibold;
+          color: white;
+        }
       }
 
       .right-side {
@@ -268,7 +324,7 @@
         border-color: var(--yellow-secondary);
         cursor: pointer;
         i {
-          content: url("~/assets/icons/comment_icon_added.svg");
+          content: url("./../../../assets/icons/comment_icon_added.svg");
         }
         .replies-count {
           background-color: var(--red-primary);

@@ -21,6 +21,16 @@ export enum GeneralIndicatorName {
     // qa_outcomes= 'Outcomes',
 }
 
+export enum IndicatorsID {
+    innovations = 1,
+    policies = 2,
+    publications= 3,
+    oicr= 4,
+    melia= 5,
+    capdev= 6,
+    milestones= 7,
+    slo= 8,
+}
 
 export enum TagMessage {
     agree = 'agrees with a comment in',
@@ -35,4 +45,18 @@ export enum ReplyTypes {
     clarification = 3,
     accepted_with_comment = 4,
     discarded = 5
+}
+
+export enum StatusIcon {
+    pending = 'pending',
+    complete = 'in-progress',
+    finalized = 'quality-assessed',
+    autochecked = 'autochecked'
+}
+
+export enum StatusNames {
+    complete = 'In progress',
+    pending = 'Pending',
+    finalized = 'Quality Assessed',
+    autochecked = 'Automatically Validated'
 }

@@ -1,6 +1,7 @@
-<div class="row justify-content-center">
+<!-- <div class="row justify-content-center">
     <i class="qa-timeline-icon"></i>
-</div>
+</div> -->
+<app-timeline></app-timeline>
 <div class="row justify-content-center dashboard-container">
     <div class="col-3 col-programs">
         <p class="card-title">Programs/Platforms ({{selectedProgramName}})</p>
@@ -331,8 +332,7 @@
         </div>
 
     </div>
-    <ngx-spinner>
-    </ngx-spinner>
+    <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
 
 
     <ng-template #template class="modal-dialog">

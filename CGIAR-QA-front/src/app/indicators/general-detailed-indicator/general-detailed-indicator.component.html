@@ -3,10 +3,13 @@
     <iframe *ngIf="indicatorType == 'innovations'" [src]="chatRooms.innovations"></iframe>
 </div>
 <div (click)="toggleAssessorsChat()" class="btn-assessors-chat">Assessors chat</div> -->
-<a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
-    routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
-    <i class=icon-go-back></i> {{currentType}} List
-</a>
+<div class="row link-header">
+    <a class="nav-item nav-link go-back" [routerLinkActive]="['active']"
+        routerLink="/indicator/{{ params.type}}/{{ params.primary_column}}">
+        <i class=icon-go-back></i> {{currentType}} List
+    </a>
+    <span *ngIf="isLeadAssessor" class="badge badge-blue">Lead assessor</span>
+</div>
 <!-- <div class="row criteria-container">
     <div *ngIf="!criteria_loading">
         <h2>QUALITY ASSESSMENT CRITERIA</h2>
@@ -32,8 +35,8 @@
     <p *ngIf="currentUser.hasOwnProperty('cycle')">Status:
         <strong>
             <span
-                [ngClass]=" {'text-assessed-r1': gnralInfo.status === statusHandler.Complete, 'text-danger':gnralInfo.status === statusHandler.Pending, 'text-assessed-r2': gnralInfo.status === statusHandler.Finalized, 'text-autochecked': gnralInfo.status === statusHandler.Autochecked} ">
-                {{parseGeneralStatus(gnralInfo.status)}}
+                [ngClass]=" {'text-in-progress': gnralInfo.status === statusHandler.Complete, 'text-pending':gnralInfo.status === statusHandler.Pending, 'text-quality-assessed': gnralInfo.status === statusHandler.Finalized, 'text-autochecked': gnralInfo.status === statusHandler.Autochecked} ">
+                {{statusNames[gnralInfo.status]}}
             </span>
         </strong>
     </p>
@@ -64,26 +67,30 @@
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div *ngIf="currentUser.hasOwnProperty('cycle')">
                 <div class="col data-container">
-                    <div class="row assessment-info-r2" *ngIf="currentUser.cycle.cycle_stage != '1'" style="margin:0; margin-bottom: 2em;">
+                    <div class="row assessment-info-r2" *ngIf="currentUser.cycle.cycle_stage != '1'"
+                        style="margin:0; margin-bottom: 2em;">
                         <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container">
                             <button type="button" class="btn btn-finalized"
                                 [disabled]="gnralInfo.status === statusHandler.Finalized"
                                 (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
                         </div>
                         <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container">
-                        <button type="button" class="btn btn-outline-info"
-                            (click)="updateEvaluation('complete_eval',detailedData)">OPEN ASSESSMENT</button>
-                    </div>
-                    <div class="right-side">
-                        <p *ngIf="assessed_by_r1"> <strong>Assessed (Round 1) by: </strong> {{assessed_by_r1}}</p>
-                        <p *ngIf="assessed_by_r2"> <strong>Assessed (Round 2) by: </strong> {{assessed_by_r2}}</p>
-                    </div>
+                            <button type="button" class="btn btn-outline-info"
+                                (click)="updateEvaluation('complete_eval',detailedData)">OPEN ASSESSMENT</button>
+                        </div>
+                        <div class="right-side">
+                            <p *ngIf="assessed_by_r1"> <strong>Assessed (Round 1) by: </strong> {{assessed_by_r1}}</p>
+                            <p *ngIf="assessed_by_r2"> <strong>Assessed (Round 2) by: </strong> {{assessed_by_r2}}</p>
+                        </div>
                     </div>
                     <div class="assessment-info select-all"
-                        *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
+                        *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData.length > 0 && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
+                            <button type="button" *ngIf="gnralInfo.status != 'complete'"
+                                (click)="updateEvaluation('complete_eval',detailedData)" class="btn btn-progress">Set
+                                assessment in progress</button>
                             <button type="button" (click)="onChangeSelectAll(approveAllitems)"
-                                class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate/Invalidate
+                                class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate / Invalidate
                                 assessment</button>
                             <button *ngIf="!approveAllitems && !currentUserHasAssessed" type="button"
                                 (click)="onChangeSelectAll(true)" class="btn btn-agree">Agree with previous
@@ -108,7 +115,7 @@
                                             <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked "
                                                 [innerHTML]="detailedData[i].display_name | markdown">
                                             </h2>
-                                            
+
 
                                             <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                                 {{detailedData[i].display_name}}</h2> -->
@@ -142,11 +149,20 @@
 
                                     </div>
 
+                                    <span *ngIf="detailedData[i].hide_original_field && detailedData[i].original_field != null" class="original-field"
+                                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Show original value</span>
+                                    <span *ngIf="!detailedData[i].hide_original_field && detailedData[i].original_field != null" class="original-field"
+                                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide original value</span>
+                                    <div class="field-container original-field-container" *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation]>
+                                    {{detailedData[i].original_field}}
+                                    </div>
                                     <!-- data value -->
-                                    <div class="field-container" *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
+                                    <div class="field-container"
+                                        *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
                                         [innerHTML]="detailedData[i].value | markdown">
                                     </div>
-                                    <div class="field-container" *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  ) && detailedData[i].col_name !== 'evidence_link' "
+                                    <div class="field-container"
+                                        *ngIf="detailedData[i].value && (detailedData[i].col_name === 'outcome_description' || detailedData[i].col_name === 'OICR' || detailedData[i].col_name === 'evidence_link'  ) && detailedData[i].col_name !== 'evidence_link' "
                                         [innerHTML]="detailedData[i].value | markdown">
                                     </div>
 
@@ -156,7 +172,8 @@
                                     <!-- <p *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link' ">
                                         {{detailedData[i].value}}</p> -->
                                     <!-- no data -->
-                                    <p *ngIf="detailedData[i].value === null || detailedData[i].value == ''" class="empty-value">Data not provided.</p>
+                                    <p *ngIf="detailedData[i].value === null || detailedData[i].value == ''"
+                                        class="empty-value">Data not provided.</p>
                                     <!-- <p *ngIf="!detailedData[i].value" class="empty-value">Data not provided.</p> -->
 
                                 </div>
@@ -312,7 +329,8 @@
                                         [innerHTML]="detailedData[i].value">
                                     </div>
                                     <!-- no data -->
-                                    <p *ngIf="detailedData[i].value === null || detailedData[i].value == ''" class="empty-value">Data not provided.</p>
+                                    <p *ngIf="detailedData[i].value === null || detailedData[i].value == ''"
+                                        class="empty-value">Data not provided.</p>
 
                                 </div>
 
@@ -354,18 +372,19 @@
                     </div>
                 </div> -->
             </div>
-            <ngx-spinner [fullScreen]="false" [name]="spinner1" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"
-                size="medium">
-            </ngx-spinner>
+
+            <ngx-spinner bdColor="rgba(51,51,51,0.3)" [name]="spinner1" color="#fff" size="default"
+                type="square-jelly-box" [fullScreen]="false"></ngx-spinner>
+
         </div>
 
-        <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex]}" [style.top.px]="currentY"
+        <div  [ngClass]="{'hide' : !activeCommentArr[fieldIndex]}" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
-            <div [ngClass]="{'hide' : !renderComments }"  class="comments-component-container">
+            <div  [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
 
-                <app-comment  [isCRP]="false" #comment
+                <app-comment  [isCRP]="false" [userIsLeader]="isLeadAssessor" [original_field]="detailedData[fieldIndex]?.value || null" #comment
                     (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
-                    (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);" ></app-comment>
+                    (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);"></app-comment>
             </div>
         </div>
 
@@ -373,3 +392,4 @@
 
 
 </form>
+<!-- [original_field]="detailedData[fieldIndex].value" -->
