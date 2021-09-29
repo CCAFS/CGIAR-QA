@@ -8,7 +8,7 @@ export enum StatusHandler {
 }
 
 export enum StatusHandlerMIS {
-    complete = 'in_progress',
+    complete = 'quality_assessed',
     pending = 'pending',
     finalized = 'quality_assessed',
     autochecked = 'automatically_validated'
