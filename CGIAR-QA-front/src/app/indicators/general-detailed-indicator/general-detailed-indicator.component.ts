@@ -531,15 +531,15 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         evaluationData['status'] = this.gnralInfo.status_update;
         // evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
         break;
-      case "finalized_eval":
+      case "finalized":
         // evaluationData['status'] = this.gnralInfo.status_update;
         evaluationData['status'] = this.statusHandler.Finalized;
         break;
-      case "complete_eval":
+      case "complete":
         // evaluationData['status'] = this.gnralInfo.status_update;
         evaluationData['status'] = this.statusHandler.Complete;
         break;
-      case "pending_eval":
+      case "pending":
         // evaluationData['status'] = this.gnralInfo.status_update;
         evaluationData['status'] = this.statusHandler.Pending;
         break;

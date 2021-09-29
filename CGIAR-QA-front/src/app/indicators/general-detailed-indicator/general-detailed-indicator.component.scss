@@ -445,3 +445,14 @@
   line-height: 1.5em;
   word-wrap: break-word;
 }
+
+.dropdown-item {
+  display: flex;
+    justify-content:flex-start;
+    align-items: center;
+    cursor: pointer;
+  i {
+    width: 24px;
+    margin-right: 0.5em;
+  }
+}

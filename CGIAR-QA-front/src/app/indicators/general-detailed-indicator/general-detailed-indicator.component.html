@@ -32,6 +32,28 @@
         </div>
     </div>
 
+    <div class="btn-group h-100 w-25" dropdown>
+        <button id="button-animated" dropdownToggle type="button" class="btn btn-white dropdown-toggle w-100"
+            aria-controls="dropdown-animated">
+            Status: {{statusNames[gnralInfo.status]}} <span class="caret"></span>
+        </button>
+        <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
+            aria-labelledby="button-animated">
+            
+            <li *ngFor="let status of statusNames | keyvalue | slice:1:4"  role="menuitem"><a class="dropdown-item"
+                    (click)="updateEvaluation(status.key,detailedData)">
+                    <i [ngClass]=" {'icon-in-progress': status.key === statusHandler.Complete, 'icon-pending': status.key === statusHandler.Pending, 'icon-quality-assessed': status.key === statusHandler.Finalized}" ></i>
+                        <span>
+                            {{status.value}}
+                        </span>
+
+                    </a>
+            </li>
+            <li role="menuitem"><a class="dropdown-item"
+                    (click)="updateEvaluation('pending',detailedData)">Agree with previous assessment</a>
+            </li>
+        </ul>
+    </div>
     <p *ngIf="currentUser.hasOwnProperty('cycle')">Status:
         <strong>
             <span
@@ -72,11 +94,11 @@
                         <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container">
                             <button type="button" class="btn btn-finalized"
                                 [disabled]="gnralInfo.status === statusHandler.Finalized"
-                                (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
+                                (click)="updateEvaluation('finalized',detailedData)">ASSESSED 2ND ROUND</button>
                         </div>
                         <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container">
                             <button type="button" class="btn btn-outline-info"
-                                (click)="updateEvaluation('complete_eval',detailedData)">OPEN ASSESSMENT</button>
+                                (click)="updateEvaluation('complete',detailedData)">OPEN ASSESSMENT</button>
                         </div>
                         <div class="right-side">
                             <p *ngIf="assessed_by_r1"> <strong>Assessed (Round 1) by: </strong> {{assessed_by_r1}}</p>
@@ -87,7 +109,7 @@
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData.length > 0 && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
                             <button type="button" *ngIf="gnralInfo.status != 'complete'"
-                                (click)="updateEvaluation('complete_eval',detailedData)" class="btn btn-progress">Set
+                                (click)="updateEvaluation('complete',detailedData)" class="btn btn-progress">Set
                                 assessment in progress</button>
                             <button type="button" (click)="onChangeSelectAll(approveAllitems)"
                                 class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate / Invalidate
@@ -149,12 +171,19 @@
 
                                     </div>
 
-                                    <span *ngIf="detailedData[i].hide_original_field && detailedData[i].original_field != null" class="original-field"
-                                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Show original value</span>
-                                    <span *ngIf="!detailedData[i].hide_original_field && detailedData[i].original_field != null" class="original-field"
-                                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide original value</span>
-                                    <div class="field-container original-field-container" *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation]>
-                                    {{detailedData[i].original_field}}
+                                    <span
+                                        *ngIf="detailedData[i].hide_original_field && detailedData[i].original_field != null"
+                                        class="original-field"
+                                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Show
+                                        original value</span>
+                                    <span
+                                        *ngIf="!detailedData[i].hide_original_field && detailedData[i].original_field != null"
+                                        class="original-field"
+                                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide
+                                        original value</span>
+                                    <div class="field-container original-field-container"
+                                        *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation]>
+                                        {{detailedData[i].original_field}}
                                     </div>
                                     <!-- data value -->
                                     <div class="field-container"
@@ -269,7 +298,7 @@
                         style="margin-left: 1em;">
                         <button type="button" class="btn btn-green-secondary"
                             [disabled]="gnralInfo.status === statusHandler.Finalized"
-                            (click)="updateEvaluation('finalized_eval',detailedData)">ASSESSED 2ND ROUND</button>
+                            (click)="updateEvaluation('finalized',detailedData)">ASSESSED 2ND ROUND</button>
                     </div>
                     <div *ngIf="gnralInfo.status === statusHandler.Finalized" class="bton-container"
                         style="margin-left: 1em;">
@@ -378,11 +407,12 @@
 
         </div>
 
-        <div  [ngClass]="{'hide' : !activeCommentArr[fieldIndex]}" [style.top.px]="currentY"
+        <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex]}" [style.top.px]="currentY"
             class="col-sm-4 comments-container">
-            <div  [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
+            <div [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
 
-                <app-comment  [isCRP]="false" [userIsLeader]="isLeadAssessor" [original_field]="detailedData[fieldIndex]?.value || null" #comment
+                <app-comment [isCRP]="false" [userIsLeader]="isLeadAssessor"
+                    [original_field]="detailedData[fieldIndex]?.value || null" #comment
                     (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex])"
                     (updateNumCommnts)="updateNumCommnts($event, detailedData[fieldIndex]);"></app-comment>
             </div>

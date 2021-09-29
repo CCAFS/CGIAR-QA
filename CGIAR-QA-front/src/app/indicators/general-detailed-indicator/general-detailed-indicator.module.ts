@@ -18,6 +18,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { MarkdownModule } from 'ngx-markdown';
 import { CommentComponentModule } from 'src/app/comment/comment.module';
 import { AssessorsChatWindowComponent } from 'src/app/_shared/assessors-chat-window/assessors-chat-window.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 // import { CommentComponentModule } from '../../comment/comment.component.module';
 
@@ -32,6 +33,7 @@ import { AssessorsChatWindowComponent } from 'src/app/_shared/assessors-chat-win
         PaginationModule.forRoot(),
         TooltipModule.forRoot(),
         MarkdownModule.forRoot(),
+        BsDropdownModule.forRoot(),
         NgxSpinnerModule,
         OrderModule,
         ReactiveFormsModule,
