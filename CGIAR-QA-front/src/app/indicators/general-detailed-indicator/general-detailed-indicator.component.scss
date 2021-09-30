@@ -184,6 +184,7 @@
 .indicator-item-name {
   font-size: $font-md;
   text-transform: capitalize;
+  margin: 0;
 }
 .hide {
   z-index: -1;
@@ -444,6 +445,26 @@
   font-size: 0.98em;
   line-height: 1.5em;
   word-wrap: break-word;
+}
+
+.btn-group {
+  width: 25%;
+}
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #fef;
+  padding: 0.5em;
+  .status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    i {
+      width: 24px;
+      margin-right: 0.5em;
+    }
+  }
 }
 
 .dropdown-item {
