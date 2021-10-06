@@ -162,7 +162,7 @@
 
 .comment-clarification {
   background: var(--color-clarification);
-  border: var(--blue-tertiarty) 2px solid;
+  border: var(--blue-tertiary) 2px solid;
 }
 
 .nav-item {
@@ -233,9 +233,28 @@
 }
 .btn{
   margin-right: 1.5em;
+  transition: all 0.1s ease;
+  &:hover{
+    transform: scale(1.05);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.3);
+  }
 }
 .btn-primary:hover {
   background-color: var(--yellow-secondary);
+}
+.btn-check {
+  background-color: var(--color-agree);
+  color: var(--blue-tertiary);
+  border: 1px solid var(--blue-tertiary);
+  font-size: $font-xs;
+  font-weight: $semibold;
+}
+.btn-uncheck {
+  background-color: white;
+  color: var(--red-secondary);
+  border: 1px solid var(--red-secondary);
+  font-size: $font-xs;
+  font-weight: $semibold;
 }
 .icon-go-back {
   height: 0.8em;

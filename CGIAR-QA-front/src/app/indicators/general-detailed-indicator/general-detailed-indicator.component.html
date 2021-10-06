@@ -124,14 +124,12 @@
                         </div>
                         <div class="right-side">
  
-                            <button type="button" (click)="onChangeSelectAll(!approveAllitems)"
-                            class="btn btn-{{ approveAllitems ? 'danger' : 'agree'}}">Validate / Invalidate
-                            assessment</button>
+                        <button type="button" (click)="onChangeSelectAll(!approveAllitems)"
+                            class="btn btn-{{ approveAllitems ? 'uncheck' : 'check'}}">{{approveAllitems ? 'Uncheck all' : 'Check all'}}</button> 
                             <!-- <div class="check-container">
                                 <div class="check-area">
-
                                     <input
-                                        (change)="onChangeSelectAll(approveAllitems)"
+                                        (change)="onChangeSelectAll(!approveAllitems)"
                                         value="approveAllitems" 
                                         type="checkbox"
                                         name="isAllChecked"
