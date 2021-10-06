@@ -194,8 +194,11 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           isChecked: x.approved_no_comment ? true : false
         })
       )
+      if(!x.approved_no_comment ){
+        this.approveAllitems
+      }
     });
-
+    this.checkAllIsApproved();
   }
 
   validateComments() {
@@ -251,7 +254,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   onChangeSelectAll(e) {
-
+    console.log('Change SELECT ALL', this.approveAllitems);
+    
     let selected_meta = [];
     let noComment;
     if (e) {
@@ -270,7 +274,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.commentService.toggleApprovedNoComments({ meta_array: selected_meta, userId: this.currentUser.id, isAll: true, noComment }, this.gnralInfo.evaluation_id).subscribe(
       res => {
         this.updateEvaluation('status', this.detailedData);
-        this.approveAllitems = !e;
+        // this.approveAllitems = !e;
+        console.log(this.approveAllitems)
       },
       error => {
         this.alertService.error(error);
@@ -279,6 +284,15 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
 
     // console.log(selected_meta)
+  }
+
+  checkAllIsApproved() {
+    let statusByField = [];
+    this.formTickData.controls.forEach((value, i) => {
+      statusByField.push({display_name: this.detailedData[i].display_name, value:  (this.detailedData[i].replies_count != '0' || value.get('isChecked').value || this.detailedData[i].enable_comments == false) ? true : false});
+    });
+    this.approveAllitems = statusByField.find(e => e.value == false) ?  false : true;
+    return this.approveAllitems;
   }
 
   validateAllFieldsAssessed() {
@@ -322,7 +336,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       res => {
         console.log('detaileedData',res)
         this.detailedData = res.data.filter(field => {
-          console.log(field.value);
+          // console.log(field.value);
           if (typeof field.value === 'number') field.value = String(field.value)
           if(field.value) {
             field.value = field.value.replace("´","'");
@@ -352,7 +366,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
         }
-        this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
+        // this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
+        this.approveAllitems = false;
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
         this.evaluationService.getAssessorsByEvaluation(this.gnralInfo.evaluation_id).subscribe(
           res => {
