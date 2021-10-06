@@ -91,7 +91,7 @@
         <div [ngClass]="{'col-sm-12' : !activeCommentArr[fieldIndex], 'col-sm-8':  activeCommentArr[fieldIndex]}">
             <div *ngIf="currentUser.hasOwnProperty('cycle')">
                 <div class="col data-container">
-                    <div class="row assessment-info-r2" *ngIf="currentUser.cycle.cycle_stage != '1'"
+                    <!-- <div class="row assessment-info-r2" *ngIf="currentUser.cycle.cycle_stage != '1'"
                         style="margin:0; margin-bottom: 2em;">
                         <div *ngIf="gnralInfo.status !== statusHandler.Finalized" class="bton-container">
                             <button type="button" class="btn btn-finalized"
@@ -106,11 +106,13 @@
                             <p *ngIf="assessed_by_r1"> <strong>Assessed (Round 1) by: </strong> {{assessed_by_r1}}</p>
                             <p *ngIf="assessed_by_r2"> <strong>Assessed (Round 2) by: </strong> {{assessed_by_r2}}</p>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="assessment-info select-all"
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData.length > 0 && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
-                            <button type="button" *ngIf="gnralInfo.status != 'complete'"
+                            <p *ngIf="assessed_by_r1"> <strong>Assessed  by: </strong> {{assessed_by_r1}}</p>
+                            <!-- <p *ngIf="assessed_by_r2"> <strong>Assessed (Round 2) by: </strong> {{assessed_by_r2}}</p> -->
+                            <!-- <button type="button" *ngIf="gnralInfo.status != 'complete'"
                                 (click)="updateEvaluation('complete',detailedData)" class="btn btn-progress">Set
                                 assessment in progress</button>
                             <button type="button" (click)="onChangeSelectAll(approveAllitems)"
@@ -118,14 +120,17 @@
                                 assessment</button>
                             <button *ngIf="!approveAllitems && !currentUserHasAssessed" type="button"
                                 (click)="onChangeSelectAll(true)" class="btn btn-agree">Agree with previous
-                                assessment</button>
+                                assessment</button> -->
                         </div>
                         <div class="right-side">
-                            <p *ngIf="assessed_by_r1"> <strong>Assessed by: </strong> {{assessed_by_r1}}</p>
+ 
+                            <button type="button" (click)="onChangeSelectAll(approveAllitems)"
+                            class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate / Invalidate
+                            assessment</button>
                         </div>
                     </div>
+        
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
-
                         <ng-container *ngIf="detailedData" [formGroupName]="i">
                             <div class="data-row">
                                 <div class="col data-value">
