@@ -81,7 +81,7 @@ export class HeaderBarComponent implements OnInit {
 
   ngOnInit() {
     this.indicators = this.authenticationService.userHeaders;
-    // console.log('NAV INDICATORS', this.indicators);
+    console.log('NAV INDICATORS', this.indicators);
   }
 
   getIndicators() {
@@ -111,6 +111,8 @@ export class HeaderBarComponent implements OnInit {
           console.log("getHeaderLinks", res);
           this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
           this.authenticationService.userHeaders = this.indicators;
+          console.log(this.indicators);
+          
         },
         error => {
           console.log("getHeaderLinks", error);

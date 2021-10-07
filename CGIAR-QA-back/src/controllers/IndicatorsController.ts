@@ -117,7 +117,8 @@ class IndicatorsController {
                         indicators.primary_field AS primary_field,
                         indicators.order AS indicator_order,
                         indicators.view_name AS view_name,
-                        meta.enable_assessor as enable_assessor
+                        meta.enable_assessor as enable_assessor,
+                        qa_indicator_user.isLeader as is_leader
                     FROM
                         qa_indicator_user qa_indicator_user
                     LEFT JOIN qa_indicators indicators ON indicators.id = qa_indicator_user.indicatorId
