@@ -26,7 +26,7 @@ export class HeaderBarComponent implements OnInit {
   indicators = [];
   currentRole = '';
   params;
-
+  currentUserID = null;
   isHome;
 
   chatRooms = null;
@@ -65,7 +65,8 @@ export class HeaderBarComponent implements OnInit {
               if (x) {
                 this.currentRole = x.roles[0].description.toLowerCase()
                 this.ngOnInit();
-                this.getHeaderLinks();
+
+
                 this.isHome = `/dashboard/${this.currentUser}`;
               }
             },
@@ -80,6 +81,15 @@ export class HeaderBarComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.indicators = [];
+    if(this.currentUserID != this.currentUser.id){
+      this.currentUserID = this.currentUser.id;
+      this.indicators = [];
+      this.getHeaderLinks();
+    } else {
+      // this.currentUserID = this.currentUser.id;
+      this.getHeaderLinks();
+    }
     // this.indicators = this.authenticationService.userHeaders;
     // console.log('NAV INDICATORS', this.indicators);
   }
@@ -105,12 +115,14 @@ export class HeaderBarComponent implements OnInit {
   }
 
   getHeaderLinks() {
+    console.log('GET HEADER LINKS OUT');
+    
     if (this.indicators && !this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
           console.log("getHeaderLinks", res);
           this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
-          this.authenticationService.userHeaders = this.indicators;
+          this.authenticationService.userHeaders = [...this.indicators];
           console.log(this.indicators);
           
         },
