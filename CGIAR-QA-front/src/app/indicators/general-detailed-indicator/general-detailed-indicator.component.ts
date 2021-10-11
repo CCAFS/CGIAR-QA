@@ -84,7 +84,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     general_comment_updatedAt: '',
     general_comment_id: '',
     status_update: null,
-    crp_id: ''
+    crp_id: '',
+    requires_second_assessment: false
   };
   statusHandler = DetailedStatus;
   statusNames = StatusNames;
@@ -365,6 +366,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           status_update: null,
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
+          requires_second_assessment: false
         }
         // this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
         this.approveAllitems = false;
@@ -577,6 +579,11 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       }
     )
 
+  }
+
+  markForSecondAssessment() {
+    console.log('This item should be assessed again.');
+    
   }
 
   validateCommentAvility(field, is_embed?) {

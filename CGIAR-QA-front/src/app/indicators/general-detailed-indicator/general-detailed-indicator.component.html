@@ -40,7 +40,7 @@
                 <i
                     [ngClass]=" {'icon-in-progress': gnralInfo.status === statusHandler.Complete, 'icon-pending': gnralInfo.status === statusHandler.Pending, 'icon-quality-assessed': gnralInfo.status === statusHandler.Finalized}">
                 </i>
-                 {{statusNames[gnralInfo.status]}}
+                {{statusNames[gnralInfo.status]}}
             </div>
             <span class="caret"></span>
         </button>
@@ -57,10 +57,7 @@
                     </span>
                 </a>
             </li>
-            <li class="divider dropdown-divider"></li>
-            <li role="menuitem"><a class="dropdown-item" (click)="onChangeSelectAll(true)">Agree with
-                    previous assessment</a>
-            </li>
+
         </ul>
     </div>
 
@@ -110,39 +107,35 @@
                     <div class="assessment-info select-all"
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData.length > 0 && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
-                            <p *ngIf="assessed_by_r1"> <strong>Assessed  by: </strong> {{assessed_by_r1}}</p>
+                            <p *ngIf="assessed_by_r1"> <strong>Assessed by: </strong> {{assessed_by_r1}}</p>
+                            <!-- <div role="menuitem"><a (click)="onChangeSelectAll(true)">Agree with
+                                    previous assessment</a>
+                            </div> -->
                             <!-- <p *ngIf="assessed_by_r2"> <strong>Assessed (Round 2) by: </strong> {{assessed_by_r2}}</p> -->
                             <!-- <button type="button" *ngIf="gnralInfo.status != 'complete'"
                                 (click)="updateEvaluation('complete',detailedData)" class="btn btn-progress">Set
                                 assessment in progress</button>
                             <button type="button" (click)="onChangeSelectAll(approveAllitems)"
                                 class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate / Invalidate
-                                assessment</button>
-                            <button *ngIf="!approveAllitems && !currentUserHasAssessed" type="button"
-                                (click)="onChangeSelectAll(true)" class="btn btn-agree">Agree with previous
                                 assessment</button> -->
+                            <button *ngIf="approveAllitems && !currentUserHasAssessed" type="button"
+                                (click)="onChangeSelectAll(true)" class="btn btn-agree-previous">✔ Agree with previous
+                                assessment</button>
                         </div>
-                        <div class="right-side">
- 
-                        <button type="button" (click)="onChangeSelectAll(!approveAllitems)"
-                            class="btn btn-{{ approveAllitems ? 'uncheck' : 'check'}}">{{approveAllitems ? 'Uncheck all' : 'Check all'}}</button> 
-                            <!-- <div class="check-container">
-                                <div class="check-area">
-                                    <input
-                                        (change)="onChangeSelectAll(!approveAllitems)"
-                                        value="approveAllitems" 
-                                        type="checkbox"
-                                        name="isAllChecked"
-                                        id="isAllChecked" class="custom-control-input"
-                                        >
-                                    <label
-                                        class="custom-control-label" for="isAllChecked">
-                                    </label>
-                                </div>
-                            </div> -->
+                        <div class="requires-assessment">
+                            <label>
+                                <input type="checkbox" [value]="gnralInfo.status != statusHandler.Complete" (change)="updateEvaluation('complete',detailedData)">
+                                This item requires a 2nd assessment
+                            </label>
                         </div>
                     </div>
-        
+                    
+                    <div class="check-all-container">
+                        <button type="button" (click)="onChangeSelectAll(!approveAllitems)"
+                        class="btn btn-{{ approveAllitems ? 'uncheck' : 'check'}}">{{approveAllitems ? 'Uncheck
+                        all' : 'Check all'}}</button>
+                    </div>
+
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
                         <ng-container *ngIf="detailedData" [formGroupName]="i">
                             <div class="data-row">

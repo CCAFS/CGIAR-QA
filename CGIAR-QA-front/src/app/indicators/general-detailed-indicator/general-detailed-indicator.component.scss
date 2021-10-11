@@ -238,15 +238,16 @@
 .btn-primary:hover {
   background-color: var(--yellow-secondary);
 }
-.btn-check {
+.btn-check, .btn-agree-previous {
   background-color: var(--color-agree);
   color: var(--blue-tertiary);
   border: 1px solid var(--blue-tertiary);
   font-size: $font-xs;
   font-weight: $semibold;
   transition: all 0.1s ease;
+  height: max-content;
   &:hover{
-    transform: scale(1.05);
+    transform: scale(1.005);
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.3);
   }
 }
@@ -258,7 +259,7 @@
   font-weight: $semibold;
   transition: all 0.1s ease;
   &:hover{
-    transform: scale(1.05);
+    transform: scale(1.005);
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.3);
   }
 }
@@ -284,17 +285,51 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 2em;
+      padding: 1em 1.5em;
+      background-color: var(--input-gray);
+      border-radius: 6px;
+      margin-bottom: 1em;
       .left-side {
+        display: flex;
+        align-items: center;
+        font-size: $font-sm;
+
+        p{
+          margin: 0 2em 0 0;
+          align-content: center;
+          height: max-content;
+        }
+        
         .btn-progress{
           background-color: var(--color-clarification);
           font-weight: $semibold;
           color: white;
         }
       }
+      .requires-assessment {
+        font-size: $font-sm;
+        label {
+          display: flex;
+          gap: 0.5em;
+          align-items: center;
+          margin:0 0 0 1em;
+          input{
+            &:hover {
+              cursor: pointer;
+            }
+          }
+        }
+      }
 
       .right-side {
 
       }
+    }
+    .check-all-container {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
     }
 
     .gnral-commnts.data-row {
