@@ -124,7 +124,7 @@
                         </div>
                         <div class="requires-assessment">
                             <label>
-                                <input type="checkbox" [value]="gnralInfo.status != statusHandler.Complete" (change)="updateEvaluation('complete',detailedData)">
+                                <input type="checkbox" [checked]="gnralInfo.requires_second_assessment" (change)="markForSecondAssessment()">
                                 This item requires a 2nd assessment
                             </label>
                         </div>

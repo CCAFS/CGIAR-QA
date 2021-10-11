@@ -584,6 +584,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   markForSecondAssessment() {
     console.log('This item should be assessed again.');
     
+    this.gnralInfo.requires_second_assessment = !this.gnralInfo.requires_second_assessment;
   }
 
   validateCommentAvility(field, is_embed?) {
