@@ -82,4 +82,7 @@ router.get("/indicator/:indicatorName", [checkJwt, checkRole([RolesHandler.admin
 
 // get assessors by evaluation
 router.get("/:evaluationId([0-9]+)/assessors", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], EvaluationsController.getAssessorsByEvaluations)
+
+// update require_second_assessment in indicator item
+router.patch("/:id([0-9]+)/detail/second_assessment", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], EvaluationsController.updateRequireSecondEvaluation)
 export default router;
