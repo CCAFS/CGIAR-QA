@@ -583,8 +583,17 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
 
   markForSecondAssessment() {
     console.log('This item should be assessed again.');
-    
-    this.gnralInfo.requires_second_assessment = !this.gnralInfo.requires_second_assessment;
+    this.showSpinner('spinner1')
+
+    this.evaluationService.updateRequireSecondAssessmentEvaluation(this.gnralInfo.evaluation_id, {require_second_assessment: !this.gnralInfo.requires_second_assessment})
+    .subscribe(res => {
+      this.hideSpinner('spinner1');
+      this.gnralInfo.requires_second_assessment = !this.gnralInfo.requires_second_assessment;
+    },
+    error => {
+      this.hideSpinner('spinner1');
+      this.alertService.error(error);
+    })
   }
 
   validateCommentAvility(field, is_embed?) {

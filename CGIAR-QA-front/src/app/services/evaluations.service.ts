@@ -23,6 +23,10 @@ export class EvaluationsService {
   updateDataEvaluation(params, id) {
     return this.http.patch<any>(`${environment.apiUrl}/evaluation/${id}/detail/`, params)
   }
+  // update require_second_assessment for evaluation
+  updateRequireSecondAssessmentEvaluation(id, params) {
+    return this.http.patch<any>(`${environment.apiUrl}/evaluation/${id}/detail/second_assessment`, params)
+  }
   
   // get criteria by indicator
   getCriteriaByIndicator(id) {

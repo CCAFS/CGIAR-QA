@@ -760,6 +760,7 @@ class EvaluationsController {
                             crp.acronym AS crp_acronym,
                             qc.original_field,
                             evaluations.status AS evaluations_status,
+                            evaluations.require_second_assessment,
                         ( SELECT enable_assessor FROM qa_comments_meta WHERE indicatorId = indicators.id ) AS enable_assessor,
                         ( SELECT id FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_id,
                         ( SELECT detail FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment,
@@ -1082,13 +1083,17 @@ class EvaluationsController {
     }
 
     static updateRequireSecondEvaluation = async (req: Request, res: Response) => {
-        const { evaluationId, require_second_assessment } = req.body;
+        const evaluationId = req.params.id;
+
+        const {require_second_assessment } = req.body;
         const evaluationsRepository = getRepository(QAEvaluations);
         
         try {
             let evaluation = await evaluationsRepository.findOne(evaluationId);
             evaluation.require_second_assessment = require_second_assessment;
             evaluationsRepository.save(evaluation);
+            console.log(evaluation);
+            
             res.status(200).json({ data: evaluation, message: `Evaluation ${evaluationId} updated.` });
 
         } catch (error) {
