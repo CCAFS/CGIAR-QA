@@ -47,7 +47,7 @@
         <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
             aria-labelledby="button-animated">
 
-            <li *ngFor="let status of statusNames | keyvalue | slice:1:4" role="menuitem">
+            <li *ngFor="let status of statusNames | keyvalue | slice:2:4" role="menuitem">
                 <a class="dropdown-item" (click)="updateEvaluation(status.key,detailedData)">
                     <i
                         [ngClass]=" {'icon-in-progress': status.key === statusHandler.Complete, 'icon-pending': status.key === statusHandler.Pending, 'icon-quality-assessed': status.key === statusHandler.Finalized}">

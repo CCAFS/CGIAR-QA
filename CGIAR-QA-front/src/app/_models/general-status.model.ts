@@ -55,8 +55,8 @@ export enum StatusIcon {
 }
 
 export enum StatusNames {
-    complete = 'In progress',
     pending = 'Pending',
     finalized = 'Quality Assessed',
+    complete = 'In progress',
     autochecked = 'Automatically Validated'
 }
