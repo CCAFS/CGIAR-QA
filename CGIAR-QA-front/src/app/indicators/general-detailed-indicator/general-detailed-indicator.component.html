@@ -35,7 +35,7 @@
     <div class="btn-group h-100" dropdown>
         <button id="button-animated" dropdownToggle type="button" class="btn btn-white dropdown-toggle w-100"
             aria-controls="dropdown-animated">
-            <strong>Status: </strong>
+            <div class="status-title">Status: </div>
             <div class="status">
                 <i
                     [ngClass]=" {'icon-in-progress': gnralInfo.status === statusHandler.Complete, 'icon-pending': gnralInfo.status === statusHandler.Pending, 'icon-quality-assessed': gnralInfo.status === statusHandler.Finalized}">
@@ -100,7 +100,7 @@
                                 (click)="updateEvaluation('complete',detailedData)">OPEN ASSESSMENT</button>
                         </div>
                         <div class="right-side">
-                            <p *ngIf="assessed_by_r1"> <strong>Assessed (Round 1) by: </strong> {{assessed_by_r1}}</p>
+                            <p *ngIf="assessed_by_r1"> <div>Assessed (Round 1) by: </strong> {{assessed_by_r1}}</p>
                             <p *ngIf="assessed_by_r2"> <strong>Assessed (Round 2) by: </strong> {{assessed_by_r2}}</p>
                         </div>
                     </div> -->
@@ -127,15 +127,16 @@
                                 <input type="checkbox" id="second_assesment" [checked]="gnralInfo.requires_second_assessment" (change)="markForSecondAssessment()">
                                 <span class="slider"></span>
                             </label>
-                            <div class="checkbox-description" [ngClass]="{'requires-second-assessment': gnralInfo.requires_second_assessment} ">This item requires a 2nd assessment</div>
+                            <div class="checkbox-description" [ngClass]="{'requires-second-assessment': gnralInfo.requires_second_assessment} ">
+                                This item requires a 2nd assessment
+                                <i class="icon-second-assessment"></i>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="check-all-container">
                         <button type="button" (click)="onChangeSelectAll(!approveAllitems)"
                         class="btn btn-{{ approveAllitems ? 'uncheck' : 'check'}}">{{approveAllitems ? 'Uncheck
                         all' : 'Check all'}}</button>
                     </div>
+                    
 
                     <ng-container formArrayName="tick" *ngFor="let summon of formTickData.controls; let i = index">
                         <ng-container *ngIf="detailedData" [formGroupName]="i">

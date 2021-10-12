@@ -232,7 +232,7 @@
   }
 }
 .btn{
-  margin-right: 1.5em;
+  // margin-right: 1.5em;
 
 }
 .btn-primary:hover {
@@ -246,6 +246,7 @@
   font-weight: $semibold;
   transition: all 0.1s ease;
   height: max-content;
+  margin: 0;
   &:hover{
     transform: scale(1.005);
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.3);
@@ -258,6 +259,7 @@
   font-size: $font-xs;
   font-weight: $semibold;
   transition: all 0.1s ease;
+  margin: 0;
   &:hover{
     transform: scale(1.005);
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.3);
@@ -315,10 +317,20 @@
         font-size: $font-sm;
         font-weight: 500;
         .checkbox-description {
+          display: flex;
+          align-items: center;
+          i {
+            max-width: 24px;
+            filter: grayscale(1);
+            margin-left: 0.5em;
+          }
           transition: all .4s ease-in; 
           color: var(--gray-secondary);
           &.requires-second-assessment {
             color: black;
+            i{
+              filter: none;
+            }
           }
         }
         label {
@@ -373,8 +385,9 @@
           input:checked + .slider:before {
             transform: translateX(18px);
             background: var(--color-blue);
+            background: white;
             box-sizing: border-box;
-            border: 5px solid white;
+            border: 5px solid var(--color-blue);
           }
 
         }
@@ -383,11 +396,6 @@
       .right-side {
 
       }
-    }
-    .check-all-container {
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
     }
 
     .gnral-commnts.data-row {
@@ -574,6 +582,10 @@
   justify-content: space-between;
   border: 1px solid #fef;
   padding: 0.5em;
+  color: black;
+  .status-title {
+    font-weight: $semibold;
+  }
   .status {
     display: flex;
     align-items: center;
