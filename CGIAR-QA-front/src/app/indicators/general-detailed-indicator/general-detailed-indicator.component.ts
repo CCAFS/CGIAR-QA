@@ -99,9 +99,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     isOpen: false
   }
   chatRooms = null;
-  assessed_by_r1 = null;
+  assessed_by_r1;
   assessed_by_r2 = null;
-  currentUserHasAssessed = false;
+  currentUserHasAssessed = null;
   @ViewChild("commentsElem") commentsElem: ElementRef;
   @ViewChild("containerElement") containerElement: ElementRef;
   @ViewChildren('commElement') commElements: QueryList<ElementRef>;

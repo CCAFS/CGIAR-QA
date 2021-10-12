@@ -107,7 +107,9 @@
                     <div class="assessment-info select-all"
                         *ngIf="gnralInfo.status != statusHandler.Autochecked && detailedData.length > 0 && (currentUser.cycle.cycle_stage == '1' || gnralInfo.evaluation_status === 'Added')">
                         <div class="left-side">
-                            <p *ngIf="assessed_by_r1"> <strong>Assessed by: </strong> {{assessed_by_r1}}</p>
+                            <div > <strong>Assessed by: </strong>
+                                <p *ngIf="assessed_by_r1">{{assessed_by_r1 }}</p>
+                            </div>
                             <!-- <div role="menuitem"><a (click)="onChangeSelectAll(true)">Agree with
                                     previous assessment</a>
                             </div> -->
@@ -118,7 +120,7 @@
                             <button type="button" (click)="onChangeSelectAll(approveAllitems)"
                                 class="btn btn-{{ approveAllitems ? 'agree' : 'danger'}}">Validate / Invalidate
                                 assessment</button> -->
-                            <button *ngIf="approveAllitems && !currentUserHasAssessed" type="button"
+                            <button *ngIf="approveAllitems && !currentUserHasAssessed && assessed_by_r1" type="button"
                                 (click)="onChangeSelectAll(true)" class="btn btn-agree-previous">✔ Agree with previous
                                 assessment</button>
                         </div>
