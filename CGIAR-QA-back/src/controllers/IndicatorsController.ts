@@ -444,6 +444,7 @@ class IndicatorsController {
                WHERE qim.id = qc.metaId
                AND qim.display_name  not like 'id'
                AND qim.enable_comments = 1
+               AND qim.include_detail = 1
                AND qe.evaluation_status not like 'Removed'
                AND qe.phase_year = actual_phase_year()
                AND qe.indicator_view_name like :indicator
@@ -469,6 +470,7 @@ class IndicatorsController {
                WHERE qim.id = qc.metaId
                AND qim.display_name  not like 'id'
                AND qim.enable_comments = 1
+               AND qim.include_detail = 1
                AND qe.evaluation_status not like 'Removed'
                AND qe.phase_year = actual_phase_year()
                AND qe.indicator_view_name like :indicator
