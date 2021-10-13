@@ -76,12 +76,12 @@
 
             </div>
             <!-- cycle date picker -->
+            <p class="card-title">QA Rounds</p>
             <div class="card">
-                <p class="card-title" style="text-align: center; padding: 1em 0;">QA Rounds</p>
                 <div class="row row-padding qa-settings">
-                    <form class="form-inline">
+                    <form class="form-inline" style="justify-content: center;">
                         <div *ngFor="let cycle of dashboardCyclesData">
-                            <div class="row">
+                            <div class="row" style="display: flex; flex-direction: column; align-items: flex-start;">
                                 <p style="margin: 0 1em; padding: 0.5em">Stage: <strong>{{cycle.cycle_stage}}</strong>
                                 </p>
                                 <div class="form-group">

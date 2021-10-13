@@ -481,6 +481,9 @@ position: relative;
       left: -2em;
       box-shadow: 2px 0px 7px 0px rgba(0,0,0,0.35);
     }
+    .card {
+      margin-bottom: 1em;
+    }
     .programs-form {
       margin: 0 $size-lg;
       .custom-control-input:checked ~ .custom-control-label::before {
@@ -494,8 +497,9 @@ position: relative;
 
   .col-activity {
     .card {
+      margin-bottom: 1em;
       .row-padding {
-        padding: 10px 15px;
+        padding: 15px;
         margin: 0;
         .qa-toggle {
           display: flex;
