@@ -3,7 +3,8 @@
 </div> -->
 <app-timeline></app-timeline>
 <div class="row justify-content-center dashboard-container">
-    <div class="col-programs">
+    <button [ngClass]="{'open-side-menu': showSideMenu}" class="btn-toggle-menu" (click)="toggleSideMenu()"><i class="icon-settings"></i></button>
+    <div [ngClass]="{'open-side-menu': showSideMenu}" class="col-programs">
         <p class="card-title">Programs/Platforms ({{selectedProgramName}})</p>
         <div class="card">
             <div class="card-body">
