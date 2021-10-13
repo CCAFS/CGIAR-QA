@@ -93,7 +93,7 @@
 }
 
 .dashboard-container, .new-dashboard-container {
-
+position: relative;
   .card-title {
     font-weight: $light;
     font-size: $font-md;
@@ -436,6 +436,19 @@
   }
 
   .col-programs {
+    max-width: 400px;
+    position: absolute;
+    top: 0;
+    left: calc(-400px - 2em);
+    z-index: 2;
+    background: white;
+    padding: 2em 1em;
+    border-radius: 10px;
+    transition: all 0.5s ease-in;
+    &.open-side-menu {
+      left: -2em;
+      box-shadow: 2px 0px 11px 0px;
+    }
     .programs-form {
       margin: 0 $size-lg;
       .custom-control-input:checked ~ .custom-control-label::before {
