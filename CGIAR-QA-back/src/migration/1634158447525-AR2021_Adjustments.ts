@@ -16,7 +16,9 @@ export class AR2021Adjustments1634158447525 implements MigrationInterface {
         
         //Innovations
         await queryRunner.query("UPDATE `marlodb`.`qa_indicators_meta` SET `display_name` = 'Name' WHERE (`id` = '6');");
-
+        
+        //Peer Reviewed Papers
+        await queryRunner.query("UPDATE `marlodb`.`qa_indicators_meta` SET `include_detail` = '0', `order` = '0' WHERE (`id` = '63');");
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
