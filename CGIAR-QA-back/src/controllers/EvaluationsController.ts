@@ -402,8 +402,9 @@ class EvaluationsController {
                     evaluations.indicator_view_name,
                     evaluations.indicator_view_id,
                     evaluations.evaluation_status,
-                    evaluations.crp_id,
+                    evaluations.crp_id, 
                     evaluations.batchDate as submission_date,
+                    evaluations.require_second_assessment,
                     crp.acronym AS crp_acronym,
                     crp.name AS crp_name,
                     (
@@ -489,6 +490,7 @@ class EvaluationsController {
                         evaluations.status as assessment_status,
                         evaluations.crp_id,
                         evaluations.batchDate as submission_date,
+                        evaluations.require_second_assessment,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
                         (
@@ -592,6 +594,7 @@ class EvaluationsController {
                         evaluations.evaluation_status,
                         evaluations.crp_id,
                         evaluations.batchDate as submission_date,
+                        evaluations.require_second_assessment,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
                         (
@@ -1071,7 +1074,7 @@ class EvaluationsController {
 
             let assessorByEvalR2 = await queryRunner.connection.query(query2, parameters2);
             console.log({ assessorByEvalR2 });
-            const response = { assessed_r1: assessorByEvalR1[0].assessed_r1 || 'Not yet assessed', assessed_r2: assessorByEvalR2[0].assessed_r2 || 'Not yet assessed'}
+            const response = { assessed_r1: assessorByEvalR1[0].assessed_r1 || 'Not yet assessed', assessed_r2: assessorByEvalR2[0].assessed_r2 || 'Not yet assessed' }
             console.log(response);
 
             res.status(200).json({ data: response, message: `Assessors in  evaluation ${evaluationId}` });
@@ -1085,15 +1088,15 @@ class EvaluationsController {
     static updateRequireSecondEvaluation = async (req: Request, res: Response) => {
         const evaluationId = req.params.id;
 
-        const {require_second_assessment } = req.body;
+        const { require_second_assessment } = req.body;
         const evaluationsRepository = getRepository(QAEvaluations);
-        
+
         try {
             let evaluation = await evaluationsRepository.findOne(evaluationId);
             evaluation.require_second_assessment = require_second_assessment;
             evaluationsRepository.save(evaluation);
             console.log(evaluation);
-            
+
             res.status(200).json({ data: evaluation, message: `Evaluation ${evaluationId} updated.` });
 
         } catch (error) {
