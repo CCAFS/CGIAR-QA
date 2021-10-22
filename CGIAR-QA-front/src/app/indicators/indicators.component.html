@@ -37,9 +37,8 @@
         <!-- <div class="circle pending" style="margin-left: 50px;"></div> -->
         <p>Pending</p>
 
-        <i class="icon-in-progress"></i>
-        <!-- <div class="circle complete" style="margin-left: 50px;"></div> -->
-        <p>In progress</p>
+        <!-- <i class="icon-in-progress"></i>
+        <p>In progress</p> -->
 
         <i class="icon-quality-assessed"></i>
         <!-- <div class="circle finalized" style="margin-left: 50px;"></div> -->
@@ -303,6 +302,7 @@
             </td>
             <td>
                 <i class="icon-{{ statusIcon[item.status] }} status-icon"></i>
+                <div class="require-second-assessment" *ngIf="item.require_second_assessment">Requires 2nd assessment</div>
             </td>
         </tr>
     </tbody>
