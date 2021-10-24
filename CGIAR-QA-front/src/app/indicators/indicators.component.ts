@@ -388,6 +388,7 @@ indicatorTypePage = null;
       console.log(e.target.checked, e.target.value);
       const foundIndex = this.submission_dates.findIndex(sd => sd.date == e.target.value);
       this.submission_dates[foundIndex]['checked'] = e.target.checked;
+      this.submission_dates = [...this.submission_dates];
     }
   }
   /***

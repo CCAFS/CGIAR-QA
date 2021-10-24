@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class DateFilterPipe implements PipeTransform {
 
-  transform(items: any[], selectedDates: any[], key: string): unknown {
+  transform(items: any[], selectedDates: any[], key: string): any[] {
     if (!items) return [];
     if (!selectedDates) return items;
     selectedDates = selectedDates.filter(sd => sd.checked); // Array of dates checked
@@ -16,7 +16,7 @@ export class DateFilterPipe implements PipeTransform {
     return this.matchDate(items, selectedDates, key);
   }
 
-  matchDate(items: any[], selectedDates: string[], key: string) {
+  matchDate(items: any[], selectedDates: string[], key: string): any[] {
     return items.filter(function (item) {
       return selectedDates.some(sd => item[key].toLowerCase().includes(sd))
     });

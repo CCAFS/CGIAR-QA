@@ -308,11 +308,11 @@
     </tbody>
 </table>
 <div *ngIf='evaluationList' class="total-items">
-    Total items: {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length}}
+    Total items: {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | dateFilter:submission_dates:'submission_date'  ).length}}
 </div>
 <div *ngIf="collectionSize > 0" class="d-flex justify-content-center p-2 pagination-container">
     <pagination [rotate]="false"
-        [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length"
+        [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText  | dateFilter:submission_dates:'submission_date').length"
         [maxSize]="5" (pageChanged)="pageChanged($event)" [(ngModel)]="currentPage[indicatorTypePage]">
     </pagination>
 </div>
