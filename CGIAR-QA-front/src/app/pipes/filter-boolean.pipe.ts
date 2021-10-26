@@ -7,8 +7,13 @@ export class FilterBooleanPipe implements PipeTransform {
 
   transform(items: any[], bol: boolean,key: string): any[] {
     if (!items) return [];
-
-    return items.filter(item => item[key] == bol);
+    if (!bol) return items;
+    let result = items.filter(item => item[key] == bol);
+    console.log({bol});
+    
+    console.log(result);
+    
+    return result;
   }
 
 }
