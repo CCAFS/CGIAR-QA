@@ -54,6 +54,10 @@
             <label class="form-check-label" for="inlineCheckbox{{sub.id}}">{{sub.date}}</label>
         </div>
     </div>
+    <button type="button" class="btn btn-outline-primary" [(ngModel)]="rsaFilter" btnCheckbox [btnCheckboxTrue]="1"
+    [btnCheckboxFalse]="0">
+    Require 2nd assessment
+</button>
     <div class="removed-filter">
         <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
             <!-- <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
@@ -62,10 +66,7 @@
                 uncheckable tabindex="0" role="button">Removed items</label>
         </div>
     </div>
-    <button type="button" class="btn btn-primary" [(ngModel)]="rsaFilter" btnCheckbox [btnCheckboxTrue]="1"
-        [btnCheckboxFalse]="0">
-        Require 2nd assessment
-    </button>
+
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
     </div>
