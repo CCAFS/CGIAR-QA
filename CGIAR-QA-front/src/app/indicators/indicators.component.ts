@@ -64,6 +64,7 @@ indicatorTypePage = null;
   collectionSize = 0;
   searchText;
   evalStatusFilter = '';
+  rsaFilter: boolean = false;
   // uncheckableRadioModel = '';
 
   hasTemplate = false;
