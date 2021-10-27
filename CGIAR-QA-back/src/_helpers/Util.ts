@@ -663,6 +663,7 @@ class Util {
             crp_accepted: element["crp_accepted"],
             crp_rejected: element["crp_rejected"],
             assessment_status: element["assessment_status"],
+            require_second_assessment: element["require_second_assessment"]
         }
         if (!type) {
             response = Object.assign(response, {

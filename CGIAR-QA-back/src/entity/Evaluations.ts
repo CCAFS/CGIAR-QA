@@ -70,4 +70,7 @@ export class QAEvaluations {
         }
     )
     batchDate: Date;
+
+    @Column({default: false})
+    require_second_assessment: boolean;
 }

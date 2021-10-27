@@ -117,7 +117,8 @@ class IndicatorsController {
                         indicators.primary_field AS primary_field,
                         indicators.order AS indicator_order,
                         indicators.view_name AS view_name,
-                        meta.enable_assessor as enable_assessor
+                        meta.enable_assessor as enable_assessor,
+                        qa_indicator_user.isLeader as is_leader
                     FROM
                         qa_indicator_user qa_indicator_user
                     LEFT JOIN qa_indicators indicators ON indicators.id = qa_indicator_user.indicatorId
@@ -443,6 +444,7 @@ class IndicatorsController {
                WHERE qim.id = qc.metaId
                AND qim.display_name  not like 'id'
                AND qim.enable_comments = 1
+               AND qim.include_detail = 1
                AND qe.evaluation_status not like 'Removed'
                AND qe.phase_year = actual_phase_year()
                AND qe.indicator_view_name like :indicator
@@ -468,6 +470,7 @@ class IndicatorsController {
                WHERE qim.id = qc.metaId
                AND qim.display_name  not like 'id'
                AND qim.enable_comments = 1
+               AND qim.include_detail = 1
                AND qe.evaluation_status not like 'Removed'
                AND qe.phase_year = actual_phase_year()
                AND qe.indicator_view_name like :indicator

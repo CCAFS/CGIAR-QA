@@ -6,6 +6,16 @@
 
 //ICONS STATUS
 
+.icon-settings {
+  content: url("~/assets/icons/settings-icon.svg");
+}
+.icon-second-assessment {
+  content: url("~/assets/icons/second-assessment-icon.png");
+}
+
+.icon-lead-assessor {
+  content: url("~/assets/icons/leader.svg");
+}
 .icon-quality-assessed {
   content: url("~/assets/icons/quality-assessed-icon.svg");
 }
@@ -501,7 +511,7 @@ carousel{
         font-weight: 500;
         &:hover{
           cursor: pointer;
-          color: var(--blue-tertiarty);
+          color: var(--blue-tertiary);
         }
       }
     }

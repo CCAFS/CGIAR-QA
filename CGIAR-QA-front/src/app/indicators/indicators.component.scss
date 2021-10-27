@@ -219,6 +219,11 @@ h2 {
     a{
       font-weight: 500;
     }
+    .require-second-assessment {
+      font-size: $font-xs;
+      font-weight: $semibold;
+      color: var(--color-dark-text-btn);
+    }
     .excel-download {
       cursor: pointer;
       color: #007bff;

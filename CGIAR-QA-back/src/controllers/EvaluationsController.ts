@@ -402,8 +402,9 @@ class EvaluationsController {
                     evaluations.indicator_view_name,
                     evaluations.indicator_view_id,
                     evaluations.evaluation_status,
-                    evaluations.crp_id,
+                    evaluations.crp_id, 
                     evaluations.batchDate as submission_date,
+                    evaluations.require_second_assessment,
                     crp.acronym AS crp_acronym,
                     crp.name AS crp_name,
                     (
@@ -489,6 +490,7 @@ class EvaluationsController {
                         evaluations.status as assessment_status,
                         evaluations.crp_id,
                         evaluations.batchDate as submission_date,
+                        evaluations.require_second_assessment,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
                         (
@@ -592,6 +594,7 @@ class EvaluationsController {
                         evaluations.evaluation_status,
                         evaluations.crp_id,
                         evaluations.batchDate as submission_date,
+                        evaluations.require_second_assessment,
                         crp.acronym AS crp_acronym,
                         crp.name AS crp_name,
                         (
@@ -760,6 +763,7 @@ class EvaluationsController {
                             crp.acronym AS crp_acronym,
                             qc.original_field,
                             evaluations.status AS evaluations_status,
+                            evaluations.require_second_assessment,
                         ( SELECT enable_assessor FROM qa_comments_meta WHERE indicatorId = indicators.id ) AS enable_assessor,
                         ( SELECT id FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_id,
                         ( SELECT detail FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment,
@@ -810,6 +814,7 @@ class EvaluationsController {
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
                             evaluations.status AS evaluations_status,
+                            evaluations.require_second_assessment,
                             IF(
                                 (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
                                     = 
@@ -873,6 +878,7 @@ class EvaluationsController {
                         crp.acronym AS crp_acronym,
                         qc.original_field,
                         evaluations.status AS evaluations_status,
+                        evaluations.require_second_assessment,
                     ( SELECT enable_assessor FROM qa_comments_meta WHERE indicatorId = indicator_user.indicatorId ) AS enable_assessor,
                     ( SELECT id FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_id,
                     ( SELECT detail FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment,
@@ -1068,7 +1074,7 @@ class EvaluationsController {
 
             let assessorByEvalR2 = await queryRunner.connection.query(query2, parameters2);
             console.log({ assessorByEvalR2 });
-            const response = { assessed_r1: assessorByEvalR1[0].assessed_r1, assessed_r2: assessorByEvalR2[0].assessed_r2 }
+            const response = { assessed_r1: assessorByEvalR1[0].assessed_r1 || 'Not yet assessed', assessed_r2: assessorByEvalR2[0].assessed_r2 || 'Not yet assessed' }
             console.log(response);
 
             res.status(200).json({ data: response, message: `Assessors in  evaluation ${evaluationId}` });
@@ -1076,6 +1082,26 @@ class EvaluationsController {
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: "Could not get any assesor for this evaluation." });
+        }
+    }
+
+    static updateRequireSecondEvaluation = async (req: Request, res: Response) => {
+        const evaluationId = req.params.id;
+
+        const { require_second_assessment } = req.body;
+        const evaluationsRepository = getRepository(QAEvaluations);
+
+        try {
+            let evaluation = await evaluationsRepository.findOne(evaluationId);
+            evaluation.require_second_assessment = require_second_assessment;
+            evaluationsRepository.save(evaluation);
+            console.log(evaluation);
+
+            res.status(200).json({ data: evaluation, message: `Evaluation ${evaluationId} updated.` });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Could not update the evaluation." });
         }
     }
 

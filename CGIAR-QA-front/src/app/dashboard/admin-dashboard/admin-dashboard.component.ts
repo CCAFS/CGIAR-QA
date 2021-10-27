@@ -129,6 +129,8 @@ export class AdminDashboardComponent implements OnInit {
   yAxisLabel: string = '# of comments';
   animations: boolean = true;
 
+  showSideMenu:boolean = false;
+
   colorScheme = {
     domain: ['#67be71', '#F1B7B7']
   };
@@ -930,6 +932,9 @@ export class AdminDashboardComponent implements OnInit {
 
   toggleAssessorsChat() {
     this.assessorsChat.isOpen = !this.assessorsChat.isOpen;
+  }
+  toggleSideMenu() {
+    this.showSideMenu = !this.showSideMenu;
   }
 
   // axisFormat(val) {

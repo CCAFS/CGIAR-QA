@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./tawk-to.component.scss']
 })
 export class TawkToComponent implements OnInit {
-  @Input() id: string;
+  @Input() id: string; // Not used
   script = this._renderer.createElement('script');
   isVisibleTawk = true;
   currentUser: User;

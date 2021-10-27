@@ -37,9 +37,8 @@
         <!-- <div class="circle pending" style="margin-left: 50px;"></div> -->
         <p>Pending</p>
 
-        <i class="icon-in-progress"></i>
-        <!-- <div class="circle complete" style="margin-left: 50px;"></div> -->
-        <p>In progress</p>
+        <!-- <i class="icon-in-progress"></i>
+        <p>In progress</p> -->
 
         <i class="icon-quality-assessed"></i>
         <!-- <div class="circle finalized" style="margin-left: 50px;"></div> -->
@@ -50,18 +49,24 @@
     <div class="date-filter">
         <span>Filter by submission</span>
         <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked" (change)="onDateChange($event,sub.id)">
+            <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked"
+                (change)="onDateChange($event,sub.id)">
             <label class="form-check-label" for="inlineCheckbox{{sub.id}}">{{sub.date}}</label>
-          </div>
+        </div>
     </div>
+    <button type="button" class="btn btn-outline-primary" [(ngModel)]="rsaFilter" btnCheckbox [btnCheckboxTrue]="1"
+    [btnCheckboxFalse]="0">
+    Require 2nd assessment
+</button>
     <div class="removed-filter">
         <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
             <!-- <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
                 uncheckable tabindex="0" role="button">Added item</label> -->
-            <label class="btn btn-outline-danger"  [class.active]="evalStatusFilter === 'Removed'" btnRadio="Removed"
+            <label class="btn btn-outline-danger" [class.active]="evalStatusFilter === 'Removed'" btnRadio="Removed"
                 uncheckable tabindex="0" role="button">Removed items</label>
         </div>
     </div>
+
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
     </div>
@@ -209,7 +214,8 @@
                     Submission date
                 </div>
             </th>
-            <th *ngIf="currentUser.cycle.cycle_stage != 2" scope="col" [class.active]="order === 'comment_by'" (click)="setOrder('comment_by')">
+            <th *ngIf="currentUser.cycle.cycle_stage != 2" scope="col" [class.active]="order === 'comment_by'"
+                (click)="setOrder('comment_by')">
                 <div class="header-row">
                     Assessed By
                     <div class="order-icon" *ngIf="order === 'comment_by'">
@@ -218,7 +224,8 @@
                     </div>
                 </div>
             </th>
-            <th *ngIf="currentUser.cycle.cycle_stage == 2" scope="col" [class.active]="order === 'assessed_r2'" (click)="setOrder('assessed_r2')">
+            <th *ngIf="currentUser.cycle.cycle_stage == 2" scope="col" [class.active]="order === 'assessed_r2'"
+                (click)="setOrder('assessed_r2')">
                 <div class="header-row">
                     Assessed By
                     <div class="flag">2nd round</div>
@@ -240,7 +247,7 @@
     </thead>
     <tbody class="table-body">
         <tr
-            *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | slice:currentPageList.startItem:currentPageList.endItem | dateFilter:submission_dates:'submission_date' ; let i = index">
+            *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | dateFilter:submission_dates:'submission_date'| filterBoolean:rsaFilter:'require_second_assessment' | slice:currentPageList.startItem:currentPageList.endItem  ; let i = index">
             <th scope="row">
                 QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
             </th>
@@ -276,9 +283,9 @@
                 {{ (item.comments_disagreed_count) ? item.comments_disagreed_count: 0}}</td>
             <td *ngIf="item.hasOwnProperty('comments_clarification_count') && currentUser.cycle.cycle_stage == 2">
                 {{ (item.comments_clarification_count) ? item.comments_clarification_count: 0}}</td>
-                <td *ngIf="item" (click)="exportComments(item)">
-                    <a target="_blank">
-                        <div tooltip="Comment in excel format" container="body" placement="top"
+            <td *ngIf="item" (click)="exportComments(item)">
+                <a target="_blank">
+                    <div tooltip="Comment in excel format" container="body" placement="top"
                         class="btn btn-primary file-button">
                         <i class="icon-download-excel"></i>
                     </div>
@@ -303,16 +310,19 @@
             </td>
             <td>
                 <i class="icon-{{ statusIcon[item.status] }} status-icon"></i>
+                <div class="require-second-assessment" *ngIf="item.require_second_assessment">Requires 2nd assessment
+                </div>
             </td>
         </tr>
     </tbody>
 </table>
 <div *ngIf='evaluationList' class="total-items">
-    Total items: {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length}}
+    Total items: {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText |
+    dateFilter:submission_dates:'submission_date' | filterBoolean:rsaFilter:'require_second_assessment' ).length}}
 </div>
 <div *ngIf="collectionSize > 0" class="d-flex justify-content-center p-2 pagination-container">
     <pagination [rotate]="false"
-        [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length"
+        [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText  | dateFilter:submission_dates:'submission_date' | filterBoolean:rsaFilter:'require_second_assessment').length"
         [maxSize]="5" (pageChanged)="pageChanged($event)" [(ngModel)]="currentPage[indicatorTypePage]">
     </pagination>
 </div>
@@ -323,4 +333,6 @@
 
 
 <!-- Loading Spinner -->
-<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" color = "#fff" size = "default" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" color="#fff" size="default" type="square-jelly-box" [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>

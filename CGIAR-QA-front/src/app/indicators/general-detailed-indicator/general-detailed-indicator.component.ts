@@ -84,7 +84,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     general_comment_updatedAt: '',
     general_comment_id: '',
     status_update: null,
-    crp_id: ''
+    crp_id: '',
+    requires_second_assessment: false
   };
   statusHandler = DetailedStatus;
   statusNames = StatusNames;
@@ -98,9 +99,9 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     isOpen: false
   }
   chatRooms = null;
-  assessed_by_r1 = null;
+  assessed_by_r1;
   assessed_by_r2 = null;
-  currentUserHasAssessed = false;
+  currentUserHasAssessed = null;
   @ViewChild("commentsElem") commentsElem: ElementRef;
   @ViewChild("containerElement") containerElement: ElementRef;
   @ViewChildren('commElement') commElements: QueryList<ElementRef>;
@@ -194,8 +195,11 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           isChecked: x.approved_no_comment ? true : false
         })
       )
+      if(!x.approved_no_comment ){
+        this.approveAllitems
+      }
     });
-
+    this.checkAllIsApproved();
   }
 
   validateComments() {
@@ -251,7 +255,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   onChangeSelectAll(e) {
-
+    console.log('Change SELECT ALL', this.approveAllitems);
+    
     let selected_meta = [];
     let noComment;
     if (e) {
@@ -270,7 +275,8 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     this.commentService.toggleApprovedNoComments({ meta_array: selected_meta, userId: this.currentUser.id, isAll: true, noComment }, this.gnralInfo.evaluation_id).subscribe(
       res => {
         this.updateEvaluation('status', this.detailedData);
-        this.approveAllitems = !e;
+        // this.approveAllitems = !e;
+        console.log(this.approveAllitems)
       },
       error => {
         this.alertService.error(error);
@@ -279,6 +285,15 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
     )
 
     // console.log(selected_meta)
+  }
+
+  checkAllIsApproved() {
+    let statusByField = [];
+    this.formTickData.controls.forEach((value, i) => {
+      statusByField.push({display_name: this.detailedData[i].display_name, value:  (this.detailedData[i].replies_count != '0' || value.get('isChecked').value || this.detailedData[i].enable_comments == false) ? true : false});
+    });
+    this.approveAllitems = statusByField.find(e => e.value == false) ?  false : true;
+    return this.approveAllitems;
   }
 
   validateAllFieldsAssessed() {
@@ -322,7 +337,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       res => {
         console.log('detaileedData',res)
         this.detailedData = res.data.filter(field => {
-          console.log(field.value);
+          // console.log(field.value);
           if (typeof field.value === 'number') field.value = String(field.value)
           if(field.value) {
             field.value = field.value.replace("´","'");
@@ -351,8 +366,10 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
           status_update: null,
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
+          requires_second_assessment: this.detailedData[0].require_second_assessment
         }
-        this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
+        // this.approveAllitems = (this.gnralInfo.status === this.statusHandler.Complete) ? false : true;
+        this.approveAllitems = false;
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
         this.evaluationService.getAssessorsByEvaluation(this.gnralInfo.evaluation_id).subscribe(
           res => {
@@ -531,15 +548,15 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
         evaluationData['status'] = this.gnralInfo.status_update;
         // evaluationData['status'] = (this.gnralInfo.status === this.statusHandler.Complete) ? this.statusHandler.Pending : this.statusHandler.Complete;
         break;
-      case "finalized_eval":
+      case "finalized":
         // evaluationData['status'] = this.gnralInfo.status_update;
         evaluationData['status'] = this.statusHandler.Finalized;
         break;
-      case "complete_eval":
+      case "complete":
         // evaluationData['status'] = this.gnralInfo.status_update;
         evaluationData['status'] = this.statusHandler.Complete;
         break;
-      case "pending_eval":
+      case "pending":
         // evaluationData['status'] = this.gnralInfo.status_update;
         evaluationData['status'] = this.statusHandler.Pending;
         break;
@@ -562,6 +579,21 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
       }
     )
 
+  }
+
+  markForSecondAssessment() {
+    console.log('This item should be assessed again.');
+    this.showSpinner('spinner1')
+
+    this.evaluationService.updateRequireSecondAssessmentEvaluation(this.gnralInfo.evaluation_id, {require_second_assessment: !this.gnralInfo.requires_second_assessment})
+    .subscribe(res => {
+      this.hideSpinner('spinner1');
+      this.gnralInfo.requires_second_assessment = !this.gnralInfo.requires_second_assessment;
+    },
+    error => {
+      this.hideSpinner('spinner1');
+      this.alertService.error(error);
+    })
   }
 
   validateCommentAvility(field, is_embed?) {

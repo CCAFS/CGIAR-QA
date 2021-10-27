@@ -17,6 +17,7 @@ import { SharedModule } from '../shared-module/shared-module.module';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { AssessorsChatWindowComponent } from '../_shared/assessors-chat-window/assessors-chat-window.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 // import { CustomFilterPipe } from '../pipes/custom-filter.pipe';
 // import { CommentComponent } from '../comment/comment.component';
 // import { GeneralDetailedIndicatorComponent } from './general-detailed-indicator/general-detailed-indicator.component';

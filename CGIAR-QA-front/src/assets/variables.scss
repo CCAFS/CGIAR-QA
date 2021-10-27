@@ -24,7 +24,7 @@
   --red-tertiary: #F1B7B7;
   --blue-primary: #0f8981;
   --blue-secondary: #17a2b8;
-  --blue-tertiarty: #03535f;
+  --blue-tertiary: #03535f;
   --blue-quaternary:rgb(168, 209, 255);
 
   --color-pending: #f3da90;
@@ -44,10 +44,11 @@
   --color-pending-gray:  #cfcfcf;
 
   --color-dark-text-btn: #073763;
+  --color-blue: #018dff;
 }
 
 // primary font
-$primary_font: "Montserrat";
+$primary_font: "Poppins";
 // secondary font
 $secondary_font: "Poppins";
 // font-weight

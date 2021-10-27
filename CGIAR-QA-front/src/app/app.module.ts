@@ -53,7 +53,6 @@ import { AssessorsChatWindowComponent } from './_shared/assessors-chat-window/as
     SafeUrlPipe,
     AssessorsChatComponent,
     AssessorsChatWindowComponent,
-    
     // CustomFilterPipe,
   ],
   imports: [

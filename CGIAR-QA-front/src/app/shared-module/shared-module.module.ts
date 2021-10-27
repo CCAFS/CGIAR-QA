@@ -8,6 +8,7 @@ import { WordCounterPipe } from '../pipes/word-counter.pipe';
 import { CustomFilterPipe } from '../pipes/custom-filter.pipe';
 import { DateFilterPipe } from '../pipes/date-filter.pipe';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FilterBooleanPipe } from '../pipes/filter-boolean.pipe';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     UrlTransformPipe,
     WordCounterPipe,
     CustomFilterPipe,
-    DateFilterPipe
+    DateFilterPipe,
+    FilterBooleanPipe,
+
     // SafeUrlPipe
   ],
   exports: [
@@ -23,10 +26,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     UrlTransformPipe,
     CustomFilterPipe,
     WordCounterPipe,
-    DateFilterPipe
+    DateFilterPipe,
+    FilterBooleanPipe,
+
     // SafeUrlPipe
   ],
-  providers: [SortByPipe, UrlTransformPipe, CustomFilterPipe, WordCounterPipe, DateFilterPipe
+  providers: [SortByPipe, UrlTransformPipe, CustomFilterPipe, WordCounterPipe, DateFilterPipe, FilterBooleanPipe
     // SafeUrlPipe
   ],
   imports: [
