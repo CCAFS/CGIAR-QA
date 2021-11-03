@@ -87,9 +87,9 @@ indicatorTypePage = null;
   criteria_loading = false;
 
   submission_dates: any[] = [
-    {date: "May 7, 2021", id: 1, checked: true},
-    {date: "Sep 7, 2021", id: 2, checked: false},
-    {date: "Nov 7, 2021", id: 3, checked: false},
+    {date: "Dec 3, 2021", id: 1, checked: false},
+    {date: "Mar 4, 2021", id: 2, checked: false},
+    {date: "Apr 29, 2021", id: 3, checked: false},
   ]
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,

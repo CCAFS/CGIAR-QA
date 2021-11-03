@@ -41,5 +41,7 @@ router.get("/cycles", [checkJwt, checkRole([RolesHandler.admin])], CommentContro
 // get cycles data
 router.patch("/cycles/update", [checkJwt, checkRole([RolesHandler.admin])], CommentController.updateCycle);
 
+// get batches data
+router.get("/batches", [checkJwt, checkRole([RolesHandler.admin])], CommentController.getBatches);
 
 export default router;
