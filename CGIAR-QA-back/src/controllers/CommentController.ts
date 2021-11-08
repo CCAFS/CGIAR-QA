@@ -1341,7 +1341,7 @@ class CommentController {
         try {
             const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
                 `
-                    SELECT * FROM qa_batches
+                SELECT * FROM qa_batch order by batch_name asc
                 `,
                 {},
                 {}
