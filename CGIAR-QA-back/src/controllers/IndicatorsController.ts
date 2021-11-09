@@ -632,8 +632,9 @@ class IndicatorsController {
                         crp_id,
                         evaluation_status: Not('Removed'),
                         phase_year: AR
-                    },
-                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment']
+                    },                    
+                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment'],
+                    relations: ['comments'],
                 });
 
             const batches = await batchesRepository.find({where: {phase_year: AR}});

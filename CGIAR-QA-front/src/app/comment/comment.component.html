@@ -206,7 +206,8 @@
         <p>No comments made</p>
     </div>
     <!-- ADD COMMENT -->
-    <div *ngIf="!availableComment && !crpComment && dataFromItem.status !== statusHandler.Finalized && currentUser.hasOwnProperty('cycle')"
+    <!-- dataFromItem.status !== statusHandler.Finalized && -->
+    <div *ngIf="!availableComment && !crpComment &&  currentUser.hasOwnProperty('cycle')"
         class="add-comment-container">
         <form [formGroup]="commentGroup">
             <!-- <p><span class="textarea" role="textbox" contenteditable maxlength="{{totalChar}}" formControlName="comment"></span></p> -->
