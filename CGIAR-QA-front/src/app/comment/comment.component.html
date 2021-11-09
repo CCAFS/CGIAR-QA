@@ -228,6 +228,9 @@
                 <li  role="menuitem">
                     <a class="dropdown-item" (click)="setCommentValue($event,'Another comment...')" href="#">Another comment...</a>
                 </li>
+                <li  role="menuitem" *ngFor="let quickComment of quickComments">
+                    <a class="dropdown-item" (click)="setCommentValue($event,quickComment.comment)" href="#">{{quickComment.comment}}</a>
+                </li>
             </ul>
         </div>
         <footer>
