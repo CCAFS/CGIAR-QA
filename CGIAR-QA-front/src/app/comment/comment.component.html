@@ -219,17 +219,9 @@
             </button>
             <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
                 aria-labelledby="button-animated">
-                <li  role="menuitem">
-                    <a class="dropdown-item" (click)="setCommentValue($event,'Please, avoid acronyms.')" href="#">Please, avoid acronyms.</a>
-                </li>
-                <li  role="menuitem">
-                    <a class="dropdown-item" (click)="setCommentValue($event,'Link is not working, please fix it.')" href="#">Link is not working, please fix it.</a>
-                </li>
-                <li  role="menuitem">
-                    <a class="dropdown-item" (click)="setCommentValue($event,'Another comment...')" href="#">Another comment...</a>
-                </li>
                 <li  role="menuitem" *ngFor="let quickComment of quickComments">
                     <a class="dropdown-item" (click)="setCommentValue($event,quickComment.comment)" href="#">{{quickComment.comment}}</a>
+                    <div class="dropdown-divider"></div>
                 </li>
             </ul>
         </div>
