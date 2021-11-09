@@ -23,7 +23,7 @@ export class HeaderBarComponent implements OnInit {
   currentUser: User;
   allRoles = Role;
   generalStatus = GeneralStatus;
-  indicators = [];
+  indicators = null;
   currentRole = '';
   params;
   currentUserID = null;
@@ -60,10 +60,14 @@ export class HeaderBarComponent implements OnInit {
       .subscribe((e: any[]) => {
         e.forEach(element => {
           if (element.url != '/login') {
+            console.log('Header constructor');
+            
             this.authenticationService.currentUser.subscribe(x => {
               this.currentUser = x;
+              if(this.indicators == null) this.getHeaderLinks();
               if (x) {
                 this.currentRole = x.roles[0].description.toLowerCase()
+
                 this.ngOnInit();
 
 
@@ -74,6 +78,8 @@ export class HeaderBarComponent implements OnInit {
           }
         });
       });
+
+
   }
 
   getCurrentRoute() {
@@ -82,14 +88,14 @@ export class HeaderBarComponent implements OnInit {
 
   ngOnInit() {
     // this.indicators = [];
-    if(this.currentUserID != this.currentUser.id){
-      this.currentUserID = this.currentUser.id;
-      this.indicators = [];
-      this.getHeaderLinks();
-    } else {
-      // this.currentUserID = this.currentUser.id;
-      this.getHeaderLinks();
-    }
+    // if(this.currentUserID != this.currentUser.id){
+    //   this.currentUserID = this.currentUser.id;
+    //   this.indicators = [];
+    //   this.getHeaderLinks();
+    // } else {
+    //   // this.currentUserID = this.currentUser.id;
+    //   this.getHeaderLinks();
+    // }
     // this.indicators = this.authenticationService.userHeaders;
     // console.log('NAV INDICATORS', this.indicators);
   }
@@ -117,7 +123,7 @@ export class HeaderBarComponent implements OnInit {
   getHeaderLinks() {
     console.log('GET HEADER LINKS OUT');
     
-    if (this.indicators && !this.indicators.length && this.currentUser && !this.isCRP()) {
+    // if (this.indicators && !this.indicators.length && this.currentUser && !this.isCRP()) {
       this.indicatorService.getIndicatorsByUser(this.currentUser.id).subscribe(
         res => {
           console.log("getHeaderLinks", res);
@@ -131,7 +137,7 @@ export class HeaderBarComponent implements OnInit {
           this.alertService.error(error);
         }
       )
-    }
+    // }
 
   }
 

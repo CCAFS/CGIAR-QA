@@ -102,6 +102,8 @@ indicatorTypePage = null;
     private evaluationService: EvaluationsService,
     private titleService: Title,
     private alertService: AlertService) {
+      this.getBatchDates();
+
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
@@ -116,7 +118,6 @@ indicatorTypePage = null;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
 
-      this.getBatchDates();
       this.getEvaluationsList(routeParams);
       this.getIndicatorCriteria(`qa_${routeParams.type}`);
 
