@@ -13,6 +13,7 @@ import { StatusHandlerMIS } from "@helpers/StatusHandler"
 import { RolesHandler } from "@helpers/RolesHandler"
 import Util from "@helpers/Util";
 import { GeneralIndicatorName } from "@helpers/GeneralIndicatorName";
+import { QABatch } from "@entity/Batch";
 
 
 class IndicatorsController {
@@ -621,6 +622,7 @@ class IndicatorsController {
 
         const indicatorRepository = getRepository(QAIndicators);
         const evaluationsRepository = getRepository(QAEvaluations);
+        const batchesRepository = getRepository(QABatch);
         try {
             const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
             const evaluations = await evaluationsRepository.find(
@@ -631,14 +633,18 @@ class IndicatorsController {
                         evaluation_status: Not('Removed'),
                         phase_year: AR
                     },
-                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt']
+                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment']
                 });
 
-            const data = evaluations.map(e => ({
+            const batches = await batchesRepository.find({where: {phase_year: AR}});
+
+            
+
+            const data = evaluations.map(e  => ({
                 indicator_name: e.indicator_view_name.split('qa_')[1],
                 id: e.indicator_view_id,
                 crp_id: e.crp_id,
-                assessment_status: StatusHandlerMIS[e.status],
+                assessment_status: Util.calculateStatusMIS(e,batches),
                 updatedAt: e.updatedAt
             })
             );

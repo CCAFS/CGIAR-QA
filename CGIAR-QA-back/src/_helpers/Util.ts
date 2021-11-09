@@ -1,5 +1,5 @@
 
-import { StatusHandler } from "@helpers/StatusHandler";
+import { StatusHandler, StatusHandlerMIS } from "@helpers/StatusHandler";
 const { ErrorHandler } = require("@helpers/ErrorHandler")
 
 import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
@@ -36,97 +36,97 @@ class Util {
      *  INTERNAL FUNCTIONS
      * 
      ***/
-    
-    static login = async (username:string, password:string) => {
+
+    static login = async (username: string, password: string) => {
         let user;
-            //Get user from database
-            const userRepository = getRepository(QAUsers);
-            const grnlConfg = getRepository(QAGeneralConfiguration);
-            const cycleRepo = getRepository(QACycle);
+        //Get user from database
+        const userRepository = getRepository(QAUsers);
+        const grnlConfg = getRepository(QAGeneralConfiguration);
+        const cycleRepo = getRepository(QACycle);
 
-            username = username.trim().toLowerCase();
+        username = username.trim().toLowerCase();
 
-            let marlo_user = await userRepository.findOne({
+        let marlo_user = await userRepository.findOne({
+            where: [
+                { email: username, is_marlo: 1 },
+                { username, is_marlo: 1 },
+            ]
+        });
+
+        // console.log(marlo_user, username, password)
+        if (marlo_user) {
+            let is_marlo = await AuthController.validateAD(marlo_user, password);
+            if (is_marlo)
+                user = marlo_user;
+
+        } else if (!(username && password)) {
+            // res.status(404).json({ message: 'Missing required email and password fields.' })
+            throw new BaseError(
+                'NOT FOUND',
+                HttpStatusCode.NOT_FOUND,
+                'Missing required email and password fields.',
+                true
+            );
+        } else {
+            user = await userRepository.findOneOrFail({
                 where: [
-                    { email: username, is_marlo: 1 },
-                    { username, is_marlo: 1 },
+                    { username },
+                    { email: username }
                 ]
             });
+        }
+        if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp) && user.roles.map(role => { return role.description }).find(r => r === RolesHandler.assesor)) {
+            throw new BaseError(
+                'UNAUTHORIZED',
+                HttpStatusCode.UNAUTHORIZED,
+                'User unauthorized',
+                true
+            );
+        }
+        // get general config by user role
+        let generalConfig = await grnlConfg
+            .createQueryBuilder("qa_general_config")
+            .select('*')
+            .where(`roleId IN (${user.roles.map(role => { return role.id })})`)
+            .andWhere("DATE(qa_general_config.start_date) <= CURDATE()")
+            .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
+            .getRawMany();
 
-            // console.log(marlo_user, username, password)
-            if (marlo_user) {
-                let is_marlo = await AuthController.validateAD(marlo_user, password);
-                if (is_marlo)
-                    user = marlo_user;
+        let current_cycle = await cycleRepo
+            .createQueryBuilder("qa_cycle")
+            .select('*')
+            .where("DATE(qa_cycle.start_date) <= CURDATE()")
+            .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
+            //.getSql();
+            .getRawOne();
 
-            } else if (!(username && password)) {
-                // res.status(404).json({ message: 'Missing required email and password fields.' })
-                throw new BaseError(
-                    'NOT FOUND',
-                    HttpStatusCode.NOT_FOUND,
-                    'Missing required email and password fields.',
-                    true
-                );
-            } else {
-                user = await userRepository.findOneOrFail({
-                    where: [
-                        { username },
-                        { email: username }
-                    ]
-                });
-            }
-            if (user.roles.map(role => { return role.description }).find(r => r === RolesHandler.crp) && user.roles.map(role => { return role.description }).find(r => r === RolesHandler.assesor)) {
-                throw new BaseError(
-                    'UNAUTHORIZED',
-                    HttpStatusCode.UNAUTHORIZED,
-                    'User unauthorized',
-                    true
-                );
-            }
-            // get general config by user role
-            let generalConfig = await grnlConfg
-                .createQueryBuilder("qa_general_config")
-                .select('*')
-                .where(`roleId IN (${user.roles.map(role => { return role.id })})`)
-                .andWhere("DATE(qa_general_config.start_date) <= CURDATE()")
-                .andWhere("DATE(qa_general_config.end_date) > CURDATE()")
-                .getRawMany();
-
-            let current_cycle = await cycleRepo
-                .createQueryBuilder("qa_cycle")
-                .select('*')
-                .where("DATE(qa_cycle.start_date) <= CURDATE()")
-                .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
-                //.getSql();
-                .getRawOne();
-                
-            //Check if encrypted password match
-            if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
-                console.log(`Password does not match.`);
-                throw new BaseError(
-                    'NOT FOUND',
-                    HttpStatusCode.NOT_FOUND,
-                    'User password incorrect.',
-                    true
-                );
-                
-            }
-
-            //Sing JWT, valid for ``config.jwtTime`` 
-            const token = jwt.sign(
-                { userId: user.id, username: user.username },
-                config_.jwtSecret,
-                { expiresIn: config_.jwtTime }
+        //Check if encrypted password match
+        if (!marlo_user && !user.checkIfUnencryptedPasswordIsValid(password)) {
+            console.log(`Password does not match.`);
+            throw new BaseError(
+                'NOT FOUND',
+                HttpStatusCode.NOT_FOUND,
+                'User password incorrect.',
+                true
             );
 
-            user["token"] = token;
-            user["config"] = generalConfig;
-            user['cycle'] = current_cycle;
-            // console.log(current_cycle)
-            delete user.password;
-            delete user.replies;
-            //Send the jwt in the response
-            return user;
+        }
+
+        //Sing JWT, valid for ``config.jwtTime`` 
+        const token = jwt.sign(
+            { userId: user.id, username: user.username },
+            config_.jwtSecret,
+            { expiresIn: config_.jwtTime }
+        );
+
+        user["token"] = token;
+        user["config"] = generalConfig;
+        user['cycle'] = current_cycle;
+        // console.log(current_cycle)
+        delete user.password;
+        delete user.replies;
+        //Send the jwt in the response
+        return user;
     }
 
     static getType(status, isCrp?) {
@@ -407,7 +407,7 @@ class Util {
                 if (rows[i]) {
                     let col_name = rows[i].col_name;
                     let field_value;
-                    try{
+                    try {
                         let queryRunner = getConnection().createQueryBuilder();
 
                         const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
@@ -418,15 +418,15 @@ class Util {
                             WHERE id = ${rows[i].id}
                             AND phase_year = actual_phase_year()                        
                                 `,
-                            { },
+                            {},
                             {}
                         );
-                    field_value = await queryRunner.connection.query(query, parameters);
-                    // field_value = JSON.parse(JSON.stringify(response[0]))[col_name];
-                    console.log(field_value);
-                            
-                    } catch(error){
-                        console.log(error);         
+                        field_value = await queryRunner.connection.query(query, parameters);
+                        // field_value = JSON.parse(JSON.stringify(response[0]))[col_name];
+                        console.log(field_value);
+
+                    } catch (error) {
+                        console.log(error);
                     }
                     let row = {
                         id: rows[i].id,
@@ -473,7 +473,7 @@ class Util {
                 if (rows[i]) {
                     let col_name = rows[i].col_name;
                     let field_value;
-                    try{
+                    try {
                         let queryRunner = getConnection().createQueryBuilder();
 
                         const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
@@ -484,15 +484,15 @@ class Util {
                             WHERE id = ${rows[i].id}
                             AND phase_year = actual_phase_year()                        
                                 `,
-                            { },
+                            {},
                             {}
                         );
-                    field_value = await queryRunner.connection.query(query, parameters);
-                    // field_value = JSON.parse(JSON.stringify(response[0]))[col_name];
-                    // console.log(field_value);
-                            
-                    } catch(error){
-                        console.log(error);         
+                        field_value = await queryRunner.connection.query(query, parameters);
+                        // field_value = JSON.parse(JSON.stringify(response[0]))[col_name];
+                        // console.log(field_value);
+
+                    } catch (error) {
+                        console.log(error);
                     }
                     let row = {
                         id: rows[i].id,
@@ -544,7 +544,7 @@ class Util {
             let meta;
             if (metaId != null)
                 meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by', 'assessed_by_second_round']  });
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by', 'assessed_by_second_round'] });
 
             let current_cycle = await cycleRepo
                 .createQueryBuilder("qa_cycle")
@@ -552,16 +552,16 @@ class Util {
                 .where("DATE(qa_cycle.start_date) <= CURDATE()")
                 .andWhere("DATE(qa_cycle.end_date) > CURDATE()")
                 .getRawOne();
-            
-            
-                if(current_cycle.id == 1) {
-                    evaluation.assessed_by.push(user);
-                console.log('ASSESSORS',evaluation.assessed_by);
 
-                } else {
-                    evaluation.assessed_by_second_round.push(user);
-                }
-                evaluationsRepository.save(evaluation);
+
+            if (current_cycle.id == 1) {
+                evaluation.assessed_by.push(user);
+                console.log('ASSESSORS', evaluation.assessed_by);
+
+            } else {
+                evaluation.assessed_by_second_round.push(user);
+            }
+            evaluationsRepository.save(evaluation);
 
             console.log(current_cycle == undefined)
             if (current_cycle == undefined) throw new Error('Could not created comment')
@@ -572,8 +572,8 @@ class Util {
             comment_.evaluation = evaluation;
             comment_.user = user;
             comment_.cycle = current_cycle;
-            if(original_field)
-            comment_.original_field = original_field;
+            if (original_field)
+                comment_.original_field = original_field;
             let new_comment = await commentsRepository.save(comment_);
 
             return new_comment;
@@ -583,7 +583,7 @@ class Util {
         }
     }
 
-    static createTag = async ( userId, tagTypeId, commentId) => {
+    static createTag = async (userId, tagTypeId, commentId) => {
         const userRepository = getRepository(QAUsers);
         const commentsRepository = getRepository(QAComments);
         const tagsRepository = getRepository(QATags);
@@ -623,15 +623,15 @@ class Util {
                 AND tag.tagTypeId= :tagTypeId
                 AND tag.userId= :userId;
                         `,
-                { commentId, tagTypeId, userId},
+                { commentId, tagTypeId, userId },
                 {}
             );
 
             let tagId = await queryRunner.connection.query(query, parameters);
-            console.log('TagID' ,tagId);
-            
+            console.log('TagID', tagId);
+
             return tagId[0].tagId || [];
-        } catch(error) {
+        } catch (error) {
             console.log(error);
             return null;
         }
@@ -642,9 +642,9 @@ class Util {
     private static formatResponse = (element, type) => {
         let field = element["meta_col_name"];
         let value = '';
-        if(element[`${field}`] == '<Not applicable>' && element["replies_count"] > 0) {
+        if (element[`${field}`] == '<Not applicable>' && element["replies_count"] > 0) {
             value = ' ';
-        }else {
+        } else {
             value = element[`${field}`];
         }
         var response = {
@@ -711,6 +711,45 @@ class Util {
         }
 
         return response;
+    }
+
+    static calculateStatusMIS =  (evaluation, batches) => {
+
+        let status = 'pending';
+
+        let queryRunner = getConnection().createQueryBuilder();
+
+        try {
+            console.log(evaluation);
+            
+            let current_batch = batches.find(b => moment(b.submission_date).isSame(evaluation.batchDate, 'day') );
+
+            switch (evaluation.status) {
+                case StatusHandler.Autochecked:
+                    status = StatusHandlerMIS[evaluation.status];
+                    break;
+                case StatusHandler.Pending:
+                    status = StatusHandlerMIS[evaluation.status];
+                    break;
+                case StatusHandler.Finalized:
+                    if(moment(Date.now()).isBefore(current_batch.programs_start_date)) {
+                        status = 'pending_crp';
+                    } else if(moment(Date.now()).isAfter(current_batch.programs_start_date) && evaluation.require_second_assessment){
+                        status = 'in_progress';
+                    } else {
+                        status = StatusHandlerMIS[evaluation.status];
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+            return status;
+        } catch (error) {
+           console.log(error);
+           return null
+        }
+
     }
 
 }
