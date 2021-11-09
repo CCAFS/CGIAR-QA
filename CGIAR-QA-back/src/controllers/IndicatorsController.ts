@@ -679,6 +679,8 @@ class IndicatorsController {
 
         const indicatorRepository = getRepository(QAIndicators);
         const evaluationsRepository = getRepository(QAEvaluations);
+        const batchesRepository = getRepository(QABatch);
+
         try {
             const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
             const item = await evaluationsRepository.findOne(
@@ -690,14 +692,16 @@ class IndicatorsController {
                         evaluation_status: Not('Removed'),
                         phase_year: AR
                     },
-                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt']
+                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment']
                 });
+
+            const batches = await batchesRepository.find({where: {phase_year: AR}});
 
             const data = {
                 indicator_name: item.indicator_view_name.split('qa_')[1],
                 id: item.indicator_view_id,
                 crp_id: item.crp_id,
-                assessment_status: StatusHandlerMIS[item.status],
+                assessment_status: Util.calculateStatusMIS(item,batches),
                 updatedAt: item.updatedAt
             }
 
