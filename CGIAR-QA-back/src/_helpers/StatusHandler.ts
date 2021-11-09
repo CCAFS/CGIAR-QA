@@ -10,6 +10,7 @@ export enum StatusHandler {
 export enum StatusHandlerMIS {
     complete = 'in_progress',
     pending = 'pending',
+    pending_crp = 'pending_crp',
     finalized = 'quality_assessed',
     autochecked = 'automatically_validated'
 }
