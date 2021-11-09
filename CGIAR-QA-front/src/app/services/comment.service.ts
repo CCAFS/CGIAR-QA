@@ -132,6 +132,8 @@ export class CommentService {
 
     }
 
-    
+    getBatches(){
+    return this.http.get<any>(`${environment.apiUrl}/comment/batches`)
+    }
 
 }

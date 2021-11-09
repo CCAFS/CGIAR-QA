@@ -86,11 +86,8 @@ indicatorTypePage = null;
   criteriaData;
   criteria_loading = false;
 
-  submission_dates: any[] = [
-    {date: "Dec 3, 2021", id: 1, checked: false},
-    {date: "Mar 4, 2021", id: 2, checked: false},
-    {date: "Apr 29, 2021", id: 3, checked: false},
-  ]
+  submission_dates: any[] = [];
+
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
@@ -119,6 +116,7 @@ indicatorTypePage = null;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
 
+      this.getBatchDates();
       this.getEvaluationsList(routeParams);
       this.getIndicatorCriteria(`qa_${routeParams.type}`);
 
@@ -129,6 +127,21 @@ indicatorTypePage = null;
       this.titleService.setTitle(`List of ${this.indicatorTypeName}`);
     });
 
+  }
+
+  getBatchDates() {
+    this.commentService.getBatches().subscribe(res => {
+
+      const batches = res.data;
+      for (let index = 0; index < batches.length; index++) {
+        const batch = {date: moment(batches[index].submission_date).format('ll'), batch_name: +batches[index].batch_name, checked: false};
+        this.submission_dates.push(batch);
+      }
+    }, error => {
+      console.log(error)
+      this.alertService.error(error);
+    }
+    )
   }
 
   getIndicatorCriteria(id) {

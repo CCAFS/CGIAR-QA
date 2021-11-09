@@ -1530,6 +1530,11 @@ class CommentController {
                     {}
                 );
                 rawData = await queryRunner.connection.query(query, parameters);
+                let batches = [];
+                for (let i = 0; i < rawData.length; i++) {
+                    const element = {submission_date: rawData[i]};
+                    
+                }
                 res.status(200).json({ message: "batches data", data: rawData });
             } catch (error) {
                 console.log(error);
