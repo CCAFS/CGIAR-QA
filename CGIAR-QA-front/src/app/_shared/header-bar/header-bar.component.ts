@@ -53,29 +53,28 @@ export class HeaderBarComponent implements OnInit {
     public router: Router,
     private indicatorService: IndicatorsService,
     private alertService: AlertService) {
+      console.log('Refresh navbar 1');
 
-    this.router.events.pipe(
-      filter(e => e instanceof NavigationStart),
-      pairwise()
-    )
-      .subscribe((e: any[]) => {
-        e.forEach(element => {
-          if (element.url != '/login') {
-            this.authenticationService.currentUser.subscribe(x => {
-              this.currentUser = x;
-              if (x) {
-                this.currentRole = x.roles[0].description.toLowerCase()
-                this.ngOnInit();
+  
+      this.router.events.pipe(filter(e => e instanceof NavigationStart)).subscribe((e: NavigationStart)  => {
+        console.log('Refresh navbar 1',e);
+        if (e.url != '/login') {
+          this.authenticationService.currentUser.subscribe(x => {
+            this.currentUser = x;
+            if (x) {
+              this.currentRole = x.roles[0].description.toLowerCase()
+
+              if(!this.indicators.length)
+              this.ngOnInit();
 
 
-                this.isHome = `/dashboard/${this.currentUser}`;
-              }
-            },
-              err => { console.log(err) });
-          } else {
-            this.indicators = [];
-          }
-        });
+              this.isHome = `/dashboard/${this.currentUser}`;
+            }
+          },
+            err => { console.log(err) });
+        } else {
+          this.indicators = [];
+        }
       });
   }
 
