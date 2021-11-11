@@ -23,12 +23,12 @@
         <div class="nav navbar-nav " routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
             <a class=" nav-item nav-link" [routerLinkActive]="['active']" [ngClass]="{'active':getCurrentRoute()}"
                 routerLink="/dashboard/{{currentRole}}">Home</a>
-            <a class="nav-item nav-link" [routerLinkActive]="['active']"
-                routerLink="/indicator/{{indicator.viewname.split('qa_')[1]}}/id"
-                *ngFor="let indicator of indicatorsName; index as i">{{indicator.name}}</a>
             <!-- <a class="nav-item nav-link" [routerLinkActive]="['active']"
+                routerLink="/indicator/{{indicator.viewname.split('qa_')[1]}}/id"
+                *ngFor="let indicator of indicatorsName; index as i">{{indicator.name}}</a> -->
+            <a class="nav-item nav-link" [routerLinkActive]="['active']"
                 routerLink="/indicator/{{indicator.indicator.view_name.split('qa_')[1]}}/{{ indicator.indicator.primary_field}}"
-                *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}} <i *ngIf="indicator.indicator.is_leader" class="icon-lead-assessor"></i></a> -->
+                *ngFor="let indicator of indicators; index as i">{{indicator.indicator.name}} <i *ngIf="indicator.indicator.is_leader" class="icon-lead-assessor"></i></a>
         </div>
     </div>
 

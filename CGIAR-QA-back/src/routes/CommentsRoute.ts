@@ -42,9 +42,9 @@ router.get("/cycles", [checkJwt, checkRole([RolesHandler.admin])], CommentContro
 router.patch("/cycles/update", [checkJwt, checkRole([RolesHandler.admin])], CommentController.updateCycle);
 
 // get batches data
-router.get("/batches", [checkJwt, checkRole([RolesHandler.admin])], CommentController.getBatches);
+router.get("/batches", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor, RolesHandler.crp])], CommentController.getBatches);
 
 // get Quick Comments
-router.get("/default-list", [checkJwt, checkRole([RolesHandler.admin])], CommentController.getQuickComments);
+router.get("/default-list", [checkJwt, checkRole([RolesHandler.admin, RolesHandler.assesor])], CommentController.getQuickComments);
 
 export default router;

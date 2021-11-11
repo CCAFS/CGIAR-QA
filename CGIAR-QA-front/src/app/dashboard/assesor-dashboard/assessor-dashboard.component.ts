@@ -110,8 +110,8 @@ export class AssessorDashboardComponent implements OnInit {
       this.getDashData(),
       this.getCommentStats(),
       this.getAllTags(),
-      // this.getFeedTags(this.selectedIndicator),
-      // this.getItemStatusByIndicatorService(this.selectedIndicator)
+      this.getFeedTags(this.selectedIndicator),
+      this.getItemStatusByIndicatorService(this.selectedIndicator)
       // this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(
@@ -119,8 +119,8 @@ export class AssessorDashboardComponent implements OnInit {
         const [dashData, 
           commentsStats,
           allTags,
-          // feedTags,
-          // assessmentByField
+          feedTags,
+          assessmentByField
         ] = res;
 
         //dashData
@@ -144,14 +144,14 @@ export class AssessorDashboardComponent implements OnInit {
         if(allTags)
         this.indicatorsTags = this.commentService.groupTags(allTags.data);;
 
-        // //feedTags
-        // if(feedTags)
-        // this.feedList = feedTags.data;
+        //feedTags
+        if(feedTags)
+        this.feedList = feedTags.data;
 
-        // //assessmentByField
-        // if(assessmentByField)
-        // this.itemStatusByIndicator = assessmentByField.data;
-        // console.log(this.itemStatusByIndicator);
+        //assessmentByField
+        if(assessmentByField)
+        this.itemStatusByIndicator = assessmentByField.data;
+        console.log(this.itemStatusByIndicator);
         
 
         //UPDATE CHARTS

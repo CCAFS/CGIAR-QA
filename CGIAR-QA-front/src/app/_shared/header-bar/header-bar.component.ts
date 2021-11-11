@@ -44,7 +44,7 @@ export class HeaderBarComponent implements OnInit {
     { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
     { name: 'CapDevs', viewname: 'qa_capdev' },
     { name: 'MELIAs', viewname: 'qa_melia' },
-    { name: 'Indicator Contrib', viewname: 'qa_aiccra_indicators_contrib' },
+    // { name: 'Indicator Contrib', viewname: 'qa_aiccra_indicators_contrib' },
     // qa_outcomes: 'Outcomes',
   ]
 
@@ -86,10 +86,10 @@ export class HeaderBarComponent implements OnInit {
     if(this.currentUserID != this.currentUser.id){
       this.currentUserID = this.currentUser.id;
       // this.indicators = [];
-      // this.getHeaderLinks();
+      this.getHeaderLinks();
     } else {
       // this.currentUserID = this.currentUser.id;
-      // this.getHeaderLinks();
+      this.getHeaderLinks();
     }
     // this.indicators = this.authenticationService.userHeaders;
     // console.log('NAV INDICATORS', this.indicators);
