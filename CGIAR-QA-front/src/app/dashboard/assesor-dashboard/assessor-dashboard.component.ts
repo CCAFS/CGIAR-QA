@@ -32,7 +32,7 @@ export class AssessorDashboardComponent implements OnInit {
   indicatorsName = GeneralIndicatorName;
   tagMessages = TagMessage;
   indicatorsTags: any;
-  selectedIndicator = 'qa_slo';
+  selectedIndicator = 'qa_policies';
   dataSelected: any;
   indicatorData: any;
   feedList: [];
@@ -110,35 +110,52 @@ export class AssessorDashboardComponent implements OnInit {
       this.getDashData(),
       this.getCommentStats(),
       this.getAllTags(),
-      this.getFeedTags(this.selectedIndicator),
-      this.getItemStatusByIndicatorService(this.selectedIndicator)
+      // this.getFeedTags(this.selectedIndicator),
+      // this.getItemStatusByIndicatorService(this.selectedIndicator)
       // this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(
       res => {
-        const [dashData, commentsStats, allTags, feedTags, assessmentByField] = res;
+        const [dashData, 
+          commentsStats,
+          allTags,
+          // feedTags,
+          // assessmentByField
+        ] = res;
 
         //dashData
-        this.dashboardData = this.dashService.groupData(dashData.data);
-        this.dataSelected = this.dashboardData[this.selectedIndicator];
+        if(dashData.data) {
+          console.log({dashData});
+          
+          this.dashboardData = this.dashService.groupData(dashData.data);
+          console.log(this.dashboardData);
+          this.selectedIndicator = Object.keys(this.dashboardData)[0]
+          this.dataSelected = this.dashboardData[this.selectedIndicator];
+        }
 
         //commentsStats
-        this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
-        console.log('COUNT COMMENTS',this.dashboardCommentsData);
+        if(commentsStats) {
+          this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+          console.log('COUNT COMMENTS',this.dashboardCommentsData);
+        }
         
 
         //allTags
+        if(allTags)
         this.indicatorsTags = this.commentService.groupTags(allTags.data);;
 
-        //feedTags
-        this.feedList = feedTags.data;
+        // //feedTags
+        // if(feedTags)
+        // this.feedList = feedTags.data;
 
-        //assessmentByField
-        this.itemStatusByIndicator = assessmentByField.data;
-        console.log(this.itemStatusByIndicator);
+        // //assessmentByField
+        // if(assessmentByField)
+        // this.itemStatusByIndicator = assessmentByField.data;
+        // console.log(this.itemStatusByIndicator);
         
 
         //UPDATE CHARTS
+        if(dashData.data && commentsStats.data && allTags.data)
         this.updateDataCharts();
 
         this.hideSpinner();

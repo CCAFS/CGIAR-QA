@@ -26,6 +26,7 @@ import AuthController from "@controllers/AuthController";
 import { BaseError } from "./BaseError";
 import { HttpStatusCode } from "./Constants";
 import moment from "moment";
+import { QACommentsReplies } from "@entity/CommentsReplies";
 // const excel = require('exceljs');
 
 
@@ -717,10 +718,8 @@ class Util {
 
         let status = 'pending';
 
-        let queryRunner = getConnection().createQueryBuilder();
-
         try {
-            console.log(evaluation);
+            // console.log(evaluation);
             
             let current_batch = batches.find(b => moment(b.submission_date).isSame(evaluation.batchDate, 'day') );
 
@@ -732,7 +731,8 @@ class Util {
                     status = StatusHandlerMIS[evaluation.status];
                     break;
                 case StatusHandler.Finalized:
-                    if(moment(Date.now()).isBefore(current_batch.programs_start_date)) {
+                    // Util.hasPendingReplies(evaluation) ||
+                    if( moment(Date.now()).isBefore(current_batch.programs_start_date) ) {
                         status = 'pending_crp';
                     } else if(moment(Date.now()).isAfter(current_batch.programs_start_date) && evaluation.require_second_assessment){
                         status = 'in_progress';
@@ -750,6 +750,25 @@ class Util {
            return null
         }
 
+    }
+
+    static hasPendingReplies = (evaluation): boolean => {
+        console.log('HAS PENDING REPLIES FUNCTION', evaluation);
+
+        const repliesRepository = getRepository(QACommentsReplies);
+        const comments = evaluation.comments;
+        for (let i = 0; i < comments.length; i++) {
+
+            if(comments[i].approved_no_comment != null && !comments[i].is_deleted && comments[i].detail != null) {
+
+                repliesRepository.find({ where:{commentId: comments[i].id, is_deleted: 0}})
+                    
+                    return false;
+                
+            }
+            
+        }
+        return true;
     }
 
 }

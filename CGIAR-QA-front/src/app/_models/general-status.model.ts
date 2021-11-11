@@ -18,6 +18,7 @@ export enum GeneralIndicatorName {
     qa_capdev= 'CapDevs',
     qa_milestones= 'Milestones',
     qa_slo= 'SLOs',
+    qa_aiccra_indicators_contrib = 'AICCRA Indicators Contrib'
     // qa_outcomes= 'Outcomes',
 }
 

@@ -14,6 +14,7 @@ import { RolesHandler } from "@helpers/RolesHandler"
 import Util from "@helpers/Util";
 import { GeneralIndicatorName } from "@helpers/GeneralIndicatorName";
 import { QABatch } from "@entity/Batch";
+import { QAComments } from "@entity/Comments";
 
 
 class IndicatorsController {
@@ -625,6 +626,18 @@ class IndicatorsController {
         const batchesRepository = getRepository(QABatch);
         try {
             const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
+
+            // const evals = await getRepository(QAEvaluations)
+            // .createQueryBuilder()
+            // .select('eval')
+            // .from(QAEvaluations, 'eval')
+            // .leftJoinAndSelect('eval.comments', 'comments')
+            // .where("eval.indicator_view_name = :view_name", {view_name: indicator_view_name[0].view_name})
+            // .where("eval.crp_id = :crp_id", {crp_id})
+            // .where("eval.evaluation_status <> :removed", {removed: 'Removed'})
+            // .where("eval.phase_year = :AR", {AR})
+            // .getMany();
+
             const evaluations = await evaluationsRepository.find(
                 {
                     where: {
