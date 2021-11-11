@@ -72,6 +72,8 @@ export class HeaderBarComponent implements OnInit {
               }
             },
               err => { console.log(err) });
+          } else {
+            this.indicators = [];
           }
         });
       });
