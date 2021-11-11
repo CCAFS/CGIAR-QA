@@ -125,6 +125,11 @@ export class HeaderBarComponent implements OnInit {
           console.log("getHeaderLinks", res);
           this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
           this.authenticationService.userHeaders = [...this.indicators];
+
+          if(this.currentRole == 'admin') {
+            //Remove last indicator (AICCRA)
+            this.indicators.pop();
+          }
           console.log(this.indicators);
           
         },
