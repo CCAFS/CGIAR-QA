@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="row filters-container">
-                <div class="date-filter">
+                <div *ngIf="submission_dates.length" class="date-filter">
                     <span>Filter by submission</span>
                     <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked"
@@ -54,7 +54,7 @@
                 </div>
                 <button type="button" class="btn btn-outline-primary" [(ngModel)]="rsaFilter" btnCheckbox [btnCheckboxTrue]="1"
                 [btnCheckboxFalse]="0">
-                Require 2nd assessment
+                Further assessment
             </button>
                 <div class="removed-filter">
                     <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
@@ -67,20 +67,6 @@
             
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
-            </div>
-
-            <div class="row" style="margin: 1em 0;">
-
-                <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
-                    <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'"
-                        btnRadio="Added" uncheckable tabindex="0" role="button">Added</label>
-                    <label class="btn btn-outline-danger" [class.active]="evalStatusFilter === 'Removed'"
-                        btnRadio="Removed" uncheckable tabindex="0" role="button">Removed</label>
                 </div>
             </div>
 
@@ -170,7 +156,7 @@
                 </thead>
                 <tbody class="table-body">
                     <tr
-                        *ngFor="let item of evaluationList  | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | slice:currentPage.startItem:currentPage.endItem; let i = index">
+                    *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | dateFilter:submission_dates:'submission_date'| filterBoolean:rsaFilter:'require_second_assessment' | slice:currentPage.startItem:currentPage.endItem  ; let i = index">
                         <th scope="row">
                             QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
                         </th>
@@ -217,13 +203,14 @@
 
             <div *ngIf='evaluationList' class="total-items">
                 Total items:
-                {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length}}
+                {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText |
+    dateFilter:submission_dates:'submission_date' | filterBoolean:rsaFilter:'require_second_assessment' ).length}}
             </div>
             <div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
                 <pagination [rotate]="false"
-                    [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText ).length"
-                    [maxSize]="5" (pageChanged)="pageChanged($event)">
-                </pagination>
+                [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText  | dateFilter:submission_dates:'submission_date' | filterBoolean:rsaFilter:'require_second_assessment').length"
+                [maxSize]="5" (pageChanged)="pageChanged($event)">
+            </pagination>
             </div>
         </div>
 
