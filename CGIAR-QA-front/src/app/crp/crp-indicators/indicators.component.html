@@ -3,7 +3,7 @@
 </a>
 
 <div class="row">
-    <div class="col-12">
+    <div class="col-12"> 
         <div>
             <h2>{{returnListName(indicatorType, 'header')}} </h2>
             <h4 style="text-align: center;"
@@ -43,7 +43,32 @@
                     <p>Pending</p>
                 </div>
             </div>
-
+            <div class="row filters-container">
+                <div class="date-filter">
+                    <span>Filter by submission</span>
+                    <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked"
+                            (change)="onDateChange($event,sub.batch_name)">
+                        <label class="form-check-label" for="inlineCheckbox{{sub.id}}">{{sub.date}}</label>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary" [(ngModel)]="rsaFilter" btnCheckbox [btnCheckboxTrue]="1"
+                [btnCheckboxFalse]="0">
+                Require 2nd assessment
+            </button>
+                <div class="removed-filter">
+                    <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
+                        <!-- <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
+                            uncheckable tabindex="0" role="button">Added item</label> -->
+                        <label class="btn btn-outline-danger" [class.active]="evalStatusFilter === 'Removed'" btnRadio="Removed"
+                            uncheckable tabindex="0" role="button">Removed items</label>
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
+                </div>
+            </div>
 
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">

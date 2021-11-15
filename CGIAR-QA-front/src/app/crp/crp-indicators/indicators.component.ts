@@ -64,6 +64,9 @@ export class CRPIndicatorsComponent implements OnInit {
 
   spinner_name = 'spIndicators';
   btonFilterForm: any;
+  submission_dates = [];
+  rsaFilter: boolean = false;
+
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -87,6 +90,7 @@ export class CRPIndicatorsComponent implements OnInit {
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
+      this.getBatchDates();
       // this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
       this.getEvaluationsList(routeParams);
       /** set page title */
@@ -239,6 +243,29 @@ export class CRPIndicatorsComponent implements OnInit {
     this.indicatorService.setFullPageList(this.currentPage);
   }
 
+  getBatchDates() {
+    this.commentService.getBatches().subscribe(res => {
+
+      const batches = res.data;
+      for (let index = 0; index < batches.length; index++) {
+        const batch = {date: moment(batches[index].submission_date).format('ll'), batch_name: +batches[index].batch_name, checked: false};
+        this.submission_dates.push(batch);
+      }
+    }, error => {
+      console.log(error)
+      this.alertService.error(error);
+    }
+    )
+  }
+
+  onDateChange(e, subDate) {
+    if(subDate) {
+      console.log(e.target.checked, e.target.value);
+      const foundIndex = this.submission_dates.findIndex(sd => sd.date == e.target.value);
+      this.submission_dates[foundIndex]['checked'] = e.target.checked;
+      this.submission_dates = [...this.submission_dates];
+    }
+  }
 
   /***
    * 
