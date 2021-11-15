@@ -213,7 +213,7 @@
             <!-- <p><span class="textarea" role="textbox" contenteditable maxlength="{{totalChar}}" formControlName="comment"></span></p> -->
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>
-        <div class="btn-group w-100" dropdown>
+        <div *ngIf="!this.isCRP" class="btn-group w-100" dropdown>
             <button id="button-animated" dropdownToggle type="button" class="btn btn-primary dropdown-toggle w-100"
                 aria-controls="dropdown-animated">
                 Quick comment <span class="caret"></span>

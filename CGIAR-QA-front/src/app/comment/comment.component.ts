@@ -91,7 +91,9 @@ export class CommentComponent implements OnInit {
       console.log(this.currentUser);
 
     }
-    this.getQuickComments();
+    if(!this.isCRP) {
+      this.getQuickComments();
+    }
   }
 
   getQuickComments() {
