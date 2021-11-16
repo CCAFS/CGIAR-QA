@@ -57,8 +57,8 @@ class IndicatorsController {
             let isAdmin = user.roles.find(x => x.description == RolesHandler.admin);
 
             let isCRP = user.crps.length > 0 ? true : false;
-            console.log({user});
-            
+            console.log({ user });
+
             // console.log('getIndicatorsByUser')
             // console.log('isAdmin', isAdmin)
             if (isAdmin) {
@@ -624,41 +624,99 @@ class IndicatorsController {
         const indicatorRepository = getRepository(QAIndicators);
         const evaluationsRepository = getRepository(QAEvaluations);
         const batchesRepository = getRepository(QABatch);
+
+        let queryRunner = getConnection().createQueryBuilder();
+
         try {
             const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
 
-            // const evals = await getRepository(QAEvaluations)
-            // .createQueryBuilder()
-            // .select('eval')
-            // .from(QAEvaluations, 'eval')
-            // .leftJoinAndSelect('eval.comments', 'comments')
-            // .where("eval.indicator_view_name = :view_name", {view_name: indicator_view_name[0].view_name})
-            // .where("eval.crp_id = :crp_id", {crp_id})
-            // .where("eval.evaluation_status <> :removed", {removed: 'Removed'})
-            // .where("eval.phase_year = :AR", {AR})
-            // .getMany();
+            let sql = `SELECT
+            evaluations.id AS evaluation_id,
+            evaluations.indicator_view_name,
+            evaluations.indicator_view_id,
+            evaluations.evaluation_status,
+            evaluations.status,
+            evaluations.crp_id,
+            evaluations.batchDate,
+            evaluations.require_second_assessment,
+            evaluations.updatedAt,
+            crp.acronym AS crp_acronym,
+            crp.name AS crp_name,
+            IF(
+                (
+                        SELECT COUNT(id)
+                        FROM qa_comments
+                        WHERE qa_comments.evaluationId = evaluations.id
+                                AND approved_no_comment IS NULL
+                                AND metaId IS NOT NULL
+                                AND is_deleted = 0
+                                AND is_visible = 1
+                                AND detail IS NOT NULL
+                               -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                ) <= (
+                        SELECT COUNT(id)
+                        FROM qa_comments_replies
+                        WHERE is_deleted = 0
+                                AND commentId IN (
+                                        SELECT id
+                                        FROM qa_comments
+                                        WHERE qa_comments.evaluationId = evaluations.id
+                                                AND approved_no_comment IS NULL
+                                                AND metaId IS NOT NULL
+                                                AND is_deleted = 0
+                                                AND is_visible = 1
+                                                AND detail IS NOT NULL
+                                                -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                )
+                    
+                ),
+                false,
+                true
+        ) AS pending_replies 
+        FROM
+            qa_evaluations evaluations
+        LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+        LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
+        LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
+        WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+        AND evaluations.indicator_view_name = :indicator_view_name
+        AND evaluations.crp_id = :crp_id
+        AND evaluations.phase_year = :AR
+        GROUP BY
+            crp.crp_id,
+            evaluations.id,
+            indicator_user.indicatorId`;
 
-            const evaluations = await evaluationsRepository.find(
-                {
-                    where: {
-                        indicator_view_name: indicator_view_name[0].view_name,
-                        crp_id,
-                        evaluation_status: Not('Removed'),
-                        phase_year: AR
-                    },                    
-                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment'],
-                    relations: ['comments'],
-                });
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                sql,
+                { indicator_view_name: indicator_view_name[0].view_name, crp_id: crp_id, AR },
+                {}
+            );
 
-            const batches = await batchesRepository.find({where: {phase_year: AR}});
+            const evaluations = await queryRunner.connection.query(query, parameters);
 
-            
+            // const evaluations = await evaluationsRepository.find(
+            //     {
+            //         where: {
+            //             indicator_view_name: indicator_view_name[0].view_name,
+            //             crp_id,
+            //             evaluation_status: Not('Removed'),
+            //             phase_year: AR
+            //         },
+            //         select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment'],
+            //         relations: ['comments'],
+            //     });
 
-            const data = evaluations.map(e  => ({
+            const batches = await batchesRepository.find({ where: { phase_year: AR } });
+
+
+                console.log({evaluations});
+                
+            const data = evaluations.map(e => ({
                 indicator_name: e.indicator_view_name.split('qa_')[1],
                 id: e.indicator_view_id,
                 crp_id: e.crp_id,
-                assessment_status: Util.calculateStatusMIS(e,batches),
+                assessment_status: Util.calculateStatusMIS(e, batches),
                 updatedAt: e.updatedAt
             })
             );
@@ -670,21 +728,21 @@ class IndicatorsController {
 
     }
 
-/**
- * @api {get} /indicator/:indicator_id/crp/:smo_code/items?AR=:year Request User information
- * @apiName getItemStatusMIS
- * @apiGroup Indicators
- *
- * @apiParam {Number} indicator_id
- * @apiParam {String} smo_code
- * @apiParam {String} year
- * 
- * @apiSuccess {String} indicator_name Name of the indicator.
- * @apiSuccess {String} id  Item ID.
- * @apiSuccess {String} crp_id CRP ID.
- * @apiSuccess {String} assessment_status Item Status in QA Platform
- * @apiSuccess {Datetime} updatedAt last date of item update.
- */
+    /**
+     * @api {get} /indicator/:indicator_id/crp/:smo_code/items?AR=:year Request User information
+     * @apiName getItemStatusMIS
+     * @apiGroup Indicators
+     *
+     * @apiParam {Number} indicator_id
+     * @apiParam {String} smo_code
+     * @apiParam {String} year
+     * 
+     * @apiSuccess {String} indicator_name Name of the indicator.
+     * @apiSuccess {String} id  Item ID.
+     * @apiSuccess {String} crp_id CRP ID.
+     * @apiSuccess {String} assessment_status Item Status in QA Platform
+     * @apiSuccess {Datetime} updatedAt last date of item update.
+     */
     static getItemStatusMIS = async (req: Request, res: Response) => {
         const { crp_id, id, item_id } = req.params;
 
@@ -709,13 +767,13 @@ class IndicatorsController {
                     select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment']
                 });
 
-            const batches = await batchesRepository.find({where: {phase_year: AR}});
+            const batches = await batchesRepository.find({ where: { phase_year: AR } });
 
             const data = {
                 indicator_name: item.indicator_view_name.split('qa_')[1],
                 id: item.indicator_view_id,
                 crp_id: item.crp_id,
-                assessment_status: Util.calculateStatusMIS(item,batches),
+                assessment_status: Util.calculateStatusMIS(item, batches),
                 updatedAt: item.updatedAt
             }
 

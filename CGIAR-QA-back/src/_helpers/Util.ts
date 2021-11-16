@@ -732,7 +732,7 @@ class Util {
                     break;
                 case StatusHandler.Finalized:
                     // Util.hasPendingReplies(evaluation) ||
-                    if( moment(Date.now()).isBefore(current_batch.programs_start_date) ) {
+                    if( moment(Date.now()).isBefore(current_batch.programs_start_date) || evaluation.pending_replies) {
                         status = 'pending_crp';
                     } else if(moment(Date.now()).isAfter(current_batch.programs_start_date) && evaluation.require_second_assessment){
                         status = 'in_progress';
@@ -752,24 +752,6 @@ class Util {
 
     }
 
-    static hasPendingReplies = (evaluation): boolean => {
-        console.log('HAS PENDING REPLIES FUNCTION', evaluation);
-
-        const repliesRepository = getRepository(QACommentsReplies);
-        const comments = evaluation.comments;
-        for (let i = 0; i < comments.length; i++) {
-
-            if(comments[i].approved_no_comment != null && !comments[i].is_deleted && comments[i].detail != null) {
-
-                repliesRepository.find({ where:{commentId: comments[i].id, is_deleted: 0}})
-                    
-                    return false;
-                
-            }
-            
-        }
-        return true;
-    }
 
 }
 
