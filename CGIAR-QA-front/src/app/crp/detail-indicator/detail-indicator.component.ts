@@ -8,7 +8,7 @@ import { AlertService } from '../../services/alert.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName, GeneralStatus } from "../../_models/general-status.model" 
+import { DetailedStatus, GeneralIndicatorName, GeneralStatus, StatusNames, StatusNamesCRP } from "../../_models/general-status.model" 
 import { crpMEL  } from "../../_models/crp.model" ;
 import { Role } from 'src/app/_models/roles.model';
 import { Title } from '@angular/platform-browser';
@@ -50,7 +50,8 @@ export class DetailIndicatorComponent implements OnInit {
   currentType = '';
   isCRP= true;
   general_comment_reply;
-
+  statusNames = StatusNames;
+  statusNamesCRP = StatusNamesCRP;
   approveAllitems;
 
   @ViewChild("commentsElem") private commentsElem: ElementRef;
@@ -154,6 +155,8 @@ export class DetailIndicatorComponent implements OnInit {
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
         }
+        console.log(this.gnralInfo);
+        
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner(this.spinner1);

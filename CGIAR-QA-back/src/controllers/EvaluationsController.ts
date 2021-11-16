@@ -764,6 +764,11 @@ class EvaluationsController {
                             qc.original_field,
                             evaluations.status AS evaluations_status,
                             evaluations.require_second_assessment,
+                            IF(
+                                (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
+                                    = 
+                                ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
+                            AS response_status,
                         ( SELECT enable_assessor FROM qa_comments_meta WHERE indicatorId = indicators.id ) AS enable_assessor,
                         ( SELECT id FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_id,
                         ( SELECT detail FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment,

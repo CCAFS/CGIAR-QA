@@ -61,3 +61,8 @@ export enum StatusNames {
     complete = 'In progress',
     autochecked = 'Automatically Validated'
 }
+
+export enum StatusNamesCRP {
+    pending = 'Pending',
+    complete = 'Answered / No action needed',
+}

@@ -15,6 +15,23 @@
     display: grid;
     place-items: center;
   }
+  .assessment-status, .response-status{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    p{
+      margin: 0;
+    }
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      i {
+        width: 24px;
+        margin: 0 0.5em;
+      }
+    }
+  }
   .buttons {
     width: 10vw;
     display: flex;
