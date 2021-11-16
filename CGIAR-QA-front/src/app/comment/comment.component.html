@@ -91,10 +91,10 @@
                         <button type="button" class="btn disagree"
                             (click)="answerComment(false,replyTypes.disagree,comment)">DISAGREE</button>
 
-                        <button  type="button"
+                        <!-- <button  type="button"
                             class="btn request-clarification"
                             (click)="answerComment(false,replyTypes.clarification,comment)">CLARIFICATION
-                            NEEDED</button>
+                            NEEDED</button> -->
                     </div>
 
                     <div *ngIf="crpComment && comment.replies.replies_count == '0' && comment.replyTypeId != 1 && comment.replyTypeId != 4 "
