@@ -36,6 +36,11 @@
         </div>
     </div>
 
+    <div *ngIf="gnralInfo.requires_second_assessment" class="rsa-description" [ngClass]="{'requires-second-assessment': gnralInfo.requires_second_assessment} ">
+        Further assessment
+        <i class="icon-second-assessment"></i>
+    </div>
+
 </div>
 <div class="col" *ngIf="!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">
     <p class="indicator-item-name text-danger" style="text-transform: initial; text-align: center;">

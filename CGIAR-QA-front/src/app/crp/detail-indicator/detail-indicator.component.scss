@@ -1,5 +1,9 @@
 @import "../../../assets/variables.scss";
 
+* {
+  margin: 0;
+}
+
 .indicator-item-name {
   font-size: $font-md;
   text-transform: capitalize;
@@ -10,10 +14,29 @@
 .detail-header-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: auto 2em;
   .status {
     display: grid;
     place-items: center;
+  }
+
+  .rsa-description {
+    display: flex;
+    align-items: center;
+    i {
+      max-width: 24px;
+      filter: grayscale(1);
+      margin-left: 0.5em;
+    }
+    transition: all .4s ease-in; 
+    color: var(--gray-secondary);
+    &.requires-second-assessment {
+      color: black;
+      i{
+        filter: none;
+      }
+    }
   }
   .assessment-status, .response-status{
     display: flex;
@@ -92,7 +115,8 @@
     .approved-no-comment {
       background: var(--color-agree);
       border-radius: 0.3em;
-      font-size: 0.5em;
+      font-size: 0.6em;
+    margin-left: 1em;
       padding: 2px 5px;
       border: var(--green-primary) 2px solid;
       display: block !important;

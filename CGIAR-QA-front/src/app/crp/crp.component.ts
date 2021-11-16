@@ -83,6 +83,8 @@ export class CrpComponent implements OnInit {
           res => {
 
             this.indicators = res.data.sort((a, b) => a.order - b.order);
+            //TO-DO
+            this.indicators.pop();
             localStorage.setItem('indicatorsCRP', JSON.stringify(this.indicators));
             this.hideSpinner(this.spinner_name);
           this.router.navigate([`/crp/dashboard`])

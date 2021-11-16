@@ -42,7 +42,8 @@ export class DetailIndicatorComponent implements OnInit {
     general_comment_id: '',
     general_comment_user: '',
     general_comment_updatedAt: '',
-    crp_id: ''
+    crp_id: '',
+    requires_second_assessment: ''
   };
   statusHandler = DetailedStatus;
   crpsMEL = crpMEL;
@@ -154,6 +155,7 @@ export class DetailIndicatorComponent implements OnInit {
           general_comment_id: this.detailedData[0].general_comment_id,
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
+          requires_second_assessment: this.detailedData[0].require_second_assessment
         }
         console.log(this.gnralInfo);
         
