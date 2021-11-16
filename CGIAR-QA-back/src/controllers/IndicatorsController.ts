@@ -622,7 +622,6 @@ class IndicatorsController {
         const { AR } = req.query;
 
         const indicatorRepository = getRepository(QAIndicators);
-        const evaluationsRepository = getRepository(QAEvaluations);
         const batchesRepository = getRepository(QABatch);
 
         let queryRunner = getConnection().createQueryBuilder();
@@ -695,22 +694,7 @@ class IndicatorsController {
 
             const evaluations = await queryRunner.connection.query(query, parameters);
 
-            // const evaluations = await evaluationsRepository.find(
-            //     {
-            //         where: {
-            //             indicator_view_name: indicator_view_name[0].view_name,
-            //             crp_id,
-            //             evaluation_status: Not('Removed'),
-            //             phase_year: AR
-            //         },
-            //         select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment'],
-            //         relations: ['comments'],
-            //     });
-
             const batches = await batchesRepository.find({ where: { phase_year: AR } });
-
-
-                console.log({evaluations});
                 
             const data = evaluations.map(e => ({
                 indicator_name: e.indicator_view_name.split('qa_')[1],
@@ -723,6 +707,8 @@ class IndicatorsController {
 
             res.status(200).send({ data: data, message: `List of ${indicator_view_name[0].view_name.split('qa_')[1]} indicator items` })
         } catch (error) {
+            console.log(error);
+            
             res.status(404).json({ message: "Items for MIS cannot be retrieved", data: error })
         }
 
@@ -750,23 +736,81 @@ class IndicatorsController {
         const { AR } = req.query;
 
         const indicatorRepository = getRepository(QAIndicators);
-        const evaluationsRepository = getRepository(QAEvaluations);
         const batchesRepository = getRepository(QABatch);
+
+       
+        let queryRunner = getConnection().createQueryBuilder();
 
         try {
             const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
-            const item = await evaluationsRepository.findOne(
-                {
-                    where: {
-                        indicator_view_name: indicator_view_name[0].view_name,
-                        indicator_view_id: item_id,
-                        crp_id,
-                        evaluation_status: Not('Removed'),
-                        phase_year: AR
-                    },
-                    select: ['indicator_view_name', 'indicator_view_id', 'crp_id', 'status', 'updatedAt', 'batchDate', 'require_second_assessment']
-                });
 
+            let sql = `SELECT
+            evaluations.id AS evaluation_id,
+            evaluations.indicator_view_name,
+            evaluations.indicator_view_id,
+            evaluations.evaluation_status,
+            evaluations.status,
+            evaluations.crp_id,
+            evaluations.batchDate,
+            evaluations.require_second_assessment,
+            evaluations.updatedAt,
+            crp.acronym AS crp_acronym,
+            crp.name AS crp_name,
+            IF(
+                (
+                        SELECT COUNT(id)
+                        FROM qa_comments
+                        WHERE qa_comments.evaluationId = evaluations.id
+                                AND approved_no_comment IS NULL
+                                AND metaId IS NOT NULL
+                                AND is_deleted = 0
+                                AND is_visible = 1
+                                AND detail IS NOT NULL
+                               -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                ) <= (
+                        SELECT COUNT(id)
+                        FROM qa_comments_replies
+                        WHERE is_deleted = 0
+                                AND commentId IN (
+                                        SELECT id
+                                        FROM qa_comments
+                                        WHERE qa_comments.evaluationId = evaluations.id
+                                                AND approved_no_comment IS NULL
+                                                AND metaId IS NOT NULL
+                                                AND is_deleted = 0
+                                                AND is_visible = 1
+                                                AND detail IS NOT NULL
+                                                -- AND cycleId IN (SELECT id FROM qa_cycle WHERE DATE(start_date) <= CURDATE() AND DATE(end_date) > CURDATE())
+                                )
+                    
+                ),
+                false,
+                true
+        ) AS pending_replies 
+        FROM
+            qa_evaluations evaluations
+        LEFT JOIN qa_indicators indicators ON indicators.view_name = evaluations.indicator_view_name
+        LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id AND crp.active = 1 AND crp.qa_active = 'open'
+        LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
+        WHERE (evaluations.evaluation_status <> 'Deleted' OR evaluations.evaluation_status IS NULL)
+        AND evaluations.indicator_view_name = :indicator_view_name
+        AND evaluations.crp_id = :crp_id
+        AND evaluations.phase_year = :AR
+        AND evaluations.indicator_view_id = :indicator_view_id
+        GROUP BY
+            crp.crp_id,
+            evaluations.id,
+            indicator_user.indicatorId`;
+
+            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                sql,
+                { indicator_view_name: indicator_view_name[0].view_name, crp_id, indicator_view_id: item_id,AR },
+                {}
+            );
+
+            let item = await queryRunner.connection.query(query, parameters);
+            item = item[0];
+            
             const batches = await batchesRepository.find({ where: { phase_year: AR } });
 
             const data = {
@@ -779,6 +823,8 @@ class IndicatorsController {
 
             res.status(200).send({ data: data, message: `Item ${data.id} of  ${indicator_view_name[0].view_name.split('qa_')[1]} indicator.` })
         } catch (error) {
+            console.log(error);
+            
             res.status(404).json({ message: "Items for MIS cannot be retrieved", data: error })
         }
 
