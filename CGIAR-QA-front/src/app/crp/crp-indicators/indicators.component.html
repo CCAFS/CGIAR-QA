@@ -144,6 +144,11 @@
                                 Assessed by
                             </div>
                         </th>
+                        <th scope="col">
+                            <div class="header-row">
+                                Submission date
+                            </div>
+                        </th>
                         <th scope="col" [class.active]="order === 'status'" (click)="setOrder('status') ">
                             <div class="header-row"> QA Status
                                 <div class="order-icon" *ngIf="order === 'status'">
@@ -193,6 +198,9 @@
                         <td  *ngIf="indicatorType == 'publications'">
                             <div *ngIf="item.assessment_status != 'autochecked'" class="assessed-by">Assessors</div>
                             <p class="wos-label" *ngIf="item.assessment_status == 'autochecked'">Validated by WoS/Scopus</p>
+                        </td>
+                        <td>
+                            {{item.submission_date}}
                         </td>
                         <td>
                             <i class="icon-{{ statusIconCRP[item.status] }} status-icon"></i>
