@@ -196,6 +196,8 @@
                         </td>
                         <td>
                             <div class="circle {{ item.status }}"></div>
+                            <div class="require-second-assessment" *ngIf="item.require_second_assessment">Further assessment
+                            </div>
                         </td>
                     </tr>
                 </tbody>

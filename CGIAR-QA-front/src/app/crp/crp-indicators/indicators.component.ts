@@ -80,6 +80,8 @@ export class CRPIndicatorsComponent implements OnInit {
     // private orderPipe: OrderPipe,
     private titleService: Title,
     private alertService: AlertService) {
+      this.getBatchDates();
+
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
@@ -90,7 +92,6 @@ export class CRPIndicatorsComponent implements OnInit {
       this.indicatorType = routeParams.type;
       this.configTemplate = this.currentUser.config[`${this.indicatorType}_guideline`]
       this.indicatorTypeName = GeneralIndicatorName[`qa_${this.indicatorType}`];
-      this.getBatchDates();
       // this.indicatorTypeName = this.indicatorType.charAt(0).toUpperCase() + this.indicatorType.slice(1);
       this.getEvaluationsList(routeParams);
       /** set page title */
