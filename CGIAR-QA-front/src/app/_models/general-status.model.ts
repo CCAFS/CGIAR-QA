@@ -55,6 +55,11 @@ export enum StatusIcon {
     autochecked = 'autochecked'
 }
 
+export enum StatusIconCRP {
+    pending = 'pending',
+    complete = 'quality-assessed',
+}
+
 export enum StatusNames {
     pending = 'Pending',
     finalized = 'Quality Assessed',

@@ -11,7 +11,7 @@ import { AlertService } from '../../services/alert.service';
 import { CommentService } from 'src/app/services/comment.service';
 
 import { User } from '../../_models/user.model';
-import { GeneralIndicatorName } from 'src/app/_models/general-status.model';
+import { GeneralIndicatorName, StatusIconCRP } from 'src/app/_models/general-status.model';
 
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
@@ -47,7 +47,7 @@ export class CRPIndicatorsComponent implements OnInit {
     publications: 'ISI',
     milestones: 'Milestone Status',
   }
-
+  statusIconCRP = StatusIconCRP;
   maxSize = 5;
   pageSize = 4;
   collectionSize = 0;

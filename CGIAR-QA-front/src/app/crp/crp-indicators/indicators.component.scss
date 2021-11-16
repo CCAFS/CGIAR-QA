@@ -103,7 +103,14 @@ h2 {
     margin: 0 1em;
   }
   .text-right {
+    display: flex;
+    align-items: center;
     justify-content: flex-end;
+    i{
+      width: 32px;
+      margin: 0 0.2em 0 1em;
+      // padding: 1em;
+    }
   }
   .text-left {
     display: flex;
@@ -206,6 +213,11 @@ h2 {
       // border: 1px solid red;
       // color: green;
       // max-width: 300px;
+    }
+    .status-icon{
+      width: 32px;
+      margin: 0 0.2em 0 1em;
+      // padding: 1em;
     }
     // .brief-format table tbody tr td p{
     //   display:inline-block;

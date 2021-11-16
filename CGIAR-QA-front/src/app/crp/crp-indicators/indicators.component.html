@@ -37,9 +37,9 @@
                     </div>
                 </div>
                 <div class="col row text-right">
-                    <div class="circle answered"></div>
+                    <i class="icon-quality-assessed"></i>
                     <p>Answered / No action needed</p>
-                    <div class="circle pending" style="margin-left: 50px;"></div>
+                    <i class="icon-pending"></i>
                     <p>Pending</p>
                 </div>
             </div>
@@ -195,7 +195,7 @@
                             <p class="wos-label" *ngIf="item.assessment_status == 'autochecked'">Validated by WoS/Scopus</p>
                         </td>
                         <td>
-                            <div class="circle {{ item.status }}"></div>
+                            <i class="icon-{{ statusIconCRP[item.status] }} status-icon"></i>
                             <div class="require-second-assessment" *ngIf="item.require_second_assessment">Further assessment
                             </div>
                         </td>
