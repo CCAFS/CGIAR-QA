@@ -41,7 +41,7 @@ export class CRPIndicatorsComponent implements OnInit {
   }
   stageHeaderText = {
     policies: 'Level',
-    oicr: 'Maturity Level',
+    oicr: 'Maturity Stage',
     innovations: 'Stage',
     melia: 'Type',
     publications: 'ISI',
