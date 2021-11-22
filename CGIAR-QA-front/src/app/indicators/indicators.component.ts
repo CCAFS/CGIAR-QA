@@ -51,8 +51,8 @@ export class IndicatorsComponent implements OnInit {
     qa_slo: 1,
   };
   stageHeaderText = {
-    policies: 'Level',
-    oicr: 'Maturity Level',
+    policies: 'Stage',
+    oicr: 'Maturity Stage',
     innovations: 'Stage',
     melia: 'Type',
     publications: 'ISI',
