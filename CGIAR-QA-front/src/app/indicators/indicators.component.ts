@@ -135,9 +135,10 @@ indicatorTypePage = null;
 
       const batches = res.data;
       for (let index = 0; index < batches.length; index++) {
-        const batch = {date: moment(batches[index].submission_date).format('ll'), batch_name: +batches[index].batch_name, checked: false};
+        let batch = {date: moment(batches[index].submission_date).format('ll'), batch_name: +batches[index].batch_name, checked: false};
         this.submission_dates.push(batch);
       }
+      
     }, error => {
       console.log(error)
       this.alertService.error(error);

@@ -56,7 +56,7 @@
     </div>
     <button type="button" class="btn btn-outline-primary" [(ngModel)]="rsaFilter" btnCheckbox [btnCheckboxTrue]="1"
         [btnCheckboxFalse]="0">
-        Require 2nd assessment
+        Further assessment
     </button>
     <div class="removed-filter">
         <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
@@ -310,7 +310,7 @@
             </td>
             <td>
                 <i class="icon-{{ statusIcon[item.status] }} status-icon"></i>
-                <div class="require-second-assessment" *ngIf="item.require_second_assessment">Requires 2nd assessment
+                <div class="require-second-assessment" *ngIf="item.require_second_assessment">Further assessment
                 </div>
             </td>
         </tr>
