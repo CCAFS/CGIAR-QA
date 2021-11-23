@@ -32,7 +32,7 @@ export class AssessorDashboardComponent implements OnInit {
   indicatorsName = GeneralIndicatorName;
   tagMessages = TagMessage;
   indicatorsTags: any;
-  selectedIndicator = 'qa_policies';
+  selectedIndicator = 'qa_slo';
   dataSelected: any;
   indicatorData: any;
   feedList: [];
@@ -110,7 +110,7 @@ export class AssessorDashboardComponent implements OnInit {
       this.getDashData(),
       this.getCommentStats(),
       this.getAllTags(),
-      this.getFeedTags(this.selectedIndicator),
+      // this.getFeedTags(this.selectedIndicator),
       this.getItemStatusByIndicatorService(this.selectedIndicator)
       // this.getAllItemStatusByIndicator()
     ]);
@@ -119,7 +119,7 @@ export class AssessorDashboardComponent implements OnInit {
         const [dashData, 
           commentsStats,
           allTags,
-          feedTags,
+          // feedTags,
           assessmentByField
         ] = res;
 
@@ -129,7 +129,7 @@ export class AssessorDashboardComponent implements OnInit {
           
           this.dashboardData = this.dashService.groupData(dashData.data);
           console.log(this.dashboardData);
-          this.selectedIndicator = Object.keys(this.dashboardData)[0]
+          // this.selectedIndicator = Object.keys(this.dashboardData)[0]
           this.dataSelected = this.dashboardData[this.selectedIndicator];
         }
 
@@ -145,8 +145,8 @@ export class AssessorDashboardComponent implements OnInit {
         this.indicatorsTags = this.commentService.groupTags(allTags.data);;
 
         //feedTags
-        if(feedTags)
-        this.feedList = feedTags.data;
+        // if(feedTags)
+        // this.feedList = feedTags.data;
 
         //assessmentByField
         if(assessmentByField)
@@ -185,14 +185,17 @@ export class AssessorDashboardComponent implements OnInit {
     this.showSpinner();
 
     let responses = forkJoin([
-      this.getFeedTags(this.selectedIndicator),
+      // this.getFeedTags(this.selectedIndicator),
       this.getItemStatusByIndicatorService(this.selectedIndicator)
     ]);
     responses.subscribe(
       res => {
-        const [feedTags, assessmentByField] = res;
+        const [
+          // feedTags,
+           assessmentByField
+          ] = res;
         //feedTags
-        this.feedList = feedTags.data;
+        // this.feedList = feedTags.data;
 
         //assessmentByField
         this.itemStatusByIndicator = assessmentByField.data;
