@@ -286,7 +286,7 @@ export class AssessorDashboardComponent implements OnInit {
     const colors = {
       complete: 'var(--color-complete)',
       pending: 'var(--color-pending)',
-      finalized: 'var(--color-finalized)',
+      finalized: 'var(--color-complete)',
       autochecked: 'var(--color-autochecked)'
     }
     let dataset = [];
@@ -300,7 +300,7 @@ export class AssessorDashboardComponent implements OnInit {
     let complete = dataset.find(item => item.name == 'complete');
     if (complete) complete.name = 'Assessed 1st round';
     let finalized = dataset.find(item => item.name == 'finalized');
-    if (finalized) finalized.name = 'Assessed 2nd round';
+    if (finalized) finalized.name = 'Quality Assessed';
     
     let autochecked = dataset.find(item => item.name == 'autochecked');
     if (autochecked) {

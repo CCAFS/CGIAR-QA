@@ -18,21 +18,21 @@ export class DonutChartComponent implements OnInit {
   public legendLabels: any = { 
     indicator_status: [
     {name:"Pending", class: "pending"},
-    {name:"Assessed (1st round)", class:"complete" },
-    {name:"Assessed (2nd round)", class:"finalized" }
+    // {name:"Assessed (1st round)", class:"complete" },
+    {name:"Quality Assessed", class:"finalized" }
   ],
     publications_status: [
     {name:"Automatically validated", class: "autochecked"},
     {name:"Pending", class: "pending"},
-    {name:"Assessed (1st round)", class:"complete" },
-    {name:"Assessed (2nd round)", class:"finalized" }
+    // {name:"Assessed (1st round)", class:"complete" },
+    {name:"Quality Assessed", class:"finalized" }
   ],
   comments: [
     {name:"Pending", class:"pending" },
     {name:"Accepted", class: "agree"},
     {name:"Accepted with comment", class: "agree-wc"},
     {name:"Disagree", class: "disagree"},
-    {name:"Clarification needed", class: "clarification"},
+    // {name:"Clarification needed", class: "clarification"},
     
   ]};
 
