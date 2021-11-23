@@ -82,17 +82,35 @@ export class AuthenticationService {
 
   setLoggedUserTawkTo(user) {
     if (window.hasOwnProperty('Tawk_API')) {
+      console.log('Tawk API EXISTS');
+      
       if (window['Tawk_API'].isVisitorEngaged()) window['Tawk_API'].endChat();
+      
       window['Tawk_API'].setAttributes({
         name: user.username,
         email: user.email
       }, function (error) {
         console.log(error)
       });
+    } else {
+      console.log('Tawk API DOES NOT EXISTS');
+
     }
   }
 
   logout() {
+    this.logOutTawtkTo();
+
+    // remove user from local storage and set current user to null
+    localStorage.removeItem('indicators');
+    localStorage.removeItem(this.usrCookie);
+    localStorage.clear();
+    this.cookiesService.delete(this.usrCookie);
+    this.currentUserSubject.next(null);
+  }
+
+  private logOutTawtkTo() {
+    console.log(window.hasOwnProperty('Tawk_API'))
     if (window.hasOwnProperty('Tawk_API')) {
       try {
         window['Tawk_API'].endChat();
@@ -106,11 +124,6 @@ export class AuthenticationService {
         email: null
       };
     }
-    // remove user from local storage and set current user to null
-    localStorage.removeItem('indicators');
-    localStorage.removeItem(this.usrCookie);
-    this.cookiesService.delete(this.usrCookie);
-    this.currentUserSubject.next(null);
   }
 
 
