@@ -94,6 +94,22 @@ export class AuthenticationService {
       });
     } else {
       console.log('Tawk API DOES NOT EXISTS');
+      setTimeout(
+        function() {
+          if (window.hasOwnProperty('Tawk_API')) {
+            console.log('Tawk API EXISTS');
+            
+            if (window['Tawk_API'].isVisitorEngaged()) window['Tawk_API'].endChat();
+            
+            window['Tawk_API'].setAttributes({
+              name: user.username,
+              email: user.email
+            }, function (error) {
+              console.log(error)
+            });
+          }
+        }
+        ,10000)
 
     }
   }
