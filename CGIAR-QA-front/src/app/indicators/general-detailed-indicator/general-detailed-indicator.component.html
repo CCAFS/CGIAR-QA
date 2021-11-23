@@ -159,7 +159,7 @@
                                             <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                                 {{detailedData[i].display_name}}</h2> -->
 
-                                            <div *ngIf="detailedData[i].meta_description">
+                                            <div *ngIf="detailedData[i].meta_description && false">
                                                 <i [tooltip]="popTemplate" container="body" placement="top"
                                                     class="icon-pdf" style="height: 2em;"></i>
                                                 <ng-template #popTemplate>
