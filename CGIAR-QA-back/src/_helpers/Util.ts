@@ -1,5 +1,5 @@
 
-import { StatusHandler, StatusHandlerMIS } from "@helpers/StatusHandler";
+import { StatusHandler, StatusHandlerLegacy, StatusHandlerMIS } from "@helpers/StatusHandler";
 const { ErrorHandler } = require("@helpers/ErrorHandler")
 
 import { DisplayTypeHandler } from "@helpers/DisplayTypeHandler";
@@ -714,40 +714,45 @@ class Util {
         return response;
     }
 
-    static calculateStatusMIS =  (evaluation, batches) => {
+    static calculateStatusMIS = (evaluation, batches) => {
 
         let status = 'pending';
 
         try {
             // console.log(evaluation);
-            
-            let current_batch = batches.find(b => moment(b.submission_date).isSame(evaluation.batchDate, 'day') );
+            if (evaluation.phase_year == '2021') {
+                let current_batch = batches.find(b => moment(b.submission_date).isSame(evaluation.batchDate, 'day'));
 
-            switch (evaluation.status) {
-                case StatusHandler.Autochecked:
-                    status = StatusHandlerMIS[evaluation.status];
-                    break;
-                case StatusHandler.Pending:
-                    status = StatusHandlerMIS[evaluation.status];
-                    break;
-                case StatusHandler.Finalized:
-                    // Util.hasPendingReplies(evaluation) ||
-                    if( moment(Date.now()).isBefore(current_batch.programs_start_date) || evaluation.pending_replies) {
-                        status = 'pending_crp';
-                    } else if(moment(Date.now()).isAfter(current_batch.programs_start_date) && evaluation.require_second_assessment){
-                        status = 'in_progress';
-                    } else {
+                switch (evaluation.status) {
+                    case StatusHandler.Autochecked:
                         status = StatusHandlerMIS[evaluation.status];
-                    }
-                    break;
+                        break;
+                    case StatusHandler.Pending:
+                        status = StatusHandlerMIS[evaluation.status];
+                        break;
+                    case StatusHandler.Finalized:
+                        // Util.hasPendingReplies(evaluation) ||
+                        if (moment(Date.now()).isBefore(current_batch.programs_start_date) || evaluation.pending_replies) {
+                            status = 'pending';
+                        } else if (moment(Date.now()).isSameOrAfter(current_batch.programs_start_date)) {
+                            if (evaluation.pending_replies) {
+                                status = 'pending_crp';
+                            } else {
+                                status = evaluation.require_second_assessment ? 'in_progress' : StatusHandlerMIS[evaluation.status];
+                            }
+                        }
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+            } else {
+                status = StatusHandlerLegacy[evaluation.status];
             }
             return status;
         } catch (error) {
-           console.log(error);
-           return null
+            console.log(error);
+            return status;
         }
 
     }
