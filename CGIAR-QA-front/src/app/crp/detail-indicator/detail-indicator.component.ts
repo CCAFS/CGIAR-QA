@@ -17,13 +17,51 @@ import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
 import { WordCounterPipe } from 'src/app/pipes/word-counter.pipe';
 
 import * as moment from 'moment';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
   selector: 'app-detail-indicator',
   templateUrl: './detail-indicator.component.html',
   styleUrls: ['./detail-indicator.component.scss'],
-  providers: [UrlTransformPipe, WordCounterPipe]
+  providers: [UrlTransformPipe, WordCounterPipe],
+  animations: [
+    trigger(
+      'inOutAnimation', 
+      [
+        transition(
+          ':enter', 
+          [
+            style({
+            backgroundColor: '#cfeaf3',
+            padding: '1em',
+            marginBottom: '0.5em',
+            borderRadius: '5px',
+            fontStyle: 'italic',
+            fontSize: '$font-xs',
+            opacity: 0 }),
+            animate('0.5s ease-out', 
+                    style({opacity: 1 }))
+          ]
+        ),
+        transition(
+          ':leave', 
+          [
+            style({
+              backgroundColor: '#cfeaf3',
+              padding: '1em',
+              marginBottom: '0.5em',
+              borderRadius: '5px',
+              fontStyle: 'italic',
+              fontSize: '$font-xs',
+              opacity: 1 }),
+            animate('0.1s ease-in', 
+                    style({ opacity: 0 }))
+          ]
+        )
+      ]
+    )
+  ]
 })
 export class DetailIndicatorComponent implements OnInit {
 

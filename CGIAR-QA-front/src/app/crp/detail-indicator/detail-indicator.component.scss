@@ -87,6 +87,39 @@
   color: #d59b1b;
 }
 
+.field-container{
+  max-width: 100%;
+  p{
+    max-width: 60% !important;
+    a{
+      max-width: 60% !important;
+      color: yellow !important;
+    }
+  }
+}
+
+.original-field {
+  color: #0233bb;
+  font-size: $font-xs;
+  font-weight: $semibold;
+  font-style: italic;
+  margin-top: 0;
+  &:hover{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.original-field-container {
+  background-color: #cfeaf3;
+  padding: 1em;
+  margin-bottom: 0.5em;
+  border-radius: 5px;
+  font-style: italic;
+  font-size: $font-xs;
+  max-width: 100%;
+
+}
 .criteria-container {
   display: flex;
   -webkit-box-pack: justify;
