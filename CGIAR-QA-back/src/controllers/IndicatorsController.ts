@@ -388,7 +388,7 @@ class IndicatorsController {
                 // let queryNotApplicable = `SELECT count(*) as count FROM ${meta.view_name} WHERE ${meta.col_name}  = "<Not applicable>"`;
                 let queryNotApplicable = `SELECT count(*) as count FROM qa_evaluations qe
                     LEFT JOIN ${meta.view_name} qi on qe.indicator_view_id = qi.id AND qe.indicator_view_name = "${meta.view_name}"
-                    WHERE ${meta.col_name}  = "<Not applicable>" AND qe.phase_year = actual_phase_year() AND qe.status <> "autochecked" `;
+                    WHERE qi.${meta.col_name}  = "<Not applicable>" AND qe.phase_year = actual_phase_year() AND qe.status <> "autochecked" `;
 
                 if (crp_id != undefined && crp_id != 'undefined') {
                     queryNotApplicable += `AND qe.crp_id = '${crp_id}'`
