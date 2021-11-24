@@ -199,8 +199,7 @@
                                         (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide
                                         original value</span>
                                     <div class="field-container original-field-container"
-                                        *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation]>
-                                        {{detailedData[i].original_field}}
+                                        *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation] [innerHTML]="detailedData[i].original_field">
                                     </div>
                                     <!-- data value -->
                                     <div class="field-container"
