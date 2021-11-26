@@ -719,7 +719,7 @@ class Util {
         let status = 'pending';
 
         try {
-            // console.log(evaluation);
+            console.log(evaluation);
             if (evaluation.phase_year == '2021') {
                 let current_batch = batches.find(b => moment(b.submission_date).isSame(evaluation.batchDate, 'day'));
 
@@ -731,13 +731,16 @@ class Util {
                         status = StatusHandlerMIS[evaluation.status];
                         break;
                     case StatusHandler.Finalized:
-                        // Util.hasPendingReplies(evaluation) ||
-                        if (moment(Date.now()).isBefore(current_batch.programs_start_date) || evaluation.pending_replies) {
+                        // console.log('Quality Assessed');
+                        
+                        if (moment(Date.now()).isBefore(current_batch.programs_start_date)) {
                             status = 'pending';
                         } else if (moment(Date.now()).isSameOrAfter(current_batch.programs_start_date)) {
                             if (evaluation.pending_replies) {
                                 status = 'pending_crp';
                             } else {
+                                console.log('R2A', evaluation.require_second_assessment);
+                                
                                 status = evaluation.require_second_assessment ? 'in_progress' : StatusHandlerMIS[evaluation.status];
                             }
                         }
