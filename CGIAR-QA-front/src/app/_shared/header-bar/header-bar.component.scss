@@ -89,6 +89,7 @@
         border-radius: 5px;
         background-color: transparent;
         cursor: pointer;
+        transition: all .3s ease-out;
         &:hover{
         background-color: var(--white-gray);
         }
@@ -97,7 +98,7 @@
         }
       }
       a.active {
-        color: var(--blue-tertiary);
+        // color: var(--blue-tertiary);
         background-color: var(--white-gray);
       }
       // a:after {

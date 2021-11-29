@@ -82,6 +82,10 @@ export class HeaderBarComponent implements OnInit {
     return this.router.isActive(`/dashboard/${this.currentRole}`, true);
   }
 
+  getCurrentRouteIndicator(indicatorName: string, primaryField: string) {
+    return this.router.isActive(`/indicator/${indicatorName}/${primaryField}`, true);
+  }
+
   ngOnInit() {
     // this.indicators = [];
     if(this.currentUserID != this.currentUser.id){
