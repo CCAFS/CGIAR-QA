@@ -83,14 +83,16 @@
       a {
         margin-left: 0.2em;
         padding: 0.4em 0.8em;
-        font-weight: $bold;
         color: var(--black);
+        font-weight: $semibold;
         text-decoration: none;
         border-radius: 5px;
         background-color: transparent;
         cursor: pointer;
         transition: all .3s ease-out;
+        box-sizing: border-box;
         &:hover{
+        // font-weight: $bold;
         background-color: var(--white-gray);
         }
         i {
@@ -99,6 +101,7 @@
       }
       a.active {
         // color: var(--blue-tertiary);
+        font-weight: $bold;
         background-color: var(--white-gray);
       }
       // a:after {
