@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import { DashboardService } from 'src/app/services/dashboard.service';
 @Component({
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',
@@ -7,20 +8,19 @@ import * as moment from 'moment';
 })
 export class TimelineComponent implements OnInit {
 
-  batches = [
-  {
-    currentBatch: moment(new Date(2021, 11, 1)).format('MMM-DD-YYYY'),
-    startDateAssessors: moment(new Date(2021, 11, 6)).format('MMM-DD-YYYY'),
-    endDateAssessors: moment(new Date(2021, 11, 10)).format('MMM-DD-YYYY'),
-    startDateCRP: moment(new Date(2021, 11, 13)).format('MMM-DD-YYYY'),
-    endDateCRP:moment(new Date(2021, 11, 17)).format('MMM-DD-YYYY'),
-    nextBatch: moment(new Date(2022, 1, 2)).format('MMM-DD-YYYY')
-  }
-  ];
+  batches = null;
 
-  constructor() { }
+  constructor(private dashboardService: DashboardService) { }
 
   ngOnInit(): void {
+    this.getBatches();
+  }
+
+  getBatches() {
+    this.dashboardService.getAllBatches().subscribe(res => {
+      console.log({res});
+      this.batches = res.data;
+    })
   }
 
 }

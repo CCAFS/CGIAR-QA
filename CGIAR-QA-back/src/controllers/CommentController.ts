@@ -1332,7 +1332,6 @@ class CommentController {
         }
     }
 
-
     //get cycles 
     static getCycles = async (req: Request, res: Response) => {
         let rawData;
@@ -1495,6 +1494,53 @@ class CommentController {
             // api.on(event, response => resolve(response));
         });
     }
+
+        //get QuickComments 
+        static getQuickComments = async (req: Request, res: Response) => {
+            let rawData;
+            const queryRunner = getConnection().createQueryBuilder();
+    
+            try {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `
+                    SELECT * FROM qa_quick_comments
+                    `,
+                    {},
+                    {}
+                );
+                rawData = await queryRunner.connection.query(query, parameters);
+                res.status(200).json({ message: "List of quick comments", data: rawData });
+            } catch (error) {
+                console.log(error);
+                res.status(404).json({ message: 'Could not get list of quick comments', data: error });
+            }
+        }
+    
+        //get batches 
+        static getBatches = async (req: Request, res: Response) => {
+            let rawData;
+            const queryRunner = getConnection().createQueryBuilder();
+    
+            try {
+                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                    `
+                    SELECT * FROM qa_batch order by batch_name asc
+                    `,
+                    {},
+                    {}
+                );
+                rawData = await queryRunner.connection.query(query, parameters);
+                let batches = [];
+                for (let i = 0; i < rawData.length; i++) {
+                    const element = {submission_date: rawData[i]};
+                    
+                }
+                res.status(200).json({ message: "batches data", data: rawData });
+            } catch (error) {
+                console.log(error);
+                res.status(404).json({ message: 'Could not get batches', data: error });
+            }
+        }
 }
 
 export default CommentController;

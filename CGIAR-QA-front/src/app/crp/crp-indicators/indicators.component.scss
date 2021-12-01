@@ -1,11 +1,17 @@
 @import "../../../assets/variables.scss";
 
+
+* {
+  box-sizing: border-box; 
+  margin: 0;
+}
+
 h2 {
   text-align: center;
   margin: 1em;
   font-size: $font-lg;
 }
-
+ 
 .icon-go-back{
   height:0.8em
 }
@@ -23,6 +29,49 @@ h2 {
 
 .go-back:hover {
   color: #d59b1b;
+}
+
+.filters-container{
+  display: flex;
+  gap: 2em;
+  padding: 2em 1em;
+  background-color: var(--input-gray);
+  border-radius: 6px;
+  margin-bottom: 1em;
+  // font-size: $font-sm;
+  .date-filter{
+    position: relative;
+    span{
+      position: absolute;
+      top: -1.5em;
+      left: 1em;
+      font-size: $font-xs;
+      font-weight: $semibold;
+    }
+    input{
+      height: 1em;
+      width: 1em;
+      cursor: pointer;
+    }
+    padding: 0 1em;
+    display: flex;
+    gap: 2em;
+    justify-content: space-between;
+    align-items: center;
+    // width: 30%;
+    width: auto;
+
+    height: auto;
+    // border: 1px solid blue;
+  }
+  .removed-filter{
+    .removed-inactive{
+      background-color: #fff;
+    }
+  }
+  .form-group{
+    flex: auto;
+  }
 }
 
 .evaluation-status {
@@ -54,7 +103,14 @@ h2 {
     margin: 0 1em;
   }
   .text-right {
+    display: flex;
+    align-items: center;
     justify-content: flex-end;
+    i{
+      width: 32px;
+      margin: 0 0.2em 0 1em;
+      // padding: 1em;
+    }
   }
   .text-left {
     display: flex;
@@ -63,7 +119,7 @@ h2 {
     width: auto;
     height: 100%;
     padding: 0.5em;
-    .model-link-container {
+    .model-link-container { 
       cursor: pointer;
       background-color: var(--gray-primary);
       border-radius: 0.3em;
@@ -120,39 +176,62 @@ h2 {
 
 .table-body {
   td {
+    font-size: $font-sm;
     text-align: center;
     vertical-align: middle;
     padding: 0.75em;
+    a{
+      font-weight: 500;
+    }
+    .require-second-assessment {
+      font-size: $font-xs;
+      font-weight: $semibold;
+      color: var(--color-dark-text-btn);
+    }
+    .excel-download {
+      cursor: pointer;
+      color: #007bff;
+      text-decoration: underline;
+      i {
+        height: 0.5em;
+      }
+    }
+    .wos-label{
+      font-size: $font-xs;
+      font-weight: $semibold;
+      color: var(--color-autochecked);
+      font-style: oblique;
+      margin: 0;
+    }
     .brief-format {
-      display:inline-block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 25vw;
+        display:inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 20vw;
 
-    // border: 1px solid red;
-    // color: green;
-    // max-width: 300px;
-  }
-  .wos-label{
-    font-size: $font-xs;
-    font-weight: $semibold;
-    color: var(--color-autochecked);
-    font-style: oblique;
-    margin: 0;
-  }
-  .assessed-by{
-    font-size: $font-xs;
-    font-weight: $semibold;
-    color: #d59b1b;
-    font-style: oblique;
-    margin: 0;
-  }
+      // border: 1px solid red;
+      // color: green;
+      // max-width: 300px;
+    }
+    .status-icon{
+      width: 32px;
+      margin: 0 0.2em 0 1em;
+      // padding: 1em;
+    }
+    // .brief-format table tbody tr td p{
+    //   display:inline-block;
+    //   white-space: nowrap;
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
+    //   max-width: 50ch;
+    // }
   }
   th {
     text-align: center;
     vertical-align: middle;
     padding: 0.75em;
+    font-size: $font-sm;
   }
   .circle {
     margin: auto !important;

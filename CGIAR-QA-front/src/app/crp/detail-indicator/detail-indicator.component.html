@@ -17,44 +17,64 @@
         QA-{{ params.type.charAt(0) }}{{ params.type.charAt(1).toUpperCase() }}-{{params.indicatorId}}
     </p>
     <div class="col status" *ngIf="currentUser.hasOwnProperty('cycle')">
-        <p>Assessment Status: <span
-                class="text-{{(gnralInfo.status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.status === statusHandler.Complete) ? "Assessed 1st round":"Pending"}}</span>
-        </p>
-        <p>Response Status: <span
-                class="text-{{(gnralInfo.response_status === statusHandler.Complete) ? 'success':'danger'}}">{{(gnralInfo.response_status === statusHandler.Complete) ? "Answered":"Pending"}}</span>
-        </p>
-
-    </div>
-    <div class="col" *ngIf="!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">
-        <p class="indicator-item-name text-danger" style="text-transform: initial; text-align: center;">
-            The quality assessment process has ended.
-        </p>
-    </div>
-
-    <div *ngIf="detailedData[0]" class="buttons">
-
-        <div style="margin-right: 1em;" tooltip="{{tooltips.download_excel}}" container="body" placement="top"
-            *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
-            <i class="icon-download-excel"></i>
+        <div class="assessment-status">
+            <p>Assessment Status: </p>
+            <div class="status">
+                <i
+                    [ngClass]=" {'icon-in-progress': gnralInfo.status === statusHandler.Complete, 'icon-pending': gnralInfo.status === statusHandler.Pending, 'icon-quality-assessed': gnralInfo.status === statusHandler.Finalized}">
+                </i>
+                {{statusNames[gnralInfo.status]}}
+            </div>
         </div>
-        <!-- TO-DO -->
-        <!-- <a *ngIf="detailedData[0].editable_link" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
+        <div class="response-status">
+            <p>Response Status: </p>
+            <div class="status">
+                <i
+                    [ngClass]=" { 'icon-pending': gnralInfo.response_status === statusHandler.Pending, 'icon-quality-assessed': gnralInfo.response_status === statusHandler.Complete}">
+                </i>
+                {{statusNamesCRP[gnralInfo.response_status]}}
+        </div>
+    </div>
+
+    <div *ngIf="gnralInfo.requires_second_assessment" class="rsa-description" [ngClass]="{'requires-second-assessment': gnralInfo.requires_second_assessment} ">
+        Further assessment
+        <i class="icon-second-assessment"></i>
+    </div>
+
+</div>
+<div class="col" *ngIf="!currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">
+    <p class="indicator-item-name text-danger" style="text-transform: initial; text-align: center;">
+        The quality assessment process has ended.
+    </p>
+</div>
+
+<div *ngIf="detailedData[0]" class="buttons">
+
+    <div style="margin-right: 1em;" tooltip="{{tooltips.download_excel}}" container="body" placement="top"
+        *ngIf="detailedData" (click)="getCommentsExcel(detailedData[0])" class="btn btn-primary file-button">
+        <i class="icon-download-excel"></i>
+    </div>
+    <!-- TO-DO -->
+    <!-- <a *ngIf="detailedData[0].editable_link" href="http://marlodev.ciat{{detailedData[0].editable_link.split('https://marlo')[1]}}" target="_blank">
             <div tooltip="{{tooltips.editable_link}}" container="body" placement="top"
                 class="btn btn-primary file-button">
                 
                 <i class="icon-public-link"></i> 
             </div>
         </a> -->
-        <div class="btn-mis">
-        <a tooltip="{{tooltips.editable_link_mel}}" *ngIf="crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)" href="{{detailedData[0].editable_link}}" target="_blank">
-            <i class="icon-mel"></i> 
+    <div class="btn-mis">
+        <a tooltip="{{tooltips.editable_link_mel}}" *ngIf="crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)"
+            href="{{detailedData[0].editable_link}}" target="_blank">
+            <i class="icon-mel"></i>
         </a>
-        <a tooltip="{{tooltips.editable_link_marlo}}" *ngIf="detailedData[0].editable_link && !crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)" href="{{detailedData[0].editable_link}}" target="_blank">
-            <i class="icon-marlo"></i>            
+        <a tooltip="{{tooltips.editable_link_marlo}}"
+            *ngIf="detailedData[0].editable_link && !crpsMEL.hasOwnProperty(detailedData[0].crp_acronym)"
+            href="{{detailedData[0].editable_link}}" target="_blank">
+            <i class="icon-marlo"></i>
         </a>
 
-        </div>
     </div>
+</div>
 </div>
 
 <div #containerElement class="row">
@@ -66,14 +86,14 @@
                     <div class="col">
                         <div class="row" style="padding: 0;">
                             <h2 [innerHTML]="detailedData[i].display_name | markdown"></h2>
-                            <div >
-                                <i *ngIf="field.meta_description" [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
-                                    style="height: 1.5em;"></i>
+                            <div>
+                                <i *ngIf="field.meta_description" [tooltip]="popTemplate" container="body"
+                                    placement="top" class="icon-pdf" style="height: 1.5em;"></i>
                                 <ng-template #popTemplate>
                                     <div [innerHtml]="field.meta_description"></div>
                                 </ng-template>
 
-                                <div  [ngClass]="{'approved-no-comment': field.approved_no_comment == 1 && field.enable_comments} "
+                                <div [ngClass]="{'approved-no-comment': field.approved_no_comment == 1 && field.enable_comments} "
                                     style="display:none">
                                     Approved without comments
                                 </div>
@@ -94,6 +114,19 @@
                         </div>
                         <p *ngIf="detailedData[i].value &&  detailedData[i].col_name === 'evidence_link' ">
                             {{detailedData[i].value}}</p> -->
+                            <span
+                            *ngIf="detailedData[i].hide_original_field && detailedData[i].original_field != null"
+                            class="original-field"
+                            (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Show
+                            original value</span>
+                        <span
+                            *ngIf="!detailedData[i].hide_original_field && detailedData[i].original_field != null"
+                            class="original-field"
+                            (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide
+                            original value</span>
+                        <div class="field-container original-field-container"
+                            *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation] [innerHTML]="detailedData[i].original_field">
+                        </div>
 
                         <!-- data value -->
                         <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'evidence_link' && detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
@@ -103,7 +136,8 @@
                             [innerHTML]="detailedData[i].value">
                         </div>
                         <!-- no data -->
-                        <p *ngIf="detailedData[i].value === null ||  detailedData[i].value == ''" class="empty-value">Data not provided.</p>
+                        <p *ngIf="detailedData[i].value === null ||  detailedData[i].value == ''" class="empty-value">
+                            Data not provided.</p>
 
                     </div>
 
@@ -186,9 +220,9 @@
                     <div class="col">
                         <div class="row" style="padding: 0;">
                             <h2 [innerHTML]="detailedData[i].display_name | markdown"></h2>
-                            <div >
-                                <i  *ngIf="field.meta_description"  [tooltip]="popTemplate" container="body" placement="top" class="icon-pdf"
-                                    style="height: 1.5em;"></i>
+                            <div>
+                                <i *ngIf="field.meta_description" [tooltip]="popTemplate" container="body"
+                                    placement="top" class="icon-pdf" style="height: 1.5em;"></i>
                                 <ng-template #popTemplate>
                                     <div [innerHtml]="field.meta_description"></div>
                                 </ng-template>
@@ -197,10 +231,24 @@
                                     style="display:none">
                                     Approved without comments
                                 </div>
-
+ 
                             </div>
                         </div>
 
+                        <span
+                        *ngIf="detailedData[i].hide_original_field && detailedData[i].original_field != null"
+                        class="original-field"
+                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Show
+                        original value</span>
+                    <span
+                        *ngIf="!detailedData[i].hide_original_field && detailedData[i].original_field != null"
+                        class="original-field"
+                        (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide
+                        original value</span>
+                    <div class="field-container original-field-container"
+                        *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation]>
+                        {{detailedData[i].original_field}}
+                    </div>
                         <!-- data value -->
                         <div *ngIf="detailedData[i].value && (detailedData[i].col_name !== 'outcome_description' && detailedData[i].col_name !== 'OICR'  )"
                             [innerHTML]="detailedData[i].value | markdown">
@@ -209,13 +257,13 @@
                             [innerHTML]="detailedData[i].value">
                         </div>
                         <!-- no data -->
-                        <p *ngIf="detailedData[i].value === null ||  detailedData[i].value == ''" class="empty-value">Data not provided.</p>
+                        <p *ngIf="detailedData[i].value === null ||  detailedData[i].value == ''" class="empty-value">
+                            Data not provided.</p>
 
                     </div>
 
                     <!-- comments -->
-                    <div #commElement style="cursor: pointer;"
-                        *ngIf="field.replies_count != '0'"
+                    <div #commElement style="cursor: pointer;" *ngIf="field.replies_count != '0'"
                         (click)="showComments(i, field, commElement, $event); comment.updateData(field,params)"
                         class="activate-messages-container {{field.replies_count == '0' ?  '':'active'}}">
                         <i *ngIf="!field.loading" class="icon-message"></i>
@@ -252,9 +300,9 @@
     </div>
     <div [ngClass]="{'hide' : !activeCommentArr[fieldIndex] }" [style.top.px]="currentY"
         class="col-sm-4 comments-container">
-             <div [ngClass]="{'hide' : !renderComments }"  class="comments-component-container">
-        <app-comment #comment [isCRP]="isCRP" (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex], null)"
-            (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
-                 </div>
+        <div [ngClass]="{'hide' : !renderComments }" class="comments-component-container">
+            <app-comment #comment [isCRP]="isCRP" (parentFun)="hideComments(fieldIndex, detailedData[fieldIndex], null)"
+                (updateNumCommnts)="updateNumCommnts($event,detailedData[fieldIndex])"></app-comment>
         </div>
+    </div>
 </div>

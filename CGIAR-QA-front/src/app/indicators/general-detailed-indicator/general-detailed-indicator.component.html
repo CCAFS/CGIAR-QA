@@ -130,7 +130,7 @@
                                 <span class="slider"></span>
                             </label>
                             <div class="checkbox-description" [ngClass]="{'requires-second-assessment': gnralInfo.requires_second_assessment} ">
-                                This item requires a 2nd assessment
+                                Further assessment
                                 <i class="icon-second-assessment"></i>
                             </div>
                         </div>
@@ -159,7 +159,7 @@
                                             <!-- <h2 *ngIf="!validateCommentAvility(detailedData[i]) || detailedData[i].replies_count != '0' && !summon.value.isChecked ">
                                                 {{detailedData[i].display_name}}</h2> -->
 
-                                            <div *ngIf="detailedData[i].meta_description">
+                                            <div *ngIf="detailedData[i].meta_description && false">
                                                 <i [tooltip]="popTemplate" container="body" placement="top"
                                                     class="icon-pdf" style="height: 2em;"></i>
                                                 <ng-template #popTemplate>
@@ -199,8 +199,7 @@
                                         (click)="detailedData[i].hide_original_field = !detailedData[i].hide_original_field">Hide
                                         original value</span>
                                     <div class="field-container original-field-container"
-                                        *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation]>
-                                        {{detailedData[i].original_field}}
+                                        *ngIf="!detailedData[i].hide_original_field" [@inOutAnimation] [innerHTML]="detailedData[i].original_field">
                                     </div>
                                     <!-- data value -->
                                     <div class="field-container"

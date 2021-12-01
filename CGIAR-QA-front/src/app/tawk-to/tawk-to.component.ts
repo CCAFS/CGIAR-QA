@@ -38,15 +38,20 @@ export class TawkToComponent implements OnInit {
         s1.setAttribute('crossorigin', '*');
         s0.parentNode.insertBefore(s1, s0);
       })();
+      Tawk_API.onChatEnded = function(){
+        console.log('END CHAT');
+        Tawk_API.minimize();
+      };
       Tawk_API.visitor = {
       name  : '',
       email : ''
       };`;
       this._renderer.appendChild(this._document.body, this.script);
       setTimeout(() => {
-        this.openChat();
-        this.setLoggedUser()
-      }, 200);
+        // this.authService.setLoggedUserTawkTo(this.currentUser);
+        // this.openChat();
+        // this.setLoggedUser()
+      }, 500);
     }
 
   }
@@ -60,21 +65,21 @@ export class TawkToComponent implements OnInit {
 
   setLoggedUser() {
     if (window['Tawk_API'].hasOwnProperty('visitor')) {
-      // console.log(window['Tawk_API'])
-      // window['Tawk_API'].setAttributes({
-      //   name: this.currentUser.username,
-      //   email: this.currentUser.email
-      // }, function (error) {
-      //   console.log(error)
-      // });
-      // window['Tawk_API'].onLoad = function () {
-      //   window['Tawk_API'].setAttributes({
-      //     name: this.currentUser.username,
-      //     email: this.currentUser.email
-      //   }, function (error) {
-      //     console.log(error)
-      //   });
-      // };
+      console.log(window['Tawk_API'])
+      window['Tawk_API'].setAttributes({
+        name: this.currentUser.username,
+        email: this.currentUser.email
+      }, function (error) {
+        console.log(error)
+      });
+      window['Tawk_API'].onLoad = function () {
+        window['Tawk_API'].setAttributes({
+          name: this.currentUser.username,
+          email: this.currentUser.email
+        }, function (error) {
+          console.log(error)
+        });
+      };
 
     }
   }

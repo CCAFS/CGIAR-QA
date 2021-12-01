@@ -51,8 +51,8 @@ export class IndicatorsComponent implements OnInit {
     qa_slo: 1,
   };
   stageHeaderText = {
-    policies: 'Level',
-    oicr: 'Maturity Level',
+    policies: 'Stage',
+    oicr: 'Maturity Stage',
     innovations: 'Stage',
     melia: 'Type',
     publications: 'ISI',
@@ -86,11 +86,8 @@ indicatorTypePage = null;
   criteriaData;
   criteria_loading = false;
 
-  submission_dates: any[] = [
-    {date: "May 7, 2021", id: 1, checked: true},
-    {date: "Sep 7, 2021", id: 2, checked: false},
-    {date: "Nov 7, 2021", id: 3, checked: false},
-  ]
+  submission_dates: any[] = [];
+
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
     private dashService: DashboardService,
@@ -105,6 +102,8 @@ indicatorTypePage = null;
     private evaluationService: EvaluationsService,
     private titleService: Title,
     private alertService: AlertService) {
+      this.getBatchDates();
+
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
@@ -129,6 +128,24 @@ indicatorTypePage = null;
       this.titleService.setTitle(`List of ${this.indicatorTypeName}`);
     });
 
+  }
+
+  getBatchDates() {
+    this.commentService.getBatches().subscribe(res => {
+
+      const batches = res.data;
+      for (let index = 0; index < batches.length; index++) {
+        let batch = {date: moment(batches[index].submission_date).format('ll'), batch_name: +batches[index].batch_name, checked: false, is_active: null};
+        batch.is_active = moment(Date.now()).isSameOrAfter(batch.date) || index === 0 ? true : false;
+        batch.checked = batch.is_active;
+        this.submission_dates.push(batch);
+      }
+      
+    }, error => {
+      console.log(error)
+      this.alertService.error(error);
+    }
+    )
   }
 
   getIndicatorCriteria(id) {

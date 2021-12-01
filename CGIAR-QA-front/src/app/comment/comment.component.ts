@@ -45,6 +45,8 @@ export class CommentComponent implements OnInit {
   modalRef: BsModalRef;
   message: string;
 
+  quickComments;
+
   currentComment;
   // @ViewChild('commentsElem', { static: false }) commentsElem: ElementRef;
   @Input() original_field;
@@ -89,6 +91,18 @@ export class CommentComponent implements OnInit {
       console.log(this.currentUser);
 
     }
+    if(!this.isCRP) {
+      this.getQuickComments();
+    }
+  }
+
+  getQuickComments() {
+    this.commentService.getQuickComments().subscribe(res=> {
+      this.quickComments = res.data;
+    }, error=> {
+      console.log(error);
+      
+    })
   }
 
   updateData(data: any, params: any) {

@@ -50,14 +50,14 @@
         <span>Filter by submission</span>
         <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked"
-                (change)="onDateChange($event,sub.id)">
+                (change)="onDateChange($event,sub.batch_name)" [disabled]="!sub.is_active">
             <label class="form-check-label" for="inlineCheckbox{{sub.id}}">{{sub.date}}</label>
         </div>
     </div>
     <button type="button" class="btn btn-outline-primary" [(ngModel)]="rsaFilter" btnCheckbox [btnCheckboxTrue]="1"
-    [btnCheckboxFalse]="0">
-    Require 2nd assessment
-</button>
+        [btnCheckboxFalse]="0">
+        Further assessment
+    </button>
     <div class="removed-filter">
         <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
             <!-- <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
@@ -310,7 +310,7 @@
             </td>
             <td>
                 <i class="icon-{{ statusIcon[item.status] }} status-icon"></i>
-                <div class="require-second-assessment" *ngIf="item.require_second_assessment">Requires 2nd assessment
+                <div class="require-second-assessment" *ngIf="item.require_second_assessment">Further assessment
                 </div>
             </td>
         </tr>

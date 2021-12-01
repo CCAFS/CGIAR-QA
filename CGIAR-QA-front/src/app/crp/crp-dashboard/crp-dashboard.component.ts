@@ -358,7 +358,7 @@ export class CrpDashboardComponent implements OnInit {
     const colors = {
       Accepted: 'var(--color-agree)',
       AcceptedWC: 'var(--color-agree-wc)',
-      Clarification: 'var(--color-clarification)',
+      // Clarification: 'var(--color-clarification)',
       Disagree: 'var(--color-disagree)',
       Discarded: 'var(--color-pending-gray)',
       Pending: 'var(--color-pending)',
@@ -380,9 +380,9 @@ export class CrpDashboardComponent implements OnInit {
       comments_rejected = comments_rejected ? { name: 'Disagree', value: +comments_rejected.value } : null;
       if (comments_rejected) dataset.push(comments_rejected);
 
-      let comments_clarification = data.find(item => item.comments_clarification != '0');
-      comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
-      if (comments_clarification) dataset.push(comments_clarification);
+      // let comments_clarification = data.find(item => item.comments_clarification != '0');
+      // comments_clarification = comments_clarification ? { name: 'Clarification', value: +comments_clarification.value } : null;
+      // if (comments_clarification) dataset.push(comments_clarification);
 
       let comments_discarded = data.find(item => item.comments_discarded != '0');
       comments_discarded = comments_discarded ? { name: 'Discarded', value: +comments_discarded.value } : null;

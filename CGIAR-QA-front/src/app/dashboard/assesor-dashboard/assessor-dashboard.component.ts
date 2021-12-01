@@ -110,35 +110,52 @@ export class AssessorDashboardComponent implements OnInit {
       this.getDashData(),
       this.getCommentStats(),
       this.getAllTags(),
-      this.getFeedTags(this.selectedIndicator),
+      // this.getFeedTags(this.selectedIndicator),
       this.getItemStatusByIndicatorService(this.selectedIndicator)
       // this.getAllItemStatusByIndicator()
     ]);
     responses.subscribe(
       res => {
-        const [dashData, commentsStats, allTags, feedTags, assessmentByField] = res;
+        const [dashData, 
+          commentsStats,
+          allTags,
+          // feedTags,
+          assessmentByField
+        ] = res;
 
         //dashData
-        this.dashboardData = this.dashService.groupData(dashData.data);
-        this.dataSelected = this.dashboardData[this.selectedIndicator];
+        if(dashData.data) {
+          console.log({dashData});
+          
+          this.dashboardData = this.dashService.groupData(dashData.data);
+          console.log(this.dashboardData);
+          // this.selectedIndicator = Object.keys(this.dashboardData)[0]
+          this.dataSelected = this.dashboardData[this.selectedIndicator];
+        }
 
         //commentsStats
-        this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
-        console.log('COUNT COMMENTS',this.dashboardCommentsData);
+        if(commentsStats) {
+          this.dashboardCommentsData = this.dashService.groupData(commentsStats.data);
+          console.log('COUNT COMMENTS',this.dashboardCommentsData);
+        }
         
 
         //allTags
+        if(allTags)
         this.indicatorsTags = this.commentService.groupTags(allTags.data);;
 
         //feedTags
-        this.feedList = feedTags.data;
+        // if(feedTags)
+        // this.feedList = feedTags.data;
 
         //assessmentByField
+        if(assessmentByField)
         this.itemStatusByIndicator = assessmentByField.data;
         console.log(this.itemStatusByIndicator);
         
 
         //UPDATE CHARTS
+        if(dashData.data && commentsStats.data && allTags.data)
         this.updateDataCharts();
 
         this.hideSpinner();
@@ -168,14 +185,17 @@ export class AssessorDashboardComponent implements OnInit {
     this.showSpinner();
 
     let responses = forkJoin([
-      this.getFeedTags(this.selectedIndicator),
+      // this.getFeedTags(this.selectedIndicator),
       this.getItemStatusByIndicatorService(this.selectedIndicator)
     ]);
     responses.subscribe(
       res => {
-        const [feedTags, assessmentByField] = res;
+        const [
+          // feedTags,
+           assessmentByField
+          ] = res;
         //feedTags
-        this.feedList = feedTags.data;
+        // this.feedList = feedTags.data;
 
         //assessmentByField
         this.itemStatusByIndicator = assessmentByField.data;
@@ -266,7 +286,7 @@ export class AssessorDashboardComponent implements OnInit {
     const colors = {
       complete: 'var(--color-complete)',
       pending: 'var(--color-pending)',
-      finalized: 'var(--color-finalized)',
+      finalized: 'var(--color-complete)',
       autochecked: 'var(--color-autochecked)'
     }
     let dataset = [];
@@ -280,7 +300,7 @@ export class AssessorDashboardComponent implements OnInit {
     let complete = dataset.find(item => item.name == 'complete');
     if (complete) complete.name = 'Assessed 1st round';
     let finalized = dataset.find(item => item.name == 'finalized');
-    if (finalized) finalized.name = 'Assessed 2nd round';
+    if (finalized) finalized.name = 'Quality Assessed';
     
     let autochecked = dataset.find(item => item.name == 'autochecked');
     if (autochecked) {

@@ -57,6 +57,11 @@ export class DashboardService {
     return this.http.get<any>(`${environment.apiUrl}/evaluation/crp/indicators`);
   }
 
+  //get batches 
+  getAllBatches() {
+    return this.http.get<any>(`${environment.apiUrl}/comment/batches`);
+  }
+
   sortProperties(obj) {
     // convert object into array
     var sortable = [];

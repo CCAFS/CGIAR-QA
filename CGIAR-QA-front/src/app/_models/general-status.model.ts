@@ -18,6 +18,7 @@ export enum GeneralIndicatorName {
     qa_capdev= 'CapDevs',
     qa_milestones= 'Milestones',
     qa_slo= 'SLOs',
+    qa_aiccra_indicators_contrib = 'AICCRA Indicators Contrib'
     // qa_outcomes= 'Outcomes',
 }
 
@@ -54,9 +55,19 @@ export enum StatusIcon {
     autochecked = 'autochecked'
 }
 
+export enum StatusIconCRP {
+    pending = 'pending',
+    complete = 'quality-assessed',
+}
+
 export enum StatusNames {
     pending = 'Pending',
     finalized = 'Quality Assessed',
     complete = 'In progress',
     autochecked = 'Automatically Validated'
+}
+
+export enum StatusNamesCRP {
+    pending = 'Pending',
+    complete = 'Answered / No action needed',
 }

@@ -764,6 +764,11 @@ class EvaluationsController {
                             qc.original_field,
                             evaluations.status AS evaluations_status,
                             evaluations.require_second_assessment,
+                            IF(
+                                (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND detail IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
+                                    = 
+                                ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
+                            AS response_status,
                         ( SELECT enable_assessor FROM qa_comments_meta WHERE indicatorId = indicators.id ) AS enable_assessor,
                         ( SELECT id FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment_id,
                         ( SELECT detail FROM qa_comments WHERE metaId IS NULL  AND evaluationId = evaluations.id  AND is_deleted = 0 AND approved_no_comment IS NULL LIMIT 1 ) AS general_comment,
@@ -813,10 +818,11 @@ class EvaluationsController {
                             evaluations.evaluation_status AS evaluation_status,
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
+                            qc.original_field,
                             evaluations.status AS evaluations_status,
                             evaluations.require_second_assessment,
                             IF(
-                                (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
+                                (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND detail IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
                                     = 
                                 ( SELECT COUNT(id) FROM qa_comments_replies WHERE is_deleted = 0 AND commentId IN (SELECT id FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND is_deleted = 0 AND is_visible = 1) ), "complete", "pending") 
                             AS response_status,
@@ -847,6 +853,7 @@ class EvaluationsController {
                         LEFT JOIN qa_indicators indicators ON indicators.view_name = '${view_name}'
                         LEFT JOIN qa_indicators_meta meta ON meta.indicatorId = indicators.id
                         LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
+                        LEFT JOIN qa_comments qc ON qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND approved_no_comment IS NULL
                         WHERE ${view_name_psdo}.id = :indicatorId 
                         AND evaluations.indicator_view_name = '${view_name}'
                         AND evaluations.phase_year = actual_phase_year()

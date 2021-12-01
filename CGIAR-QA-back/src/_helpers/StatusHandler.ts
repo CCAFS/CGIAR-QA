@@ -7,9 +7,17 @@ export enum StatusHandler {
     // Reopen = 'reopen',
 }
 
-export enum StatusHandlerMIS {
-    complete = 'quality_assessed',
+export enum StatusHandlerLegacy {
+    complete = 'assessed_1st_round',
     pending = 'pending',
+    pending_crp = 'pending_crp',
+    finalized = 'quality_assessed',
+    autochecked = 'automatically_validated'
+}
+export enum StatusHandlerMIS {
+    complete = 'in_progress',
+    pending = 'pending',
+    pending_crp = 'pending_crp',
     finalized = 'quality_assessed',
     autochecked = 'automatically_validated'
 }

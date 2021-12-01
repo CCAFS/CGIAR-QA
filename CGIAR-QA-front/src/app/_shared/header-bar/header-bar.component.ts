@@ -44,6 +44,7 @@ export class HeaderBarComponent implements OnInit {
     { name: 'Peer Reviewed Papers', viewname: 'qa_publications' },
     { name: 'CapDevs', viewname: 'qa_capdev' },
     { name: 'MELIAs', viewname: 'qa_melia' },
+    // { name: 'Indicator Contrib', viewname: 'qa_aiccra_indicators_contrib' },
     // qa_outcomes: 'Outcomes',
   ]
 
@@ -52,27 +53,28 @@ export class HeaderBarComponent implements OnInit {
     public router: Router,
     private indicatorService: IndicatorsService,
     private alertService: AlertService) {
+      console.log('Refresh navbar 1');
 
-    this.router.events.pipe(
-      filter(e => e instanceof NavigationStart),
-      pairwise()
-    )
-      .subscribe((e: any[]) => {
-        e.forEach(element => {
-          if (element.url != '/login') {
-            this.authenticationService.currentUser.subscribe(x => {
-              this.currentUser = x;
-              if (x) {
-                this.currentRole = x.roles[0].description.toLowerCase()
-                this.ngOnInit();
+  
+      this.router.events.pipe(filter(e => e instanceof NavigationStart)).subscribe((e: NavigationStart)  => {
+        console.log('Refresh navbar 1',e);
+        if (e.url != '/login') {
+          this.authenticationService.currentUser.subscribe(x => {
+            this.currentUser = x;
+            if (x) {
+              this.currentRole = x.roles[0].description.toLowerCase()
+
+              if(!this.indicators.length)
+              this.ngOnInit();
 
 
-                this.isHome = `/dashboard/${this.currentUser}`;
-              }
-            },
-              err => { console.log(err) });
-          }
-        });
+              this.isHome = `/dashboard/${this.currentUser}`;
+            }
+          },
+            err => { console.log(err) });
+        } else {
+          this.indicators = [];
+        }
       });
   }
 
@@ -80,11 +82,15 @@ export class HeaderBarComponent implements OnInit {
     return this.router.isActive(`/dashboard/${this.currentRole}`, true);
   }
 
+  getCurrentRouteIndicator(indicatorName: string, primaryField: string) {
+    return this.router.isActive(`/indicator/${indicatorName}/${primaryField}`, true);
+  }
+
   ngOnInit() {
     // this.indicators = [];
     if(this.currentUserID != this.currentUser.id){
       this.currentUserID = this.currentUser.id;
-      this.indicators = [];
+      // this.indicators = [];
       this.getHeaderLinks();
     } else {
       // this.currentUserID = this.currentUser.id;
@@ -123,6 +129,11 @@ export class HeaderBarComponent implements OnInit {
           console.log("getHeaderLinks", res);
           this.indicators = res.data.filter(indicator => indicator.indicator.type = indicator.indicator.name.toLocaleLowerCase());
           this.authenticationService.userHeaders = [...this.indicators];
+
+          if(this.currentRole == 'admin') {
+            //Remove last indicator (AICCRA)
+            this.indicators.pop();
+          }
           console.log(this.indicators);
           
         },

@@ -1,39 +1,39 @@
-<div class="timeline-container">
+<div class="timeline-container animate__fadeInDown" *ngIf="batches">
     <!-- <p>timeline works!</p>
     <div>{{batches[0].startDateAssessors}}</div> -->
     <header>
-        <h1>TIMELINE</h1>
-        <h3>QA 2021</h3>
+        <h1>QA 2021 - TIMELINE</h1>
+        <h3>Batch {{batches[0].batch_name}} - Annual Report data submission: <strong>{{batches[0].submission_date | date: 'mediumDate'}}</strong> </h3>
     </header>
     <div class="line">
         <div class="event">
-            <div class="info-event shadow-sm p-3 mb-5 bg-white rounded">
-                <h2>{{batches[0].startDateAssessors}}</h2>
+            <div class="info-event shadow-sm mb-5 bg-white rounded">
+                <div class="date">{{batches[0].assessors_start_date | date: 'MMM d, yyyy - HH:mm'}}</div>
                 <p>QA Platform opens for assessors</p>
             </div>
         </div>
         <div class="event">
-            <div class="info-event shadow-sm p-3 mb-5 bg-white rounded">
-                <h2>{{batches[0].endDateAssessors}}</h2>
+            <div class="info-event shadow-sm mb-5 bg-white rounded">
+                <div class="date">{{batches[0].assessors_end_date | date: 'MMM d, yyyy - HH:mm'}}</div>
                 <p>QA Platform closes for assessors</p>
             </div>
         </div>
         <div class="event">
-            <div class="info-event shadow-sm p-3 mb-5 bg-white rounded">
-                <h2>{{batches[0].startDateCRP}}</h2>
+            <div class="info-event shadow-sm mb-5 bg-white rounded">
+                <div class="date">{{batches[0].programs_start_date | date: 'MMM d, yyyy - HH:mm'}}</div>
                 <p>QA Platform opens for CRPs/PTFs</p>
             </div>
         </div>
         <div class="event">
-            <div class="info-event shadow-sm p-3 mb-5 bg-white rounded">
-                <h2>{{batches[0].endDateCRP}}</h2>
+            <div class="info-event shadow-sm mb-5 bg-white rounded">
+                <div class="date">{{batches[0].programs_end_date | date: 'MMM d, yyyy - HH:mm'}}</div>
                 <p>QA Platform closes for CRPs/PTFs</p>
             </div>
         </div>
     </div>
 </div>
-<footer class="shadow-sm p-3 mb-5 bg-white rounded">
+<footer class="shadow-sm mb-5 bg-white rounded">
     <div class="next-batch">
-        <p><strong>Next batch: </strong>{{batches[0].nextBatch}}</p>
+        <p *ngIf="batches"><strong>Next batch: </strong>{{batches[1].submission_date | date: 'mediumDate'}}</p>
     </div>
 </footer>

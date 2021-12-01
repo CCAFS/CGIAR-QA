@@ -132,6 +132,14 @@ export class CommentService {
 
     }
 
-    
+    // get batches detail
+    getBatches(){
+    return this.http.get<any>(`${environment.apiUrl}/comment/batches`)
+    }
+
+    //get list of Quick Comments
+    getQuickComments(){
+    return this.http.get<any>(`${environment.apiUrl}/comment/default-list`);
+    }
 
 }

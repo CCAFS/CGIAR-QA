@@ -8,7 +8,7 @@ import { AlertService } from '../../services/alert.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 import { User } from '../../_models/user.model';
-import { DetailedStatus, GeneralIndicatorName, GeneralStatus } from "../../_models/general-status.model" 
+import { DetailedStatus, GeneralIndicatorName, GeneralStatus, StatusNames, StatusNamesCRP } from "../../_models/general-status.model" 
 import { crpMEL  } from "../../_models/crp.model" ;
 import { Role } from 'src/app/_models/roles.model';
 import { Title } from '@angular/platform-browser';
@@ -17,13 +17,51 @@ import { UrlTransformPipe } from 'src/app/pipes/url-transform.pipe';
 import { WordCounterPipe } from 'src/app/pipes/word-counter.pipe';
 
 import * as moment from 'moment';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
   selector: 'app-detail-indicator',
   templateUrl: './detail-indicator.component.html',
   styleUrls: ['./detail-indicator.component.scss'],
-  providers: [UrlTransformPipe, WordCounterPipe]
+  providers: [UrlTransformPipe, WordCounterPipe],
+  animations: [
+    trigger(
+      'inOutAnimation', 
+      [
+        transition(
+          ':enter', 
+          [
+            style({
+            backgroundColor: '#cfeaf3',
+            padding: '1em',
+            marginBottom: '0.5em',
+            borderRadius: '5px',
+            fontStyle: 'italic',
+            fontSize: '$font-xs',
+            opacity: 0 }),
+            animate('0.5s ease-out', 
+                    style({opacity: 1 }))
+          ]
+        ),
+        transition(
+          ':leave', 
+          [
+            style({
+              backgroundColor: '#cfeaf3',
+              padding: '1em',
+              marginBottom: '0.5em',
+              borderRadius: '5px',
+              fontStyle: 'italic',
+              fontSize: '$font-xs',
+              opacity: 1 }),
+            animate('0.1s ease-in', 
+                    style({ opacity: 0 }))
+          ]
+        )
+      ]
+    )
+  ]
 })
 export class DetailIndicatorComponent implements OnInit {
 
@@ -42,7 +80,8 @@ export class DetailIndicatorComponent implements OnInit {
     general_comment_id: '',
     general_comment_user: '',
     general_comment_updatedAt: '',
-    crp_id: ''
+    crp_id: '',
+    requires_second_assessment: ''
   };
   statusHandler = DetailedStatus;
   crpsMEL = crpMEL;
@@ -50,7 +89,8 @@ export class DetailIndicatorComponent implements OnInit {
   currentType = '';
   isCRP= true;
   general_comment_reply;
-
+  statusNames = StatusNames;
+  statusNamesCRP = StatusNamesCRP;
   approveAllitems;
 
   @ViewChild("commentsElem") private commentsElem: ElementRef;
@@ -153,7 +193,10 @@ export class DetailIndicatorComponent implements OnInit {
           general_comment_id: this.detailedData[0].general_comment_id,
           general_comment_updatedAt: this.detailedData[0].general_comment_updatedAt,
           general_comment_user: this.detailedData[0].general_comment_user,
+          requires_second_assessment: this.detailedData[0].require_second_assessment
         }
+        console.log(this.gnralInfo);
+        
         this.activeCommentArr = Array<boolean>(this.detailedData.length).fill(false);
 
         this.hideSpinner(this.spinner1);

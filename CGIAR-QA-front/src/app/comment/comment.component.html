@@ -13,9 +13,9 @@
                                 <span>ADDED BY {{comment.user.username}} </span>
                                 <div>
                                     <p>On {{comment.updatedAt | date: 'long'}}</p>
-                                    <p *ngIf="comment.cycle"> {{comment.cycle.cycle_name}}:
+                                    <!-- <p *ngIf="comment.cycle"> {{comment.cycle.cycle_name}}:
                                         <strong>{{comment.cycle.cycle_stage}} </strong>
-                                    </p>
+                                    </p> -->
                                 </div>
                             </div>
                             <div>
@@ -91,10 +91,10 @@
                         <button type="button" class="btn disagree"
                             (click)="answerComment(false,replyTypes.disagree,comment)">DISAGREE</button>
 
-                        <button  type="button"
+                        <!-- <button  type="button"
                             class="btn request-clarification"
                             (click)="answerComment(false,replyTypes.clarification,comment)">CLARIFICATION
-                            NEEDED</button>
+                            NEEDED</button> -->
                     </div>
 
                     <div *ngIf="crpComment && comment.replies.replies_count == '0' && comment.replyTypeId != 1 && comment.replyTypeId != 4 "
@@ -206,27 +206,23 @@
         <p>No comments made</p>
     </div>
     <!-- ADD COMMENT -->
-    <div *ngIf="!availableComment && !crpComment && dataFromItem.status !== statusHandler.Finalized && currentUser.hasOwnProperty('cycle')"
+    <!-- dataFromItem.status !== statusHandler.Finalized && -->
+    <div *ngIf="!availableComment && !crpComment &&  currentUser.hasOwnProperty('cycle')"
         class="add-comment-container">
         <form [formGroup]="commentGroup">
             <!-- <p><span class="textarea" role="textbox" contenteditable maxlength="{{totalChar}}" formControlName="comment"></span></p> -->
             <textarea maxlength="{{totalChar}}" formControlName="comment"></textarea>
         </form>
-        <div class="btn-group w-100" dropdown>
+        <div *ngIf="!this.isCRP" class="btn-group w-100" dropdown>
             <button id="button-animated" dropdownToggle type="button" class="btn btn-primary dropdown-toggle w-100"
                 aria-controls="dropdown-animated">
                 Quick comment <span class="caret"></span>
             </button>
             <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu w-100" role="menu"
                 aria-labelledby="button-animated">
-                <li  role="menuitem">
-                    <a class="dropdown-item" (click)="setCommentValue($event,'Please, avoid acronyms.')" href="#">Please, avoid acronyms.</a>
-                </li>
-                <li  role="menuitem">
-                    <a class="dropdown-item" (click)="setCommentValue($event,'Link is not working, please fix it.')" href="#">Link is not working, please fix it.</a>
-                </li>
-                <li  role="menuitem">
-                    <a class="dropdown-item" (click)="setCommentValue($event,'Another comment...')" href="#">Another comment...</a>
+                <li  role="menuitem" *ngFor="let quickComment of quickComments">
+                    <a class="dropdown-item" (click)="setCommentValue($event,quickComment.comment)" href="#">{{quickComment.comment}}</a>
+                    <div class="dropdown-divider"></div>
                 </li>
             </ul>
         </div>

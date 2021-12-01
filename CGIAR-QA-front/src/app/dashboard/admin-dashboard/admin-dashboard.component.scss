@@ -586,3 +586,35 @@ position: relative;
     padding: 0 1em;
   }
 }
+.css-button-3d--sand {
+  min-width: 130px;
+  // height: 40px;
+  color: var(--black);
+  padding: 5px 10px;
+  font-weight: $semibold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5em;
+  outline: none;
+  border-radius: 5px;
+  border: none;
+  background: #ced4da;
+  box-shadow: 0 5px #adb5bd;
+  font-size: $font-sm;
+  margin-left: 1em;
+  .icon {
+    font-size: $font-md;
+  }
+}
+.css-button-3d--sand:hover {
+  box-shadow: 0 3px #adb5bd;
+  top: 1px;
+}
+.css-button-3d--sand:active {
+  box-shadow: 0 0 #adb5bd;
+  top: 5px;
+}

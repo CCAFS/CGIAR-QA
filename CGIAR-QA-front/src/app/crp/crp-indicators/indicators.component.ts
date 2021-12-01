@@ -11,7 +11,7 @@ import { AlertService } from '../../services/alert.service';
 import { CommentService } from 'src/app/services/comment.service';
 
 import { User } from '../../_models/user.model';
-import { GeneralIndicatorName } from 'src/app/_models/general-status.model';
+import { GeneralIndicatorName, StatusIconCRP } from 'src/app/_models/general-status.model';
 
 import { saveAs } from "file-saver";
 import { Title } from '@angular/platform-browser';
@@ -41,13 +41,13 @@ export class CRPIndicatorsComponent implements OnInit {
   }
   stageHeaderText = {
     policies: 'Level',
-    oicr: 'Maturity Level',
+    oicr: 'Maturity Stage',
     innovations: 'Stage',
     melia: 'Type',
     publications: 'ISI',
     milestones: 'Milestone Status',
   }
-
+  statusIconCRP = StatusIconCRP;
   maxSize = 5;
   pageSize = 4;
   collectionSize = 0;
@@ -64,6 +64,9 @@ export class CRPIndicatorsComponent implements OnInit {
 
   spinner_name = 'spIndicators';
   btonFilterForm: any;
+  submission_dates = [];
+  rsaFilter: boolean = false;
+
 
   constructor(private activeRoute: ActivatedRoute,
     private router: Router,
@@ -77,6 +80,8 @@ export class CRPIndicatorsComponent implements OnInit {
     // private orderPipe: OrderPipe,
     private titleService: Title,
     private alertService: AlertService) {
+      this.getBatchDates();
+
     this.activeRoute.params.subscribe(routeParams => {
       this.authenticationService.currentUser.subscribe(x => {
         this.currentUser = x;
@@ -239,6 +244,29 @@ export class CRPIndicatorsComponent implements OnInit {
     this.indicatorService.setFullPageList(this.currentPage);
   }
 
+  getBatchDates() {
+    this.commentService.getBatches().subscribe(res => {
+
+      const batches = res.data;
+      for (let index = 0; index < batches.length; index++) {
+        const batch = {date: moment(batches[index].submission_date).format('ll'), batch_name: +batches[index].batch_name, checked: false};
+        this.submission_dates.push(batch);
+      }
+    }, error => {
+      console.log(error)
+      this.alertService.error(error);
+    }
+    )
+  }
+
+  onDateChange(e, subDate) {
+    if(subDate) {
+      console.log(e.target.checked, e.target.value);
+      const foundIndex = this.submission_dates.findIndex(sd => sd.date == e.target.value);
+      this.submission_dates[foundIndex]['checked'] = e.target.checked;
+      this.submission_dates = [...this.submission_dates];
+    }
+  }
 
   /***
    * 

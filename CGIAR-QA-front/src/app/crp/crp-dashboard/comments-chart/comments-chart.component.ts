@@ -22,15 +22,15 @@ export class CommentsChartComponent implements OnInit {
       {name:"Accepted", class: "agree", value: 0},
       {name:"Accepted with comment", class: "agree-wc", value: 0},
       {name:"Disagreed", class: "disagree", value: 0},
-      {name:"Clarification needed", class: "clarification", value: 0},
+      // {name:"Clarification needed", class: "clarification", value: 0},
     ],
     commentsLabelsPublications : [
       {name:"Pending", class:"pending", value: 0},
       {name:"Accepted", class: "agree", value: 0},
       {name:"Accepted with comment", class: "agree-wc", value: 0},
       {name:"Disagreed", class: "disagree", value: 0},
-      {name:"Clarification needed", class: "clarification", value: 0},
-      {name:"Discarded by QA", class: "discarded", value: 0},
+      // {name:"Clarification needed", class: "clarification", value: 0},
+      // {name:"Discarded by QA", class: "discarded", value: 0},
     ],
   }
 
