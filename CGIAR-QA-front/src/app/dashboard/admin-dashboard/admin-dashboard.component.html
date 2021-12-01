@@ -3,17 +3,17 @@
 </div> -->
 <app-timeline></app-timeline>
 <div class="row justify-content-center dashboard-container">
-    <button [ngClass]="{'open-side-menu': showSideMenu}" class="btn-toggle-menu" (click)="toggleSideMenu()"><i class="icon-settings"></i></button>
+    <button [ngClass]="{'open-side-menu': showSideMenu}" class="btn-toggle-menu" (click)="toggleSideMenu()"><i
+            class="icon-settings"></i></button>
     <div [ngClass]="{'open-side-menu': showSideMenu}" class="col-programs">
         <p class="card-title">Programs/Platforms ({{selectedProgramName}})</p>
         <div class="card">
             <div class="card-body">
                 <form [formGroup]="programsForm" class="programs-form btn-group-vertical">
                     <input (change)="onProgramChange($event, 'null')" id="program-all" type="radio"
-                    class="custom-control-input" value="null" name="program"
-                    formControlName="program">
-                     <label class="custom-control-label" for="program-all">
-                    All
+                        class="custom-control-input" value="null" name="program" formControlName="program">
+                    <label class="custom-control-label" for="program-all">
+                        All
                     </label>
                     <div class="" *ngFor="let program of crps | sortBy:'asc':'name'; let i=index ">
                         <input (change)="onProgramChange($event, program)" id="program-{{program.id}}" type="radio"
@@ -141,27 +141,26 @@
     </div>
     <div class="col col-progress">
         <div class="row mini-header" style="padding: 0 15px;">
-            <div class="model-link-container" (click)="goToPDF('AR')">
-                <i class="icon-pdf"></i>
-                <hr>
-                <p>2021 AR Template</p>
-            </div>
-            <div class="model-link-container" (click)="goToPDF('ASSESSORS_GUIDANCE')">
-                <i class="icon-pdf"></i>
-                <hr>
-                <p>2021 Assessor Guidance</p>
-            </div></div>
+            <button class="css-button-3d--sand" (click)="goToPDF('AR')">
+                <span class="material-icons-round icon">description</span>AR 2021 Template
+            </button>
+            <button class="css-button-3d--sand" (click)="goToPDF('ASSESSORS_GUIDANCE')">
+                <span class="material-icons-round icon">description</span>2021 Assessor Guidance
+            </button>
+        </div>
         <div class="row" style="padding: 0 15px;">
             <p class="card-title col-9">Progress by Assessors</p>
 
-            <button *ngIf="selectedProgramName != 'All' " type="button" class="btn btn-success col-3" (click)="downloadRawComments()">Download all comments and
+            <button *ngIf="selectedProgramName != 'All' " type="button" class="btn btn-success col-3"
+                (click)="downloadRawComments()">Download all comments and
                 replies</button>
         </div>
         <div class="card">
             <div class="card-body">
 
                 <div class="dashboard-container row w-100">
-                    <div class="card-body dashboard-container-charts col " [ngClass]="{'col-sm-12' : isRound2, 'col-sm-9': !isRound2}">
+                    <div class="card-body dashboard-container-charts col "
+                        [ngClass]="{'col-sm-12' : isRound2, 'col-sm-9': !isRound2}">
                         <div class="w-100 dashboard-header mb-2">
                             <div class="h-100  title">Dashboard {{getIndicatorName(selectedIndicator)}}</div>
                             <div class="btn-group h-100 selector" dropdown>
@@ -192,11 +191,11 @@
                                 </div>
                                 <div class="chart-container">
                                     <app-donut-chart *ngIf="dataSelected" [data]="dataCharts.generalStatus"
-                                        [chartName]="indicator_status" [selectedIndicator]="selectedIndicator" >
+                                        [chartName]="indicator_status" [selectedIndicator]="selectedIndicator">
                                     </app-donut-chart>
                                 </div>
                             </div>
-                            <div class="chart chart-2"> 
+                            <div class="chart chart-2">
                                 <div class="header-chart">
                                     <h4 class="chart-title">Assessors interactions</h4>
                                     <i class="icon-info" [tooltip]="popTemplateChartB"></i>
@@ -219,7 +218,8 @@
                                     </ng-template>
                                 </div>
                                 <div *ngIf="dashboardCommentsData[selectedIndicator]" class="chart-container">
-                                    <app-donut-chart [data]="dataCharts.responseToComments" [chartName]="'comments'" [selectedIndicator]="selectedIndicator">
+                                    <app-donut-chart [data]="dataCharts.responseToComments" [chartName]="'comments'"
+                                        [selectedIndicator]="selectedIndicator">
                                     </app-donut-chart>
                                 </div>
                             </div>
@@ -234,8 +234,9 @@
                                     </ng-template>
 
                                 </div>
-                                <div class="chart-container" *ngIf="dataCharts.assessmentByField"> 
-                                    <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField" [isModal]=false></app-line-chart>
+                                <div class="chart-container" *ngIf="dataCharts.assessmentByField">
+                                    <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total"
+                                        [data]="dataCharts.assessmentByField" [isModal]=false></app-line-chart>
                                 </div>
                             </div>
                             <!-- <button class="btn btn-green-secondary">Download all comments and replies</button> -->
@@ -333,7 +334,9 @@
         </div>
 
     </div>
-    <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+    <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" color="#fff" type="square-jelly-box" [fullScreen]="true">
+        <p style="color: white"> Loading... </p>
+    </ngx-spinner>
 
 
     <ng-template #template class="modal-dialog">
@@ -366,15 +369,16 @@
         </div>
     </ng-template>
 
-    <ng-template #chartD style="max-width: 1800px;" >
+    <ng-template #chartD style="max-width: 1800px;">
         <div class="options-modal">
             <button type="button" class="close pull-right" (click)="modalRef.hide()" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div  class="modal-content  modal-lg" >
-            <div class="chart-modal-container" *ngIf="dataCharts.assessmentByField"> 
-                <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total" [data]="dataCharts.assessmentByField" [isModal]=true></app-line-chart>
+        <div class="modal-content  modal-lg">
+            <div class="chart-modal-container" *ngIf="dataCharts.assessmentByField">
+                <app-line-chart [indicatorName]="selectedIndicator" [total]="dataSelected.total"
+                    [data]="dataCharts.assessmentByField" [isModal]=true></app-line-chart>
             </div>
         </div>
     </ng-template>
