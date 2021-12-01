@@ -7,7 +7,7 @@
 
 
 .timeline-container{
-    padding: 4em 1em;
+    padding: 3em 1em;
     width: 100%;
     height: 350px;
     display: flex;
@@ -19,13 +19,15 @@
         font-family: 'Poppins';
     }
     h1{
-        letter-spacing: 10px;
+        letter-spacing: 5px;
+        font-weight: $bold;
     }
     header{
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
+        gap: 0.5em;
     }
     .line{
         width: 80%;
@@ -55,16 +57,24 @@
                 left: -100px;
                 border-radius: 5px;
                 // border: 1px solid var(--gray-secondary);
-                padding: 1em;
-                h2{
-                    font-size: $font-md;
-                    font-weight: $semibold;
-                    color: var(--color-not-sure);
+                padding: 0;
+
+                .date {
+                    border-radius: 5px 5px 0px 0px ;
+                    background: linear-gradient(135deg,#6253E1,#04BEFE);
+                    text-align: center;
+                    font-size: $primary-fs;
+                    font-weight: $regular;
+                    width: 100%;
+                    padding: 0.5em;
+                    color: var(--white);
                     font-family: 'Poppins';
+                    margin-bottom: .7em;
                 }
                 p{
-                    font-family: 'Montserrat';
+                    font-family: 'Poppins';
                     font-size: $font-xs;
+                    padding: 0  1em;
                 }
             }
         }

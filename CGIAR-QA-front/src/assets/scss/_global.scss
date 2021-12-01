@@ -556,14 +556,14 @@ body::-webkit-scrollbar-track
 
 body::-webkit-scrollbar
 {
-  width: 16px;
+  width: 10px;
   background-color: #F5F5F5;
 }
 
 body::-webkit-scrollbar-thumb
 {
   border-radius: 10px;
-  background-color: var(--yellow-secondary);
+  background-color: #b9b9b9;
 }
 
 .accept {
