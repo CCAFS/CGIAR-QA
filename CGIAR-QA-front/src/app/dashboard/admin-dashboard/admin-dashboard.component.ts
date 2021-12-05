@@ -286,7 +286,7 @@ export class AdminDashboardComponent implements OnInit {
     const colors = {
       complete: 'var(--color-complete)',
       pending: 'var(--color-pending)',
-      finalized: 'var(--color-finalized)',
+      finalized: 'var(--color-complete)',
       autochecked: 'var(--color-autochecked)'
     }
     let dataset = [];
