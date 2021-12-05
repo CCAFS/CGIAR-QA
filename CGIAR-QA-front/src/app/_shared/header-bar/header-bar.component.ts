@@ -132,7 +132,7 @@ export class HeaderBarComponent implements OnInit {
 
           if(this.currentRole == 'admin') {
             //Remove last indicator (AICCRA)
-            this.indicators.pop();
+            // this.indicators.pop();
           }
           console.log(this.indicators);
           

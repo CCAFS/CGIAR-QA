@@ -761,8 +761,7 @@ class EvaluationsController {
                             evaluations.evaluation_status AS evaluation_status, 
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
-                            qc.original_field,
-                            evaluations.status AS evaluations_status,
+                            (SELECT qc.original_field FROM qa_comments qc WHERE qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND qc.approved_no_comment IS NULL LIMIT 1) as original_field,                            evaluations.status AS evaluations_status,
                             evaluations.require_second_assessment,
                             IF(
                                 (SELECT COUNT(id) FROM qa_comments WHERE qa_comments.evaluationId = evaluations.id  AND approved_no_comment IS NULL AND metaId IS NOT NULL AND detail IS NOT NULL AND is_deleted = 0 AND is_visible = 1) 
@@ -787,7 +786,6 @@ class EvaluationsController {
                         LEFT JOIN qa_indicators indicators ON indicators.view_name = '${view_name}'
                         LEFT JOIN qa_indicators_meta meta ON meta.indicatorId = indicators.id
                         LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                        LEFT JOIN qa_comments qc ON qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND approved_no_comment IS NULL
                         WHERE ${view_name_psdo}.id = :indicatorId 
                         AND evaluations.indicator_view_name = '${view_name}'
                         AND evaluations.phase_year = actual_phase_year()
@@ -818,7 +816,7 @@ class EvaluationsController {
                             evaluations.evaluation_status AS evaluation_status,
                             crp.name AS crp_name,
                             crp.acronym AS crp_acronym,
-                            qc.original_field,
+                            (SELECT qc.original_field FROM qa_comments qc WHERE qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND qc.approved_no_comment IS NULL LIMIT 1) as original_field,
                             evaluations.status AS evaluations_status,
                             evaluations.require_second_assessment,
                             IF(
@@ -853,7 +851,6 @@ class EvaluationsController {
                         LEFT JOIN qa_indicators indicators ON indicators.view_name = '${view_name}'
                         LEFT JOIN qa_indicators_meta meta ON meta.indicatorId = indicators.id
                         LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                        LEFT JOIN qa_comments qc ON qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND approved_no_comment IS NULL
                         WHERE ${view_name_psdo}.id = :indicatorId 
                         AND evaluations.indicator_view_name = '${view_name}'
                         AND evaluations.phase_year = actual_phase_year()
@@ -883,7 +880,7 @@ class EvaluationsController {
                         evaluations.evaluation_status AS evaluation_status,
                         crp.name AS crp_name,
                         crp.acronym AS crp_acronym,
-                        qc.original_field,
+                        (SELECT qc.original_field FROM qa_comments qc WHERE qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND qc.approved_no_comment IS NULL LIMIT 1) as original_field,
                         evaluations.status AS evaluations_status,
                         evaluations.require_second_assessment,
                     ( SELECT enable_assessor FROM qa_comments_meta WHERE indicatorId = indicator_user.indicatorId ) AS enable_assessor,
@@ -907,7 +904,6 @@ class EvaluationsController {
                     LEFT JOIN qa_indicator_user indicator_user ON indicator_user.indicatorId = indicators.id
                     LEFT JOIN qa_indicators_meta meta ON meta.indicatorId = indicators.id
                     LEFT JOIN qa_crp crp ON crp.crp_id = evaluations.crp_id
-                    LEFT JOIN qa_comments qc ON qc.evaluationId = evaluations.id and qc.metaId  = meta.id AND is_deleted = 0 AND approved_no_comment IS NULL
                     WHERE indicator_user.userId = :user_Id
                     AND ${view_name_psdo}.id = :indicatorId
                     AND evaluations.indicator_view_name = '${view_name}'

@@ -1530,7 +1530,10 @@ class CommentController {
                     {}
                 );
                 rawData = await queryRunner.connection.query(query, parameters);
+                console.log(rawData);
+                
                 let batches = [];
+
                 for (let i = 0; i < rawData.length; i++) {
                     const element = {submission_date: rawData[i]};
                     
