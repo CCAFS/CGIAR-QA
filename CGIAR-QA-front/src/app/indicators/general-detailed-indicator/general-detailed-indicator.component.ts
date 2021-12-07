@@ -705,7 +705,7 @@ export class GeneralDetailedIndicatorComponent implements OnInit {
   }
 
   verifyIsLeadAssessor() {
-    return this.currentUser.indicators.find(el => (el.indicator.name == this.currentType && el.isLeader)) ? true : false;
+    return this.currentUser.indicators.find(el => (el.indicator.view_name.split('qa_')[1] == this.indicatorType && el.isLeader)) ? true : false;
   }
 
   toggleAssessorsChat() {
