@@ -533,7 +533,7 @@ class Util {
 
     }
 
-    static createComment = async (detail, approved, userId, metaId, evaluationId, original_field) => {
+    static createComment = async (detail, approved, userId, metaId, evaluationId, original_field = null) => {
         const userRepository = getRepository(QAUsers);
         const metaRepository = getRepository(QAIndicatorsMeta);
         const evaluationsRepository = getRepository(QAEvaluations);
@@ -579,7 +579,7 @@ class Util {
 
             return new_comment;
         } catch (error) {
-            // console.log(error)
+            console.log(error)
             return null;
         }
     }

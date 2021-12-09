@@ -837,11 +837,14 @@ class CommentController {
 
     
     static toggleApprovedNoComments = async (req: Request, res: Response) => {
+
+        console.log('TOGGLE APPROVED NO COMMENTS');
+        
         //TODO - Improve performance
         const { evaluationId } = req.params;
         const { meta_array, userId, isAll, noComment } = req.body;
         let comments;
-        let queryRunner = getConnection().createQueryBuilder();
+        let queryRunner = getConnection().createQueryBuilder().connection;
         const userRepository = getRepository(QAUsers);
         const evaluationsRepository = getRepository(QAEvaluations);
         const commentsRepository = getRepository(QAComments);
@@ -849,7 +852,7 @@ class CommentController {
 
         // console.log(meta_array)
         try {
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+            const [query, parameters] = await queryRunner.driver.escapeQueryWithParameters(
                 `SELECT
                 *
                 FROM
@@ -862,9 +865,9 @@ class CommentController {
                 { meta_array, evaluationId },
                 {}
             );
-            comments = await queryRunner.connection.query(query, parameters);
+            comments = await queryRunner.query(query, parameters);
             // console.log(comments.length, meta_array)
-            console.log(comments)
+            console.log({comments})
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
             console.log(user);
             
@@ -1335,17 +1338,17 @@ class CommentController {
     //get cycles 
     static getCycles = async (req: Request, res: Response) => {
         let rawData;
-        const queryRunner = getConnection().createQueryBuilder();
+        const queryRunner = getConnection().createQueryBuilder().connection;
 
         try {
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+            const [query, parameters] = await queryRunner.driver.escapeQueryWithParameters(
                 `
                     SELECT * FROM qa_cycle
                 `,
                 {},
                 {}
             );
-            rawData = await queryRunner.connection.query(query, parameters);
+            rawData = await queryRunner.query(query, parameters);
             res.status(200).json({ message: "Cycles data", data: rawData });
         } catch (error) {
             console.log(error);
