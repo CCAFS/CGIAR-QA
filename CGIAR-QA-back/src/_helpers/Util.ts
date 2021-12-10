@@ -545,7 +545,29 @@ class Util {
             let meta;
             if (metaId != null)
                 meta = await metaRepository.findOneOrFail({ where: { id: metaId } });
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by', 'assessed_by_second_round'] });
+            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId } });
+
+
+            // Insert assessed by if not exists
+
+            const assessed_by = await getConnection().createQueryBuilder()
+                .select()
+                .from("qa_evaluations_assessed_by_qa_users", "qaed")
+                .where("qaEvaluationsId = :evaluationId", { evaluationId })
+                .andWhere("qaUsersId = :userId", { userId })
+                .execute();
+
+            console.log({ assessed_by });
+            if (assessed_by.length <= 0) {
+                const insertAssessedBy = await getConnection().createQueryBuilder()
+                    .insert()
+                    .into('qa_evaluations_assessed_by_qa_users')
+                    .values({
+                        qaEvaluationsId: evaluationId,
+                        qaUsersId: userId
+                    })
+                    .execute();
+            }
 
             let current_cycle = await cycleRepo
                 .createQueryBuilder("qa_cycle")
@@ -555,14 +577,14 @@ class Util {
                 .getRawOne();
 
 
-            if (current_cycle.id == 1) {
-                evaluation.assessed_by.push(user);
-                console.log('ASSESSORS', evaluation.assessed_by);
+            // if (current_cycle.id == 1) {
+            //     evaluation.assessed_by.push(user);
+            //     console.log('ASSESSORS', evaluation.assessed_by);
 
-            } else {
-                evaluation.assessed_by_second_round.push(user);
-            }
-            evaluationsRepository.save(evaluation);
+            // } else {
+            //     evaluation.assessed_by_second_round.push(user);
+            // }
+            // evaluationsRepository.save(evaluation);
 
             console.log(current_cycle == undefined)
             if (current_cycle == undefined) throw new Error('Could not created comment')
@@ -732,7 +754,7 @@ class Util {
                         break;
                     case StatusHandler.Finalized:
                         // console.log('Quality Assessed');
-                        
+
                         if (moment(Date.now()).isBefore(current_batch.programs_start_date)) {
                             status = 'pending';
                         } else if (moment(Date.now()).isSameOrAfter(current_batch.programs_start_date)) {
@@ -740,7 +762,7 @@ class Util {
                                 status = 'pending_crp';
                             } else {
                                 console.log('R2A', evaluation.require_second_assessment);
-                                
+
                                 status = evaluation.require_second_assessment ? 'in_progress' : StatusHandlerMIS[evaluation.status];
                             }
                         }
