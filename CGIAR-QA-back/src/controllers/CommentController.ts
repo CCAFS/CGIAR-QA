@@ -837,38 +837,70 @@ class CommentController {
 
     
     static toggleApprovedNoComments = async (req: Request, res: Response) => {
+        console.time('toggle_approved');
+
+        console.log('TOGGLE APPROVED NO COMMENTS');
+        
         //TODO - Improve performance
         const { evaluationId } = req.params;
         const { meta_array, userId, isAll, noComment } = req.body;
         let comments;
-        let queryRunner = getConnection().createQueryBuilder();
+        // let queryRunner = getConnection().createQueryBuilder().connection;
         const userRepository = getRepository(QAUsers);
         const evaluationsRepository = getRepository(QAEvaluations);
         const commentsRepository = getRepository(QAComments);
         const cycleRepo = getRepository(QACycle);
 
-        // console.log(meta_array)
+        // console.log(meta_array)  
         try {
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
-                `SELECT
-                *
-                FROM
-                    qa_comments
-                    WHERE
-                    evaluationId = :evaluationId
-                    AND metaId IN (:meta_array)
-                    AND approved_no_comment IS NOT NULL
-                    `,
-                { meta_array, evaluationId },
-                {}
-            );
-            comments = await queryRunner.connection.query(query, parameters);
+
+        const comments = await commentsRepository
+                            .createQueryBuilder("qc")
+                            // .select("qc.metaId")
+                            .leftJoinAndSelect("qc.meta", "meta")
+                            .where("qc.evaluationId = :evaluationId", {evaluationId})
+                            .andWhere("qc.metaId IN (:meta_array)", {meta_array})
+                            .andWhere("qc.approved_no_comment IS NOT NULL")
+                            .getMany();
+        
+        
+        // await getConnection()
+        //     .createQueryBuilder()
+        //     .select("*")
+        //     .from(QAComments, "qc")
+        //     .where("evaluationId = :evaluationId", {evaluationId})
+        //     .andWhere("metaId IN (:meta_array)", {meta_array})
+        //     .andWhere("approved_no_comment IS NOT NULL")
+        //     .getMany();
+            
+
+
+            // const [query, parameters] = await queryRunner.driver.escapeQueryWithParameters(
+            //     `SELECT
+            //     *
+            //     FROM
+            //         qa_comments
+            //         WHERE
+            //         evaluationId = :evaluationId
+            //         AND metaId IN (:meta_array)
+            //         AND approved_no_comment IS NOT NULL
+            //         `,
+            //     { meta_array, evaluationId },
+            //     {}
+            // );
+            // comments = await queryRunner.query(query, parameters);
             // console.log(comments.length, meta_array)
-            console.log(comments)
+            console.log({comments})
             let user = await userRepository.findOneOrFail({ where: { id: userId } });
             console.log(user);
-            
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }, relations: ['assessed_by', 'assessed_by_second_round']  });
+
+            console.time('getEvaluation')
+            let evaluation = await evaluationsRepository.findOne({ where: { id: evaluationId }});
+
+
+            // let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: evaluationId }});
+            // evaluationsRepository.queryRunner.connection.close;
+            console.timeEnd('getEvaluation')
             console.log(evaluation);
             
             let current_cycle = await cycleRepo
@@ -879,15 +911,41 @@ class CommentController {
             .getRawOne();
             console.log({current_cycle});
 
-            if(current_cycle.id == 1) {
-                evaluation.assessed_by.push(user);
-            } else {
-                evaluation.assessed_by_second_round.push(user);
-            }
+
+            // TO-DO Assessed by per batch
+            // if(current_cycle.id == 1) {
+                //INSERT ASSESSED BY
+
+                const assessed_by = await getConnection().createQueryBuilder()
+                .select()
+                .from("qa_evaluations_assessed_by_qa_users", "qaed")
+                .where("qaEvaluationsId = :evaluationId", {evaluationId})
+                .andWhere("qaUsersId = :userId", {userId})
+                .execute();
+
+                console.log({assessed_by});
+                if(assessed_by.length <= 0) {
+                    const insertAssessedBy = await getConnection().createQueryBuilder()
+                    .insert()
+                    .into('qa_evaluations_assessed_by_qa_users')
+                    .values({
+                        qaEvaluationsId: evaluationId,
+                        qaUsersId: userId
+                    })
+                    .execute();
+                }
+
+                
+                console.log(assessed_by);
+                
+                // evaluation.assessed_by.push(user);
+            // } else {
+            //     evaluation.assessed_by_second_round.push(user);
+            // }
             // console.log('ASSESSORS',evaluation.assessed_by);
             // evaluation.assessed_by.push(user);
-            console.log('ASSESSORS',evaluation.assessed_by);
-            evaluationsRepository.save(evaluation);
+            // console.log('ASSESSORS',evaluation.assessed_by);
+            // evaluationsRepository.save(evaluation);
             console.log('evaluations saved');
             
             let response = [];
@@ -895,9 +953,13 @@ class CommentController {
 
             for (let index = 0; index < meta_array.length; index++) {
                 let comment_ = new QAComments();
+                // console.log(index, ' for cycle');
+                
                 // console.log(comments.length, comments.find(data => data.metaId == meta_array[index]))
-                if (comments && comments.find(data => data.metaId == meta_array[index])) {
-                    let existnCommt = comments.find(data => data.metaId == meta_array[index]);
+                if (comments && comments.find(comment => comment.meta.id == meta_array[index])) {
+                    let existnCommt = comments.find(comment => comment.meta.id == meta_array[index]);
+                    // console.log('Comment exists', {existnCommt});
+                    
                     existnCommt.approved = noComment;
                     existnCommt.is_deleted = !noComment;
                     existnCommt.evaluation = evaluation;
@@ -922,7 +984,7 @@ class CommentController {
             let result = await commentsRepository.save(response);
             console.log({result});
 
-
+            console.timeEnd('toggle_approved');
             res.status(200).send({ data: result, message: 'Comment toggle' });
 
         } catch (error) {
@@ -1335,17 +1397,17 @@ class CommentController {
     //get cycles 
     static getCycles = async (req: Request, res: Response) => {
         let rawData;
-        const queryRunner = getConnection().createQueryBuilder();
+        const queryRunner = getConnection().createQueryBuilder().connection;
 
         try {
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+            const [query, parameters] = await queryRunner.driver.escapeQueryWithParameters(
                 `
                     SELECT * FROM qa_cycle
                 `,
                 {},
                 {}
             );
-            rawData = await queryRunner.connection.query(query, parameters);
+            rawData = await queryRunner.query(query, parameters);
             res.status(200).json({ message: "Cycles data", data: rawData });
         } catch (error) {
             console.log(error);

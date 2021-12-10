@@ -71,13 +71,7 @@ class UserController {
                 user.crp = crp;
             }
 
-        } catch (error) {
-            console.log(error)
-            res.status(409).json({ message: "Role does not exists", data: error });
-            return;
-        }
-
-        
+              
         //Validade if the parameters are ok
         const errors = await validate(user);
         if (errors.length > 0) {
@@ -97,6 +91,14 @@ class UserController {
             res.status(409).json({ message: "Username already in use" });
             return;
         }
+
+        } catch (error) {
+            console.log(error)
+            res.status(409).json({ message: "Role does not exists", data: error });
+            return;
+        }
+
+      
 
         //If all ok, send 200 response
         res.status(200).json({ message: "User created" });

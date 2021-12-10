@@ -926,19 +926,22 @@ class EvaluationsController {
         }
     }
 
+    // FIX TO-DO
     static updateDetailedEvaluation = async (req: Request, res: Response) => {
+        console.time('update_evaluation');
         const id = req.params.id;
         const userId = res.locals.jwtPayload.userId;
         const { general_comments, status } = req.body;
+        
+        // const userRepository = getRepository(QAUsers);
+        // let user = await userRepository.findOneOrFail({ where: { id: userId } });
+        // console.log('EnteredService UpdateEvaluation', { user });
+        
         const evaluationsRepository = getRepository(QAEvaluations);
-        let queryRunner = getConnection().createQueryBuilder();
-        const userRepository = getRepository(QAUsers);
-        let user = await userRepository.findOneOrFail({ where: { id: userId } });
-        console.log('EnteredService UpdateEvaluation', { user });
-
+        let queryRunner = getConnection().createQueryBuilder().connection;
         // console.log({ general_comments, status }, id)
         try {
-            let evaluation = await evaluationsRepository.findOneOrFail({ where: { id: id }, relations: ['assessed_by', 'assessed_by_second_round'] });
+            let evaluation = await evaluationsRepository.findOne({ where: { id: id } });
             console.log('Got the Evaluation', evaluation);
 
             // evaluation.general_comments = general_comments;
@@ -948,19 +951,20 @@ class EvaluationsController {
                 let sql = `
                     SELECT id from qa_indicators_meta WHERE indicatorId IN (SELECT id FROM qa_indicators WHERE view_name = :view_name) AND col_name = 'id';
                 `;
-                const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+                const [query, parameters] = await queryRunner.driver.escapeQueryWithParameters(
                     sql,
                     { view_name: evaluation.indicator_view_name },
                     {}
                 );
-                evaluation.assessed_by_second_round.push(user);
-                console.log('Pushed user', evaluation);
+                // evaluation.assessed_by_second_round.push(user);
+                // console.log('Pushed user', evaluation);
 
-                let metaId = await queryRunner.connection.query(query, parameters);
+                let metaId = await queryRunner.query(query, parameters);
                 let comment = await Util.createComment(null, true, userId, metaId[0].id, evaluation.id);
             }
 
             let updatedEva = await evaluationsRepository.save(evaluation);
+            console.timeEnd('update_evaluation');
             res.status(200).json({ data: updatedEva, message: "Evaluation updated." });
 
         } catch (error) {

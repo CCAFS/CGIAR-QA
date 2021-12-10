@@ -624,7 +624,7 @@ class IndicatorsController {
         const indicatorRepository = getRepository(QAIndicators);
         const batchesRepository = getRepository(QABatch);
 
-        let queryRunner = getConnection().createQueryBuilder();
+        let queryRunner = getConnection().createQueryBuilder().connection;
 
         try {
             const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
@@ -687,13 +687,13 @@ class IndicatorsController {
             evaluations.id,
             indicator_user.indicatorId`;
 
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+            const [query, parameters] = await queryRunner.driver.escapeQueryWithParameters(
                 sql,
                 { indicator_view_name: indicator_view_name[0].view_name, crp_id: crp_id, AR },
                 {}
             );
 
-            const evaluations = await queryRunner.connection.query(query, parameters);
+            const evaluations = await queryRunner.query(query, parameters);
 
             const batches = await batchesRepository.find({ where: { phase_year: AR } });
                 
@@ -740,7 +740,7 @@ class IndicatorsController {
         const batchesRepository = getRepository(QABatch);
 
        
-        let queryRunner = getConnection().createQueryBuilder();
+        let queryRunner = getConnection().createQueryBuilder().connection;
 
         try {
             const indicator_view_name = await indicatorRepository.find({ where: { id: id }, select: ["view_name"] });
@@ -804,13 +804,13 @@ class IndicatorsController {
             evaluations.id,
             indicator_user.indicatorId`;
 
-            const [query, parameters] = await queryRunner.connection.driver.escapeQueryWithParameters(
+            const [query, parameters] = await queryRunner.driver.escapeQueryWithParameters(
                 sql,
                 { indicator_view_name: indicator_view_name[0].view_name, crp_id, indicator_view_id: item_id,AR },
                 {}
             );
 
-            let item = await queryRunner.connection.query(query, parameters);
+            let item = await queryRunner.query(query, parameters);
             item = item[0];
             
             const batches = await batchesRepository.find({ where: { phase_year: AR } });
