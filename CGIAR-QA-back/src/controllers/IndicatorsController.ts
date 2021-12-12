@@ -15,6 +15,7 @@ import Util from "@helpers/Util";
 import { GeneralIndicatorName } from "@helpers/GeneralIndicatorName";
 import { QABatch } from "@entity/Batch";
 import { QAComments } from "@entity/Comments";
+import { QACrp } from "@entity/CRP";
 
 
 class IndicatorsController {
@@ -34,6 +35,21 @@ class IndicatorsController {
 
             //Send the indicators object
             res.status(200).json({ data: indicators, message: "All indicators" });
+
+        } catch (error) {
+            console.log(error);
+            res.status(404).json({ message: "Could not access to indicators." });
+        }
+    };
+    static getCRP = async (req: Request, res: Response) => {
+        //Get the ID from the url 
+        const { crp_id } = req.params;
+        try {
+            const crpRepository = getRepository(QACrp);
+            const crp: QACrp = await crpRepository.findOne({crp_id});
+
+            //Send the crp object
+            res.status(200).json({ data: crp, message: `CRP ${crp.id} - ${crp.acronym} loaded.` });
 
         } catch (error) {
             console.log(error);

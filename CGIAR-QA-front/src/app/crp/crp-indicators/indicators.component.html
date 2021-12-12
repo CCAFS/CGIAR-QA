@@ -43,12 +43,12 @@
                     <p>Pending</p>
                 </div>
             </div>
-            <div class="row filters-container">
+            <div class="row filters-container"> 
                 <div *ngIf="submission_dates.length" class="date-filter">
                     <span>Filter by submission</span>
                     <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked"
-                            (change)="onDateChange($event,sub.batch_name)">
+                            (change)="onDateChange($event,sub.batch_name)" [disabled]="!sub.is_active">
                         <label class="form-check-label" for="inlineCheckbox{{sub.id}}">{{sub.date}}</label>
                     </div>
                 </div>

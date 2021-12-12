@@ -1,9 +1,9 @@
 <div class="row justify-content-center dashboard-container">
 
-    <div *ngIf="currentUser && currentUser.hasOwnProperty('cycle') && indicators.length > 0" class="col col-2 col-programs crp-list-group"
+    <div *ngIf="currentUser && currentUser.hasOwnProperty('cycle') && indicators.length > 0" class="col col-2 col-programs crp-list-group shadow"
         routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
 
-        <a class="nav-item nav-link" style="padding-bottom: 0;" [routerLinkActive]="['active']"
+        <a class="nav-item nav-link"  [routerLinkActive]="['active']"
             routerLink="/crp/dashboard">Home</a>
         <ng-container *ngFor="let indicator of indicators; index as i">
             <a *ngIf="indicator.comment_meta.enable_crp" class="nav-item nav-link" [routerLinkActive]="['active']"
@@ -42,6 +42,11 @@
 
 
     <div class="col-10 col-progress">
+        <div *ngIf="crp && crp.qa_active == 'close'" class="crp-closed">
+            <i class="icon-closed" style="height: 400px;"></i>
+            <h2>{{crp.acronym}} has not started the QA 2021 process and is now closed</h2>
+            <h4>Come back when the CRP/PTF has submitted an indicator</h4>
+        </div>
         <router-outlet></router-outlet>
     </div>
     <ngx-spinner [fullScreen]="false" [name]="spinner_name" bdColor="rgba(51,51,51,0.3)" type="ball-clip-rotate"

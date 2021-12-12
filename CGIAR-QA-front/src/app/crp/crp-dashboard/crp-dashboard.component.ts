@@ -28,6 +28,7 @@ import { IndicatorsService } from 'src/app/services/indicators.service';
 
 
 export class CrpDashboardComponent implements OnInit {
+  crp=null;
   dashboardData: any[];
   statusNames = { complete: 0, pending: 0 }
   indicators = [];
@@ -122,6 +123,8 @@ export class CrpDashboardComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private indicatorService: IndicatorsService) {
     this.activeRoute.params.subscribe(routeParams => {
+      console.log({routeParams});
+      
       this.authenticationService.currentUser.subscribe(x => {
         // console.log(routeParams, x)
         this.currentUser = x;
@@ -131,6 +134,7 @@ export class CrpDashboardComponent implements OnInit {
         this.getCommentStats();
       });
     })
+
 
     /** set page title */
     this.titleService.setTitle(`CRP Dashboard`);

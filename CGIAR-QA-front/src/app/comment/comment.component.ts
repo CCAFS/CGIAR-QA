@@ -274,12 +274,21 @@ export class CommentComponent implements OnInit {
     this.commentService.getDataComment(params).subscribe(
       res => {
         this.hideSpinner(this.spinner_comment);
-        // console.log(res)
-        const replies_count = res.data.filter(data => data.approved)[0]?  +res.data.filter(data => data.approved)[0].replies.replies_count : 0;
+        console.log('COMMENT DATA',res.data)
+        // const replies_count = res.data.filter(data => data.approved)[0]?  +res.data.filter(data => data.approved)[0].replies.replies_count : 0;
+        let replies_count = 0;
+        const answered_comments = res.data.filter(data => data.approved);
+        console.log({answered_comments});
+        
+        if(answered_comments.length > 0){
+          answered_comments.map(ac => {
+            replies_count += +ac.replies.replies_count;
+          })
+        }
         console.log({replies_count});
 
         this.updateNumCommnts.emit({length: res.data.filter(field => field.is_deleted == false).length, replies_count: replies_count, validateFields});
-       console.log(this.currentUser.roles[0].description);
+      //  console.log(this.currentUser.roles[0].description);
 
         switch (this.currentUser.roles[0].description) {
           case this.allRoles.crp:

@@ -1,25 +1,33 @@
 @import "../../assets/variables.scss";
 .dashboard-container {
     .crp-list-group {
-        background: var(--gray-primary);
-        border-radius: 0.4em;
+        background: white;
+        padding: 0;
         align-self: baseline;
         max-width: 200px;
         a {
-            font-weight: $bold;
             color: var(--black);
-            text-decoration: none;
-            background-color: transparent;
-            cursor: pointer;
+        font-weight: $semibold;
+        text-decoration: none;
+        background-color: transparent;
+        cursor: pointer;
+        transition: all .3s ease-out;
+        box-sizing: border-box;
+        &:hover{
+            background-color: var(--white-gray);
         }
-        a:hover{
-          color: var(--green-primary);
         }
+
         a.active {
-            color: var(--green-primary);
-        }
+            // color: var(--blue-tertiary);
+            font-weight: $bold;
+            background-color: var(--white-gray);
+          }
         a.unavailable{
           cursor: default;
+          &:hover{
+            background-color: transparent;
+          }
         }
     }
     .programs-form {
@@ -36,4 +44,23 @@
         color: var(--gray) !important;
         cursor: none;
     }
+}
+
+.crp-closed {
+    width: 100%;
+    padding: 2em;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    h2 {
+        font-weight: bold;
+    }
+    h2, h3, h4, p {
+        text-align: center;
+    }
+    background-color: whitesmoke;
 }
