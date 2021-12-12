@@ -16,6 +16,8 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./crp.component.scss']
 })
 export class CrpComponent implements OnInit {
+  crp_id = null;
+  crp = null;
   currentUser: User;
   indicators = [];
   params;
@@ -33,8 +35,9 @@ export class CrpComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(params => {
       this.params = params;
-      // console.log(this.params);
-
+      console.log(this.params);
+      this.crp_id = this.params['params']['crp_id'];
+      
       if (params.has('token')) {
         this.validateToken(this.params['params']);
       } else {
@@ -60,6 +63,7 @@ export class CrpComponent implements OnInit {
         this.authenticationService.currentUser.subscribe(x => {
           this.hideSpinner(this.spinner_name);
           this.currentUser = x;
+          this.getCRP(this.crp_id);
           // console.log(this.currentUser)
           if (this.indicators = [])
           this.getCRPIndicators();
@@ -84,7 +88,7 @@ export class CrpComponent implements OnInit {
 
             this.indicators = res.data.sort((a, b) => a.order - b.order);
             //TO-DO
-            this.indicators.pop();
+            // this.indicators.pop();
             localStorage.setItem('indicatorsCRP', JSON.stringify(this.indicators));
             this.hideSpinner(this.spinner_name);
           this.router.navigate([`/crp/dashboard`])
@@ -96,6 +100,12 @@ export class CrpComponent implements OnInit {
           }
         );
     }
+  }
+
+  getCRP(crp_id) {
+    this.indicatorService.getCRP(crp_id).subscribe(res => {
+      this.crp = res.data;
+    })
   }
 
 

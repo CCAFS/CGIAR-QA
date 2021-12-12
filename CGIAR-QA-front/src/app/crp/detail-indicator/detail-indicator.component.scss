@@ -245,3 +245,13 @@
     }
   }
 }
+
+.comments-counter {
+  padding: 0.2em;
+  margin: 0.2em !important;
+  font-size: 12px !important;
+  height: 26px;
+  width: 26px;
+  display: grid;
+  place-items: center;
+}

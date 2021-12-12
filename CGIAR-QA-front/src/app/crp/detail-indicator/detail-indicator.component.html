@@ -149,10 +149,10 @@
                         <i *ngIf="!field.loading" class="icon-message"></i>
                         <span *ngIf="field.loading" class="spinner-border spinner-border-sm mr-1"></span>
 
-                        <div [tooltip]="commentsTooltip" container="body" placement="top"
+                        <div  container="body" placement="top"
                             *ngIf="field.replies_count != '0'"
                             class="replies-count {{field.replies_count == field.comments_replies_count ? 'accepted':'rejected'}}">
-                            <p style="padding: 0.2em; margin: 0.2em; font-size: 14px">
+                            <p class="comments-counter">
                                 {{field.comments_replies_count}}/{{field.replies_count}}
                             </p>
                         </div>

@@ -39,6 +39,10 @@ export class IndicatorsService {
   getIndicators() {
     return this.http.get<any>(`${environment.apiUrl}/indicator/`);
   }
+  //get crp
+  getCRP(crp_id) {
+    return this.http.get<any>(`${environment.apiUrl}/indicator/crp/${crp_id}`);
+  }
   getCurrentOrder() {
     for (const key in this.allOrderTypes) {
       if(this.allOrderTypes[key] != null)

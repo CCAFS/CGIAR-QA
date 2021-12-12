@@ -1,13 +1,12 @@
-<div class="row justify-content-center">
+<div class="row justify-content-center" *ngIf="currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">
     <!-- <i class="qa-timeline-icon"></i> -->
     <!-- <app-timeline></app-timeline> -->
-    <h2 style="margin: 1em auto;"
-        *ngIf="currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">
+    <h2 style="margin: 1em auto;">
         The quality assessment process has ended.
     </h2>
 </div>
 
-<div class="row justify-content-center dashboard-container">
+<div class="row justify-content-center dashboard-container" *ngIf="dashboardData && dashboardCommentsData && indicators">
 
     <div class="col-12 col-progress">
 
