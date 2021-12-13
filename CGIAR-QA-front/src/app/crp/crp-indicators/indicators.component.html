@@ -3,7 +3,7 @@
 </a>
 
 <div class="row">
-    <div class="col-12"> 
+    <div class="col-12">
         <div>
             <h2>{{returnListName(indicatorType, 'header')}} </h2>
             <h4 style="text-align: center;"
@@ -14,7 +14,7 @@
                 *ngIf="currentUser && !currentUser.hasOwnProperty('cycle') && currentUser.cycle_ended">
                 The quality assessment process has ended.
             </h4>
-            
+
             <div class="row col sub-header">
                 <div class="col row text-left">
                     <div class="model-link-container" (click)="goToPDF('AR')">
@@ -43,34 +43,35 @@
                     <p>Pending</p>
                 </div>
             </div>
-            <div class="row filters-container"> 
+            <div class="row filters-container">
                 <div *ngIf="submission_dates.length" class="date-filter">
                     <span>Filter by submission</span>
                     <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked"
-                            (change)="onDateChange($event,sub.batch_name)" [disabled]="!sub.is_active">
+                        <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date"
+                            [checked]="sub.checked" (change)="onDateChange($event,sub.batch_name)"
+                            [disabled]="!sub.is_active">
                         <label class="form-check-label" for="inlineCheckbox{{sub.id}}">{{sub.date}}</label>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-primary" [(ngModel)]="rsaFilter" btnCheckbox [btnCheckboxTrue]="1"
-                [btnCheckboxFalse]="0">
-                Further assessment
-            </button>
+                <button type="button" class="btn btn-outline-primary" [(ngModel)]="rsaFilter" btnCheckbox
+                    [btnCheckboxTrue]="1" [btnCheckboxFalse]="0">
+                    Further assessment
+                </button>
                 <div class="removed-filter">
                     <div class="btn-group" btnRadioGroup [(ngModel)]="evalStatusFilter">
                         <!-- <label class="btn btn-outline-warning" [class.active]="evalStatusFilter === 'Added'" btnRadio="Added"
                             uncheckable tabindex="0" role="button">Added item</label> -->
-                        <label class="btn btn-outline-danger" [class.active]="evalStatusFilter === 'Removed'" btnRadio="Removed"
-                            uncheckable tabindex="0" role="button">Removed items</label>
+                        <label class="btn btn-outline-danger" [class.active]="evalStatusFilter === 'Removed'"
+                            btnRadio="Removed" uncheckable tabindex="0" role="button">Removed items</label>
                     </div>
                 </div>
-            
+
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search Here" [(ngModel)]="searchText">
                 </div>
             </div>
 
-            <table class="table table-bordered">
+            <table class="table table-bordered" *ngIf="collectionSize != 0">
                 <thead class="table-header">
                     <tr>
                         <th scope="col" [class.active]="order === 'id'" (click)="setOrder('id')">
@@ -82,7 +83,7 @@
                                 </div>
                             </div>
                         </th>
-                        <th scope="col" *ngIf="returnedArray && returnedArray[0].brief" >
+                        <th scope="col" *ngIf="returnedArray && returnedArray[0].brief">
                             <div class="header-row">
                                 Brief contribution
                             </div>
@@ -161,9 +162,10 @@
                 </thead>
                 <tbody class="table-body">
                     <tr
-                    *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | dateFilter:submission_dates:'submission_date'| filterBoolean:rsaFilter:'require_second_assessment' | slice:currentPage.startItem:currentPage.endItem  ; let i = index">
+                        *ngFor="let item of evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText | dateFilter:submission_dates:'submission_date'| filterBoolean:rsaFilter:'require_second_assessment' | slice:currentPage.startItem:currentPage.endItem  ; let i = index">
                         <th scope="row">
-                            QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{ item.id }}
+                            QA-{{ indicatorType.charAt(0).toUpperCase() }}{{ indicatorType.charAt(1).toUpperCase() }}-{{
+                            item.id }}
                         </th>
                         <td *ngIf="item.hasOwnProperty('brief') && item.brief">
                             <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
@@ -171,7 +173,9 @@
                                 style="display:none">
                                 {{item.evaluation_status}}
                             </div>
-                            <a (click)="savePageList()"  class="brief-format" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" [innerHtml]="formatBrief(item.brief)"></a>
+                            <a (click)="savePageList()" class="brief-format" rel="noopener noreferrer"
+                                [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}"
+                                [innerHtml]="formatBrief(item.brief)"></a>
                         </td>
                         <td>
                             <div *ngIf="item.evaluation_status && item.evaluation_status !== 'New'"
@@ -179,9 +183,10 @@
                                 style="display:none">
                                 {{item.evaluation_status}}
                             </div>
-                            <a (click)="savePageList()" *ngIf="!item.brief" rel="noopener noreferrer" [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}" >
+                            <a (click)="savePageList()" *ngIf="!item.brief" rel="noopener noreferrer"
+                                [routerLinkActive]="['active']" routerLink="./detail/{{item.id}}">
                                 {{ fixAccent(item.title)}}</a>
-                                <div *ngIf="returnedArray[0].brief" class="div">{{ item.title}}</div>
+                            <div *ngIf="returnedArray[0].brief" class="div">{{ item.title}}</div>
                         </td>
                         <td *ngIf="item.hasOwnProperty('stage')">{{ (item.stage) ? item.stage: notProviedText}}</td>
                         <td *ngIf="item.hasOwnProperty('fp')">{{ (item.fp) ? item.fp: notProviedText}}</td>
@@ -195,16 +200,18 @@
                                 </div>
                             </a>
                         </td>
-                        <td  *ngIf="indicatorType == 'publications'">
+                        <td *ngIf="indicatorType == 'publications'">
                             <div *ngIf="item.assessment_status != 'autochecked'" class="assessed-by">Assessors</div>
-                            <p class="wos-label" *ngIf="item.assessment_status == 'autochecked'">Validated by WoS/Scopus</p>
+                            <p class="wos-label" *ngIf="item.assessment_status == 'autochecked'">Validated by WoS/Scopus
+                            </p>
                         </td>
                         <td>
                             {{item.submission_date}}
                         </td>
                         <td>
                             <i class="icon-{{ statusIconCRP[item.status] }} status-icon"></i>
-                            <div class="require-second-assessment" *ngIf="item.require_second_assessment">Further assessment
+                            <div class="require-second-assessment" *ngIf="item.require_second_assessment">Further
+                                assessment
                             </div>
                         </td>
                     </tr>
@@ -214,14 +221,18 @@
             <div *ngIf='evaluationList' class="total-items">
                 Total items:
                 {{(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText |
-    dateFilter:submission_dates:'submission_date' | filterBoolean:rsaFilter:'require_second_assessment' ).length}}
+                dateFilter:submission_dates:'submission_date' | filterBoolean:rsaFilter:'require_second_assessment'
+                ).length}}
             </div>
-            <div *ngIf='evaluationList' class="d-flex justify-content-center p-2 pagination-container">
+            <div *ngIf='evaluationList && collectionSize > 0'
+                class="d-flex justify-content-center p-2 pagination-container">
                 <pagination [rotate]="false"
-                [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText  | dateFilter:submission_dates:'submission_date' | filterBoolean:rsaFilter:'require_second_assessment').length"
-                [maxSize]="5" (pageChanged)="pageChanged($event)">
-            </pagination>
+                    [totalItems]="(evaluationList | customFilter:evalStatusFilter:'evaluation_status' | filter:searchText  | dateFilter:submission_dates:'submission_date' | filterBoolean:rsaFilter:'require_second_assessment').length"
+                    [maxSize]="5" (pageChanged)="pageChanged($event)">
+                </pagination>
             </div>
+            <div class="div" *ngIf="collectionSize == 0">There is no data for this indicator</div>
+
         </div>
 
         <!-- Loading Spinner -->
