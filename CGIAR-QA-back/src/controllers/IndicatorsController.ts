@@ -722,6 +722,10 @@ class IndicatorsController {
             })
             );
 
+            
+            // queryRunner.close();
+            // console.log('Connection closed.');
+
             res.status(200).send({ data: data, message: `List of ${indicator_view_name[0].view_name.split('qa_')[1]} indicator items` })
         } catch (error) {
             console.log(error);
@@ -838,6 +842,9 @@ class IndicatorsController {
                 assessment_status: Util.calculateStatusMIS(item, batches),
                 updatedAt: item.updatedAt
             }
+
+            // queryRunner.close();
+            // console.log('Connection closed.');
 
             res.status(200).send({ data: data, message: `Item ${data.id} of  ${indicator_view_name[0].view_name.split('qa_')[1]} indicator.` })
         } catch (error) {

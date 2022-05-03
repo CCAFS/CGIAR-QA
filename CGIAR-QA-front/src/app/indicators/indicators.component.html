@@ -47,7 +47,7 @@
 </div>
 <div class="row filters-container">
     <div class="date-filter">
-        <span>Filter by submission</span>
+        <span>Filter by submission date</span>
         <div *ngFor="let sub of submission_dates" class="form-check form-check-inline">
             <input class="form-check-input" type="checkbox" id="sub.id" [value]="sub.date" [checked]="sub.checked"
                 (change)="onDateChange($event,sub.batch_name)" [disabled]="!sub.is_active">

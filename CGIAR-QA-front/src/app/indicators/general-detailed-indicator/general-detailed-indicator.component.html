@@ -126,7 +126,7 @@
                         </div>
                         <div class="requires-assessment">
                             <label class="switch" for="second_assesment">
-                                <input type="checkbox" id="second_assesment" [checked]="gnralInfo.requires_second_assessment" (change)="markForSecondAssessment()">
+                                <input type="checkbox" id="second_assesment" [disabled]="!gnralInfo.requires_second_assessment"  [checked]="gnralInfo.requires_second_assessment" (change)="markForSecondAssessment()">
                                 <span class="slider"></span>
                             </label>
                             <div class="checkbox-description" [ngClass]="{'requires-second-assessment': gnralInfo.requires_second_assessment} ">
