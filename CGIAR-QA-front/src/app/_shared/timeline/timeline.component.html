@@ -3,37 +3,37 @@
     <div>{{batches[1].startDateAssessors}}</div> -->
     <header>
         <h1>QA 2021 - TIMELINE</h1>
-        <h3>Batch {{batches[1].batch_name}} - Annual Report data submission: <strong>{{batches[1].submission_date | date: 'mediumDate'}}</strong> </h3>
+        <h3>Batch {{batches[2].batch_name}} - Annual Report data submission: <strong>{{batches[2].submission_date | date: 'mediumDate'}}</strong> </h3>
     </header>
     <div class="line">
         <div class="event">
             <div class="info-event shadow-sm mb-5 bg-white rounded">
-                <div class="date">{{batches[1].assessors_start_date | date: 'MMM d, yyyy'}} - 00:00 CEST</div>
+                <div class="date">{{batches[2].assessors_start_date | date: 'MMM d, yyyy'}} - 00:00 CET</div>
                 <p>QA Platform opens for assessors</p>
             </div>
         </div>
         <div class="event">
             <div class="info-event shadow-sm mb-5 bg-white rounded">
-                <div class="date">{{batches[1].assessors_end_date | date: 'MMM d, yyyy'}} - 23:59 CEST</div>
+                <div class="date">{{batches[2].assessors_end_date | date: 'MMM d, yyyy'}} - 23:59 CET</div>
                 <p>QA Platform closes for assessors</p>
             </div>
         </div>
         <div class="event">
             <div class="info-event shadow-sm mb-5 bg-white rounded">
-                <div class="date">{{batches[1].programs_start_date | date: 'MMM d, yyyy'}} - 00:00 CEST</div>
+                <div class="date">{{batches[2].programs_start_date | date: 'MMM d, yyyy'}} - 00:00 CET</div>
                 <p>QA Platform opens for CRPs/PTFs</p>
             </div>
         </div>
         <div class="event">
             <div class="info-event shadow-sm mb-5 bg-white rounded">
-                <div class="date">{{batches[1].programs_end_date | date: 'MMM d, yyyy'}} - 23:59 CEST</div>
+                <div class="date">{{batches[2].programs_end_date | date: 'MMM d, yyyy'}} - 23:59 CET</div>
                 <p>QA Platform closes for CRPs/PTFs</p>
             </div>
         </div>
     </div>
 </div>
-<footer class="shadow-sm mb-5 bg-white rounded">
+<!-- <footer class="shadow-sm mb-5 bg-white rounded">
     <div class="next-batch">
         <p *ngIf="batches"><strong>Next batch: </strong>{{batches[2].submission_date | date: 'mediumDate'}}</p>
     </div>
-</footer>
+</footer> -->

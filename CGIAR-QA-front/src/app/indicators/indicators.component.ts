@@ -137,7 +137,8 @@ indicatorTypePage = null;
       for (let index = 0; index < batches.length; index++) {
         let batch = {date: moment(batches[index].submission_date).format('ll'), batch_name: +batches[index].batch_name, checked: false, is_active: null};
         batch.is_active = moment(Date.now()).isSameOrAfter(batch.date) || index === 0 ? true : false;
-        batch.checked = batch.is_active;
+        // batch.checked = batch.is_active;
+        batch.checked = batch.batch_name == 3 ? true: false;
         this.submission_dates.push(batch);
       }
       
